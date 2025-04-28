@@ -1,3 +1,4 @@
+import type { IUser } from '~/server/types/models'
 /**
  * 用户列表API接口
  *
@@ -7,23 +8,22 @@
  */
 import { defineEventHandler, getQuery } from 'h3'
 import { UserService } from '~/server/services/user-service'
-import type { IUser } from '~/server/types/models'
 
 /**
  * 响应接口
  */
 interface IApiResponse<T> {
-  code: number;
-  data: T;
-  message: string;
+  code: number
+  data: T
+  message: string
 }
 
 export default defineEventHandler(async (event) => {
   try {
     // 获取查询参数
     const query = getQuery(event)
-    const page = parseInt(query.page as string || '1', 10)
-    const limit = parseInt(query.limit as string || '20', 10)
+    const page = Number.parseInt(query.page as string || '1', 10)
+    const limit = Number.parseInt(query.limit as string || '20', 10)
 
     // 实例化用户服务
     const userService = new UserService()
@@ -33,17 +33,17 @@ export default defineEventHandler(async (event) => {
 
     // 返回成功响应
     const response: IApiResponse<{
-      users: IUser[];
+      users: IUser[]
       pagination: {
-        page: number;
-        limit: number;
-        total: number;
-        totalPages: number;
+        page: number
+        limit: number
+        total: number
+        totalPages: number
       }
     }> = {
       code: 200,
       data: {
-        users: users.map((user) => ({
+        users: users.map(user => ({
           ...user,
           password: undefined, // 移除密码字段
         })),
@@ -58,7 +58,8 @@ export default defineEventHandler(async (event) => {
     }
 
     return response
-  } catch (error) {
+  }
+  catch (error) {
     // 记录错误信息
     console.error('获取用户列表失败:', error)
 

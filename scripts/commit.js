@@ -35,11 +35,14 @@ function runCommand(command, { silent = false, ignoreError = false } = {}) {
       encoding: 'utf-8',
     })
     return true
-  } catch (error) {
+  }
+  catch (error) {
     if (!ignoreError && !silent) {
       log(`命令执行失败: ${command}`, 'red')
-      if (error.stdout) log(error.stdout, 'yellow')
-      if (error.stderr) log(error.stderr, 'red')
+      if (error.stdout)
+        log(error.stdout, 'yellow')
+      if (error.stderr)
+        log(error.stderr, 'red')
     }
     return false
   }
@@ -58,7 +61,8 @@ async function main() {
       log('没有文件在暂存区，自动执行 git add .', 'yellow')
       execSync('git add .', { stdio: 'inherit' })
       log('✅ 已自动添加所有修改的文件', 'green')
-    } else if (!stagedFiles && !changedFiles) {
+    }
+    else if (!stagedFiles && !changedFiles) {
       log('没有修改需要提交', 'yellow')
       process.exit(0)
     }
@@ -89,8 +93,8 @@ async function main() {
 
       execSync(`git push origin ${currentBranch}`, { stdio: 'inherit' })
       log('✅ 推送成功!', 'green')
-
-    } catch (commitError) {
+    }
+    catch (commitError) {
       // 检查是否是用户取消
       if (commitError.status === 130) {
         log('用户取消提交', 'yellow')
@@ -99,7 +103,8 @@ async function main() {
 
       throw commitError
     }
-  } catch (error) {
+  }
+  catch (error) {
     log(`❌ 提交过程出错: ${error.message}`, 'red')
     process.exit(1)
   }

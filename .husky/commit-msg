@@ -1,6 +1,3 @@
-#!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
-
 # 验证提交消息格式
 echo "🔍 验证提交消息格式..."
 npx --no -- commitlint --edit ${1}

@@ -33,7 +33,7 @@ pnpm explore-db
 3. 如果不想通过环境变量设置连接字符串，可以直接修改脚本中的默认值：
 
 ```typescript
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://用户名:密码@主机:端口/数据库名';
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://用户名:密码@主机:端口/数据库名'
 ```
 
 ### 输出说明

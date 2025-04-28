@@ -13,6 +13,40 @@ alwaysApply: true
 
 ## 目录结构规范
 
+### 实现原则
+
+原则上能使用 unocss classname 完成的必须使用 classname 来实现，比如：
+
+错误示范(这里只是示范代码，要根据实际情况来决定是否使用 unocss)：
+
+```vue
+<template>
+    <span v-if="delete"><del><slot/></del></span>
+    <span v-else-if="underline"><u><slot/></u></span>
+    <span v-else-if="code"><code><slot/></code></span>
+    <span v-else-if="mark"><mark><slot/></mark></span>
+    <span v-else><slot/></span>
+</template>
+```
+
+正确示范：
+
+
+```vue
+<script setup lang=ts name="ComponentName">
+const classname = computed(() => {
+  return {
+    underline: 'underline',
+    // ... more
+  }[type]
+})
+</script>
+
+<template>
+   <span :class="classname"><slot/></span>
+</template>
+```
+
 ### 基本原则
 
 - UI组件必须遵循特定的目录结构以配合Nuxt自动引入机制
@@ -110,6 +144,7 @@ UI组件的使用方式遵循以下模式：
 
 ## 图标规范
 
+- 图标总是有线使用 `@nuxt/icon`
 - **动态图标**：总是使用`<iconify-icon icon="collection:name"/>`
 - **静态图标**：直接使用unocss类名方式：`i-{collection}:{name}`格式
   - 例如：`i-carbon:home`

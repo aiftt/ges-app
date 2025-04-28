@@ -5,10 +5,10 @@
  * 作者: aiftt
  * 用途: 提供用户相关的业务逻辑和数据操作
  */
-import type { Collection} from 'mongodb'
+import type { Collection } from 'mongodb'
+import type { IUser } from '../types/models'
 import { ObjectId } from 'mongodb'
 import { getCollection } from '../utils/mongodb'
-import type { IUser } from '../types/models'
 
 // 集合名称常量
 const COLLECTION_NAME = 'users'
@@ -89,7 +89,7 @@ export class UserService {
    * @param {number} limit - 每页数量
    * @returns {Promise<{ users: IUser[]; total: number }>} 用户列表和总数
    */
-  async getAllUsers(page: number = 1, limit: number = 20): Promise<{ users: IUser[]; total: number }> {
+  async getAllUsers(page: number = 1, limit: number = 20): Promise<{ users: IUser[], total: number }> {
     const coll = await this.collection
     const skip = (page - 1) * limit
 
@@ -193,7 +193,7 @@ export class UserService {
         { lastName: { $regex: query, $options: 'i' } },
       ],
     })
-    .limit(limit)
-    .toArray()
+      .limit(limit)
+      .toArray()
   }
 }

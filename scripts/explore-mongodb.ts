@@ -1,3 +1,4 @@
+import type { Document } from 'mongodb'
 /**
  * MongoDB数据库结构探索脚本
  *
@@ -6,7 +7,6 @@
  * 用途: 连接MongoDB数据库并探索其结构和数据
  */
 import * as process from 'node:process'
-import type { Document } from 'mongodb'
 import { MongoClient, ServerApiVersion } from 'mongodb'
 
 // 从环境变量获取连接字符串，如果未提供则使用默认值
@@ -51,7 +51,8 @@ async function exploreMongoDB(): Promise<void> {
 
     if (collections.length === 0) {
       console.log('此数据库中没有集合')
-    } else {
+    }
+    else {
       for (const collection of collections) {
         console.log(`\n📁 集合: ${collection.name}`)
 
@@ -85,9 +86,11 @@ async function exploreMongoDB(): Promise<void> {
     }
 
     console.log('\n数据库探索完成!')
-  } catch (error) {
+  }
+  catch (error) {
     console.error('MongoDB连接或查询出错:', error)
-  } finally {
+  }
+  finally {
     await client.close()
     console.log('MongoDB连接已关闭')
   }
@@ -107,11 +110,13 @@ function analyzeDocumentStructure(doc: Document, prefix = ''): void {
     if (type === 'object' && value !== null && !(value instanceof Date)) {
       if (value && typeof value === 'object' && '_bsontype' in value && value._bsontype === 'ObjectID') {
         console.log(`  - ${fieldName}: ObjectId`)
-      } else {
+      }
+      else {
         console.log(`  - ${fieldName}: Object`)
         analyzeDocumentStructure(value as Document, fieldName)
       }
-    } else if (type === 'array' && value.length > 0) {
+    }
+    else if (type === 'array' && value.length > 0) {
       const elementType = typeof value[0]
       console.log(`  - ${fieldName}: Array<${elementType}>`)
 
@@ -119,7 +124,8 @@ function analyzeDocumentStructure(doc: Document, prefix = ''): void {
       if (elementType === 'object' && value[0] !== null) {
         analyzeDocumentStructure(value[0] as Document, `${fieldName}[0]`)
       }
-    } else {
+    }
+    else {
       console.log(`  - ${fieldName}: ${value instanceof Date ? 'Date' : type}`)
     }
   }
@@ -132,7 +138,8 @@ async function main(): Promise<void> {
   try {
     await exploreMongoDB()
     process.exit(0)
-  } catch (error) {
+  }
+  catch (error) {
     console.error('脚本执行失败:', error)
     process.exit(1)
   }

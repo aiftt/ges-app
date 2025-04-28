@@ -1,3 +1,4 @@
+import type { IUser } from '../../types/models'
 /**
  * 用户详情API接口
  *
@@ -5,16 +6,15 @@
  * 作者: aiftt
  * 用途: 获取单个用户详细信息
  */
-import { defineEventHandler, getRouterParam, createError } from 'h3'
+import { createError, defineEventHandler, getRouterParam } from 'h3'
 import { UserService } from '../../services/user-service'
-import type { IUser } from '../../types/models'
 /**
  * 响应接口
  */
 interface IApiResponse<T> {
-  code: number;
-  data: T;
-  message: string;
+  code: number
+  data: T
+  message: string
 }
 
 export default defineEventHandler(async (event) => {
@@ -56,7 +56,8 @@ export default defineEventHandler(async (event) => {
     }
 
     return response
-  } catch (error) {
+  }
+  catch (error) {
     // 记录错误信息
     console.error('获取用户详情失败:', error)
 

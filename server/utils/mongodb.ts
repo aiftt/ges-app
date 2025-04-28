@@ -1,3 +1,4 @@
+import type { Collection, Db, Document } from 'mongodb'
 /**
  * MongoDB服务工具
  *
@@ -6,8 +7,11 @@
  * 用途: 提供MongoDB连接和操作方法
  */
 import * as process from 'node:process'
-import type { Db, Collection, Document } from 'mongodb'
 import { MongoClient, ServerApiVersion } from 'mongodb'
+import serverLogger from '~/utils/server-logger'
+
+// 创建MongoDB专用logger
+const mongoLogger = serverLogger.child({ tag: 'mongodb' })
 
 // MongoDB连接相关配置
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/your_database_name'
@@ -33,9 +37,10 @@ export async function getClient(): Promise<MongoClient> {
 
     try {
       await client.connect()
-      console.log('MongoDB连接已初始化')
-    } catch (error) {
-      console.error('MongoDB连接失败:', error)
+      mongoLogger.info('MongoDB连接已初始化')
+    }
+    catch (error) {
+      mongoLogger.error('MongoDB连接失败:', error)
       throw error
     }
   }
@@ -80,19 +85,29 @@ export async function closeConnection(): Promise<void> {
     await client.close()
     client = null
     dbInstance = null
-    console.log('MongoDB连接已关闭')
+    mongoLogger.info('MongoDB连接已关闭')
   }
 }
 
 /**
  * 在应用程序退出时自动关闭连接
  */
-process.on('SIGINT', async () => {
-  await closeConnection()
-  process.exit(0)
-})
+if (process.on) {
+  process.on('SIGINT', async () => {
+    await closeConnection()
+    process.exit(0)
+  })
 
-process.on('SIGTERM', async () => {
-  await closeConnection()
-  process.exit(0)
-})
+  process.on('SIGTERM', async () => {
+    await closeConnection()
+    process.exit(0)
+  })
+}
+
+// 注册 unhandledRejection 处理器，防止未捕获的Promise异常导致应用崩溃
+if (process.on) {
+  process.on('unhandledRejection', (reason) => {
+    mongoLogger.error('未处理的Promise拒绝:', reason)
+    // 记录错误但不退出进程
+  })
+}

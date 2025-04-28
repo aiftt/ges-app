@@ -38,7 +38,7 @@ module.exports = {
   allowCustomScopes: true,
 
   // 自定义影响范围消息
-  customScopeValidationRegex: /^[a-zA-Z0-9\u4e00-\u9fa5_-]+$/,
+  customScopeValidationRegex: /^[\w\u4E00-\u9FA5-]+$/,
 
   // 跳过的问题
   skipQuestions: ['breaking', 'footer', 'body'],
