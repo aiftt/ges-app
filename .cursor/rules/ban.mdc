@@ -1,0 +1,8 @@
+---
+description:
+globs:
+alwaysApply: true
+---
+这里描述一些严格禁止的行为，请不许遵守
+
+1. 禁止显示调用 `console.<api>` 来输出打印，必须使用 `utils/logger` 下封装的打印，注意客户端和服务端的区别和使用

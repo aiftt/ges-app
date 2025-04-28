@@ -1,0 +1,246 @@
+---
+description:
+globs:
+alwaysApply: true
+---
+# 项目质量保证规范
+
+本文档规定了项目的质量保证规范，包括代码质量控制、测试规范、文档规范、审查流程等，确保项目的高质量和可维护性。
+
+## 代码质量控制
+
+### 静态分析
+
+- 使用ESLint进行代码静态分析，确保代码风格一致
+  ```bash
+  pnpm lint
+  ```
+
+- 使用TypeScript进行类型检查，捕获潜在问题
+  ```bash
+  pnpm typecheck
+  ```
+
+- 在每次提交代码前必须执行上述检查并确保没有错误和警告
+
+### 编码原则
+
+- 遵循DRY原则（Don't Repeat Yourself），避免代码重复
+- 遵循KISS原则（Keep It Simple, Stupid），保持代码简单易懂
+- 遵循YAGNI原则（You Aren't Gonna Need It），不添加未来可能需要但当前不需要的功能
+- 遵循单一职责原则，一个函数或类应只做一件事
+- 编写可测试的代码，避免过度复杂的逻辑和深层嵌套
+
+### 代码审查
+
+代码审查应检查以下内容：
+
+- 代码风格是否符合项目规范
+- 是否存在潜在的性能问题
+- 是否存在安全漏洞
+- 是否存在业务逻辑问题
+- 是否有适当的错误处理机制
+- 是否有足够的测试覆盖
+- 是否更新了相关文档
+
+## 测试规范
+
+### 组件测试
+
+- 每个UI组件应有基本的单元测试，覆盖以下方面：
+  - 渲染测试：组件能否正确渲染
+  - 属性测试：组件是否正确处理props
+  - 事件测试：组件是否正确触发事件
+  - 插槽测试：组件的插槽是否正常工作
+
+```typescript
+// 组件测试示例
+describe('Button Component', () => {
+  it('renders correctly with default props', () => {
+    const wrapper = mount(Button);
+    expect(wrapper.exists()).toBe(true);
+  });
+
+  it('emits click event when clicked', async () => {
+    const wrapper = mount(Button);
+    await wrapper.trigger('click');
+    expect(wrapper.emitted('click')).toBeTruthy();
+  });
+
+  it('disables button when disabled prop is true', () => {
+    const wrapper = mount(Button, {
+      props: { disabled: true }
+    });
+    expect(wrapper.attributes('disabled')).toBeDefined();
+  });
+});
+```
+
+### API测试
+
+- 为每个API端点编写测试，覆盖以下方面：
+  - 正常情况下的响应
+  - 错误情况下的处理
+  - 输入验证和错误状态
+  - 权限和安全检查
+
+```typescript
+// API测试示例
+describe('User API', () => {
+  it('returns user data for valid id', async () => {
+    const response = await $fetch('/api/users/1');
+    expect(response).toHaveProperty('id', 1);
+  });
+
+  it('returns 404 for non-existent user', async () => {
+    try {
+      await $fetch('/api/users/999');
+      fail('Expected 404 error');
+    } catch (error) {
+      expect(error.response.status).toBe(404);
+    }
+  });
+});
+```
+
+### 端到端测试
+
+- 为关键用户流程编写端到端测试，确保整个应用程序工作正常
+- 重点测试跨组件和跨页面的交互
+- 测试真实用户的使用场景
+
+```typescript
+// 端到端测试示例
+test('user can login and access dashboard', async ({ page }) => {
+  await page.goto('/login');
+  await page.fill('[data-testid="email-input"]', 'test@example.com');
+  await page.fill('[data-testid="password-input"]', 'password123');
+  await page.click('[data-testid="login-button"]');
+
+  // 验证成功登录并跳转到仪表板
+  await page.waitForURL('/dashboard');
+  expect(await page.isVisible('[data-testid="user-greeting"]')).toBeTruthy();
+});
+```
+
+### 测试辅助标识
+
+- 为UI组件添加`data-testid`属性，便于测试选择器
+  ```vue
+  <button data-testid="submit-button">提交</button>
+  ```
+
+- 避免在测试中使用样式选择器或文本内容作为选择依据
+- 测试ID命名应遵循一致的模式：`{组件名}-{元素类型}-{功能}`
+
+## 文档规范
+
+### 代码注释
+
+- 使用JSDoc风格为函数、类和接口添加文档注释
+  ```typescript
+  /**
+   * 获取用户列表
+   * @param {number} page - 页码
+   * @param {number} pageSize - 每页数量
+   * @returns {Promise<UserListResponse>} 用户列表响应
+   */
+  export async function getUsers(page: number, pageSize: number): Promise<UserListResponse> {
+    // 实现...
+  }
+  ```
+
+- Vue组件Props必须包含详细的类型和描述注释
+  ```typescript
+  const props = withDefaults(defineProps<{
+    /**
+     * 按钮类型
+     */
+    type?: 'primary' | 'secondary' | 'danger'
+    /**
+     * 按钮大小
+     */
+    size?: 'small' | 'medium' | 'large'
+    /**
+     * 是否禁用
+     */
+    disabled?: boolean
+  }>(), {
+    type: 'primary',
+    size: 'medium',
+    disabled: false
+  })
+  ```
+
+### 组件文档
+
+- 复杂组件应提供使用示例
+- 组件的props、事件和插槽必须在文档中详细说明
+- UI组件示例应在`pages/demo/components.vue`页面中展示
+
+### 项目文档
+
+- 提供README.md文件，包含项目简介、安装步骤和基本使用说明
+- 提供环境配置文档，说明开发、测试和生产环境的配置方法
+- 维护CHANGELOG.md，记录版本变更内容
+
+## 性能标准
+
+### 加载性能
+
+- 页面首次加载时间不应超过2秒（在标准网络环境下）
+- 首次内容绘制（FCP）应在1秒内完成
+- 大型资源（如图片、视频）应懒加载
+- 代码应分割为适当的块，避免过大的初始加载
+
+### 运行时性能
+
+- 列表渲染对于大型数据集应使用虚拟滚动
+- 避免不必要的重新渲染
+- 优化事件处理函数，对于高频事件使用防抖或节流
+- 复杂计算应该使用computed或缓存
+
+## 安全标准
+
+- 所有用户输入必须进行验证和清洁处理
+- 敏感操作必须有适当的授权检查
+- API请求必须包含适当的认证信息
+- 避免在前端存储敏感信息，必要时使用加密存储
+- 遵循OWASP安全指南，预防常见的Web安全漏洞（XSS、CSRF等）
+
+## 持续集成与部署
+
+### 持续集成流程
+
+- 每次代码提交都会触发自动构建和测试
+- 构建过程必须包含以下步骤：
+  1. 代码风格检查（Lint）
+  2. 类型检查（TypeScript）
+  3. 单元测试
+  4. 构建项目
+
+### 部署检查清单
+
+在部署到生产环境前，必须完成以下检查：
+
+- [ ] 代码审查已完成并通过
+- [ ] 所有自动化测试通过
+- [ ] 性能测试达到标准
+- [ ] 安全审查已完成
+- [ ] 文档已更新
+- [ ] 前端兼容性测试已完成（针对主要浏览器和设备）
+- [ ] 已准备回滚方案
+
+## 代码评审清单
+
+在提交代码审查前，确保满足以下要求：
+
+- [ ] 遵循了项目的代码规范和风格
+- [ ] 没有未使用的变量、导入或代码
+- [ ] 所有组件props有清晰的类型定义和注释
+- [ ] 代码逻辑清晰，没有不必要的复杂性
+- [ ] 适当处理了边缘情况和错误
+- [ ] 通过了lint检查和类型检查
+- [ ] 文件头部包含了必要的注释信息
+- [ ] 更新了相关文档
+- [ ] 补充或更新了必要的测试用例

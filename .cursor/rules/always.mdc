@@ -1,0 +1,10 @@
+---
+description:
+globs:
+alwaysApply: true
+---
+- 总是直接修改代码而不是提供代码让我来手动应用
+- 总是以中文回答我的问题
+- 总是使用成熟的工具库，比如：`@vueuse/core`, `lodash` 等等，而不是自己手动实现
+- 总是避免重复造轮子，总是遵循复用原则
+- 总是在vue组件上应用值为 `true` 的布尔值的时候总是简写，如：正确写法：`<comp route />`，错误写法：`<comp :route="true"/>`

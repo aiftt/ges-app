@@ -1,0 +1,204 @@
+---
+description:
+globs:
+alwaysApply: true
+---
+# 项目基础规范
+
+本文档规定了项目的基础规范，包括命名规则、文件组织、代码风格等基本原则，是所有开发活动的基础准则。
+
+## 打印规范
+
+- 不管服务端还是客户端都必须使用封装好的 logger 来打印，禁止出现直接使用 console 下的 api 来打印
+
+## 命名规范
+
+- **变量和函数**：使用camelCase（小驼峰命名法）
+  ```typescript
+  const userName = 'admin';
+  function getUserData() { /* ... */ }
+  ```
+
+- **类和接口**：使用PascalCase（首字母大写）
+  ```typescript
+  class UserService { /* ... */ }
+  interface UserData { /* ... */ }
+  ```
+
+- **常量**：使用UPPER_SNAKE_CASE（大写下划线）
+  ```typescript
+  const MAX_RETRY_COUNT = 3;
+  const API_BASE_URL = 'https://api.example.com';
+  ```
+
+- **文件命名**：使用kebab-case（短横线命名法）
+  ```
+  user-service.ts
+  auth-middleware.ts
+  ```
+
+- **组件文件**：使用PascalCase（首字母大写）
+  ```
+  UserProfile.vue
+  LoginForm.vue
+  ```
+
+- **布尔值变量**：使用`is`、`has`、`should`等前缀
+  ```typescript
+  const isActive = true;
+  const hasPermission = false;
+  ```
+
+## 文件组织
+
+### 目录结构
+
+Nuxt.js 框架目录结构如下：
+
+- **assets/** - 未编译的静态资源（SCSS、JavaScript或图片）
+- **components/** - Vue组件
+  - **ui/** - 自定义UI组件目录
+- **composables/** - 可组合函数（Vue 3 Composition API）
+- **content/** - 基于文件的CMS内容
+- **layouts/** - 布局组件
+- **middleware/** - 路由中间件
+- **modules/** - 自定义Nuxt模块
+- **pages/** - 自动生成路由的页面组件
+- **plugins/** - Vue实例化前运行的插件
+- **public/** - 静态文件
+- **server/** - 服务器端代码
+  - **api/** - API路由
+  - **routes/** - 服务器路由处理程序
+  - **middleware/** - 服务器中间件
+- **types/** - TypeScript类型定义
+- **utils/** - 实用工具函数
+
+### 配置文件
+
+- **app.vue** - 应用程序的主入口组件
+- **nuxt.config.ts** - Nuxt框架配置文件
+- **.env** - 环境变量文件
+
+## 文件内容规范
+
+### 文件注释
+
+每个文件开头应包含以下注释信息，作者名称总是从项目 git 信息中取：
+
+```typescript
+/**
+ * 文件描述
+ * 创建日期: YYYY-MM-DD
+ * 作者: [作者名称]
+ * 更新日期: YYYY-MM-DD - 更新内容
+ */
+```
+
+对于Vue文件，注释应放在`<script>`标签内：
+
+```vue
+<script setup lang="ts">
+/**
+ * 组件描述
+ * 创建日期: YYYY-MM-DD
+ * 作者: [作者名称]
+ * 更新日期: YYYY-MM-DD - 更新内容
+ */
+</script>
+```
+
+### 作者信息
+
+- 首先获取git版本管理里的作者名称
+- 如果取不到，默认使用：`aiftt`
+
+## 代码风格
+
+### 代码风格基础
+
+- 使用空格而非制表符进行缩进（2个空格）
+- 语句末尾使用分号
+- 字符串优先使用单引号
+- 每行代码不超过100个字符
+- 使用严格比较（===和!==）而非==和!=
+- 函数和类成员之间空一行
+
+### 注释规范
+
+- 使用JSDoc风格的注释
+- 复杂逻辑应添加说明性注释
+- 临时代码应标记为TODO
+- 避免无意义或显而易见的注释
+
+```typescript
+/**
+ * 获取用户信息
+ * @param {number} id - 用户ID
+ * @returns {Promise<User>} 用户信息
+ */
+async function getUser(id: number): Promise<User> {
+  // TODO: 添加缓存机制
+  return await api.fetchUser(id);
+}
+```
+
+### 导入导出规范
+
+- 导入语句按照第三方库、内部模块、类型导入的顺序组织
+- 多个导入项应使用命名导入
+- 避免使用默认导出，优先使用命名导出
+
+```typescript
+// 第三方库导入
+import { ref, computed } from 'vue';
+
+// 内部模块导入
+import { formatDate } from '~/utils/date';
+import { useUserStore } from '~/stores/user';
+
+// 类型导入
+import type { User, Role } from '~/types';
+```
+
+## 禁止行为
+
+以下行为在本项目中明确禁止：
+
+- 禁止生成未使用的变量和代码
+- 禁止将未使用的变量加上 `_` 前缀，必须直接删除
+- 禁止引入任何UI库，所有组件必须自己编写
+- 禁止引入非必要的js/ts库，能实现的都自己实现
+- 禁止使用任何mock数据，必须使用真实的线上场景接口+数据开发
+- 禁止提供会产生BUG，类型错误，语法错误的代码
+- 禁止使用pnpm以外的包管理器(禁止使用npm/yarn)
+- 禁止生成带原生的alert, confirm, prompt方法
+- 禁止生成带any的typescript代码，必须严格要求类型声明
+- 禁止添加没有被使用到的代码
+- 禁止在修复问题时引入新的问题
+- 禁止在组件中直接操作DOM
+- 禁止使用已弃用的API
+- 禁止直接修改props
+- 禁止在单文件组件中混用Options API和Composition API
+- 禁止滥用全局状态
+- 禁止直接使用 localStorage, sessionStorage API
+
+## 最佳实践
+
+以下是推荐的最佳实践：
+
+- 总是在完成重大功能点、重要更新或修复重大BUG时更新文档记录
+- 总是在生成代码之后执行`pnpm lint`和`npx nuxi typecheck`检查并修复错误
+- 总是给每个Vue组件props添加注释
+- 在脚本中处理未捕获的Promise错误
+- 合理使用可选链操作符`?.`、空值合并操作符`??`等现代语法
+- 总是将不需要的代码直接删除而不是注释
+- 遵循Nuxt的导入规范和机制，在Nuxt自动导入范围内的不手动导入
+
+## 检查与验证
+
+在提交代码前应执行以下检查步骤：
+
+1. 执行 `pnpm lint:fix` 修复自动可修复的问题
+2. 执行 `pnpm typecheck` 检查类型问题
+3. 根据提示修复剩余的问题
+4. 重复以上步骤直到没有任何错误和警告

@@ -1,0 +1,394 @@
+---
+description:
+globs:
+alwaysApply: true
+---
+# UI组件开发规范
+
+本文档规定了UI组件的开发规范，包括目录结构、命名规范、使用方式、样式定义以及实现细节等，旨在确保UI组件的一致性和可维护性。
+
+在开发 UI 公共组件的时候总是站在专家UI设计师角度去思考如何设计页面和主题让页面跟美观，跟符合产品规范和客户喜好。
+
+在开发设计UI过程中，时刻参考市面上主流的UI框架来设计，不要自己凭空想象，要学会学习别人的优点加以改进形成自己的风格。
+
+## 目录结构规范
+
+### 基本原则
+
+- UI组件必须遵循特定的目录结构以配合Nuxt自动引入机制
+- **绝对禁止**直接在components/ui/目录下创建驼峰命名(CamelCase.vue)的文件
+
+### 正确的目录结构
+
+1. **单组件结构**:
+   ```
+   components/ui/组件名/index.vue
+   ```
+   例如：button组件应放置在 `components/ui/button/index.vue`
+
+2. **子组件结构**:
+   ```
+   components/ui/父组件名/子组件名.vue
+   ```
+   例如：typography下的title组件应放置在 `components/ui/typography/title.vue`
+
+### 命名规范
+
+- 所有目录和文件名必须全部**小写**
+- 多词组合时禁止使用**连字符**，禁止使用**驼峰命名**
+- 新建组件时，组件名称和目录名称均以小写单个单词命名
+
+正确示例：
+- `components/ui/date/picker.vue`
+- `components/ui/date/index.vue`
+- `components/ui/typography/index.vue`
+- `components/ui/typography/title.vue`
+
+错误示例：
+- `components/ui/DatePicker.vue` 或 `components/ui/datePicker.vue`
+- `components/ui/date-picker.vue` 或 `components/ui/date/picker/index.vue`
+
+将同类组件放到同个目录，如：`typography/index.vue`，`typography/title.vue`
+
+## UI组件使用规范
+
+### 组件引用方式
+
+- UI组件通过Nuxt自动引入机制引用，不需要手动import
+- 禁止创建任何UI组件的导出文件（如index.ts）
+- 禁止直接通过显式import方式引入组件
+
+### 组件使用模式
+
+UI组件的使用方式遵循以下模式：
+
+1. **单组件**：
+   ```vue
+   <ui-组件名/>
+   ```
+   例如：`<ui-button/>`
+
+2. **子组件**：
+   ```vue
+   <ui-父组件名-子组件名/>
+   ```
+   例如：`<ui-typography-title/>`
+
+### 最佳实践
+
+- 总是使用ui/下面的组件，而不是原生的DOM元素
+  - 如：使用`<ui-button/>`而不是`<button>`
+- Boolean类型的prop直接书写，不需要写明true：
+  - 正确示范：`<ui-button disabled/>`
+  - 错误示范：`<ui-button :disabled="true"/>`
+
+## UI组件实现规范
+
+### 基本要求
+
+实现的UI组件必须满足以下条件（终极目的就是为了低代码）：
+
+1. 支持设置不同主题（通过css变量方式）
+2. 支持配置所有相关的属性（如：间距，宽高，色调等等）
+3. 组件的封装务必要做到简洁，封装性好，隔离性强，易于使用，语义化强
+4. 组件的自定义样式，配置化样式尽可能的使用Unocss类名方式
+
+### 主题实现
+
+- 预设两套主题：
+  - 亮色主题风格主要以绿色环保为主题
+  - 暗黑风格按照亮色的绿色环保主题来自动适配
+- 系统为可自定义主题的系统，理论上可以有无数种主题可自由配置
+- 最终主题可由用户自定义配置
+
+### 样式实现
+
+- 尽可能的使用 class 或 CSS变量实现动态样式
+- 禁止使用 style 内联方式
+- 样式名称总是以 `ui-` 开头，仅限组件自身样式
+- 使用CSS变量实现主题相关样式
+
+## 图标规范
+
+- **动态图标**：总是使用`<iconify-icon icon="collection:name"/>`
+- **静态图标**：直接使用unocss类名方式：`i-{collection}:{name}`格式
+  - 例如：`i-carbon:home`
+
+## 组件开发流程
+
+1. 确定组件类型和名称，遵循命名规范
+2. 创建正确的目录结构，如button/index.vue或typography/title.vue
+3. 编写组件代码，确保包含必要的注释信息
+4. 在demo页面中添加组件示例
+5. 确保组件可以通过`<ui-组件名/>`方式正确引用
+
+## 组件文档与示例
+
+- 每次添加或更新组件时总是更新`pages/demo/components.vue`演示页面
+- ui/下组件的演示代码统一加到`pages/demo/components.vue`里面
+- 示例尽可能覆盖该组件所有可能的使用情况
+- 为每个组件提供完整的属性、事件和插槽说明
+
+## 特定组件示例
+
+### 1. Button组件
+
+位置：`components/ui/button/index.vue`
+
+基本结构：
+```vue
+<script setup lang="ts" name="UiButton">
+/**
+ * 按钮组件
+ * 创建日期: 2023-05-10
+ * 作者: aiftt
+ * 更新日期: 2023-05-15 - 添加图标支持
+ */
+
+// 定义props
+const props = withDefaults(defineProps<{
+  /**
+   * 按钮类型
+   */
+  type?: 'primary' | 'secondary' | 'danger'
+  /**
+   * 按钮大小
+   */
+  size?: 'small' | 'medium' | 'large'
+  /**
+   * 是否禁用
+   */
+  disabled?: boolean
+  /**
+   * 图标名称（使用iconify格式）
+   */
+  icon?: string
+}>(), {
+  type: 'primary',
+  size: 'medium',
+  disabled: false
+})
+
+// 定义事件
+const emit = defineEmits<{
+  (e: 'click', event: MouseEvent): void
+}>()
+
+// 处理点击事件
+const handleClick = (event: MouseEvent) => {
+  if (!props.disabled) {
+    emit('click', event)
+  }
+}
+</script>
+
+<template>
+  <button
+    class="ui-button"
+    :class="[
+      `ui-button--${type}`,
+      `ui-button--${size}`,
+      { 'ui-button--disabled': disabled }
+    ]"
+    :disabled="disabled"
+    @click="handleClick"
+  >
+    <iconify-icon v-if="icon" :icon="icon" class="mr-1" />
+    <slot></slot>
+  </button>
+</template>
+
+<style scoped>
+.ui-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--ui-button-radius, 4px);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+}
+
+.ui-button--primary {
+  background-color: var(--ui-color-primary, #10b981);
+  color: white;
+}
+
+.ui-button--secondary {
+  background-color: var(--ui-color-secondary, #e5e7eb);
+  color: var(--ui-color-text, #374151);
+}
+
+.ui-button--danger {
+  background-color: var(--ui-color-danger, #ef4444);
+  color: white;
+}
+
+.ui-button--small {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+}
+
+.ui-button--medium {
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+}
+
+.ui-button--large {
+  padding: 0.75rem 1.5rem;
+  font-size: 1.125rem;
+}
+
+.ui-button--disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+</style>
+```
+
+### 2. Typography组件
+
+位置：`components/ui/typography/title.vue`
+
+基本结构：
+```vue
+<script setup lang="ts" name="UiTypographyTitle">
+/**
+ * 排版标题组件
+ * 创建日期: 2023-05-12
+ * 作者: aiftt
+ * 更新日期: 2023-05-15 - 添加字重选项
+ */
+
+// 定义props
+const props = withDefaults(defineProps<{
+  /**
+   * 标题级别，1-6对应h1-h6
+   */
+  level?: 1 | 2 | 3 | 4 | 5 | 6
+  /**
+   * 字体粗细
+   */
+  weight?: 'normal' | 'medium' | 'bold'
+  /**
+   * 是否添加下边距
+   */
+  withMargin?: boolean
+}>(), {
+  level: 1,
+  weight: 'bold',
+  withMargin: true
+})
+</script>
+
+<template>
+  <component
+    :is="`h${level}`"
+    class="ui-typography-title"
+    :class="[
+      `ui-typography-title--${level}`,
+      `ui-typography-title--${weight}`,
+      { 'ui-typography-title--with-margin': withMargin }
+    ]"
+  >
+    <slot></slot>
+  </component>
+</template>
+
+<style scoped>
+.ui-typography-title {
+  font-family: var(--ui-font-family, sans-serif);
+  color: var(--ui-color-text-heading, #111827);
+  line-height: 1.2;
+}
+
+.ui-typography-title--1 {
+  font-size: 2.25rem;
+}
+
+.ui-typography-title--2 {
+  font-size: 1.875rem;
+}
+
+.ui-typography-title--3 {
+  font-size: 1.5rem;
+}
+
+.ui-typography-title--4 {
+  font-size: 1.25rem;
+}
+
+.ui-typography-title--5 {
+  font-size: 1.125rem;
+}
+
+.ui-typography-title--6 {
+  font-size: 1rem;
+}
+
+.ui-typography-title--normal {
+  font-weight: 400;
+}
+
+.ui-typography-title--medium {
+  font-weight: 500;
+}
+
+.ui-typography-title--bold {
+  font-weight: 700;
+}
+
+.ui-typography-title--with-margin {
+  margin-bottom: 1rem;
+}
+</style>
+```
+
+## 常见问题及解决方案
+
+### 1. 组件无法通过`<ui-组件名/>`方式使用
+
+可能原因：
+- 目录结构不符合规范
+- 组件名称命名不正确
+
+解决方案：
+- 确保目录结构正确，如：`components/ui/button/index.vue`
+- 确保在`<script setup>`中设置了`name`属性，如：`name="UiButton"`
+
+### 2. 组件样式覆盖问题
+
+可能原因：
+- CSS优先级冲突
+- 没有使用scoped样式
+
+解决方案：
+- 使用`<style scoped>`限制样式作用域
+- 样式选择器增加特异性
+- 使用CSS变量控制主题相关样式
+
+### 3. 动态样式不生效
+
+可能原因：
+- 使用了UnoCSS的动态类名（UnoCSS不支持动态类名）
+- CSS变量未正确设置
+
+解决方案：
+- 使用CSS变量实现动态样式，而不是动态类名
+- 通过条件类名结合静态UnoCSS类实现动态效果
+
+## 检查清单
+
+在提交UI组件之前，请确保：
+
+- [ ] 组件目录结构符合规范
+- [ ] 组件命名符合规范
+- [ ] 组件可以通过`<ui-组件名/>`方式使用
+- [ ] 组件支持主题定制（通过CSS变量）
+- [ ] 所有props都有类型定义和默认值
+- [ ] 所有props都有注释说明
+- [ ] 组件有完整的注释头部信息
+- [ ] 组件在demo页面中有使用示例
+- [ ] 组件样式使用scoped限制作用域
+- [ ] 组件样式名称以ui-开头

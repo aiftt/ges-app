@@ -1,0 +1,68 @@
+{
+  "path": "cz-conventional-changelog",
+  "disableScopeLowerCase": false,
+  "disableSubjectLowerCase": false,
+  "maxHeaderWidth": 100,
+  "maxLineWidth": 100,
+  "defaultType": "",
+  "defaultScope": "",
+  "defaultSubject": "",
+  "defaultBody": "",
+  "defaultIssues": "",
+  "types": {
+    "feat": {
+      "description": "新功能",
+      "title": "新功能"
+    },
+    "fix": {
+      "description": "修复缺陷",
+      "title": "缺陷修复"
+    },
+    "docs": {
+      "description": "文档更新",
+      "title": "文档"
+    },
+    "style": {
+      "description": "代码风格修改(不影响功能)",
+      "title": "代码风格"
+    },
+    "refactor": {
+      "description": "代码重构(即不是新增功能，也不是修改bug的代码变动)",
+      "title": "重构"
+    },
+    "perf": {
+      "description": "性能优化",
+      "title": "性能"
+    },
+    "test": {
+      "description": "测试相关",
+      "title": "测试"
+    },
+    "build": {
+      "description": "构建系统或外部依赖变更",
+      "title": "构建"
+    },
+    "ci": {
+      "description": "CI/CD配置更改",
+      "title": "CI/CD"
+    },
+    "chore": {
+      "description": "其他不修改src或测试文件的更改",
+      "title": "其他"
+    },
+    "revert": {
+      "description": "回滚之前的提交",
+      "title": "回滚"
+    }
+  },
+  "messages": {
+    "type": "选择你要提交的变更类型:",
+    "scope": "此变更的影响范围 (如组件或文件名):",
+    "customScope": "请填写影响范围:",
+    "subject": "写一个简短的变更描述:",
+    "body": "提供更详细的变更描述 (可选，按回车跳过):\n",
+    "breaking": "列出任何不兼容变更 (可选，按回车跳过):\n",
+    "footer": "列出此变更关闭的ISSUES (可选，如: #123, #456):",
+    "confirmCommit": "确认以上提交信息?"
+  }
+}

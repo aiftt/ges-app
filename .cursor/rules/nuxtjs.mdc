@@ -1,0 +1,154 @@
+---
+description:
+globs:
+alwaysApply: true
+---
+# Nuxt.js 框架规范
+
+## 路由与页面开发
+
+### definePageMeta使用规范
+
+- `definePageMeta`必须放在script标签内部，不能放在外部
+- 将其放在import语句之后，其他代码之前
+
+```typescript
+<script setup lang="ts">
+import { ref } from 'vue'
+
+definePageMeta({
+  layout: 'default',
+  middleware: ['auth']
+})
+
+// 其他代码...
+</script>
+```
+
+### 路由配置
+
+- 使用基于目录结构的自动路由，避免手动配置路由
+- 动态路由使用`[]`括号语法，如`[id].vue`
+- 嵌套路由使用目录结构实现
+
+### 布局与中间件
+
+- 页面布局定义在`layouts/`目录下
+- 使用`definePageMeta`指定页面布局和中间件
+- 中间件放在`middleware/`目录下
+
+## 自动导入机制
+
+### 组件自动导入
+
+- 把组件放在`components/`下自动注册，无需手动导入
+- UI组件按照规范目录结构存放在`components/ui/`下
+- 子目录下的组件按照`父组件名-子组件名`的方式使用
+
+### Composables自动导入
+
+- 组合式函数放在`composables/`目录下，以`use`开头命名
+- 自动导入的组合式函数可直接在组件中使用
+- 避免在组合式函数中使用其他未显式导入的依赖
+
+### Vue API自动导入
+
+- 无需导入常用的Vue API如`ref`, `computed`, `watch`等
+- 如需使用React风格的API，需要从`vue/macros`显式导入
+
+## 数据获取与API调用
+
+### 使用useFetch和useAsyncData
+
+```typescript
+// 推荐的数据获取方式
+const { data, pending, error, refresh } = await useFetch('/api/posts')
+
+// 异步数据处理
+const { data: user } = await useAsyncData('user', () =>
+  $fetch('/api/user/123')
+)
+```
+
+- 优先使用`useFetch`而非直接调用`fetch`
+- 使用key参数确保数据缓存和共享正确
+- 通过`watch`监听路由参数变化刷新数据
+
+### 服务端API实现
+
+- API路由放在`server/api/`目录下
+- 使用Nitro的事件处理机制定义API
+- 确保正确的错误处理和状态码返回
+
+```typescript
+// server/api/example.ts
+export default defineEventHandler(async (event) => {
+  try {
+    // 处理逻辑
+    return { success: true, data: {...} }
+  } catch (error) {
+    return createError({
+      statusCode: 500,
+      message: '服务器错误'
+    })
+  }
+})
+```
+
+## 插件开发规范
+
+- 插件放在`plugins/`目录下
+- 使用`defineNuxtPlugin`定义插件
+- 避免在插件中使用客户端特有的API，除非使用`process.client`判断
+
+```typescript
+// plugins/example.ts
+export default defineNuxtPlugin((nuxtApp) => {
+  // 插件代码
+
+  return {
+    provide: {
+      customFunction: () => { /* ... */ }
+    }
+  }
+})
+```
+
+## 状态管理
+
+- 使用`useState`进行简单的状态管理
+- 复杂状态管理使用Pinia，store定义在`stores/`目录下
+- 避免使用全局变量存储状态
+
+```typescript
+// 使用useState
+const counter = useState('counter', () => 0)
+
+// 增加计数
+function increment() {
+  counter.value++
+}
+```
+
+## SEO与元数据
+
+- 使用`useHead`或`useSeoMeta`设置页面元数据
+- 动态标题和描述要根据页面内容相应设置
+- 确保关键页面有正确的OG和Twitter卡片元数据
+
+```typescript
+useHead({
+  title: '页面标题',
+  meta: [
+    { name: 'description', content: '页面描述' }
+  ]
+})
+```
+
+## 性能优化
+
+- 使用组件懒加载减少初始加载体积
+- 利用Nuxt的自动代码分割
+- 静态资源使用资源哈希和CDN
+- 实现关键CSS内联
+- 页面组件根据路由自动懒加载

@@ -1,0 +1,52 @@
+{
+  "name": "nuxt-app",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare",
+    "submit": "node scripts/submit.js",
+    "explore-db": "tsx scripts/explore-mongodb.ts",
+    "lint": "eslint --ext .ts,.js,.vue --fix .",
+    "commit": "git-cz"
+  },
+  "dependencies": {
+    "@nuxt/content": "3.5.1",
+    "@nuxt/eslint": "1.3.0",
+    "@nuxt/fonts": "0.11.2",
+    "@nuxt/icon": "1.12.0",
+    "@nuxt/image": "1.10.0",
+    "@nuxt/scripts": "0.11.6",
+    "@unhead/vue": "^2.0.3",
+    "dotenv": "^16.5.0",
+    "eslint": "^9.0.0",
+    "mongodb": "^6.16.0",
+    "mongoose": "^8.14.0",
+    "nuxt": "^3.16.2",
+    "vue": "^3.5.13",
+    "vue-router": "^4.5.0"
+  },
+  "packageManager": "pnpm@9.3.0+sha1.d4f1da7af76dbdb4ab1a08f6b5add602ffad6fd4",
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^8.31.0",
+    "@typescript-eslint/parser": "^8.31.0",
+    "commitizen": "4.3.1",
+    "cz-customizable": "^7.4.0",
+    "cz-conventional-changelog": "3.3.0",
+    "eslint-config-prettier": "10.1.2",
+    "lodash": "^4.17.21",
+    "tsx": "^4.19.3",
+    "word-wrap": "^1.2.5"
+  },
+  "config": {
+    "commitizen": {
+      "path": "node_modules/cz-customizable"
+    },
+    "cz-customizable": {
+      "config": ".cz-config.js"
+    }
+  }
+}

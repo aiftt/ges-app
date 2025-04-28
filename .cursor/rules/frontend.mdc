@@ -1,0 +1,571 @@
+---
+description:
+globs:
+alwaysApply: true
+---
+# 前端开发规范
+
+本文档规定了前端开发规范，包括Vue组件、TypeScript和样式编写规范，旨在确保代码风格一致、类型安全和高质量。
+
+## Vue组件开发规范
+
+### 文件结构规范
+
+- 采用单文件组件（SFC）格式，即`.vue`文件
+- 文件结构顺序：
+  1. `<script setup>` 标签
+  2. `<template>` 标签
+  3. `<style>` 标签
+- 必须使用`<script setup lang="ts">`，启用TypeScript类型检查
+- 必须在script标签内增加`name`属性定义组件名称
+
+```vue
+<script setup lang="ts" name="UserProfile">
+/**
+ * <文件描述>
+ * 创建日期: {创建日期}
+ * 作者: {作者，总是从项目 git 信息中取作者信息}
+ * 更新日期: {更新日期} - {更新内容}
+ */
+
+// 代码...
+</script>
+
+<template>
+  <!-- 模板... -->
+</template>
+
+<style scoped>
+/* 样式... */
+</style>
+```
+
+### 组件命名规范
+
+- 组件名必须使用PascalCase（首字母大写驼峰式）
+  - 在`<script setup>`中通过`name`属性定义，如`<script setup lang="ts" name="UiButton">`
+- 组件文件命名规则：
+  - 组件文件名必须小写
+  - 索引组件使用`index.vue`
+  - 子组件使用功能描述性名称，如`item.vue`、`list.vue`
+- props命名必须使用camelCase（小驼峰式）
+- 事件处理函数必须以`handle`开头，如`handleClick`
+- 计算属性命名表明用途，布尔值以`is`、`has`、`should`等开头
+- 私有函数/变量以下划线`_`开头
+
+### Composition API规范
+
+- 强制使用`<script setup>`语法
+- 响应式数据定义规则：
+  - 引用类型数据使用`reactive()`
+  ```typescript
+  const user = reactive({
+    name: 'John',
+    age: 30
+  });
+  ```
+
+  - 简单数据类型使用`ref()`
+  ```typescript
+  const count = ref(0);
+  const name = ref('John');
+  ```
+
+  - 只读派生状态使用`computed()`
+  ```typescript
+  const fullName = computed(() => {
+    return `${firstName.value} ${lastName.value}`;
+  });
+  ```
+
+- 组合式函数（composables）：
+  - 必须以`use`前缀命名，如`useCounter`
+  - 遵循单一职责原则
+  - 返回值必须是一个对象，包含相关状态和方法
+  - 必须在组件顶层调用，不能在条件语句中调用
+  - 总是把`useXxx`组合式函数放到composables/目录下
+
+```typescript
+// composables/useCounter.ts
+export function useCounter(initialValue = 0) {
+  const count = ref(initialValue);
+
+  function increment() {
+    count.value++;
+  }
+
+  function decrement() {
+    count.value--;
+  }
+
+  return {
+    count,
+    increment,
+    decrement
+  };
+}
+```
+
+### Props定义规范
+
+- 使用`defineProps`与类型参数定义props，并总是加上`withDefaults`：
+
+```typescript
+const props = withDefaults(defineProps<{
+  /**
+   * 按钮文本
+   */
+  label: string
+  /**
+   * 是否禁用
+   */
+  disabled?: boolean
+  /**
+   * 按钮大小
+   */
+  size?: 'small' | 'default' | 'large'
+}>(), {
+  disabled: false,
+  size: 'default'
+})
+```
+
+- 每个prop必须有明确的类型声明和JSDoc注释
+- 非必填prop必须有默认值
+- 禁止使用`any`类型，除非有充分理由
+- Boolean类型的prop直接书写，不需要写明true：
+  - 正确示范：`<ui-button disabled/>`
+  - 错误示范：`<ui-button :disabled="true"/>`
+
+### 事件处理规范
+
+- 使用`defineEmits`定义组件可触发的事件：
+
+```typescript
+const emit = defineEmits<{
+  (e: 'change', value: string): void
+  (e: 'update:modelValue', value: string): void
+}>()
+```
+
+- 事件名使用kebab-case（短横线命名法）
+- 为每个事件提供正确的参数类型
+- v-model相关事件使用`update:propName`格式
+- 对于简单的相同事件声明可以合并：
+  ```typescript
+  const emit = defineEmits<{
+    (e: 'click' | 'press' | 'tap'): void
+  }>()
+  ```
+
+### 模板规范
+
+- 模板中的属性顺序应保持一致：
+  1. v-if/v-else/v-else-if
+  2. v-for
+  3. v-model
+  4. v-on
+  5. 其他v-指令
+  6. 非指令属性
+  7. ref
+  8. key
+  9. class
+  10. style
+- 长模板应拆分为更小的组件或使用插槽
+- v-for必须搭配`:key`使用，且key值必须唯一
+- 避免在模板中使用复杂表达式，复杂逻辑应提取为计算属性或方法
+- 所有模板绑定应考虑null/undefined情况，适当使用可选链操作符`?.`
+- 禁止在模板中直接使用箭头函数
+
+```vue
+<!-- 正确示范 -->
+<template>
+  <div v-if="isVisible" class="user-card" :class="{ 'is-active': isActive }">
+    <div v-for="item in items" :key="item.id" @click="handleItemClick(item)">
+      {{ item.name }}
+    </div>
+    <span v-if="user?.address?.city">{{ user.address.city }}</span>
+  </div>
+</template>
+```
+
+- 模板总是保证有且只有一个元素
+```vue
+<!-- 正确示范 -->
+<template>
+  <div>...</div>
+</template>
+
+<!-- 错误示范 -->
+<template>
+  <div1/>
+  <div2/>
+</template>
+```
+
+### 样式规范
+
+- 样式应优先使用UnoCSS类名
+  - 静态类名直接在class属性中使用
+  - 动态类名通过CSS变量实现，因为UnoCSS不支持动态类名
+- 当需要使用`<style>`块时：
+  - 必须使用`<style scoped>`限制样式作用域
+  - CSS变量命名应以组件名作为前缀
+- 组件的自定义classname总是以ui-开头，如：ui-button
+- 主题相关样式必须通过CSS变量实现
+- 禁止使用`!important`，除非处理第三方样式冲突
+- 禁止直接使用内联样式style，除非迫不得已
+
+```vue
+<template>
+  <button class="ui-button" :class="[`ui-button--${type}`, `ui-button--${size}`]">
+    <slot></slot>
+  </button>
+</template>
+
+<style scoped>
+.ui-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--ui-button-radius, 4px);
+  font-weight: 500;
+}
+
+.ui-button--primary {
+  background-color: var(--ui-color-primary, #10b981);
+  color: white;
+}
+
+.ui-button--secondary {
+  background-color: var(--ui-color-secondary, #e5e7eb);
+  color: var(--ui-color-text, #374151);
+}
+
+.ui-button--small {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+}
+
+.ui-button--medium {
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+}
+</style>
+```
+
+### 异步处理规范
+
+- 所有Promise必须有错误处理，通过try/catch或.catch()
+- 加载状态必须反映在UI上
+- 长时间运行的异步操作应可取消
+- 避免在生命周期钩子中使用`await`，使用以下方式替代：
+
+```typescript
+async function loadData() {
+  try {
+    isLoading.value = true;
+    data.value = await fetchData();
+  } catch (error) {
+    handleError(error);
+  } finally {
+    isLoading.value = false;
+  }
+}
+
+onMounted(() => {
+  loadData();
+});
+```
+
+- 使用`try...catch`时，如果catch的参数没用到就直接去掉：
+```typescript
+// 正确示范：
+try {
+  // ... 正常代码
+} catch {
+  // ... 错误处理代码
+}
+```
+
+- 在处理递归渲染时，使用TSX语法实现更灵活的递归结构：
+```typescript
+// 树形组件递归渲染示例
+const renderTreeNode = (node) => {
+  return (
+    <div class="tree-node">
+      <div class="node-content">{node.label}</div>
+      {node.children?.length > 0 && (
+        <div class="node-children">
+          {node.children.map(child => renderTreeNode(child))}
+        </div>
+      )}
+    </div>
+  );
+};
+```
+
+## TypeScript规范
+
+### 类型定义
+
+- 禁止使用`any`类型，除非有充分理由
+- 在types/目录下新增*.d.ts声明文件来添加类型声明
+- 优先使用接口（interface）而非类型（type）定义对象结构
+- 所有接口和类型必须以大写字母I开头
+- 为所有函数添加返回类型
+- 使用类型断言时优先使用`as`语法而非尖括号语法
+- 复杂类型应提取到单独的类型声明文件中
+- 使用类型守卫处理类型分支
+- 不要滥用泛型
+
+### 类型示例
+
+```typescript
+// 接口定义示例
+interface IUser {
+  id: number;
+  name: string;
+  email: string;
+  role: 'admin' | 'user' | 'guest';
+  settings?: IUserSettings;
+}
+
+// 类型别名示例（用于联合类型、交叉类型等）
+type IUserRole = 'admin' | 'user' | 'guest';
+type IUserWithoutId = Omit<IUser, 'id'>;
+
+// 函数类型声明
+function getUserById(id: number): Promise<IUser> {
+  // 实现...
+}
+
+// 类型守卫
+function isAdmin(user: IUser): user is IUser & { role: 'admin' } {
+  return user.role === 'admin';
+}
+
+// 泛型使用示例
+interface IApiResponse<T> {
+  data: T;
+  status: number;
+  message: string;
+}
+
+async function fetchApi<T>(url: string): Promise<IApiResponse<T>> {
+  // 实现...
+}
+```
+
+### 类型导入与导出
+
+- 使用`type`关键字导入类型，避免运行时导入
+```typescript
+import type { IUser, IUserRole } from '~/types';
+```
+
+- 类型和值分开导出
+```typescript
+// 正确示范
+export interface IUser { /* ... */ }
+export function getUser() { /* ... */ }
+
+// 错误示范
+export const user = { /* ... */ } as IUser;
+export type { IUser };
+```
+
+### 常见类型模式
+
+- 组件Props类型
+```typescript
+interface IButtonProps {
+  type?: 'primary' | 'secondary' | 'danger';
+  size?: 'small' | 'medium' | 'large';
+  disabled?: boolean;
+  icon?: string;
+  onClick?: (event: MouseEvent) => void;
+}
+```
+
+- API响应类型
+```typescript
+interface IPaginatedResponse<T> {
+  items: T[];
+  total: number;
+  page: number;
+  pageSize: number;
+  totalPages: number;
+}
+```
+
+- 状态管理类型
+```typescript
+interface IUserState {
+  user: IUser | null;
+  isLoggedIn: boolean;
+  permissions: string[];
+  loading: boolean;
+  error: Error | null;
+}
+```
+
+## UnoCSS使用规范
+
+### 类名使用原则
+
+- 优先使用UnoCSS原子类，避免编写自定义CSS
+- 通用布局和样式应使用UnoCSS类名
+- 特殊的、复杂的或组件特定的样式可以使用scoped CSS
+
+```vue
+<!-- 推荐的UnoCSS使用方式 -->
+<div class="flex flex-col gap-4 p-4 rounded-lg bg-gray-100 dark:bg-gray-800">
+  <h2 class="text-xl font-bold text-gray-900 dark:text-white">Card Title</h2>
+  <p class="text-gray-700 dark:text-gray-300">Card content goes here...</p>
+  <button class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+    Action
+  </button>
+</div>
+```
+
+### 响应式设计
+
+- 使用UnoCSS的响应式前缀实现响应式设计
+```html
+<div class="w-full md:w-1/2 lg:w-1/3">
+  <!-- 内容会在不同屏幕尺寸下有不同宽度 -->
+</div>
+```
+
+### 条件类名
+
+- 使用数组和对象语法实现条件类名
+```vue
+<div :class="[
+  'base-class',
+  isActive ? 'active-class' : 'inactive-class',
+  { 'error-class': hasError }
+]">
+  <!-- 内容 -->
+</div>
+```
+
+### 动态值处理
+
+- 对于需要动态值的样式，使用CSS变量代替动态类名
+```vue
+<template>
+  <div
+    class="p-4 rounded transition-all duration-300"
+    :style="{ '--bg-opacity': isActive ? '1' : '0.5' }"
+  >
+    动态样式内容
+  </div>
+</template>
+
+<style scoped>
+div {
+  background-color: rgba(59, 130, 246, var(--bg-opacity));
+}
+</style>
+```
+
+## 性能优化规范
+
+### 组件优化
+
+- 重复渲染的组件必须设置合理的`:key`
+- 昂贵的计算必须使用`computed`而非方法
+- 大量数据的列表应使用虚拟滚动
+- 事件处理函数应适当使用防抖/节流
+- 条件渲染的复杂组件应考虑使用`v-if`而非`v-show`
+- 避免在模板中使用非响应式数据
+- 在`watch`中避免无限循环
+- 按需导入大型库/组件
+
+```typescript
+// 防抖实现示例
+function useDebounce<T extends (...args: any[]) => any>(fn: T, delay: number) {
+  let timer: NodeJS.Timeout | null = null;
+
+  return function(...args: Parameters<T>) {
+    if (timer) clearTimeout(timer);
+    timer = setTimeout(() => {
+      fn(...args);
+    }, delay);
+  } as T;
+}
+
+// 使用方式
+const debouncedSearch = useDebounce(search, 300);
+```
+
+### 懒加载
+
+- 使用`defineAsyncComponent`懒加载组件
+```typescript
+// 懒加载重型组件
+const HeavyComponent = defineAsyncComponent(() =>
+  import('~/components/HeavyComponent.vue')
+);
+```
+
+- 使用`Suspense`处理异步组件
+```vue
+<template>
+  <Suspense>
+    <template #default>
+      <AsyncComponent />
+    </template>
+    <template #fallback>
+      <LoadingSpinner />
+    </template>
+  </Suspense>
+</template>
+```
+
+### 资源优化
+
+- 使用适当的图片格式和尺寸
+- 使用图片懒加载
+- 按需导入大型库
+- 使用代码分割减少初始加载包大小
+
+## 前端安全规范
+
+### XSS防护
+
+- 使用Vue的内置转义功能（默认行为）
+- 对于使用`v-html`的情况，确保内容是安全的或经过清洁处理
+- 使用DOMPurify等库处理不可信的HTML内容
+
+### CSRF防护
+
+- 敏感操作使用CSRF令牌
+- 使用SameSite Cookie属性
+- 验证请求来源
+
+### 数据验证
+
+- 在前端进行基本数据验证
+- 不信任用户输入，总是在服务器端进行验证
+- 使用专门的验证库处理复杂验证逻辑
+
+```typescript
+// 使用yup进行数据验证示例
+const schema = yup.object().shape({
+  name: yup.string().required('姓名必填').min(2, '姓名至少2个字符'),
+  email: yup.string().required('邮箱必填').email('邮箱格式不正确'),
+  age: yup.number().positive('年龄必须是正数').integer('年龄必须是整数')
+});
+
+async function validateForm(data) {
+  try {
+    await schema.validate(data);
+    return { valid: true, errors: null };
+  } catch (error) {
+    return { valid: false, errors: error.errors };
+  }
+}
+```
