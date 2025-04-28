@@ -11,7 +11,8 @@
     "submit": "node scripts/submit.js",
     "explore-db": "tsx scripts/explore-mongodb.ts",
     "lint": "eslint --ext .ts,.js,.vue --fix .",
-    "commit": "node scripts/commit.js"
+    "commit": "node scripts/commit.js",
+    "prepare": "husky"
   },
   "dependencies": {
     "@nuxt/content": "3.5.1",
@@ -31,12 +32,16 @@
   },
   "packageManager": "pnpm@9.3.0+sha1.d4f1da7af76dbdb4ab1a08f6b5add602ffad6fd4",
   "devDependencies": {
+    "@commitlint/cli": "^19.8.0",
+    "@commitlint/config-conventional": "^19.8.0",
     "@typescript-eslint/eslint-plugin": "^8.31.0",
     "@typescript-eslint/parser": "^8.31.0",
     "commitizen": "4.3.1",
-    "cz-customizable": "^7.4.0",
     "cz-conventional-changelog": "3.3.0",
+    "cz-customizable": "^7.4.0",
     "eslint-config-prettier": "10.1.2",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.5.1",
     "lodash": "^4.17.21",
     "tsx": "^4.19.3",
     "word-wrap": "^1.2.5"
@@ -48,5 +53,10 @@
     "cz-customizable": {
       "config": ".cz-config.cjs"
     }
+  },
+  "lint-staged": {
+    "*.{js,ts,vue}": [
+      "eslint --fix"
+    ]
   }
 }
