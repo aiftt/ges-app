@@ -11,7 +11,7 @@
     "submit": "node scripts/submit.js",
     "explore-db": "tsx scripts/explore-mongodb.ts",
     "lint": "eslint --ext .ts,.js,.vue --fix .",
-    "commit": "git-cz"
+    "commit": "node scripts/commit.js"
   },
   "dependencies": {
     "@nuxt/content": "3.5.1",

@@ -302,10 +302,9 @@ function checkBranch(branch) {
 async function createCommit() {
   log('📝 创建规范提交信息...', 'yellow')
 
-
   try {
-    // 使用pnpm commit而不是npx git-cz
-    runCommand('pnpm commit', '提交失败')
+    // 使用包装脚本，它会自动处理git add操作
+    runCommand('node scripts/commit.js', '提交失败')
     return true
   } catch {
     return false
