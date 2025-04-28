@@ -11,7 +11,7 @@
     "submit": "node scripts/submit.js",
     "explore-db": "tsx scripts/explore-mongodb.ts",
     "lint": "eslint --ext .ts,.js,.vue --fix .",
-    "commit": "node scripts/fully-chinese-commit.js"
+    "commit": "node scripts/commit.js"
   },
   "dependencies": {
     "@nuxt/content": "3.5.1",
@@ -43,10 +43,10 @@
   },
   "config": {
     "commitizen": {
-      "path": "node_modules/cz-customizable"
+      "path": "cz-customizable"
     },
     "cz-customizable": {
-      "config": ".cz-config.js"
+      "config": ".cz-config.cjs"
     }
   }
 }

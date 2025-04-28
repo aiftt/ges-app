@@ -303,8 +303,8 @@ async function createCommit() {
   log('📝 创建规范提交信息...', 'yellow')
 
   try {
-    // 使用完全汉化的提交脚本
-    runCommand('node scripts/fully-chinese-commit.js', '提交失败')
+    // 使用pnpm commit（实际上会执行git-cz命令）
+    runCommand('pnpm commit', '提交失败')
     return true
   } catch {
     return false
