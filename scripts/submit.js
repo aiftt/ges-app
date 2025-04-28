@@ -303,8 +303,8 @@ async function createCommit() {
   log('📝 创建规范提交信息...', 'yellow')
 
   try {
-    // 使用包装脚本，它会自动处理git add操作
-    runCommand('node scripts/commit.js', '提交失败')
+    // 使用完全汉化的提交脚本
+    runCommand('node scripts/fully-chinese-commit.js', '提交失败')
     return true
   } catch {
     return false
