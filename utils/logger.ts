@@ -5,8 +5,6 @@
  * 更新日期: 2023-11-28 - 初始实现
  */
 
-import * as process from 'node:process'
-
 // 日志级别定义
 type LogLevel = 'debug' | 'info' | 'warn' | 'error'
 
@@ -22,10 +20,6 @@ const defaultOptions: LogOptions = {
   timestamp: true,
   scope: 'app',
 }
-
-// 环境变量
-const isDev = process.env.NODE_ENV === 'development'
-const isClient = import.meta.client === true
 
 // 颜色映射
 const colorMap = {
@@ -82,7 +76,7 @@ function createLogMessage(level: LogLevel, options: LogOptions, args: any[]): an
   prefix.push(`[${level.toUpperCase()}]`)
 
   // 客户端带样式的日志
-  if (isClient) {
+  if (typeof window !== 'undefined') {
     return [`%c${prefix.join(' ')}`, clientLogStyle(level), ...args]
   }
 
@@ -104,9 +98,10 @@ export class Logger {
    * Debug级别日志
    */
   debug(...args: any[]): void {
-    if (isDev) {
+    // 直接使用import.meta.dev判断是否为开发环境
+    if ((typeof window !== 'undefined' && import.meta.dev) || (typeof window === 'undefined' && import.meta.dev)) {
       const logArgs = createLogMessage('debug', this.options, args)
-      if (isClient) {
+      if (typeof window !== 'undefined') {
         // 客户端开发环境下使用console.debug
         // eslint-disable-next-line no-console
         console.debug(...logArgs)
@@ -124,7 +119,7 @@ export class Logger {
    */
   info(...args: any[]): void {
     const logArgs = createLogMessage('info', this.options, args)
-    if (isClient) {
+    if (typeof window !== 'undefined') {
       // 客户端使用console.info
       // eslint-disable-next-line no-console
       console.info(...logArgs)

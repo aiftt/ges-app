@@ -8,9 +8,11 @@
 import { Logger } from './logger'
 
 // 客户端专用日志记录器
-const clientLogger = new Logger({
-  scope: 'client',
-  tag: 'browser',
-})
+const clientLogger = typeof window !== 'undefined'
+  ? new Logger({
+    scope: 'client',
+    tag: 'browser',
+  })
+  : new Logger({ scope: 'server-stub', tag: 'ssr' }) // 服务端渲染时提供一个基本的stub
 
 export default clientLogger

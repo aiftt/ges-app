@@ -16,8 +16,10 @@ alwaysApply: true
 - 总是优先使用 `@nuxt/icon` 来使用图标
 - 总是尽可能的使用 `unocss classname + css variable` 方式实现 ui 组件和页面等
 - 总是使用封装后的 logger 来打印客户端和服务端日志，如果没有就实现它，封装它
+- 总是使用 import.meta 下的属性来判断是客户端还是服务端
 
 
 # 必须禁止的规范
 
-1. 禁止显示调用 `console.<api>` 来输出打印，必须使用 `utils/logger` 下封装的打印，注意客户端和服务端的区别和使用
+- 禁止显示调用 `console.<api>` 来输出打印，必须使用 `utils/logger` 下封装的打印，注意客户端和服务端的区别和使用
+- 禁止使用 `typeof window` 来判断是客户端还是服务端，使用 `import.meta`

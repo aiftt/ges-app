@@ -62,8 +62,10 @@ const props = withDefaults(defineProps<{
   spacing: 'default',
 })
 
-// 记录组件参数
-clientLogger.debug('Paragraph component props:', props)
+// 仅在客户端环境下记录日志
+if (import.meta.client) {
+  clientLogger.debug('Paragraph component props:', props)
+}
 
 // 组件相关的logger
 const logger = clientLogger.child({ tag: 'paragraph' })
@@ -165,8 +167,11 @@ const paragraphStyle = computed(() => {
   return style
 })
 
-// 生成唯一ID避免冲突
-const paragraphId = Math.random().toString(36).substring(2, 10)
+// 生成唯一ID避免冲突 - 确保在SSR中稳定
+const paragraphId = import.meta.client
+  ? Math.random().toString(36).substring(2, 10)
+  : 'ssr-placeholder'
+
 const copied = ref(false)
 
 // 复制按钮样式
@@ -181,23 +186,24 @@ const copyButtonClass = computed(() => {
 
 // 复制功能
 function copyText() {
-  if (props.copyable && import.meta.client) {
-    const text = document.getElementById(`ui-paragraph-${paragraphId}`)?.textContent || ''
-    logger.info('复制段落文本', { length: text.length })
+  if (!props.copyable || !import.meta.client)
+    return
 
-    navigator.clipboard.writeText(text)
-      .then(() => {
-        // 复制成功
-        logger.info('段落文本复制成功')
-        copied.value = true
-        setTimeout(() => {
-          copied.value = false
-        }, 2000)
-      })
-      .catch((err) => {
-        logger.error('段落文本复制失败', err)
-      })
-  }
+  const text = document.getElementById(`ui-paragraph-${paragraphId}`)?.textContent || ''
+  logger.info('复制段落文本', { length: text.length })
+
+  navigator.clipboard.writeText(text)
+    .then(() => {
+      // 复制成功
+      logger.info('段落文本复制成功')
+      copied.value = true
+      setTimeout(() => {
+        copied.value = false
+      }, 2000)
+    })
+    .catch((err) => {
+      logger.error('段落文本复制失败', err)
+    })
 }
 </script>
 
