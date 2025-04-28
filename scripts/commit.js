@@ -3,7 +3,7 @@
  *
  * 创建日期: 2024-11-28
  * 作者: aiftt
- * 更新日期: 2024-11-29 - 优化提交流程，自动推送
+ * 更新日期: 2024-11-29 - 添加eslint语法检查，自动推送
  */
 
 import { execSync } from 'node:child_process'
@@ -23,6 +23,28 @@ function log(message, color = 'reset') {
   console.log(`${colors[color]}${message}${colors.reset}`)
 }
 
+// 执行命令函数，可以静默执行且返回是否成功
+function runCommand(command, { silent = false, ignoreError = false } = {}) {
+  try {
+    if (!silent) {
+      log(`执行: ${command}`, 'blue')
+    }
+
+    execSync(command, {
+      stdio: silent ? 'pipe' : 'inherit',
+      encoding: 'utf-8',
+    })
+    return true
+  } catch (error) {
+    if (!ignoreError && !silent) {
+      log(`命令执行失败: ${command}`, 'red')
+      if (error.stdout) log(error.stdout, 'yellow')
+      if (error.stderr) log(error.stderr, 'red')
+    }
+    return false
+  }
+}
+
 async function main() {
   try {
     // 检查是否有文件在暂存区
@@ -40,6 +62,18 @@ async function main() {
       log('没有修改需要提交', 'yellow')
       process.exit(0)
     }
+
+    // 运行ESLint检查
+    log('🔍 运行ESLint语法检查...', 'blue')
+    const lintSuccess = runCommand('pnpm lint')
+
+    if (!lintSuccess) {
+      log('❌ ESLint检查发现错误，请修复后再提交', 'red')
+      log('提示: 你可以运行 pnpm lint 查看详细错误信息', 'yellow')
+      process.exit(1)
+    }
+
+    log('✅ ESLint检查通过', 'green')
 
     // 执行commitizen
     log('📝 启动提交流程...', 'blue')
