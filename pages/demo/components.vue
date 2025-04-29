@@ -18,6 +18,7 @@ import DemoImage from '~/components/demo/image.vue'
 import DemoMenu from '~/components/demo/menu.vue'
 import DemoQrcode from '~/components/demo/qrcode.vue'
 import DemoText from '~/components/demo/text.vue'
+import DemoTooltip from '~/components/demo/tooltip.vue'
 import DemoTypography from '~/components/demo/typography.vue'
 import DemoTheme from '~/pages/demo/theme.vue'
 
@@ -33,6 +34,7 @@ const categories = [
       { id: 'icon', name: '图标', component: DemoIcon },
       { id: 'theme', name: '主题色彩 Theme', component: DemoTheme },
       { id: 'auto-animate', name: '动画效果', component: DemoAutoAnimate },
+      { id: 'tooltip', name: '文字提示', component: DemoTooltip },
     ],
   },
   {
@@ -66,7 +68,6 @@ const categories = [
       { id: 'collapse', name: '折叠面板 Collapse', component: undefined },
       { id: 'table', name: '表格 Table', component: undefined },
       { id: 'tree', name: '树形控件 Tree', component: undefined },
-      { id: 'tooltip', name: '提示 Tooltip', component: undefined },
     ],
   },
   {
