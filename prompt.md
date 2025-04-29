@@ -8,6 +8,15 @@
 6. 在实现 ui/ 组件的时候按照计划中的实施，且自行根据依赖关系判断实现优先级
 7. 注意！！！创建组件务必遵守规范，禁止出现 `<parent>-<child>.vue` 这样的组件，应该：`<parent>/<child>.vue`
 
+问题：
+
+1. 关于 config/provider 组件及其使用方式不对，你这样写死 defaultLightTheme, defaultDarkTheme 的值那会和我的 themes/ 下面的 css 变量冲突了，我觉得 themes/ 下面配置的 CSS 才是最基础的配置，我们应该基于这个配置的色调来做动态配置，而不是这里有写死一套
+
+问题：
+
+1. config/provider 没生效
+2. config/provider 中没有使用主题配置，而是写死了 --ui-color-\*
+
 迭代：
 
 继续按照计划 @plan.md 实施，完成剩余组件，并优化已有组件适配主题

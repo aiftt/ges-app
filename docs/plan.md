@@ -22,7 +22,7 @@
 - [x] Color - 完成颜色组件，用于展示不同的颜色系统
 - [x] Auto-Animate - 完成动画效果组件，提供列表、卡片、表单等元素的平滑过渡动画
 - [x] Tooltip - 完成文字提示组件，支持多个位置、两种主题及各种触发方式
-- [x] ConfigProvider - 完成全局配置组件，支持主题配置、尺寸设置和其他全局选项
+- [x] ConfigProvider - 完成全局配置组件，支持主题配置（亮色/暗色/跟随系统）、CSS变量动态设置和全局选项，可在应用的任何层级提供配置
 - [ ] Popover - 待实现
 - [ ] Popconfirm - 待实现
 - [ ] Trigger - 待实现
@@ -62,13 +62,13 @@
 - [x] Text - 文本
 - [x] Border - 边框
 - [x] Color - 色彩
-- [ ] Tooltip - 文字提示
+- [x] Tooltip - 文字提示
 - [ ] Popover - 气泡卡片
 - [ ] Popconfirm - 气泡确认框
 - [ ] Trigger - 触发器
 - [ ] ResizeBox - 伸缩框
 - [ ] Split - 面板分割
-- [ ] Config Provider - 全局配置
+- [x] Config Provider - 全局配置
 
 ### 表单组件
 
