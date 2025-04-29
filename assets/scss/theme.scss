@@ -1,0 +1,105 @@
+/**
+ * 主题样式文件
+ * 创建日期: 2023-12-05
+ * 作者: aiftt
+ * 更新日期: 2023-12-05 - 初始化主题文件
+ * 更新日期: 2023-12-06 - 将@import替换为@use以解决弃用警告
+ */
+
+// 导入变量
+@use './theme-variables.scss' as vars;
+
+// 辅助样式类
+// 文本颜色类
+.text-primary {
+  color: var(--ui-color-primary);
+}
+.text-secondary {
+  color: var(--ui-color-secondary);
+}
+.text-success {
+  color: var(--ui-color-success);
+}
+.text-warning {
+  color: var(--ui-color-warning);
+}
+.text-danger {
+  color: var(--ui-color-danger);
+}
+.text-info {
+  color: var(--ui-color-info);
+}
+
+// 背景颜色类
+.bg-primary {
+  background-color: var(--ui-color-primary);
+}
+.bg-secondary {
+  background-color: var(--ui-color-secondary);
+}
+.bg-success {
+  background-color: var(--ui-color-success);
+}
+.bg-warning {
+  background-color: var(--ui-color-warning);
+}
+.bg-danger {
+  background-color: var(--ui-color-danger);
+}
+.bg-info {
+  background-color: var(--ui-color-info);
+}
+
+// 边框颜色类
+.border-primary {
+  border-color: var(--ui-color-primary);
+}
+.border-secondary {
+  border-color: var(--ui-color-secondary);
+}
+.border-success {
+  border-color: var(--ui-color-success);
+}
+.border-warning {
+  border-color: var(--ui-color-warning);
+}
+.border-danger {
+  border-color: var(--ui-color-danger);
+}
+.border-info {
+  border-color: var(--ui-color-info);
+}
+
+// 阴影类
+.shadow-sm {
+  box-shadow: var(--ui-shadow-sm);
+}
+.shadow {
+  box-shadow: var(--ui-shadow);
+}
+.shadow-md {
+  box-shadow: var(--ui-shadow-md);
+}
+.shadow-lg {
+  box-shadow: var(--ui-shadow-lg);
+}
+.shadow-xl {
+  box-shadow: var(--ui-shadow-xl);
+}
+
+// 圆角类
+.rounded-sm {
+  border-radius: var(--ui-border-radius-sm);
+}
+.rounded {
+  border-radius: var(--ui-border-radius);
+}
+.rounded-md {
+  border-radius: var(--ui-border-radius-md);
+}
+.rounded-lg {
+  border-radius: var(--ui-border-radius-lg);
+}
+.rounded-full {
+  border-radius: var(--ui-border-radius-full);
+}

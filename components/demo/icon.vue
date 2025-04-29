@@ -1,209 +1,215 @@
 <script setup lang="ts" name="DemoIcon">
 /**
- * 图标组件示例
- * 创建日期: 2023-11-14
+ * 图标组件演示
+ * 创建日期: 2024-11-30
  * 作者: aiftt
  */
-import { ref } from 'vue'
 
-// 常用图标示例
-const commonIcons = [
-  { name: 'home', icon: 'carbon:home' },
-  { name: 'search', icon: 'carbon:search' },
-  { name: 'user', icon: 'carbon:user' },
-  { name: 'settings', icon: 'carbon:settings' },
-  { name: 'notification', icon: 'carbon:notification' },
-  { name: 'menu', icon: 'carbon:menu' },
-  { name: 'add', icon: 'carbon:add' },
-  { name: 'edit', icon: 'carbon:edit' },
-  { name: 'delete', icon: 'carbon:delete' },
-  { name: 'cloud', icon: 'carbon:cloud' },
-  { name: 'download', icon: 'carbon:download' },
-  { name: 'upload', icon: 'carbon:upload' },
+// 常用图标集合
+const iconCollections = [
+  { name: 'Material Design Icons', prefix: 'mdi', icons: ['home', 'account', 'cog', 'bell', 'heart', 'email', 'calendar', 'file', 'folder', 'star'] },
+  { name: 'Carbon', prefix: 'carbon', icons: ['home', 'user', 'settings', 'notification', 'favorite', 'email', 'calendar', 'document', 'folder', 'star'] },
+  { name: 'Ant Design', prefix: 'ant-design', icons: ['home-outlined', 'user-outlined', 'setting-outlined', 'bell-outlined', 'heart-outlined', 'mail-outlined', 'calendar-outlined', 'file-outlined', 'folder-outlined', 'star-outlined'] },
+  { name: 'Feather', prefix: 'feather', icons: ['home', 'user', 'settings', 'bell', 'heart', 'mail', 'calendar', 'file', 'folder', 'star'] },
 ]
 
-// 示例代码
-const iconBasicCode = `<ui-icon icon="carbon:home" />
-<ui-icon icon="carbon:search" />
-<ui-icon icon="carbon:settings" />`
+// 图标尺寸示例
+const iconSizes = [
+  { name: '超小', value: 'xs', size: '12px' },
+  { name: '小', value: 'sm', size: '16px' },
+  { name: '中', value: 'md', size: '24px' },
+  { name: '大', value: 'lg', size: '32px' },
+  { name: '超大', value: 'xl', size: '48px' },
+]
 
-const iconSizeCode = `<ui-icon icon="carbon:home" size="small" />
-<ui-icon icon="carbon:home" />
-<ui-icon icon="carbon:home" size="large" />
-<ui-icon icon="carbon:home" size="2.5rem" />`
+// 图标颜色示例
+const iconColors = [
+  { name: '主要色', value: 'primary', color: 'var(--ui-color-primary, #10b981)' },
+  { name: '成功色', value: 'success', color: 'var(--ui-color-success, #10b981)' },
+  { name: '警告色', value: 'warning', color: 'var(--ui-color-warning, #f59e0b)' },
+  { name: '危险色', value: 'danger', color: 'var(--ui-color-danger, #ef4444)' },
+  { name: '信息色', value: 'info', color: 'var(--ui-color-info, #3b82f6)' },
+  { name: '自定义色', value: '#8B5CF6', color: '#8B5CF6' },
+]
 
-const iconColorCode = `<ui-icon icon="carbon:home" color="#3b82f6" />
-<ui-icon icon="carbon:home" color="#10b981" />
-<ui-icon icon="carbon:home" color="#f59e0b" />
-<ui-icon icon="carbon:home" color="#ef4444" />`
+// 动画效果列表
+const animations = [
+  { name: '旋转', value: 'spin' },
+  { name: '跳动', value: 'pulse' },
+  { name: '摇晃', value: 'shake' },
+  { name: '闪烁', value: 'blink' },
+]
 
-const iconSpinCode = '<ui-icon icon="carbon:refresh" spin />'
+// 复制图标名称到剪贴板
+function copyIconName(collection: string, name: string) {
+  const iconName = `${collection}:${name}`
+  navigator.clipboard.writeText(iconName)
+    .then(() => {
+      // 创建Toast消息
+      const message = document.createElement('div')
+      message.textContent = `已复制图标名称: ${iconName}`
+      message.style.position = 'fixed'
+      message.style.bottom = '20px'
+      message.style.left = '50%'
+      message.style.transform = 'translateX(-50%)'
+      message.style.backgroundColor = 'rgba(0, 0, 0, 0.7)'
+      message.style.color = 'white'
+      message.style.padding = '8px 16px'
+      message.style.borderRadius = '4px'
+      message.style.zIndex = '9999'
+      message.style.opacity = '1'
+      message.style.transition = 'opacity 0.3s'
 
-// 是否显示代码
-const showCode = ref({
-  basic: false,
-  size: false,
-  color: false,
-  spin: false,
-})
+      document.body.appendChild(message)
 
-// 切换代码显示
-function toggleCode(section) {
-  showCode.value[section] = !showCode.value[section]
+      // 2秒后移除消息
+      setTimeout(() => {
+        message.style.opacity = '0'
+        setTimeout(() => {
+          document.body.removeChild(message)
+        }, 300)
+      }, 2000)
+    })
+    .catch((err) => {
+      console.error('复制失败:', err)
+    })
 }
 </script>
 
 <template>
-  <div class="demo-component">
-    <div class="demo-section">
-      <h3 class="demo-section-title">
-        基础用法
+  <div class="space-y-10">
+    <!-- 基础图标 -->
+    <section>
+      <h3 class="mb-4 text-lg text-gray-900 font-semibold dark:text-white">
+        基础图标
       </h3>
-      <p class="demo-section-desc">
-        使用icon属性指定图标名称
+      <p class="mb-4 text-gray-600 dark:text-gray-400">
+        图标组件基于Iconify提供跨框架的图标支持，可以使用多种流行图标库。
       </p>
-      <div class="demo-section-content">
-        <ui-icon icon="carbon:home" />
-        <ui-icon icon="carbon:search" />
-        <ui-icon icon="carbon:settings" />
+      <div class="border rounded bg-white p-4 dark:bg-gray-800">
+        <div class="flex flex-wrap items-center gap-4">
+          <ui-icon name="mdi:home" />
+          <ui-icon name="carbon:user" />
+          <ui-icon name="ant-design:setting-outlined" />
+          <ui-icon name="feather:mail" />
+          <ui-icon name="mdi:github" />
+          <ui-icon name="carbon:logo-vue" />
+        </div>
       </div>
-      <div class="demo-code-control">
-        <button class="demo-code-button" @click="toggleCode('basic')">
-          {{ showCode.basic ? '隐藏代码' : '显示代码' }}
-        </button>
-      </div>
-      <div v-if="showCode.basic" class="demo-code">
-        <pre><code>{{ iconBasicCode }}</code></pre>
-      </div>
-    </div>
+    </section>
 
-    <div class="demo-section">
-      <h3 class="demo-section-title">
+    <!-- 图标尺寸 -->
+    <section>
+      <h3 class="mb-4 text-lg text-gray-900 font-semibold dark:text-white">
         图标尺寸
       </h3>
-      <p class="demo-section-desc">
-        使用size属性设置图标大小，可以是预设值或具体尺寸
+      <p class="mb-4 text-gray-600 dark:text-gray-400">
+        支持多种预设尺寸，也可以通过传入自定义尺寸数值设置图标大小。
       </p>
-      <div class="demo-section-content">
-        <ui-icon icon="carbon:home" size="small" />
-        <ui-icon icon="carbon:home" />
-        <ui-icon icon="carbon:home" size="large" />
-        <ui-icon icon="carbon:home" size="2.5rem" />
-      </div>
-      <div class="demo-code-control">
-        <button class="demo-code-button" @click="toggleCode('size')">
-          {{ showCode.size ? '隐藏代码' : '显示代码' }}
-        </button>
-      </div>
-      <div v-if="showCode.size" class="demo-code">
-        <pre><code>{{ iconSizeCode }}</code></pre>
-      </div>
-    </div>
-
-    <div class="demo-section">
-      <h3 class="demo-section-title">
-        图标颜色
-      </h3>
-      <p class="demo-section-desc">
-        使用color属性设置图标颜色
-      </p>
-      <div class="demo-section-content">
-        <ui-icon icon="carbon:home" color="#3b82f6" />
-        <ui-icon icon="carbon:home" color="#10b981" />
-        <ui-icon icon="carbon:home" color="#f59e0b" />
-        <ui-icon icon="carbon:home" color="#ef4444" />
-      </div>
-      <div class="demo-code-control">
-        <button class="demo-code-button" @click="toggleCode('color')">
-          {{ showCode.color ? '隐藏代码' : '显示代码' }}
-        </button>
-      </div>
-      <div v-if="showCode.color" class="demo-code">
-        <pre><code>{{ iconColorCode }}</code></pre>
-      </div>
-    </div>
-
-    <div class="demo-section">
-      <h3 class="demo-section-title">
-        旋转动画
-      </h3>
-      <p class="demo-section-desc">
-        使用spin属性让图标旋转
-      </p>
-      <div class="demo-section-content">
-        <ui-icon icon="carbon:refresh" spin />
-      </div>
-      <div class="demo-code-control">
-        <button class="demo-code-button" @click="toggleCode('spin')">
-          {{ showCode.spin ? '隐藏代码' : '显示代码' }}
-        </button>
-      </div>
-      <div v-if="showCode.spin" class="demo-code">
-        <pre><code>{{ iconSpinCode }}</code></pre>
-      </div>
-    </div>
-
-    <div class="demo-section">
-      <h3 class="demo-section-title">
-        常用图标
-      </h3>
-      <p class="demo-section-desc">
-        以下是一些常用的图标示例
-      </p>
-      <div class="demo-icon-grid">
-        <div v-for="icon in commonIcons" :key="icon.name" class="demo-icon-item">
-          <ui-icon :icon="icon.icon" />
-          <div class="demo-icon-name">
-            {{ icon.name }}
+      <div class="border rounded bg-white p-4 dark:bg-gray-800">
+        <div class="flex flex-wrap items-end gap-6">
+          <div v-for="size in iconSizes" :key="size.value" class="flex flex-col items-center">
+            <ui-icon name="mdi:star" :size="size.value" />
+            <span class="mt-2 text-xs text-gray-600 dark:text-gray-400">{{ size.name }} ({{ size.size }})</span>
           </div>
-          <div class="demo-icon-key">
-            {{ icon.icon }}
+          <div class="flex flex-col items-center">
+            <ui-icon name="mdi:star" size="56px" />
+            <span class="mt-2 text-xs text-gray-600 dark:text-gray-400">自定义 (56px)</span>
           </div>
         </div>
       </div>
-    </div>
+    </section>
 
-    <div class="demo-section">
-      <h3 class="demo-section-title">
-        API 参考
+    <!-- 图标颜色 -->
+    <section>
+      <h3 class="mb-4 text-lg text-gray-900 font-semibold dark:text-white">
+        图标颜色
       </h3>
-      <table class="demo-api-table">
-        <thead>
-          <tr>
-            <th>属性</th>
-            <th>说明</th>
-            <th>类型</th>
-            <th>默认值</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>icon</td>
-            <td>图标名称（Iconify格式）</td>
-            <td>string</td>
-            <td>-</td>
-          </tr>
-          <tr>
-            <td>size</td>
-            <td>图标尺寸</td>
-            <td>'small' | 'default' | 'large' | string</td>
-            <td>'default'</td>
-          </tr>
-          <tr>
-            <td>color</td>
-            <td>图标颜色</td>
-            <td>string</td>
-            <td>-</td>
-          </tr>
-          <tr>
-            <td>spin</td>
-            <td>是否旋转图标</td>
-            <td>boolean</td>
-            <td>false</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+      <p class="mb-4 text-gray-600 dark:text-gray-400">
+        可以使用主题预设的语义化颜色或自定义颜色值。
+      </p>
+      <div class="border rounded bg-white p-4 dark:bg-gray-800">
+        <div class="flex flex-wrap gap-6">
+          <div v-for="color in iconColors" :key="color.value" class="flex flex-col items-center">
+            <ui-icon name="mdi:heart" :color="color.value" size="lg" />
+            <span class="mt-2 text-xs text-gray-600 dark:text-gray-400">{{ color.name }}</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 图标动画 -->
+    <section>
+      <h3 class="mb-4 text-lg text-gray-900 font-semibold dark:text-white">
+        图标动画
+      </h3>
+      <p class="mb-4 text-gray-600 dark:text-gray-400">
+        支持多种动画效果，使图标更具交互性。
+      </p>
+      <div class="border rounded bg-white p-4 dark:bg-gray-800">
+        <div class="flex flex-wrap gap-6">
+          <div v-for="animation in animations" :key="animation.value" class="flex flex-col items-center">
+            <ui-icon name="mdi:refresh" :animation="animation.value" size="lg" color="primary" />
+            <span class="mt-2 text-xs text-gray-600 dark:text-gray-400">{{ animation.name }}</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 常用图标集合 -->
+    <section>
+      <h3 class="mb-4 text-lg text-gray-900 font-semibold dark:text-white">
+        常用图标集合
+      </h3>
+      <p class="mb-4 text-gray-600 dark:text-gray-400">
+        点击图标可复制图标名称。
+      </p>
+
+      <div v-for="collection in iconCollections" :key="collection.prefix" class="mb-8">
+        <h4 class="mb-3 text-gray-800 font-medium dark:text-gray-200">
+          {{ collection.name }}
+        </h4>
+        <div class="border rounded bg-white p-4 dark:bg-gray-800">
+          <div class="grid grid-cols-2 gap-4 md:grid-cols-5 sm:grid-cols-3">
+            <div
+              v-for="icon in collection.icons"
+              :key="`${collection.prefix}-${icon}`"
+              class="flex flex-col cursor-pointer items-center rounded p-3 transition hover:bg-gray-100 dark:hover:bg-gray-700"
+              @click="copyIconName(collection.prefix, icon)"
+            >
+              <ui-icon :name="`${collection.prefix}:${icon}`" size="md" />
+              <span class="mt-2 w-full truncate text-center text-xs text-gray-600 dark:text-gray-400">{{ icon }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 与按钮结合使用 -->
+    <section>
+      <h3 class="mb-4 text-lg text-gray-900 font-semibold dark:text-white">
+        与按钮结合使用
+      </h3>
+      <div class="border rounded bg-white p-4 dark:bg-gray-800">
+        <div class="flex flex-wrap gap-4">
+          <ui-button type="primary" icon="mdi:plus">
+            创建
+          </ui-button>
+          <ui-button type="success" icon="mdi:check">
+            确认
+          </ui-button>
+          <ui-button type="danger" icon="mdi:delete">
+            删除
+          </ui-button>
+          <ui-button type="info" icon="mdi:information">
+            信息
+          </ui-button>
+          <ui-button type="warning" icon="mdi:alert">
+            警告
+          </ui-button>
+        </div>
+      </div>
+    </section>
   </div>
 </template>
 

@@ -1,346 +1,183 @@
 <script setup lang="ts" name="DemoDivider">
 /**
- * 分割线组件示例
- * 创建日期: 2023-11-14
+ * 分割线组件演示
+ * 创建日期: 2023-11-30
  * 作者: aiftt
  */
-import { ref } from 'vue'
 
-// 示例代码
-const basicCode = `<ui-divider />
+// 分割线方向
+const _directions = ['horizontal', 'vertical']
 
-<ui-divider direction="vertical" />`
+// 分割线文本位置
+const textPositions = ['left', 'center', 'right']
 
-const withTextCode = `<ui-divider withText>中间文字</ui-divider>
+// 分割线类型
+const dividerTypes = ['solid', 'dashed', 'dotted']
 
-<ui-divider withText textPosition="left">左侧文字</ui-divider>
+// 分割线颜色
+const dividerColors = [
+  { name: '默认色', value: '' },
+  { name: '主要色', value: 'primary' },
+  { name: '成功色', value: 'success' },
+  { name: '警告色', value: 'warning' },
+  { name: '危险色', value: 'danger' },
+  { name: '信息色', value: 'info' },
+]
 
-<ui-divider withText textPosition="right">右侧文字</ui-divider>`
-
-const typeCode = `<ui-divider type="solid" />
-
-<ui-divider type="dashed" />
-
-<ui-divider type="dotted" />`
-
-const colorCode = `<ui-divider color="#3b82f6" />
-
-<ui-divider withText color="#10b981">自定义颜色</ui-divider>`
-
-// 是否显示代码
-const showCode = ref({
-  basic: false,
-  withText: false,
-  type: false,
-  color: false,
-})
-
-// 切换代码显示
-function toggleCode(section) {
-  showCode.value[section] = !showCode.value[section]
-}
+// 段落文本样例
+const paragraphText = 'Vue.js是一套用于构建用户界面的渐进式框架。与其它大型框架不同的是，Vue被设计为可以自底向上逐层应用。Vue的核心库只关注视图层，不仅易于上手，还便于与第三方库或既有项目整合。'
 </script>
 
 <template>
-  <div class="demo-component">
-    <div class="demo-section">
-      <h3 class="demo-section-title">
-        基础用法
+  <div class="space-y-10">
+    <!-- 基础分割线 -->
+    <section>
+      <h3 class="mb-4 text-lg text-gray-900 font-semibold dark:text-white">
+        基础分割线
       </h3>
-      <p class="demo-section-desc">
-        默认为水平分割线，可以通过设置 direction="vertical" 显示垂直分割线
-      </p>
-      <div class="demo-section-content">
-        <div class="demo-divider-container">
-          <ui-typography-paragraph>
-            上面的内容
-          </ui-typography-paragraph>
+      <div class="border rounded bg-white p-4 dark:bg-gray-800">
+        <p>{{ paragraphText }}</p>
+        <ui-divider />
+        <p>{{ paragraphText }}</p>
+      </div>
+    </section>
 
-          <ui-divider />
-
-          <ui-typography-paragraph>
-            下面的内容
-          </ui-typography-paragraph>
+    <!-- 带文本的分割线 -->
+    <section>
+      <h3 class="mb-4 text-lg text-gray-900 font-semibold dark:text-white">
+        带文本的分割线
+      </h3>
+      <div class="border rounded bg-white p-4 space-y-8 dark:bg-gray-800">
+        <div>
+          <p>{{ paragraphText }}</p>
+          <ui-divider>默认居中</ui-divider>
+          <p>{{ paragraphText }}</p>
         </div>
 
-        <div class="demo-divider-vertical-container">
-          <span>文本</span>
-          <ui-divider direction="vertical" />
-          <span>文本</span>
-          <ui-divider direction="vertical" />
-          <span>文本</span>
+        <div>
+          <p>{{ paragraphText }}</p>
+          <ui-divider position="left">
+            左对齐文本
+          </ui-divider>
+          <p>{{ paragraphText }}</p>
+        </div>
+
+        <div>
+          <p>{{ paragraphText }}</p>
+          <ui-divider position="right">
+            右对齐文本
+          </ui-divider>
+          <p>{{ paragraphText }}</p>
         </div>
       </div>
-      <div class="demo-code-control">
-        <button class="demo-code-button" @click="toggleCode('basic')">
-          {{ showCode.basic ? '隐藏代码' : '显示代码' }}
-        </button>
-      </div>
-      <div v-if="showCode.basic" class="demo-code">
-        <pre><code>{{ basicCode }}</code></pre>
-      </div>
-    </div>
+    </section>
 
-    <div class="demo-section">
-      <h3 class="demo-section-title">
-        带文字的分割线
+    <!-- 文本位置对比 -->
+    <section>
+      <h3 class="mb-4 text-lg text-gray-900 font-semibold dark:text-white">
+        文本位置
       </h3>
-      <p class="demo-section-desc">
-        可以在分割线中间、左侧或右侧添加文字
-      </p>
-      <div class="demo-section-content">
-        <ui-divider with-text>
-          中间文字
-        </ui-divider>
-        <ui-divider with-text text-position="left">
-          左侧文字
-        </ui-divider>
-        <ui-divider with-text text-position="right">
-          右侧文字
-        </ui-divider>
+      <div class="border rounded bg-white p-4 space-y-4 dark:bg-gray-800">
+        <div v-for="position in textPositions" :key="position" class="flex items-center">
+          <span class="w-20 text-gray-600 dark:text-gray-400">{{ position }}</span>
+          <div class="flex-1">
+            <ui-divider :position="position">
+              {{ position }}
+            </ui-divider>
+          </div>
+        </div>
       </div>
-      <div class="demo-code-control">
-        <button class="demo-code-button" @click="toggleCode('withText')">
-          {{ showCode.withText ? '隐藏代码' : '显示代码' }}
-        </button>
-      </div>
-      <div v-if="showCode.withText" class="demo-code">
-        <pre><code>{{ withTextCode }}</code></pre>
-      </div>
-    </div>
+    </section>
 
-    <div class="demo-section">
-      <h3 class="demo-section-title">
-        不同类型的分割线
+    <!-- 垂直分割线 -->
+    <section>
+      <h3 class="mb-4 text-lg text-gray-900 font-semibold dark:text-white">
+        垂直分割线
       </h3>
-      <p class="demo-section-desc">
-        支持实线、虚线和点线三种类型
-      </p>
-      <div class="demo-section-content">
-        <ui-divider type="solid" />
-        <ui-typography-paragraph>实线（默认）</ui-typography-paragraph>
-
-        <ui-divider type="dashed" />
-        <ui-typography-paragraph>虚线</ui-typography-paragraph>
-
-        <ui-divider type="dotted" />
-        <ui-typography-paragraph>点线</ui-typography-paragraph>
+      <div class="border rounded bg-white p-4 dark:bg-gray-800">
+        <div class="h-40 flex items-center">
+          <span>左侧内容</span>
+          <ui-divider direction="vertical" height="80%" margin="0 20px" />
+          <div class="flex-1">
+            <p>{{ paragraphText }}</p>
+          </div>
+          <ui-divider direction="vertical" height="60%" margin="0 20px" />
+          <span>右侧内容</span>
+        </div>
       </div>
-      <div class="demo-code-control">
-        <button class="demo-code-button" @click="toggleCode('type')">
-          {{ showCode.type ? '隐藏代码' : '显示代码' }}
-        </button>
-      </div>
-      <div v-if="showCode.type" class="demo-code">
-        <pre><code>{{ typeCode }}</code></pre>
-      </div>
-    </div>
+    </section>
 
-    <div class="demo-section">
-      <h3 class="demo-section-title">
-        自定义颜色
+    <!-- 分割线类型 -->
+    <section>
+      <h3 class="mb-4 text-lg text-gray-900 font-semibold dark:text-white">
+        分割线类型
       </h3>
-      <p class="demo-section-desc">
-        可以自定义分割线的颜色
-      </p>
-      <div class="demo-section-content">
-        <ui-divider color="#3b82f6" />
-        <ui-typography-paragraph>蓝色分割线</ui-typography-paragraph>
+      <div class="border rounded bg-white p-4 space-y-6 dark:bg-gray-800">
+        <div v-for="type in dividerTypes" :key="type" class="space-y-2">
+          <div class="text-sm text-gray-600 dark:text-gray-400">
+            {{ type }}
+          </div>
+          <ui-divider :type="type">
+            {{ type }}
+          </ui-divider>
+        </div>
+      </div>
+    </section>
 
-        <ui-divider with-text color="#10b981">
-          绿色分割线
-        </ui-divider>
-      </div>
-      <div class="demo-code-control">
-        <button class="demo-code-button" @click="toggleCode('color')">
-          {{ showCode.color ? '隐藏代码' : '显示代码' }}
-        </button>
-      </div>
-      <div v-if="showCode.color" class="demo-code">
-        <pre><code>{{ colorCode }}</code></pre>
-      </div>
-    </div>
-
-    <div class="demo-section">
-      <h3 class="demo-section-title">
-        API 参考
+    <!-- 分割线颜色 -->
+    <section>
+      <h3 class="mb-4 text-lg text-gray-900 font-semibold dark:text-white">
+        分割线颜色
       </h3>
-      <table class="demo-api-table">
-        <thead>
-          <tr>
-            <th>属性</th>
-            <th>说明</th>
-            <th>类型</th>
-            <th>默认值</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>direction</td>
-            <td>分割线方向</td>
-            <td>'horizontal' | 'vertical'</td>
-            <td>'horizontal'</td>
-          </tr>
-          <tr>
-            <td>withText</td>
-            <td>是否带有文字</td>
-            <td>boolean</td>
-            <td>false</td>
-          </tr>
-          <tr>
-            <td>textPosition</td>
-            <td>文字位置</td>
-            <td>'left' | 'center' | 'right'</td>
-            <td>'center'</td>
-          </tr>
-          <tr>
-            <td>type</td>
-            <td>分割线类型</td>
-            <td>'solid' | 'dashed' | 'dotted'</td>
-            <td>'solid'</td>
-          </tr>
-          <tr>
-            <td>color</td>
-            <td>分割线颜色</td>
-            <td>string</td>
-            <td>-</td>
-          </tr>
-          <tr>
-            <td>width</td>
-            <td>分割线宽度</td>
-            <td>string</td>
-            <td>-</td>
-          </tr>
-          <tr>
-            <td>margin</td>
-            <td>分割线上下margin</td>
-            <td>string</td>
-            <td>'1rem'</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+      <div class="border rounded bg-white p-4 space-y-6 dark:bg-gray-800">
+        <div v-for="color in dividerColors" :key="color.value || 'default'" class="space-y-2">
+          <div class="text-sm text-gray-600 dark:text-gray-400">
+            {{ color.name }}
+          </div>
+          <ui-divider :color="color.value">
+            {{ color.name }}
+          </ui-divider>
+        </div>
+      </div>
+    </section>
+
+    <!-- 自定义样式 -->
+    <section>
+      <h3 class="mb-4 text-lg text-gray-900 font-semibold dark:text-white">
+        自定义样式
+      </h3>
+      <div class="border rounded bg-white p-4 space-y-6 dark:bg-gray-800">
+        <div>
+          <p>{{ paragraphText }}</p>
+          <ui-divider
+            color="primary"
+            width="5px"
+            type="solid"
+            margin="24px 0"
+          >
+            粗线分割
+          </ui-divider>
+          <p>{{ paragraphText }}</p>
+        </div>
+
+        <div>
+          <p>{{ paragraphText }}</p>
+          <ui-divider
+            color="#FF6B6B"
+            class-name="custom-divider"
+          >
+            自定义颜色
+          </ui-divider>
+          <p>{{ paragraphText }}</p>
+        </div>
+      </div>
+    </section>
   </div>
 </template>
 
 <style scoped>
-.demo-component {
-  width: 100%;
-}
-
-.demo-section {
-  margin-bottom: 2rem;
-  border-bottom: 1px solid var(--ui-border-color, #e5e7eb);
-  padding-bottom: 1.5rem;
-}
-
-.demo-section:last-child {
-  border-bottom: none;
-}
-
-.demo-section-title {
-  font-size: 1.125rem;
-  font-weight: 600;
-  margin-top: 0;
-  margin-bottom: 0.5rem;
-}
-
-.demo-section-desc {
-  color: var(--ui-text-color-secondary, #6b7280);
-  margin-top: 0;
-  margin-bottom: 1rem;
-  font-size: 0.875rem;
-}
-
-.demo-section-content {
-  margin-bottom: 1rem;
-}
-
-.demo-divider-container {
-  background-color: var(--ui-card-bg, #ffffff);
-  border: 1px solid var(--ui-border-color, #e5e7eb);
-  border-radius: 0.5rem;
-  padding: 1.5rem;
-}
-
-.demo-divider-vertical-container {
-  display: flex;
-  align-items: center;
-  background-color: var(--ui-card-bg, #ffffff);
-  border: 1px solid var(--ui-border-color, #e5e7eb);
-  border-radius: 0.5rem;
-  padding: 1.5rem;
-  margin-top: 1rem;
-}
-
-.demo-code-control {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 0.5rem;
-}
-
-.demo-code-button {
-  background: none;
-  border: none;
-  color: var(--ui-color-primary, #3b82f6);
-  cursor: pointer;
-  font-size: 0.875rem;
-  padding: 0.25rem 0.5rem;
-}
-
-.demo-code-button:hover {
-  text-decoration: underline;
-}
-
-.demo-code {
-  background-color: var(--ui-code-bg, #f3f4f6);
-  border-radius: 0.25rem;
-  padding: 1rem;
-  margin-bottom: 1rem;
-  overflow-x: auto;
-}
-
-.demo-code pre {
-  margin: 0;
-  white-space: pre-wrap;
-  word-wrap: break-word;
-  font-family: monospace;
-  font-size: 0.875rem;
-  color: var(--ui-code-color, #1f2937);
-}
-
-.demo-api-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.875rem;
-}
-
-.demo-api-table th,
-.demo-api-table td {
-  border: 1px solid var(--ui-border-color, #e5e7eb);
-  padding: 0.75rem 1rem;
-  text-align: left;
-}
-
-.demo-api-table th {
-  background-color: var(--ui-table-header-bg, #f9fafb);
-  font-weight: 600;
-}
-
-.demo-api-table tr:nth-child(even) {
-  background-color: var(--ui-table-stripe-bg, #f3f4f6);
-}
-
-.dark .demo-code {
-  --ui-code-bg: #1f2937;
-  --ui-code-color: #e5e7eb;
-}
-
-.dark .demo-api-table th {
-  --ui-table-header-bg: #111827;
-}
-
-.dark .demo-api-table tr:nth-child(even) {
-  --ui-table-stripe-bg: #1f2937;
+.custom-divider {
+  /* 自定义分割线样式 */
+  font-weight: bold;
 }
 </style>

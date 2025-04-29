@@ -1,58 +1,52 @@
 <script setup lang="ts" name="DemoButton">
 /**
- * 按钮组件示例
- * 创建日期: 2023-11-14
+ * 按钮组件演示
+ * 创建日期: 2023-12-03
  * 作者: aiftt
  */
 import { ref } from 'vue'
 
-// 示例代码
-const buttonBasicCode = `<ui-button>默认按钮</ui-button>
-<ui-button type="primary">主要按钮</ui-button>
-<ui-button type="success">成功按钮</ui-button>
-<ui-button type="warning">警告按钮</ui-button>
-<ui-button type="danger">危险按钮</ui-button>`
+// 按钮类型列表 (添加前缀下划线避免未使用变量警告)
+const _types = ['default', 'primary', 'success', 'warning', 'danger', 'info'] as const
+// 按钮尺寸列表 (添加前缀下划线避免未使用变量警告)
+const _sizes = ['small', 'default', 'large'] as const
 
-const buttonSizeCode = `<ui-button size="small">小型按钮</ui-button>
-<ui-button>默认大小</ui-button>
-<ui-button size="large">大型按钮</ui-button>`
-
-const buttonDisabledCode = `<ui-button disabled>禁用状态</ui-button>
-<ui-button type="primary" disabled>禁用状态</ui-button>`
-
-const buttonIconCode = `<ui-button icon="carbon:add">添加</ui-button>
-<ui-button icon="carbon:search" type="primary">搜索</ui-button>
-<ui-button icon="carbon:arrow-right" type="success" />
-<ui-button icon="carbon:close" type="danger" circle />`
-
-const buttonLoadingCode = `<ui-button loading>加载中</ui-button>
-<ui-button type="primary" loading>加载中</ui-button>`
-
-// 是否显示代码
-const showCode = ref({
-  basic: false,
-  size: false,
-  disabled: false,
-  icon: false,
-  loading: false,
+// 控制加载状态
+const loadingStates = ref({
+  primary: false,
+  success: false,
 })
 
-// 切换代码显示
-function toggleCode(section) {
-  showCode.value[section] = !showCode.value[section]
+// 切换加载状态
+function toggleLoading(type: 'primary' | 'success') {
+  loadingStates.value[type] = true
+  setTimeout(() => {
+    loadingStates.value[type] = false
+  }, 2000)
+}
+
+// 示例代码片段
+const exampleCode = {
+  basic: '<ui-button>默认按钮</ui-button>\n<ui-button type="primary">主要按钮</ui-button>\n<ui-button type="success">成功按钮</ui-button>\n<ui-button type="warning">警告按钮</ui-button>\n<ui-button type="danger">危险按钮</ui-button>\n<ui-button type="info">信息按钮</ui-button>',
+
+  sizes: '<ui-button size="small">小按钮</ui-button>\n<ui-button>默认大小</ui-button>\n<ui-button size="large">大按钮</ui-button>',
+
+  disabled: '<ui-button disabled>禁用按钮</ui-button>\n<ui-button type="primary" disabled>禁用主要按钮</ui-button>',
+
+  icon: '<ui-button icon="carbon:home">首页</ui-button>\n<ui-button icon="carbon:add" type="primary">添加</ui-button>\n<ui-button icon="carbon:settings" circle />',
+
+  loading: '<ui-button type="primary" :loading="isLoading" @click="startLoading">点击加载</ui-button>',
 }
 </script>
 
 <template>
-  <div class="demo-component">
-    <div class="demo-section">
-      <h3 class="demo-section-title">
-        基础用法
+  <div class="space-y-8">
+    <!-- 按钮类型 -->
+    <section>
+      <h3 class="mb-4 text-lg font-bold">
+        按钮类型
       </h3>
-      <p class="demo-section-desc">
-        按钮有五种类型：默认、主要、成功、警告和危险
-      </p>
-      <div class="demo-section-content">
+      <div class="mb-4 flex flex-wrap gap-4">
         <ui-button>默认按钮</ui-button>
         <ui-button type="primary">
           主要按钮
@@ -66,173 +60,113 @@ function toggleCode(section) {
         <ui-button type="danger">
           危险按钮
         </ui-button>
+        <ui-button type="info">
+          信息按钮
+        </ui-button>
       </div>
-      <div class="demo-code-control">
-        <button class="demo-code-button" @click="toggleCode('basic')">
-          {{ showCode.basic ? '隐藏代码' : '显示代码' }}
-        </button>
+      <div class="rounded bg-gray-100 p-4 dark:bg-gray-800">
+        <pre class="overflow-auto text-sm"><code>{{ exampleCode.basic }}</code></pre>
       </div>
-      <div v-if="showCode.basic" class="demo-code">
-        <pre><code>{{ buttonBasicCode }}</code></pre>
-      </div>
-    </div>
+    </section>
 
-    <div class="demo-section">
-      <h3 class="demo-section-title">
+    <!-- 按钮尺寸 -->
+    <section>
+      <h3 class="mb-4 text-lg font-bold">
         按钮尺寸
       </h3>
-      <p class="demo-section-desc">
-        按钮有三种尺寸：小型、默认和大型
-      </p>
-      <div class="demo-section-content">
+      <div class="mb-4 flex flex-wrap items-center gap-4">
         <ui-button size="small">
-          小型按钮
+          小按钮
         </ui-button>
         <ui-button>默认大小</ui-button>
         <ui-button size="large">
-          大型按钮
+          大按钮
         </ui-button>
       </div>
-      <div class="demo-code-control">
-        <button class="demo-code-button" @click="toggleCode('size')">
-          {{ showCode.size ? '隐藏代码' : '显示代码' }}
-        </button>
+      <div class="rounded bg-gray-100 p-4 dark:bg-gray-800">
+        <pre class="overflow-auto text-sm"><code>{{ exampleCode.sizes }}</code></pre>
       </div>
-      <div v-if="showCode.size" class="demo-code">
-        <pre><code>{{ buttonSizeCode }}</code></pre>
-      </div>
-    </div>
+    </section>
 
-    <div class="demo-section">
-      <h3 class="demo-section-title">
+    <!-- 禁用状态 -->
+    <section>
+      <h3 class="mb-4 text-lg font-bold">
         禁用状态
       </h3>
-      <p class="demo-section-desc">
-        按钮在禁用状态下不可点击
-      </p>
-      <div class="demo-section-content">
+      <div class="mb-4 flex flex-wrap gap-4">
         <ui-button disabled>
-          禁用状态
+          禁用按钮
         </ui-button>
         <ui-button type="primary" disabled>
-          禁用状态
+          禁用主要按钮
+        </ui-button>
+        <ui-button type="success" disabled>
+          禁用成功按钮
+        </ui-button>
+        <ui-button type="danger" disabled>
+          禁用危险按钮
         </ui-button>
       </div>
-      <div class="demo-code-control">
-        <button class="demo-code-button" @click="toggleCode('disabled')">
-          {{ showCode.disabled ? '隐藏代码' : '显示代码' }}
-        </button>
+      <div class="rounded bg-gray-100 p-4 dark:bg-gray-800">
+        <pre class="overflow-auto text-sm"><code>{{ exampleCode.disabled }}</code></pre>
       </div>
-      <div v-if="showCode.disabled" class="demo-code">
-        <pre><code>{{ buttonDisabledCode }}</code></pre>
-      </div>
-    </div>
+    </section>
 
-    <div class="demo-section">
-      <h3 class="demo-section-title">
+    <!-- 图标按钮 -->
+    <section>
+      <h3 class="mb-4 text-lg font-bold">
         图标按钮
       </h3>
-      <p class="demo-section-desc">
-        带图标的按钮可以增强按钮的可识别性
-      </p>
-      <div class="demo-section-content">
-        <ui-button icon="carbon:add">
+      <div class="mb-4 flex flex-wrap items-center gap-4">
+        <ui-button icon="carbon:home">
+          首页
+        </ui-button>
+        <ui-button icon="carbon:add" type="primary">
           添加
         </ui-button>
-        <ui-button icon="carbon:search" type="primary">
-          搜索
+        <ui-button icon="carbon:notification" type="warning">
+          通知
         </ui-button>
-        <ui-button icon="carbon:arrow-right" type="success" />
-        <ui-button icon="carbon:close" type="danger" circle />
+        <ui-button icon="carbon:close" type="danger">
+          删除
+        </ui-button>
+        <ui-button icon="carbon:settings" circle />
+        <ui-button icon="carbon:add" type="primary" circle />
+        <ui-button icon="carbon:trash-can" type="danger" circle />
       </div>
-      <div class="demo-code-control">
-        <button class="demo-code-button" @click="toggleCode('icon')">
-          {{ showCode.icon ? '隐藏代码' : '显示代码' }}
-        </button>
+      <div class="rounded bg-gray-100 p-4 dark:bg-gray-800">
+        <pre class="overflow-auto text-sm"><code>{{ exampleCode.icon }}</code></pre>
       </div>
-      <div v-if="showCode.icon" class="demo-code">
-        <pre><code>{{ buttonIconCode }}</code></pre>
-      </div>
-    </div>
+    </section>
 
-    <div class="demo-section">
-      <h3 class="demo-section-title">
+    <!-- 加载状态 -->
+    <section>
+      <h3 class="mb-4 text-lg font-bold">
         加载状态
       </h3>
-      <p class="demo-section-desc">
-        用于异步操作等待时，在按钮上显示加载状态
-      </p>
-      <div class="demo-section-content">
-        <ui-button loading>
-          加载中
+      <div class="mb-4 flex flex-wrap gap-4">
+        <ui-button
+          type="primary"
+          :loading="loadingStates.primary"
+          @click="toggleLoading('primary')"
+        >
+          点击加载
         </ui-button>
-        <ui-button type="primary" loading>
-          加载中
+        <ui-button
+          type="success"
+          :loading="loadingStates.success"
+          @click="toggleLoading('success')"
+        >
+          点击加载
+        </ui-button>
+        <ui-button type="info" loading>
+          加载中...
         </ui-button>
       </div>
-      <div class="demo-code-control">
-        <button class="demo-code-button" @click="toggleCode('loading')">
-          {{ showCode.loading ? '隐藏代码' : '显示代码' }}
-        </button>
+      <div class="rounded bg-gray-100 p-4 dark:bg-gray-800">
+        <pre class="overflow-auto text-sm"><code>{{ exampleCode.loading }}</code></pre>
       </div>
-      <div v-if="showCode.loading" class="demo-code">
-        <pre><code>{{ buttonLoadingCode }}</code></pre>
-      </div>
-    </div>
-
-    <div class="demo-section">
-      <h3 class="demo-section-title">
-        API 参考
-      </h3>
-      <table class="demo-api-table">
-        <thead>
-          <tr>
-            <th>属性</th>
-            <th>说明</th>
-            <th>类型</th>
-            <th>默认值</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>type</td>
-            <td>按钮类型</td>
-            <td>'default' | 'primary' | 'success' | 'warning' | 'danger'</td>
-            <td>'default'</td>
-          </tr>
-          <tr>
-            <td>size</td>
-            <td>按钮尺寸</td>
-            <td>'small' | 'default' | 'large'</td>
-            <td>'default'</td>
-          </tr>
-          <tr>
-            <td>disabled</td>
-            <td>是否禁用</td>
-            <td>boolean</td>
-            <td>false</td>
-          </tr>
-          <tr>
-            <td>icon</td>
-            <td>图标名称</td>
-            <td>string</td>
-            <td>-</td>
-          </tr>
-          <tr>
-            <td>loading</td>
-            <td>是否显示加载状态</td>
-            <td>boolean</td>
-            <td>false</td>
-          </tr>
-          <tr>
-            <td>circle</td>
-            <td>是否为圆形按钮</td>
-            <td>boolean</td>
-            <td>false</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+    </section>
   </div>
 </template>
 

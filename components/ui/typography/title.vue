@@ -3,9 +3,10 @@
  * 排版标题组件
  * 创建日期: 2023-11-14
  * 作者: aiftt
+ * 更新日期: 2023-12-05 - 更新为v-bind + CSS变量实现方式，添加自定义颜色支持
  */
 
-import clientLogger from '~/utils/client-logger'
+import logger from '~/utils/logger'
 
 // 定义props
 const props = withDefaults(defineProps<{
@@ -41,6 +42,10 @@ const props = withDefaults(defineProps<{
    * 文本省略
    */
   ellipsis?: boolean
+  /**
+   * 自定义颜色
+   */
+  color?: string
 }>(), {
   level: 1,
   type: 'default',
@@ -50,13 +55,14 @@ const props = withDefaults(defineProps<{
   hoverable: false,
   copyable: false,
   ellipsis: false,
+  color: '',
 })
 
 // 记录组件参数
-clientLogger.debug('Title component props:', props)
+logger.client.debug('Title component props:', props)
 
 // 组件相关的logger
-const logger = clientLogger.child({ tag: 'title' })
+const titleLogger = logger.client.child({ tag: 'title' })
 
 // 计算标题类名
 const titleClasses = computed(() => [
@@ -69,30 +75,36 @@ const titleClasses = computed(() => [
     'ui-typography-title--with-margin': props.withMargin,
     'ui-typography-title--hoverable': props.hoverable,
     'ui-typography-title--ellipsis': props.ellipsis,
+    'ui-typography-title--custom-color': Boolean(props.color),
   },
 ])
 
 // 生成唯一ID避免冲突
-const titleId = Math.random().toString(36).substring(2, 10)
+const titleId = import.meta.client
+  ? Math.random().toString(36).substring(2, 10)
+  : 'ssr-placeholder'
 const copied = ref(false)
+
+// 自定义颜色CSS变量
+const colorVar = computed(() => props.color || null)
 
 // 复制功能
 function copyText() {
   if (props.copyable && import.meta.client) {
     const text = document.getElementById(`ui-title-${titleId}`)?.textContent || ''
-    logger.info('复制标题文本', { level: props.level, length: text.length })
+    titleLogger.info('复制标题文本', { level: props.level, length: text.length })
 
     navigator.clipboard.writeText(text)
       .then(() => {
         // 复制成功
-        logger.info('标题文本复制成功')
+        titleLogger.info('标题文本复制成功')
         copied.value = true
         setTimeout(() => {
           copied.value = false
         }, 2000)
       })
       .catch((err) => {
-        logger.error('标题文本复制失败', err)
+        titleLogger.error('标题文本复制失败', err)
       })
   }
 }
@@ -114,6 +126,9 @@ function copyText() {
 
 <style scoped>
 .ui-typography-title {
+  /* CSS变量绑定 */
+  --ui-title-custom-color: v-bind(colorVar);
+
   font-family: var(--ui-font-family, sans-serif);
   color: var(--ui-color-text-heading, #111827);
   line-height: 1.2;
@@ -165,6 +180,11 @@ function copyText() {
 
 .ui-typography-title--danger {
   color: var(--ui-color-danger, #ef4444);
+}
+
+/* 自定义颜色 */
+.ui-typography-title--custom-color {
+  color: var(--ui-title-custom-color);
 }
 
 /* 字重样式 */
@@ -246,7 +266,9 @@ function copyText() {
 }
 
 /* 暗色主题适配 */
-html.dark .ui-typography-title--default {
-  color: var(--ui-color-text-heading-dark, #f9fafb);
+@media (prefers-color-scheme: dark) {
+  .ui-typography-title--default {
+    color: var(--ui-color-text-heading-dark, #f9fafb);
+  }
 }
 </style>

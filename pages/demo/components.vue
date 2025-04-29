@@ -3,64 +3,92 @@
  * UI组件展示页面
  * 创建日期: 2023-11-14
  * 作者: aiftt
+ * 更新日期: 2023-11-15 - 添加 Image 组件
+ * 2023-12-01 - 添加 QRCode 组件和 Menu 组件
  */
 import { computed, ref } from 'vue'
+import DemoBorder from '~/components/demo/border.vue'
+import DemoButton from '~/components/demo/button.vue'
+import DemoDivider from '~/components/demo/divider.vue'
+import DemoIcon from '~/components/demo/icon.vue'
+import DemoImage from '~/components/demo/image.vue'
+import DemoMenu from '~/components/demo/menu.vue'
+import DemoQrcode from '~/components/demo/qrcode.vue'
+import DemoText from '~/components/demo/text.vue'
+import DemoTypography from '~/components/demo/typography.vue'
 
 // 定义组件分类
 const categories = [
   {
     name: '基础组件',
     components: [
-      { id: 'button', name: '按钮 Button' },
-      { id: 'icon', name: '图标 Icon' },
-      { id: 'typography', name: '排版 Typography' },
-      { id: 'divider', name: '分割线 Divider' },
-      { id: 'grid', name: '栅格 Grid' },
+      { id: 'button', name: '按钮 Button', component: DemoButton },
+      { id: 'icon', name: '图标 Icon', component: DemoIcon },
+      { id: 'divider', name: '分割线 Divider', component: DemoDivider },
+      { id: 'border', name: '边框 Border', component: DemoBorder },
+    ],
+  },
+  {
+    name: '文本显示',
+    components: [
+      { id: 'text', name: '文本 Text', component: DemoText },
+      { id: 'typography', name: '排版 Typography', component: DemoTypography },
     ],
   },
   {
     name: '表单组件',
     components: [
-      { id: 'input', name: '输入框 Input' },
-      { id: 'textarea', name: '文本域 Textarea' },
-      { id: 'select', name: '选择器 Select' },
-      { id: 'checkbox', name: '复选框 Checkbox' },
-      { id: 'radio', name: '单选框 Radio' },
-      { id: 'switch', name: '开关 Switch' },
-      { id: 'slider', name: '滑块 Slider' },
-      { id: 'datepicker', name: '日期选择器 DatePicker' },
+      { id: 'input', name: '输入框 Input', component: undefined },
+      { id: 'select', name: '选择器 Select', component: undefined },
+      { id: 'checkbox', name: '复选框 Checkbox', component: undefined },
+      { id: 'radio', name: '单选框 Radio', component: undefined },
+      { id: 'switch', name: '开关 Switch', component: undefined },
+      { id: 'form', name: '表单 Form', component: undefined },
     ],
   },
   {
-    name: '数据展示',
+    name: '数据显示',
     components: [
-      { id: 'table', name: '表格 Table' },
-      { id: 'tag', name: '标签 Tag' },
-      { id: 'badge', name: '徽章 Badge' },
-      { id: 'avatar', name: '头像 Avatar' },
-      { id: 'card', name: '卡片 Card' },
-      { id: 'collapse', name: '折叠面板 Collapse' },
-      { id: 'list', name: '列表 List' },
+      { id: 'image', name: '图片 Image', component: DemoImage },
+      { id: 'qrcode', name: '二维码 QRCode', component: DemoQrcode },
+      { id: 'tag', name: '标签 Tag', component: undefined },
+      { id: 'avatar', name: '头像 Avatar', component: undefined },
+      { id: 'badge', name: '徽章 Badge', component: undefined },
+      { id: 'card', name: '卡片 Card', component: undefined },
+      { id: 'carousel', name: '轮播图 Carousel', component: undefined },
+      { id: 'collapse', name: '折叠面板 Collapse', component: undefined },
+      { id: 'table', name: '表格 Table', component: undefined },
+      { id: 'tree', name: '树形控件 Tree', component: undefined },
+      { id: 'tooltip', name: '提示 Tooltip', component: undefined },
     ],
   },
   {
     name: '反馈组件',
     components: [
-      { id: 'alert', name: '警告提示 Alert' },
-      { id: 'modal', name: '模态框 Modal' },
-      { id: 'message', name: '全局提示 Message' },
-      { id: 'notification', name: '通知提醒 Notification' },
-      { id: 'progress', name: '进度条 Progress' },
-      { id: 'skeleton', name: '骨架屏 Skeleton' },
+      { id: 'alert', name: '警告 Alert', component: undefined },
+      { id: 'dialog', name: '对话框 Dialog', component: undefined },
+      { id: 'drawer', name: '抽屉 Drawer', component: undefined },
+      { id: 'loading', name: '加载 Loading', component: undefined },
+      { id: 'message', name: '消息提示 Message', component: undefined },
+      { id: 'notification', name: '通知 Notification', component: undefined },
+      { id: 'progress', name: '进度条 Progress', component: undefined },
+      { id: 'popconfirm', name: '气泡确认框 Popconfirm', component: undefined },
+      { id: 'result', name: '结果 Result', component: undefined },
+      { id: 'skeleton', name: '骨架屏 Skeleton', component: undefined },
     ],
   },
   {
     name: '导航组件',
     components: [
-      { id: 'menu', name: '导航菜单 Menu' },
-      { id: 'tabs', name: '标签页 Tabs' },
-      { id: 'breadcrumb', name: '面包屑 Breadcrumb' },
-      { id: 'pagination', name: '分页 Pagination' },
+      { id: 'menu', name: '菜单 Menu', component: DemoMenu },
+      { id: 'tabs', name: '标签页 Tabs', component: undefined },
+      { id: 'breadcrumb', name: '面包屑 Breadcrumb', component: undefined },
+      { id: 'dropdown', name: '下拉菜单 Dropdown', component: undefined },
+      { id: 'pagination', name: '分页 Pagination', component: undefined },
+      { id: 'steps', name: '步骤条 Steps', component: undefined },
+      { id: 'anchor', name: '锚点 Anchor', component: undefined },
+      { id: 'page-header', name: '页头 PageHeader', component: undefined },
+      { id: 'backtop', name: '回到顶部 BackTop', component: undefined },
     ],
   },
 ]
@@ -134,9 +162,12 @@ function toggleDarkMode() {
 
         <!-- 组件展示区域 -->
         <div class="ui-demo-component-showcase">
-          <component :is="`demo-${activeComponentId}`" v-if="activeComponentId" />
+          <component
+            :is="activeComponent.component"
+            v-if="activeComponent?.component"
+          />
           <div v-else class="ui-demo-empty">
-            请选择一个组件
+            {{ activeComponent ? '该组件尚未实现' : '请选择一个组件' }}
           </div>
         </div>
       </div>

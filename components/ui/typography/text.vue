@@ -3,9 +3,11 @@
  * 排版文本组件
  * 创建日期: 2023-11-14
  * 作者: aiftt
+ * 更新日期: 2023-12-03 - 修复内联样式问题，改用CSS变量和类名实现
+ * 更新日期: 2023-12-05 - 更新为v-bind + CSS变量实现方式
  */
 
-import clientLogger from '~/utils/client-logger'
+import logger from '~/utils/logger'
 
 // 定义props
 const props = withDefaults(defineProps<{
@@ -14,7 +16,7 @@ const props = withDefaults(defineProps<{
    */
   type?: 'default' | 'primary' | 'success' | 'warning' | 'danger' | 'secondary'
   /**
-   * 字体大小
+   * 文本大小
    */
   size?: 'small' | 'default' | 'large'
   /**
@@ -34,11 +36,11 @@ const props = withDefaults(defineProps<{
    */
   del?: boolean
   /**
-   * 是否标记文本
+   * 是否标记
    */
   mark?: boolean
   /**
-   * 是否添加代码样式
+   * 是否代码风格
    */
   code?: boolean
   /**
@@ -54,7 +56,7 @@ const props = withDefaults(defineProps<{
    */
   ellipsis?: boolean
   /**
-   * 行数，配合ellipsis使用
+   * 省略显示的行数
    */
   lines?: number
   /**
@@ -73,109 +75,74 @@ const props = withDefaults(defineProps<{
   copyable: false,
   align: 'left',
   ellipsis: false,
-  lines: 1,
+  lines: 3,
   color: '',
 })
 
-// 仅在客户端环境下记录日志
-if (import.meta.client) {
-  clientLogger.debug('Text component props:', props)
-}
+// 在组件初始化时记录debug日志（只在客户端）
+logger.client.debug('Text component props:', props)
 
-// 组件相关的logger
-const logger = clientLogger.child({ tag: 'text' })
+// 组件相关的logger - 使用专用的客户端子日志器
+const textLogger = logger.client.child({ tag: 'text' })
 
 // 计算文本类名
 const textClass = computed(() => {
   const classes = [
     // 基础样式
-    'font-sans relative inline-flex items-center',
+    'ui-typography-text',
   ]
 
   // 文本大小
-  if (props.size === 'small') {
-    classes.push('text-sm')
-  }
-  else if (props.size === 'large') {
-    classes.push('text-lg')
-  }
-  else {
-    classes.push('text-base')
-  }
+  classes.push(`ui-typography-text--size-${props.size}`)
 
-  // 文本颜色
-  if (props.type === 'default') {
-    classes.push('text-gray-700 dark:text-gray-200')
-  }
-  else if (props.type === 'primary') {
-    classes.push('text-primary')
-  }
-  else if (props.type === 'success') {
-    classes.push('text-green-500')
-  }
-  else if (props.type === 'warning') {
-    classes.push('text-yellow-500')
-  }
-  else if (props.type === 'danger') {
-    classes.push('text-red-500')
-  }
-  else if (props.type === 'secondary') {
-    classes.push('text-gray-500 dark:text-gray-400')
-  }
+  // 文本类型/颜色
+  classes.push(`ui-typography-text--type-${props.type}`)
 
   // 文本对齐
-  if (props.align === 'center') {
-    classes.push('text-center')
-  }
-  else if (props.align === 'right') {
-    classes.push('text-right')
-  }
-  else {
-    classes.push('text-left')
+  if (props.align !== 'left') {
+    classes.push(`ui-typography-text--align-${props.align}`)
   }
 
   // 文本样式
   if (props.bold) {
-    classes.push('font-bold')
+    classes.push('ui-typography-text--bold')
   }
 
   if (props.italic) {
-    classes.push('italic')
+    classes.push('ui-typography-text--italic')
+  }
+
+  if (props.underline) {
+    classes.push('ui-typography-text--underline')
+  }
+
+  if (props.del) {
+    classes.push('ui-typography-text--del')
+  }
+
+  if (props.mark) {
+    classes.push('ui-typography-text--mark')
+  }
+
+  if (props.code) {
+    classes.push('ui-typography-text--code')
   }
 
   // 省略样式
   if (props.ellipsis) {
-    classes.push('overflow-hidden text-ellipsis max-w-full')
-    if (props.lines <= 1) {
-      classes.push('whitespace-nowrap')
+    classes.push('ui-typography-text--ellipsis')
+
+    if (props.lines > 1) {
+      classes.push(`ui-typography-text--lines-${props.lines}`)
     }
-    else {
-      classes.push(`line-clamp-${props.lines}`)
-    }
+  }
+
+  // 自定义颜色
+  if (props.color) {
+    classes.push('ui-typography-text--custom-color')
   }
 
   return classes.join(' ')
-})
-
-// 标记样式
-const markClass = computed(() => {
-  return 'bg-yellow-100 dark:bg-yellow-900/20 px-1'
-})
-
-// 代码样式
-const codeClass = computed(() => {
-  return 'font-mono bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded text-[0.9em]'
-})
-
-// 自定义颜色样式
-const textStyle = computed(() => {
-  const style: Record<string, string> = {}
-
-  if (props.color) {
-    style.color = props.color
-  }
-
-  return style
 })
 
 // 生成唯一ID避免冲突 - 确保在SSR中稳定
@@ -188,10 +155,8 @@ const copied = ref(false)
 // 复制按钮样式
 const copyButtonClass = computed(() => {
   return [
-    'inline-flex items-center justify-center ml-1',
-    'cursor-pointer opacity-0 transition-opacity duration-200',
-    'text-gray-500 dark:text-gray-400 group-hover:opacity-100',
-    copied.value ? 'text-green-500 opacity-100' : '',
+    'ui-typography-text-copy-button',
+    copied.value ? 'ui-typography-text-copy-button--copied' : '',
   ].join(' ')
 })
 
@@ -201,37 +166,211 @@ function copyText() {
     return
 
   const text = document.getElementById(`ui-text-${textId}`)?.textContent || ''
-  logger.info('复制文本内容', { length: text.length })
+  textLogger.info('复制文本', { length: text.length })
 
   navigator.clipboard.writeText(text)
     .then(() => {
       // 复制成功
-      logger.info('文本内容复制成功')
+      textLogger.info('文本复制成功')
       copied.value = true
       setTimeout(() => {
         copied.value = false
       }, 2000)
     })
     .catch((err) => {
-      logger.error('文本内容复制失败', err)
+      textLogger.error('文本复制失败', err)
     })
 }
+
+// 自定义颜色CSS变量
+const colorVar = computed(() => props.color || null)
 </script>
 
 <template>
   <span
     :id="`ui-text-${textId}`"
-    class="group" :class="[textClass]"
-    :style="textStyle"
+    class="group ui-typography-text"
+    :class="[textClass]"
   >
-    <span v-if="del"><del><slot /></del></span>
-    <span v-else-if="underline"><u><slot /></u></span>
-    <span v-else-if="code"><code :class="codeClass"><slot /></code></span>
-    <span v-else-if="mark"><mark :class="markClass"><slot /></mark></span>
-    <span v-else><slot /></span>
+    <slot />
 
     <span v-if="copyable" :class="copyButtonClass" @click="copyText">
       <ui-icon :icon="copied ? 'carbon:checkmark' : 'carbon:copy'" size="small" />
     </span>
   </span>
 </template>
+
+<style scoped>
+.ui-typography-text {
+  /* CSS变量绑定 */
+  --ui-text-custom-color: v-bind(colorVar);
+
+  font-family: var(--ui-font-family, sans-serif);
+  display: inline-flex;
+  align-items: center;
+  position: relative;
+}
+
+/* 文本大小 */
+.ui-typography-text--size-small {
+  font-size: 0.875rem;
+}
+
+.ui-typography-text--size-default {
+  font-size: 1rem;
+}
+
+.ui-typography-text--size-large {
+  font-size: 1.125rem;
+}
+
+/* 文本类型/颜色 */
+.ui-typography-text--type-default {
+  color: var(--ui-color-text, #374151);
+}
+
+.ui-typography-text--type-primary {
+  color: var(--ui-color-primary, #10b981);
+}
+
+.ui-typography-text--type-success {
+  color: var(--ui-color-success, #10b981);
+}
+
+.ui-typography-text--type-warning {
+  color: var(--ui-color-warning, #f59e0b);
+}
+
+.ui-typography-text--type-danger {
+  color: var(--ui-color-danger, #ef4444);
+}
+
+.ui-typography-text--type-secondary {
+  color: var(--ui-color-text-secondary, #6b7280);
+}
+
+/* 自定义颜色 */
+.ui-typography-text--custom-color {
+  color: var(--ui-text-custom-color);
+}
+
+/* 文本对齐 */
+.ui-typography-text--align-center {
+  text-align: center;
+}
+
+.ui-typography-text--align-right {
+  text-align: right;
+}
+
+/* 文本样式 */
+.ui-typography-text--bold {
+  font-weight: bold;
+}
+
+.ui-typography-text--italic {
+  font-style: italic;
+}
+
+.ui-typography-text--underline {
+  text-decoration: underline;
+}
+
+.ui-typography-text--del {
+  text-decoration: line-through;
+}
+
+.ui-typography-text--mark {
+  background-color: var(--ui-color-mark-bg, #fef3c7);
+  padding: 0 0.25em;
+}
+
+.ui-typography-text--code {
+  font-family: var(--ui-font-family-code, monospace);
+  background-color: var(--ui-color-code-bg, #f3f4f6);
+  padding: 0.2em 0.4em;
+  border-radius: 3px;
+  font-size: 0.875em;
+}
+
+/* 省略样式 */
+.ui-typography-text--ellipsis {
+  display: inline-block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ui-typography-text--lines-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  white-space: normal;
+}
+
+.ui-typography-text--lines-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  white-space: normal;
+}
+
+.ui-typography-text--lines-4 {
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  line-clamp: 4;
+  -webkit-box-orient: vertical;
+  white-space: normal;
+}
+
+.ui-typography-text--lines-5 {
+  display: -webkit-box;
+  -webkit-line-clamp: 5;
+  line-clamp: 5;
+  -webkit-box-orient: vertical;
+  white-space: normal;
+}
+
+/* 复制按钮样式 */
+.ui-typography-text-copy-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 0.5rem;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s;
+  color: var(--ui-color-text-secondary, #6b7280);
+}
+
+.group:hover .ui-typography-text-copy-button {
+  opacity: 1;
+}
+
+.ui-typography-text-copy-button--copied {
+  color: var(--ui-color-success, #10b981);
+  opacity: 1;
+}
+
+/* 深色模式适配 */
+@media (prefers-color-scheme: dark) {
+  .ui-typography-text--type-default {
+    color: var(--ui-color-text-dark, #e5e7eb);
+  }
+
+  .ui-typography-text--type-secondary {
+    color: var(--ui-color-text-secondary-dark, #9ca3af);
+  }
+
+  .ui-typography-text--mark {
+    background-color: var(--ui-color-mark-bg-dark, #78350f);
+  }
+
+  .ui-typography-text--code {
+    background-color: var(--ui-color-code-bg-dark, #1f2937);
+  }
+}
+</style>

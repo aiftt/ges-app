@@ -1,8 +1,10 @@
 <script setup lang="ts" name="UiScrollbar">
 /**
  * 滚动条组件
- * 创建日期: 2023-11-15
+ * 创建日期: 2025-01-15
  * 作者: aiftt
+ * 更新日期: 2025-02-27 - 将内联样式改为CSS变量实现
+ * 更新日期: 2025-03-01 - 优化为v-bind+CSS变量实现动态样式
  *
  * 自定义滚动条组件，提供更好的样式和控制
  */
@@ -71,20 +73,22 @@ const props = withDefaults(defineProps<{
 const scrollbarClass = computed(() => {
   const classes = [
     'ui-scrollbar',
-    'overflow-auto',
   ]
 
   // 是否只在hover时显示滚动条
   if (props.hover && !props.always) {
-    classes.push('scrollbar-hide hover:scrollbar-default')
+    classes.push('ui-scrollbar--hover')
   }
 
   // 滚动方向控制
   if (props.direction === 'vertical') {
-    classes.push('overflow-x-hidden')
+    classes.push('ui-scrollbar--vertical')
   }
   else if (props.direction === 'horizontal') {
-    classes.push('overflow-y-hidden')
+    classes.push('ui-scrollbar--horizontal')
+  }
+  else {
+    classes.push('ui-scrollbar--both')
   }
 
   // 添加自定义类名
@@ -95,106 +99,98 @@ const scrollbarClass = computed(() => {
   return classes.join(' ')
 })
 
-// 滚动容器的样式
-const scrollbarStyle = computed(() => {
-  const style: Record<string, string> = {}
-
-  // 设置高度和最大高度
-  if (props.height) {
-    style.height = props.height
-  }
-
-  if (props.maxHeight) {
-    style.maxHeight = props.maxHeight
-  }
-
-  // 设置背景色
-  if (props.bgColor) {
-    style.backgroundColor = props.bgColor
-  }
-
-  // 设置滚动条样式
-  const scrollbarStyles = []
-
-  if (props.barWidth) {
-    scrollbarStyles.push(`width: ${props.barWidth}`)
-  }
-
-  if (props.barRadius) {
-    scrollbarStyles.push(`border-radius: ${props.barRadius}`)
-  }
-
-  if (props.barColor) {
-    scrollbarStyles.push(`background-color: ${props.barColor}`)
-  }
-
-  if (scrollbarStyles.length > 0) {
-    style['--scrollbar-thumb'] = `{${scrollbarStyles.join(';')}}`
-  }
-
-  // 设置滚动条悬停样式
-  if (props.barHoverColor) {
-    style['--scrollbar-thumb-hover'] = `{background-color: ${props.barHoverColor}}`
-  }
-
-  return style
-})
+// 使用计算属性和v-bind实现CSS变量
+const heightVar = computed(() => props.height || null)
+const maxHeightVar = computed(() => props.maxHeight || null)
+const bgColorVar = computed(() => props.bgColor || null)
+const barWidthVar = computed(() => props.barWidth || null)
+const barRadiusVar = computed(() => props.barRadius || null)
+const barColorVar = computed(() => props.barColor || null)
+const barHoverColorVar = computed(() => props.barHoverColor || null)
 </script>
 
 <template>
-  <div :class="scrollbarClass" :style="scrollbarStyle">
+  <div :class="scrollbarClass">
     <slot />
   </div>
 </template>
 
-<style>
+<style scoped>
+.ui-scrollbar {
+  --ui-scrollbar-height: v-bind(heightVar);
+  --ui-scrollbar-max-height: v-bind(maxHeightVar);
+  --ui-scrollbar-bg-color: v-bind(bgColorVar);
+  --ui-scrollbar-width: v-bind(barWidthVar);
+  --ui-scrollbar-radius: v-bind(barRadiusVar);
+  --ui-scrollbar-color: v-bind(barColorVar);
+  --ui-scrollbar-hover-color: v-bind(barHoverColorVar);
+
+  overflow: auto;
+  height: var(--ui-scrollbar-height, auto);
+  max-height: var(--ui-scrollbar-max-height, none);
+  background-color: var(--ui-scrollbar-bg-color, transparent);
+}
+
 .ui-scrollbar::-webkit-scrollbar {
-  width: var(--scrollbar-width, 6px);
-  height: var(--scrollbar-width, 6px);
+  width: var(--ui-scrollbar-width, 6px);
+  height: var(--ui-scrollbar-width, 6px);
 }
 
 .ui-scrollbar::-webkit-scrollbar-thumb {
-  background-color: var(--scrollbar-color, rgba(0, 0, 0, 0.2));
-  border-radius: var(--scrollbar-radius, 3px);
+  background-color: var(--ui-scrollbar-color, rgba(0, 0, 0, 0.2));
+  border-radius: var(--ui-scrollbar-radius, 3px);
 }
 
 .ui-scrollbar::-webkit-scrollbar-thumb:hover {
-  background-color: var(--scrollbar-hover-color, rgba(0, 0, 0, 0.4));
+  background-color: var(--ui-scrollbar-hover-color, rgba(0, 0, 0, 0.4));
 }
 
 .ui-scrollbar::-webkit-scrollbar-track {
-  background-color: var(--scrollbar-track-color, rgba(0, 0, 0, 0.05));
+  background-color: var(--ui-scrollbar-track-color, rgba(0, 0, 0, 0.05));
 }
 
-/* 暗黑模式 */
-html.dark .ui-scrollbar::-webkit-scrollbar-thumb {
-  background-color: var(--scrollbar-color-dark, rgba(255, 255, 255, 0.2));
+/* 方向控制 */
+.ui-scrollbar--vertical {
+  overflow-x: hidden;
 }
 
-html.dark .ui-scrollbar::-webkit-scrollbar-thumb:hover {
-  background-color: var(--scrollbar-hover-color-dark, rgba(255, 255, 255, 0.4));
+.ui-scrollbar--horizontal {
+  overflow-y: hidden;
 }
 
-html.dark .ui-scrollbar::-webkit-scrollbar-track {
-  background-color: var(--scrollbar-track-color-dark, rgba(255, 255, 255, 0.05));
+.ui-scrollbar--both {
+  overflow: auto;
 }
 
-/* 隐藏滚动条但保留功能 */
-.scrollbar-hide::-webkit-scrollbar {
+/* 鼠标悬停显示 */
+.ui-scrollbar--hover::-webkit-scrollbar {
   display: none;
 }
 
-.scrollbar-hide {
+.ui-scrollbar--hover {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
 
-.hover\:scrollbar-default:hover::-webkit-scrollbar {
+.ui-scrollbar--hover:hover::-webkit-scrollbar {
   display: block;
 }
 
-.hover\:scrollbar-default:hover {
+.ui-scrollbar--hover:hover {
   -ms-overflow-style: auto;
   scrollbar-width: auto;
+}
+
+/* 暗黑模式 */
+:root.dark .ui-scrollbar::-webkit-scrollbar-thumb {
+  background-color: var(--ui-scrollbar-color-dark, rgba(255, 255, 255, 0.2));
+}
+
+:root.dark .ui-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: var(--ui-scrollbar-hover-color-dark, rgba(255, 255, 255, 0.4));
+}
+
+:root.dark .ui-scrollbar::-webkit-scrollbar-track {
+  background-color: var(--ui-scrollbar-track-color-dark, rgba(255, 255, 255, 0.05));
 }
 </style>

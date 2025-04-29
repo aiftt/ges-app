@@ -1,18 +1,11 @@
 /**
- * 客户端日志工具
- * 创建日期: 2023-11-28
+ * 客户端日志工具 - 从logger中导出
+ * 创建日期: 2023-12-06
  * 作者: aiftt
- * 更新日期: 2023-11-28 - 初始实现
+ * 说明: 为保持向后兼容，从logger.ts中导出client命名空间
  */
 
-import { Logger } from './logger'
+import logger from './logger'
 
-// 客户端专用日志记录器
-const clientLogger = typeof window !== 'undefined'
-  ? new Logger({
-    scope: 'client',
-    tag: 'browser',
-  })
-  : new Logger({ scope: 'server-stub', tag: 'ssr' }) // 服务端渲染时提供一个基本的stub
-
-export default clientLogger
+// 导出client命名空间作为默认导出
+export default logger.client

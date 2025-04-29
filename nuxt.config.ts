@@ -17,6 +17,7 @@ export default defineNuxtConfig({
 
   css: [
     '@unocss/reset/tailwind.css',
+    '~/assets/scss/theme.scss',
   ],
 
   // 优化配置
@@ -31,7 +32,7 @@ export default defineNuxtConfig({
 
   vue: {
     compilerOptions: {
-      isCustomElement: tag => tag === 'iconify-icon',
+      // 不再需要将 iconify-icon 标记为自定义元素
     },
   },
 

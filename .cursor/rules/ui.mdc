@@ -142,12 +142,129 @@ UI组件的使用方式遵循以下模式：
 - 样式名称总是以 `ui-` 开头，仅限组件自身样式
 - 使用CSS变量实现主题相关样式
 
+## 样式实现新规范（v-bind + CSS变量）
+
+为了优化UI组件的样式实现，推荐采用v-bind + CSS变量的方式实现动态样式：
+
+### 基本原则
+
+1. **禁止使用内联样式**：不使用`:style`属性进行样式绑定
+2. **使用CSS变量**：所有动态样式必须通过CSS变量实现
+3. **使用v-bind**：利用Vue 3的`v-bind`在`<style>`块中绑定计算属性
+
+### 实现步骤
+
+1. **定义计算属性**：为每个CSS变量创建专门的计算属性，处理默认值和空值
+2. **在`<style>`中使用v-bind**：通过`v-bind`将计算属性绑定到CSS变量
+3. **在元素上应用类名**：通过类名引用CSS变量
+
+### 代码示例
+
+```vue
+<script setup lang="ts" name="UiComponent">
+// 定义props
+const props = withDefaults(defineProps<{
+  color?: string
+  width?: string
+  // ...其他props
+}>(), {
+  // 默认值
+})
+
+// 计算CSS变量的值
+const colorVar = computed(() => props.color || null)
+const widthVar = computed(() => props.width ? `${props.width}` : null)
+
+// 类名计算
+const componentClass = computed(() => {
+  const classes = ['ui-component']
+
+  // 添加条件类名
+  if (props.someCondition) {
+    classes.push('ui-component--modified')
+  }
+
+  return classes.join(' ')
+})
+</script>
+
+<template>
+  <div :class="componentClass">
+    <slot />
+  </div>
+</template>
+
+<style scoped>
+.ui-component {
+  /* 使用v-bind将计算属性绑定到CSS变量 */
+  --ui-component-color: v-bind(colorVar);
+  --ui-component-width: v-bind(widthVar);
+
+  /* 使用CSS变量 */
+  color: var(--ui-component-color, #374151);
+  width: var(--ui-component-width, auto);
+}
+
+.ui-component--modified {
+  /* 其他样式 */
+}
+</style>
+```
+
+### 优势
+
+1. **代码简洁**：避免了在模板中使用复杂的`:style`属性
+2. **性能优化**：样式计算在CSS层面而非JavaScript层面
+3. **类型安全**：计算属性提供了类型检查
+4. **更好的可维护性**：样式逻辑集中在计算属性中
+5. **兼容性**：与现有样式系统无缝集成
+
+### 注意事项
+
+1. 计算属性应当返回`null`而不是空字符串，当值为`null`时CSS会使用默认值
+2. 如果变量值需要单位（如px），应在计算属性中处理，而不是在CSS中
+3. 使用可选链和空值合并运算符来确保计算属性的安全性
+4. 确保命名规范一致，CSS变量推荐使用`--ui-组件名-属性名`的格式
+5. 与常规类名结合使用，类名处理结构性样式，CSS变量处理动态样式
+
 ## 图标规范
 
-- 图标总是有线使用 `@nuxt/icon`
-- **动态图标**：总是使用`<iconify-icon icon="collection:name"/>`
-- **静态图标**：直接使用unocss类名方式：`i-{collection}:{name}`格式
-  - 例如：`i-carbon:home`
+- 图标总是优先使用 `@nuxt/icon` 提供的 Icon 组件
+- **封装方式**：所有图标使用应通过 `ui-icon` 组件，而不是直接使用 `Icon` 组件
+- **图标名称格式**：使用标准的 Iconify 格式，如 `collection:name`
+  - 例如：`carbon:home`、`mdi:account`、`ant-design:setting-outlined`
+- **静态图标**：对于静态/装饰性图标，可使用 UnoCSS 的图标类名：`i-{collection}:{name}`
+  - 例如：`i-carbon:home`、`i-mdi:account`
+- **动态图标**：对于需要动态变化的图标，使用 `ui-icon` 组件
+  ```vue
+  <ui-icon icon="carbon:home" size="large" color="primary" />
+  ```
+- **图标尺寸**：支持预设尺寸 `small`、`default`、`large` 或直接使用具体像素值
+- **图标颜色**：支持主题色名称（如 `primary`、`success`）或任何有效的 CSS 颜色值
+- **动画效果**：支持旋转动画，通过 `spin` 属性启用
+
+### 图标示例
+
+```vue
+<!-- 基础图标 -->
+<ui-icon icon="carbon:home" />
+
+<!-- 设置尺寸 -->
+<ui-icon icon="carbon:user" size="large" />
+<ui-icon icon="carbon:document" size="24px" />
+
+<!-- 设置颜色 -->
+<ui-icon icon="carbon:warning" color="warning" />
+<ui-icon icon="carbon:checkmark" color="#10b981" />
+
+<!-- 设置动画 -->
+<ui-icon icon="carbon:renew" spin />
+
+<!-- 在按钮中使用 -->
+<ui-button>
+  <ui-icon icon="carbon:add" class="mr-2" />添加
+</ui-button>
+```
 
 ## 组件开发流程
 
@@ -228,7 +345,7 @@ const handleClick = (event: MouseEvent) => {
     :disabled="disabled"
     @click="handleClick"
   >
-    <iconify-icon v-if="icon" :icon="icon" class="mr-1" />
+    <ui-icon v-if="icon" :icon="icon" class="mr-1" />
     <slot></slot>
   </button>
 </template>
@@ -378,6 +495,147 @@ const props = withDefaults(defineProps<{
   margin-bottom: 1rem;
 }
 </style>
+```
+
+## 组件改造指南（v-bind + CSS变量）
+
+为了统一UI组件实现方式，推荐按照以下步骤改造现有组件：
+
+### 1. 组件Props扩展
+
+为组件添加可自定义样式的props：
+
+```typescript
+// 示例
+const props = withDefaults(defineProps<{
+  // 现有props
+  type?: string
+  size?: string
+  // 样式相关props
+  bgColor?: string     // 背景颜色
+  textColor?: string   // 文本颜色
+  radius?: string      // 圆角大小
+  // 其他可自定义的CSS属性...
+}>(), {
+  // 默认值
+})
+```
+
+### 2. 计算属性转换
+
+为每个CSS变量创建对应的计算属性：
+
+```typescript
+// 示例
+const bgColorVar = computed(() => props.bgColor || null)
+const textColorVar = computed(() => props.textColor || null)
+const radiusVar = computed(() => props.radius || null)
+// 其他计算属性...
+```
+
+### 3. 类名的转换
+
+改造现有的类名计算逻辑，将样式与结构分离：
+
+```typescript
+const componentClass = computed(() => {
+  // 基础样式类名
+  const classes = ['ui-component-name']
+
+  // 功能类名
+  classes.push(`ui-component-name--${props.type}`)
+  classes.push(`ui-component-name--${props.size}`)
+
+  // 状态类名
+  if (props.disabled) {
+    classes.push('ui-component-name--disabled')
+  }
+
+  // 自定义样式标记
+  if (props.bgColor || props.textColor || props.radius) {
+    classes.push('ui-component-name--custom')
+  }
+
+  return classes.join(' ')
+})
+```
+
+### 4. 添加样式块
+
+在组件中添加`<style>`块，使用v-bind绑定样式变量：
+
+```vue
+<style scoped>
+.ui-component-name {
+  /* CSS变量绑定 */
+  --ui-component-bg-color: v-bind(bgColorVar);
+  --ui-component-text-color: v-bind(textColorVar);
+  --ui-component-radius: v-bind(radiusVar);
+
+  /* 基础样式 */
+  background-color: var(--ui-component-bg-color, #ffffff);
+  color: var(--ui-component-text-color, #374151);
+  border-radius: var(--ui-component-radius, 0.375rem);
+}
+
+/* 类型样式 */
+.ui-component-name--primary {
+  background-color: var(--ui-color-primary, #3b82f6);
+  color: white;
+}
+
+/* 尺寸样式 */
+.ui-component-name--small {
+  padding: 0.375rem 0.625rem;
+  font-size: 0.875rem;
+}
+
+/* 自定义样式 - 仅当指定了自定义属性时应用 */
+.ui-component-name--custom {
+  background-color: var(--ui-component-bg-color) !important;
+  color: var(--ui-component-text-color) !important;
+  border-radius: var(--ui-component-radius) !important;
+}
+</style>
+```
+
+### 5. 更新模板
+
+移除模板中的内联样式，使用类名引用：
+
+```vue
+<template>
+  <div :class="componentClass">
+    <slot />
+  </div>
+</template>
+```
+
+### 6. 添加组件文档
+
+在组件顶部添加注释，记录更新历史：
+
+```typescript
+/**
+ * 组件名称
+ * 创建日期: YYYY-MM-DD
+ * 作者: xxx
+ * 更新日期: YYYY-MM-DD - 改为v-bind + CSS变量实现方式
+ */
+```
+
+### 7. 创建Demo示例
+
+为改造后的组件创建demo示例，展示新功能的使用方法：
+
+```vue
+<ui-component
+  bg-color="#8b5cf6"
+  text-color="#ffffff"
+  radius="0.5rem"
+>
+  自定义样式组件
+</ui-component>
 ```
 
 ## 常见问题及解决方案

@@ -1,16 +1,11 @@
 /**
- * 服务端日志工具
- * 创建日期: 2023-11-28
+ * 服务端日志工具 - 从logger中导出
+ * 创建日期: 2023-12-06
  * 作者: aiftt
- * 更新日期: 2023-11-28 - 初始实现
+ * 说明: 为保持向后兼容，从logger.ts中导出server命名空间
  */
 
-import { Logger } from './logger'
+import logger from './logger'
 
-// 服务端专用日志记录器
-const serverLogger = new Logger({
-  scope: 'server',
-  tag: 'node',
-})
-
-export default serverLogger
+// 导出server命名空间作为默认导出
+export default logger.server

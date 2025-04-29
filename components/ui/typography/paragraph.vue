@@ -3,9 +3,11 @@
  * 排版段落组件
  * 创建日期: 2023-11-14
  * 作者: aiftt
+ * 更新日期: 2023-12-06 - 更新logger接口
+ * 更新日期: 2023-12-06 - 更新为v-bind + CSS变量实现方式
  */
 
-import clientLogger from '~/utils/client-logger'
+import logger from '~/utils/logger'
 
 // 定义props
 const props = withDefaults(defineProps<{
@@ -62,110 +64,59 @@ const props = withDefaults(defineProps<{
   spacing: 'default',
 })
 
-// 仅在客户端环境下记录日志
-if (import.meta.client) {
-  clientLogger.debug('Paragraph component props:', props)
-}
+// 在组件初始化时记录debug日志（只在客户端）
+logger.client.debug('Paragraph component props:', props)
 
-// 组件相关的logger
-const logger = clientLogger.child({ tag: 'paragraph' })
+// 组件相关的logger - 使用专用的客户端子日志器
+const paragraphLogger = logger.client.child({ tag: 'paragraph' })
 
 // 计算段落类名
 const paragraphClass = computed(() => {
   const classes = [
     // 基础样式
-    'font-sans leading-normal mt-0 relative',
+    'ui-typography-paragraph',
   ]
 
   // 文本大小
-  if (props.size === 'small') {
-    classes.push('text-sm')
-  }
-  else if (props.size === 'large') {
-    classes.push('text-lg')
-  }
-  else {
-    classes.push('text-base')
-  }
+  classes.push(`ui-typography-paragraph--size-${props.size}`)
 
-  // 文本颜色
-  if (props.type === 'default') {
-    classes.push('text-gray-700 dark:text-gray-200')
-  }
-  else if (props.type === 'primary') {
-    classes.push('text-primary')
-  }
-  else if (props.type === 'success') {
-    classes.push('text-green-500')
-  }
-  else if (props.type === 'warning') {
-    classes.push('text-yellow-500')
-  }
-  else if (props.type === 'danger') {
-    classes.push('text-red-500')
-  }
-  else if (props.type === 'secondary') {
-    classes.push('text-gray-500 dark:text-gray-400')
-  }
+  // 文本类型
+  classes.push(`ui-typography-paragraph--type-${props.type}`)
 
   // 段落间距
-  if (props.spacing === 'small') {
-    classes.push('mb-3')
-  }
-  else if (props.spacing === 'large') {
-    classes.push('mb-8')
-  }
-  else {
-    classes.push('mb-5')
-  }
+  classes.push(`ui-typography-paragraph--spacing-${props.spacing}`)
 
   // 文本对齐
-  if (props.align === 'center') {
-    classes.push('text-center')
-  }
-  else if (props.align === 'right') {
-    classes.push('text-right')
-  }
-  else if (props.align === 'justify') {
-    classes.push('text-justify')
-  }
-  else {
-    classes.push('text-left')
-  }
+  classes.push(`ui-typography-paragraph--align-${props.align}`)
 
   // 文本样式
   if (props.bold) {
-    classes.push('font-bold')
+    classes.push('ui-typography-paragraph--bold')
   }
 
   if (props.italic) {
-    classes.push('italic')
+    classes.push('ui-typography-paragraph--italic')
   }
 
   // 省略样式
   if (props.ellipsis) {
-    classes.push('overflow-hidden text-ellipsis')
-    if (props.lines <= 1) {
-      classes.push('whitespace-nowrap')
+    classes.push('ui-typography-paragraph--ellipsis')
+
+    if (props.lines > 1) {
+      classes.push(`ui-typography-paragraph--lines-${props.lines}`)
     }
-    else {
-      classes.push(`line-clamp-${props.lines}`)
-    }
+  }
+
+  // 自定义颜色
+  if (props.color) {
+    classes.push('ui-typography-paragraph--custom-color')
   }
 
   return classes.join(' ')
 })
 
-// 自定义颜色样式
-const paragraphStyle = computed(() => {
-  const style: Record<string, string> = {}
-
-  if (props.color) {
-    style.color = props.color
-  }
-
-  return style
-})
+// 自定义颜色CSS变量
+const colorVar = computed(() => props.color || null)
 
 // 生成唯一ID避免冲突 - 确保在SSR中稳定
 const paragraphId = import.meta.client
@@ -177,10 +128,8 @@ const copied = ref(false)
 // 复制按钮样式
 const copyButtonClass = computed(() => {
   return [
-    'inline-flex items-center justify-center ml-2',
-    'cursor-pointer opacity-0 transition-opacity duration-200',
-    'text-gray-500 dark:text-gray-400 group-hover:opacity-100',
-    copied.value ? 'text-green-500 opacity-100' : '',
+    'ui-typography-paragraph__copy-button',
+    copied.value ? 'ui-typography-paragraph__copy-button--copied' : '',
   ].join(' ')
 })
 
@@ -190,19 +139,19 @@ function copyText() {
     return
 
   const text = document.getElementById(`ui-paragraph-${paragraphId}`)?.textContent || ''
-  logger.info('复制段落文本', { length: text.length })
+  paragraphLogger.info('复制段落文本', { length: text.length })
 
   navigator.clipboard.writeText(text)
     .then(() => {
       // 复制成功
-      logger.info('段落文本复制成功')
+      paragraphLogger.info('段落文本复制成功')
       copied.value = true
       setTimeout(() => {
         copied.value = false
       }, 2000)
     })
     .catch((err) => {
-      logger.error('段落文本复制失败', err)
+      paragraphLogger.error('段落文本复制失败', err)
     })
 }
 </script>
@@ -210,8 +159,8 @@ function copyText() {
 <template>
   <p
     :id="`ui-paragraph-${paragraphId}`"
-    class="group" :class="[paragraphClass]"
-    :style="paragraphStyle"
+    class="group"
+    :class="[paragraphClass]"
   >
     <slot />
 
@@ -220,3 +169,168 @@ function copyText() {
     </span>
   </p>
 </template>
+
+<style scoped>
+.ui-typography-paragraph {
+  /* CSS变量绑定 */
+  --ui-paragraph-custom-color: v-bind(colorVar);
+
+  font-family: var(--ui-font-family, sans-serif);
+  margin-top: 0;
+  position: relative;
+  line-height: 1.5;
+}
+
+/* 段落大小 */
+.ui-typography-paragraph--size-small {
+  font-size: 0.875rem;
+}
+
+.ui-typography-paragraph--size-default {
+  font-size: 1rem;
+}
+
+.ui-typography-paragraph--size-large {
+  font-size: 1.125rem;
+}
+
+/* 文本类型/颜色 */
+.ui-typography-paragraph--type-default {
+  color: var(--ui-color-text, #374151);
+}
+
+.ui-typography-paragraph--type-primary {
+  color: var(--ui-color-primary, #3b82f6);
+}
+
+.ui-typography-paragraph--type-success {
+  color: var(--ui-color-success, #10b981);
+}
+
+.ui-typography-paragraph--type-warning {
+  color: var(--ui-color-warning, #f59e0b);
+}
+
+.ui-typography-paragraph--type-danger {
+  color: var(--ui-color-danger, #ef4444);
+}
+
+.ui-typography-paragraph--type-secondary {
+  color: var(--ui-color-text-secondary, #6b7280);
+}
+
+/* 自定义颜色 */
+.ui-typography-paragraph--custom-color {
+  color: var(--ui-paragraph-custom-color);
+}
+
+/* 段落间距 */
+.ui-typography-paragraph--spacing-small {
+  margin-bottom: 0.75rem;
+}
+
+.ui-typography-paragraph--spacing-default {
+  margin-bottom: 1.25rem;
+}
+
+.ui-typography-paragraph--spacing-large {
+  margin-bottom: 2rem;
+}
+
+/* 文本对齐 */
+.ui-typography-paragraph--align-left {
+  text-align: left;
+}
+
+.ui-typography-paragraph--align-center {
+  text-align: center;
+}
+
+.ui-typography-paragraph--align-right {
+  text-align: right;
+}
+
+.ui-typography-paragraph--align-justify {
+  text-align: justify;
+}
+
+/* 文本样式 */
+.ui-typography-paragraph--bold {
+  font-weight: bold;
+}
+
+.ui-typography-paragraph--italic {
+  font-style: italic;
+}
+
+/* 省略样式 */
+.ui-typography-paragraph--ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ui-typography-paragraph--lines-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  white-space: normal;
+}
+
+.ui-typography-paragraph--lines-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  white-space: normal;
+}
+
+.ui-typography-paragraph--lines-4 {
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  line-clamp: 4;
+  -webkit-box-orient: vertical;
+  white-space: normal;
+}
+
+.ui-typography-paragraph--lines-5 {
+  display: -webkit-box;
+  -webkit-line-clamp: 5;
+  line-clamp: 5;
+  -webkit-box-orient: vertical;
+  white-space: normal;
+}
+
+/* 复制按钮样式 */
+.ui-typography-paragraph__copy-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 0.5rem;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s;
+  color: var(--ui-color-text-secondary, #6b7280);
+}
+
+.group:hover .ui-typography-paragraph__copy-button {
+  opacity: 1;
+}
+
+.ui-typography-paragraph__copy-button--copied {
+  color: var(--ui-color-success, #10b981);
+  opacity: 1;
+}
+
+/* 深色模式适配 */
+@media (prefers-color-scheme: dark) {
+  .ui-typography-paragraph--type-default {
+    color: var(--ui-color-text-dark, #e5e7eb);
+  }
+
+  .ui-typography-paragraph--type-secondary {
+    color: var(--ui-color-text-secondary-dark, #9ca3af);
+  }
+}
+</style>

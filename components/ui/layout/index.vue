@@ -3,6 +3,7 @@
  * 布局组件
  * 创建日期: 2023-11-15
  * 作者: aiftt
+ * 更新日期: 2023-12-02 - 改为使用CSS变量实现样式
  *
  * 用于构建页面的基本布局结构，提供灵活的布局控制
  */
@@ -102,9 +103,12 @@ const props = withDefaults(defineProps<{
   class: '',
 })
 
+// 背景颜色样式变量
+const bgColorVar = computed(() => props.bgColor || null)
+
 // 计算布局容器的类名
 const layoutClass = computed(() => {
-  const classes = []
+  const classes = ['ui-layout']
 
   // 基础样式
   if (props.type === 'flex') {
@@ -241,23 +245,24 @@ const layoutClass = computed(() => {
     classes.push(props.class)
   }
 
-  return classes.join(' ')
-})
-
-// 背景颜色样式
-const layoutStyle = computed(() => {
-  const style: Record<string, string> = {}
-
+  // 自定义背景色标记
   if (props.bgColor) {
-    style.backgroundColor = props.bgColor
+    classes.push('ui-layout--custom-bg')
   }
 
-  return style
+  return classes.join(' ')
 })
 </script>
 
 <template>
-  <div :class="layoutClass" :style="layoutStyle">
+  <div :class="layoutClass">
     <slot />
   </div>
 </template>
+
+<style scoped>
+.ui-layout--custom-bg {
+  --ui-layout-bg-color: v-bind(bgColorVar);
+  background-color: var(--ui-layout-bg-color);
+}
+</style>

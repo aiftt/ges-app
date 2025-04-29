@@ -1,8 +1,10 @@
 <script setup lang="ts" name="UiSpace">
 /**
  * 空间间距组件
- * 创建日期: 2023-11-15
+ * 创建日期: 2025-01-15
  * 作者: aiftt
+ * 更新日期: 2025-02-27 - 将内联样式改为CSS变量
+ * 更新日期: 2025-02-28 - 改进CSS变量实现，移除内联style
  *
  * 用于设置元素之间的间距，提供水平和垂直方向的间隔
  */
@@ -57,49 +59,27 @@ const props = withDefaults(defineProps<{
 
 // 计算空间容器的类名
 const spaceClass = computed(() => {
-  const classes = [
-    'flex',
-    'items-center',
-  ]
+  const classes = ['ui-space']
 
   // 间距方向
-  if (props.direction === 'vertical') {
-    classes.push('flex-col')
-  }
-  else {
-    classes.push('flex-row')
-  }
+  classes.push(`ui-space--${props.direction}`)
 
   // 对齐方式
-  if (props.align === 'start') {
-    classes.push('items-start')
-  }
-  else if (props.align === 'end') {
-    classes.push('items-end')
-  }
-  else if (props.align === 'center') {
-    classes.push('items-center')
-  }
-  else if (props.align === 'baseline') {
-    classes.push('items-baseline')
-  }
+  classes.push(`ui-space--align-${props.align}`)
 
   // 换行
   if (props.wrap) {
-    classes.push('flex-wrap')
+    classes.push('ui-space--wrap')
   }
 
   // 行内显示
   if (props.inline) {
-    classes.push('inline-flex')
+    classes.push('ui-space--inline')
   }
 
   // 填充父容器
   if (props.fill) {
-    classes.push('w-full')
-
-    // 子元素均分空间
-    classes.push('children:flex-1')
+    classes.push('ui-space--fill')
   }
 
   // 添加自定义类名
@@ -107,34 +87,32 @@ const spaceClass = computed(() => {
     classes.push(props.class)
   }
 
+  // 添加自定义间距类
+  if (props.size) {
+    classes.push('ui-space--custom-gap')
+  }
+
   return classes.join(' ')
 })
 
-// 计算间距样式
-const spacingStyle = computed(() => {
-  let gapSize: string
-
+// 计算间距变量 - 用于CSS变量绑定
+const gapVar = computed(() => {
   // 计算间距大小
   if (typeof props.size === 'number') {
-    gapSize = `${props.size}px`
+    return `${props.size}px`
   }
   else if (props.size === 'small') {
-    gapSize = '8px'
+    return '8px'
   }
   else if (props.size === 'large') {
-    gapSize = '24px'
+    return '24px'
   }
   else if (typeof props.size === 'string' && !['small', 'medium', 'large'].includes(props.size)) {
-    gapSize = props.size
+    return props.size
   }
   else {
     // 默认medium
-    gapSize = '16px'
-  }
-
-  // 根据方向使用合适的间距
-  return {
-    gap: gapSize,
+    return '16px'
   }
 })
 
@@ -156,14 +134,78 @@ function filterEmptyChildren(children?: VNode[]): VNode[] {
 </script>
 
 <template>
-  <div :class="spaceClass" :style="spacingStyle">
+  <div :class="spaceClass">
     <template v-for="(child, index) in filteredChildren" :key="index">
       <div class="ui-space-item">
         <component :is="child" />
       </div>
       <div v-if="split && index < filteredChildren.length - 1" class="ui-space-split">
-        <div class="mx-2 h-4 w-px bg-gray-200 dark:bg-gray-700" />
+        <div class="ui-space-split-line" />
       </div>
     </template>
   </div>
 </template>
+
+<style scoped>
+.ui-space {
+  display: flex;
+  gap: 16px; /* 默认间距 */
+}
+
+.ui-space--custom-gap {
+  --ui-space-gap: v-bind(gapVar);
+  gap: var(--ui-space-gap);
+}
+
+.ui-space--horizontal {
+  flex-direction: row;
+}
+
+.ui-space--vertical {
+  flex-direction: column;
+}
+
+.ui-space--align-start {
+  align-items: flex-start;
+}
+
+.ui-space--align-end {
+  align-items: flex-end;
+}
+
+.ui-space--align-center {
+  align-items: center;
+}
+
+.ui-space--align-baseline {
+  align-items: baseline;
+}
+
+.ui-space--wrap {
+  flex-wrap: wrap;
+}
+
+.ui-space--inline {
+  display: inline-flex;
+}
+
+.ui-space--fill {
+  width: 100%;
+}
+
+.ui-space--fill > .ui-space-item {
+  flex: 1;
+}
+
+.ui-space-split-line {
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+  height: 1rem;
+  width: 1px;
+  background-color: var(--ui-color-split, #e5e7eb);
+}
+
+:root.dark .ui-space-split-line {
+  background-color: var(--ui-color-split-dark, #4b5563);
+}
+</style>

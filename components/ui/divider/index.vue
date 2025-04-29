@@ -1,8 +1,10 @@
 <script setup lang="ts" name="UiDivider">
 /**
  * 分割线组件
- * 创建日期: 2023-11-14
+ * 创建日期: 2025-01-14
  * 作者: aiftt
+ * 更新日期: 2025-02-27 - 将内联样式改为CSS变量实现
+ * 更新日期: 2025-03-01 - 优化为v-bind+CSS变量实现动态样式
  *
  * 用于分隔内容的水平或垂直分割线
  */
@@ -43,6 +45,10 @@ const props = withDefaults(defineProps<{
    * 自定义类名
    */
   class?: string
+  /**
+   * 分割线文本
+   */
+  text?: string
 }>(), {
   direction: 'horizontal',
   withText: false,
@@ -52,46 +58,20 @@ const props = withDefaults(defineProps<{
   width: '',
   margin: '1rem',
   class: '',
+  text: '',
 })
 
 // 计算分割线的类名
 const dividerClass = computed(() => {
   const classes = [
-    // 通用样式
-    'box-border relative flex items-center',
-    'text-sm leading-normal list-none',
-
-    // 方向相关样式
-    props.direction === 'horizontal'
-      ? 'w-full min-w-full h-px clear-both'
-      : 'inline-flex h-[0.9em] align-middle',
+    'ui-divider',
+    `ui-divider--${props.direction}`,
+    `ui-divider--${props.type}`,
   ]
 
-  // 边框类型样式
-  if (props.direction === 'horizontal') {
-    if (!props.withText) {
-      classes.push(
-        props.type === 'solid'
-          ? 'border-t border-solid'
-          : props.type === 'dashed'
-            ? 'border-t border-dashed'
-            : 'border-t border-dotted',
-      )
-    }
-  }
-  else {
-    classes.push(
-      props.type === 'solid'
-        ? 'border-l border-solid'
-        : props.type === 'dashed'
-          ? 'border-l border-dashed'
-          : 'border-l border-dotted',
-    )
-  }
-
-  // 带文本的分割线样式
   if (props.withText) {
-    classes.push('border-t-0 bg-transparent')
+    classes.push('ui-divider--with-text')
+    classes.push(`ui-divider--text-${props.textPosition}`)
   }
 
   // 添加自定义类名
@@ -102,95 +82,151 @@ const dividerClass = computed(() => {
   return classes.join(' ')
 })
 
-// 文本样式类
-const textClass = computed(() => {
-  const classes = [
-    'inline-block px-4 font-medium whitespace-nowrap',
-    'text-gray-600 dark:text-gray-300',
-  ]
-
-  return classes.join(' ')
+// 计算CSS变量值 - 使用计算属性和v-bind
+const dividerColor = computed(() => props.color || null)
+const dividerWidth = computed(() => props.width ? `${props.width}` : null)
+const dividerMargin = computed(() => {
+  if (!props.margin)
+    return null
+  return props.direction === 'horizontal' ? props.margin : '0'
 })
-
-// 分割线样式
-const dividerStyle = computed(() => {
-  const style: Record<string, string> = {}
-
-  // 颜色
-  if (props.color) {
-    if (props.direction === 'horizontal' && !props.withText) {
-      style.borderColor = props.color
-    }
-    else if (props.direction === 'vertical') {
-      style.borderColor = props.color
-    }
-  }
-  else {
-    // 默认颜色
-    style.borderColor = 'rgb(229, 231, 235)'
-  }
-
-  // 宽度
-  if (props.width && props.direction === 'vertical') {
-    style.borderWidth = props.width
-  }
-
-  // 边距
-  if (props.margin) {
-    if (props.direction === 'horizontal') {
-      style.margin = `${props.margin} 0`
-    }
-    else {
-      style.margin = `0 ${props.margin}`
-    }
-  }
-
-  return style
-})
-
-// 生成伪元素样式
-const pseudoElementStyle = computed(() => {
-  const style: Record<string, string> = {}
-
-  if (props.color) {
-    style.backgroundColor = props.color
-  }
-  else {
-    style.backgroundColor = 'rgb(229, 231, 235)'
-  }
-
-  return style
-})
-
-// 左侧伪元素类
-const beforeClass = computed(() => {
-  const classes = [
-    'content-empty flex-1 h-px',
-    props.textPosition === 'left' ? 'w-[5%]' : props.textPosition === 'right' ? 'w-[95%]' : '',
-  ]
-
-  return classes.join(' ')
-})
-
-// 右侧伪元素类
-const afterClass = computed(() => {
-  const classes = [
-    'content-empty flex-1 h-px',
-    props.textPosition === 'left' ? 'w-[95%]' : props.textPosition === 'right' ? 'w-[5%]' : '',
-  ]
-
-  return classes.join(' ')
+const dividerMarginX = computed(() => {
+  if (!props.margin)
+    return null
+  return props.direction === 'vertical' ? props.margin : '0'
 })
 </script>
 
 <template>
-  <div :class="dividerClass" :style="dividerStyle">
-    <template v-if="withText">
-      <div :class="beforeClass" :style="pseudoElementStyle" />
-      <span :class="textClass">
-        <slot />
-      </span>
-      <div :class="afterClass" :style="pseudoElementStyle" />
-    </template>
+  <!-- 有文本的分割线 -->
+  <div
+    v-if="withText"
+    :class="dividerClass"
+  >
+    <span class="ui-divider__before" />
+    <span class="ui-divider__text">
+      <slot>{{ text }}</slot>
+    </span>
+    <span class="ui-divider__after" />
   </div>
+
+  <!-- 无文本分割线 -->
+  <div
+    v-else
+    :class="dividerClass"
+  />
 </template>
+
+<style scoped>
+.ui-divider {
+  --ui-divider-color: v-bind(dividerColor);
+  --ui-divider-width: v-bind(dividerWidth);
+  --ui-divider-margin-y: v-bind(dividerMargin);
+  --ui-divider-margin-x: v-bind(dividerMarginX);
+
+  box-sizing: border-box;
+  position: relative;
+  display: flex;
+  align-items: center;
+  font-size: 0.875rem;
+  line-height: normal;
+  list-style: none;
+}
+
+.ui-divider--horizontal {
+  width: 100%;
+  min-width: 100%;
+  height: var(--ui-divider-width, 1px);
+  clear: both;
+  margin-top: var(--ui-divider-margin-y, 1rem);
+  margin-bottom: var(--ui-divider-margin-y, 1rem);
+}
+
+.ui-divider--vertical {
+  display: inline-flex;
+  height: 0.9em;
+  vertical-align: middle;
+  width: var(--ui-divider-width, 1px);
+  margin-left: var(--ui-divider-margin-x, 1rem);
+  margin-right: var(--ui-divider-margin-x, 1rem);
+}
+
+/* 边框类型 */
+.ui-divider--horizontal:not(.ui-divider--with-text).ui-divider--solid {
+  border-top: 1px solid var(--ui-divider-color, rgb(229, 231, 235));
+}
+
+.ui-divider--horizontal:not(.ui-divider--with-text).ui-divider--dashed {
+  border-top: 1px dashed var(--ui-divider-color, rgb(229, 231, 235));
+}
+
+.ui-divider--horizontal:not(.ui-divider--with-text).ui-divider--dotted {
+  border-top: 1px dotted var(--ui-divider-color, rgb(229, 231, 235));
+}
+
+.ui-divider--vertical.ui-divider--solid {
+  border-left: 1px solid var(--ui-divider-color, rgb(229, 231, 235));
+}
+
+.ui-divider--vertical.ui-divider--dashed {
+  border-left: 1px dashed var(--ui-divider-color, rgb(229, 231, 235));
+}
+
+.ui-divider--vertical.ui-divider--dotted {
+  border-left: 1px dotted var(--ui-divider-color, rgb(229, 231, 235));
+}
+
+/* 带文本的分割线 */
+.ui-divider--with-text {
+  border-top: 0;
+  background: transparent;
+}
+
+.ui-divider--with-text .ui-divider__text {
+  display: inline-block;
+  padding: 0 1rem;
+  font-weight: 500;
+  white-space: nowrap;
+  color: var(--ui-text-color, rgb(75, 85, 99));
+}
+
+.ui-divider--with-text .ui-divider__before,
+.ui-divider--with-text .ui-divider__after {
+  position: relative;
+  flex: 1;
+  height: 1px;
+  background-color: var(--ui-divider-color, rgb(229, 231, 235));
+}
+
+/* 文本位置 */
+.ui-divider--text-left .ui-divider__before {
+  width: 5%;
+}
+
+.ui-divider--text-left .ui-divider__after {
+  width: 95%;
+}
+
+.ui-divider--text-right .ui-divider__before {
+  width: 95%;
+}
+
+.ui-divider--text-right .ui-divider__after {
+  width: 5%;
+}
+
+/* 暗黑模式 */
+:root.dark .ui-divider--horizontal:not(.ui-divider--with-text),
+:root.dark .ui-divider--vertical {
+  border-color: var(--ui-divider-color, rgb(75, 85, 99));
+}
+
+:root.dark .ui-divider__before,
+:root.dark .ui-divider__after {
+  background-color: var(--ui-divider-color, rgb(75, 85, 99));
+}
+
+:root.dark .ui-divider__text {
+  color: var(--ui-text-color-dark, rgb(209, 213, 219));
+}
+</style>
