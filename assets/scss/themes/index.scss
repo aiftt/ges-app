@@ -6,14 +6,14 @@
  */
 
 // 导入基础变量
-@import './base.scss';
+@use './base.scss';
 
 // 导入亮色主题变量
-@import './light.scss';
+@use './light.scss';
 
 // 导入暗色主题变量
-@import './dark.scss';
+@use './dark.scss';
 
 // 在这里可以导入其他主题变量，如：
-// @import './blue.scss';
-// @import './purple.scss';
+// @use './blue.scss';
+// @use './purple.scss';

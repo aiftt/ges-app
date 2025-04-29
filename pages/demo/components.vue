@@ -10,6 +10,7 @@
 import { computed, ref } from 'vue'
 import DemoBorder from '~/components/demo/border.vue'
 import DemoButton from '~/components/demo/button.vue'
+import DemoCode from '~/components/demo/code.vue'
 import DemoDivider from '~/components/demo/divider.vue'
 import DemoIcon from '~/components/demo/icon.vue'
 import DemoImage from '~/components/demo/image.vue'
@@ -22,25 +23,26 @@ import DemoTheme from '~/pages/demo/theme.vue'
 // 定义组件分类
 const categories = [
   {
-    name: '基础组件',
-    components: [
-      { id: 'button', name: '按钮 Button', component: DemoButton },
-      { id: 'icon', name: '图标 Icon', component: DemoIcon },
-      { id: 'divider', name: '分割线 Divider', component: DemoDivider },
-      { id: 'border', name: '边框 Border', component: DemoBorder },
+    title: '基础组件',
+    items: [
+      { id: 'border', name: '边框', component: DemoBorder },
+      { id: 'button', name: '按钮', component: DemoButton },
+      { id: 'code', name: '代码展示', component: DemoCode },
+      { id: 'divider', name: '分割线', component: DemoDivider },
+      { id: 'icon', name: '图标', component: DemoIcon },
       { id: 'theme', name: '主题色彩 Theme', component: DemoTheme },
     ],
   },
   {
-    name: '文本显示',
-    components: [
-      { id: 'text', name: '文本 Text', component: DemoText },
-      { id: 'typography', name: '排版 Typography', component: DemoTypography },
+    title: '文本展示',
+    items: [
+      { id: 'text', name: '文本', component: DemoText },
+      { id: 'typography', name: '排版', component: DemoTypography },
     ],
   },
   {
-    name: '表单组件',
-    components: [
+    title: '表单组件',
+    items: [
       { id: 'input', name: '输入框 Input', component: undefined },
       { id: 'select', name: '选择器 Select', component: undefined },
       { id: 'checkbox', name: '复选框 Checkbox', component: undefined },
@@ -50,10 +52,10 @@ const categories = [
     ],
   },
   {
-    name: '数据显示',
-    components: [
-      { id: 'image', name: '图片 Image', component: DemoImage },
-      { id: 'qrcode', name: '二维码 QRCode', component: DemoQrcode },
+    title: '数据展示',
+    items: [
+      { id: 'image', name: '图片', component: DemoImage },
+      { id: 'qrcode', name: '二维码', component: DemoQrcode },
       { id: 'tag', name: '标签 Tag', component: undefined },
       { id: 'avatar', name: '头像 Avatar', component: undefined },
       { id: 'badge', name: '徽章 Badge', component: undefined },
@@ -66,8 +68,8 @@ const categories = [
     ],
   },
   {
-    name: '反馈组件',
-    components: [
+    title: '反馈组件',
+    items: [
       { id: 'alert', name: '警告 Alert', component: undefined },
       { id: 'dialog', name: '对话框 Dialog', component: undefined },
       { id: 'drawer', name: '抽屉 Drawer', component: undefined },
@@ -81,8 +83,8 @@ const categories = [
     ],
   },
   {
-    name: '导航组件',
-    components: [
+    title: '导航组件',
+    items: [
       { id: 'menu', name: '菜单 Menu', component: DemoMenu },
       { id: 'tabs', name: '标签页 Tabs', component: undefined },
       { id: 'breadcrumb', name: '面包屑 Breadcrumb', component: undefined },
@@ -101,7 +103,7 @@ const activeComponentId = ref('button')
 
 // 获取所有组件的扁平列表
 const allComponents = computed(() => {
-  return categories.flatMap(category => category.components)
+  return categories.flatMap(category => category.items)
 })
 
 // 当前选中的组件信息
@@ -139,13 +141,13 @@ function toggleDarkMode() {
     <div class="ui-demo-container">
       <!-- 左侧菜单 -->
       <div class="ui-demo-sidebar">
-        <div v-for="category in categories" :key="category.name" class="ui-demo-category">
+        <div v-for="category in categories" :key="category.title" class="ui-demo-category">
           <h3 class="ui-demo-category-title">
-            {{ category.name }}
+            {{ category.title }}
           </h3>
           <ul class="ui-demo-component-list">
             <li
-              v-for="component in category.components"
+              v-for="component in category.items"
               :key="component.id"
               class="ui-demo-component-item"
               :class="{ active: activeComponentId === component.id }"

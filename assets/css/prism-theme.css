@@ -1,0 +1,287 @@
+/**
+ * 自定义Prism主题样式
+ * 创建日期: 2023-12-12
+ * 更新日期: 当前
+ * 作者: aiftt
+ */
+
+/* Prism 基础样式 */
+pre[class*='language-'],
+code[class*='language-'] {
+  font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+  font-size: 1em;
+  text-align: left;
+  white-space: pre;
+  word-spacing: normal;
+  word-break: normal;
+  word-wrap: normal;
+  line-height: 1.5;
+  -moz-tab-size: 4;
+  -o-tab-size: 4;
+  tab-size: 4;
+  -webkit-hyphens: none;
+  -moz-hyphens: none;
+  -ms-hyphens: none;
+  hyphens: none;
+}
+
+/* 代码块样式 */
+pre[class*='language-'] {
+  padding: 1em;
+  margin: 0;
+  overflow: auto;
+  border-radius: 0.3em;
+}
+
+/* 行内代码样式 */
+:not(pre) > code[class*='language-'] {
+  padding: 0.1em 0.3em;
+  border-radius: 0.3em;
+  white-space: normal;
+}
+
+/* 亮色主题 - 默认 */
+:root {
+  --prism-background: #f5f7f9;
+  --prism-text: #383a42;
+  --prism-comment: #a0a1a7;
+  --prism-punctuation: #383a42;
+  --prism-property: #a626a4;
+  --prism-tag: #e45649;
+  --prism-boolean: #0184bb;
+  --prism-number: #986801;
+  --prism-selector: #e45649;
+  --prism-string: #50a14f;
+  --prism-operator: #383a42;
+  --prism-function: #4078f2;
+  --prism-keyword: #a626a4;
+  --prism-regex: #ca1243;
+  --prism-line-highlight: rgba(0, 0, 0, 0.1);
+  --prism-line-number: #9e9e9e;
+  --prism-line-number-gutter: #eeeeee;
+  --prism-line-number-highlight: #c6c6c6;
+  --prism-selection: rgba(0, 0, 0, 0.07);
+}
+
+/* 暗色主题 */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --prism-background: #292d3e;
+    --prism-text: #d4d4d4;
+    --prism-comment: #676e95;
+    --prism-punctuation: #d4d4d4;
+    --prism-property: #c792ea;
+    --prism-tag: #f07178;
+    --prism-boolean: #89ddff;
+    --prism-number: #f78c6c;
+    --prism-selector: #f07178;
+    --prism-string: #c3e88d;
+    --prism-operator: #d4d4d4;
+    --prism-function: #82aaff;
+    --prism-keyword: #c792ea;
+    --prism-regex: #f07178;
+    --prism-line-highlight: rgba(255, 255, 255, 0.1);
+    --prism-line-number: #607d8b;
+    --prism-line-number-gutter: #2d2d2d;
+    --prism-line-number-highlight: #8b8c8d;
+    --prism-selection: rgba(255, 255, 255, 0.1);
+  }
+}
+
+/* 代码应用基础主题色 */
+code[class*='language-'],
+pre[class*='language-'] {
+  color: var(--prism-text);
+  background: var(--prism-background);
+}
+
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+  color: var(--prism-comment);
+}
+
+.token.punctuation {
+  color: var(--prism-punctuation);
+}
+
+.token.namespace {
+  opacity: 0.7;
+}
+
+.token.property,
+.token.tag,
+.token.boolean,
+.token.number,
+.token.constant,
+.token.symbol {
+  color: var(--prism-property);
+}
+
+.token.tag {
+  color: var(--prism-tag);
+}
+
+.token.boolean,
+.token.number {
+  color: var(--prism-boolean);
+}
+
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin {
+  color: var(--prism-string);
+}
+
+.token.operator,
+.token.entity,
+.token.url,
+.language-css .token.string,
+.style .token.string {
+  color: var(--prism-operator);
+}
+
+.token.atrule,
+.token.attr-value,
+.token.keyword {
+  color: var(--prism-keyword);
+}
+
+.token.function,
+.token.class-name {
+  color: var(--prism-function);
+}
+
+.token.regex,
+.token.important,
+.token.variable {
+  color: var(--prism-regex);
+}
+
+.token.important,
+.token.bold {
+  font-weight: bold;
+}
+
+.token.italic {
+  font-style: italic;
+}
+
+.token.entity {
+  cursor: help;
+}
+
+/* 行号插件样式 */
+pre[class*='language-'].line-numbers {
+  position: relative;
+  padding-left: 3.8em;
+  counter-reset: linenumber;
+}
+
+pre[class*='language-'].line-numbers > code {
+  position: relative;
+  white-space: inherit;
+}
+
+.line-numbers .line-numbers-rows {
+  position: absolute;
+  pointer-events: none;
+  top: 0;
+  font-size: 100%;
+  left: -3.8em;
+  width: 3em; /* works for line-numbers below 1000 lines */
+  letter-spacing: -1px;
+  border-right: 1px solid #999;
+  user-select: none;
+}
+
+.line-numbers-rows > span {
+  display: block;
+  counter-increment: linenumber;
+}
+
+.line-numbers-rows > span:before {
+  content: counter(linenumber);
+  color: var(--prism-line-number);
+  display: block;
+  padding-right: 0.8em;
+  text-align: right;
+}
+
+/* 行高亮插件样式 */
+pre[data-line] {
+  position: relative;
+  padding: 1em 0 1em 3em;
+}
+
+.line-highlight {
+  position: absolute;
+  left: 0;
+  right: 0;
+  padding: inherit 0;
+  margin-top: 1em;
+  background: var(--prism-line-highlight);
+  box-shadow: inset 5px 0 0 var(--prism-keyword);
+  z-index: 0;
+  pointer-events: none;
+  line-height: inherit;
+  white-space: pre;
+}
+
+/* 搜索高亮样式 */
+.search-highlight {
+  background-color: rgba(255, 204, 0, 0.3) !important;
+}
+
+/* 工具栏样式 */
+div.code-toolbar {
+  position: relative;
+}
+
+div.code-toolbar > .toolbar {
+  position: absolute;
+  top: 0.3em;
+  right: 0.3em;
+  opacity: 0.6;
+  transition: opacity 0.3s ease-in-out;
+}
+
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
+
+div.code-toolbar > .toolbar > .toolbar-item {
+  display: inline-block;
+  margin-right: 0.2em;
+}
+
+div.code-toolbar > .toolbar > .toolbar-item > button {
+  background: rgba(224, 224, 224, 0.2);
+  color: var(--prism-text);
+  border: 0;
+  font-size: 0.8em;
+  padding: 0.5em 1em;
+  cursor: pointer;
+  border-radius: 0.3em;
+}
+
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus {
+  background: rgba(224, 224, 224, 0.4);
+  color: inherit;
+}
+
+/* 响应式调整 */
+@media (max-width: 640px) {
+  pre[class*='language-'].line-numbers {
+    padding-left: 2.8em;
+  }
+
+  .line-numbers .line-numbers-rows {
+    left: -2.8em;
+    width: 2em;
+  }
+}

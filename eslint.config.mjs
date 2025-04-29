@@ -10,6 +10,7 @@ const antfuConfig = antfu({
   rules: {
     'no-console': 'error', // 将console用法标记为错误
   },
+  ignores: ['**/assets/demo-code/**/*'],
 })
 
 // 为scripts目录创建特殊规则，允许使用console

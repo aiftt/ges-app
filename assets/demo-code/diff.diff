@@ -1,0 +1,24 @@
+diff --git a/components/ui/button/index.vue b/components/ui/button/index.vue
+index 1234567..abcdefg 100644
+--- a/components/ui/button/index.vue
++++ b/components/ui/button/index.vue
+@@ -15,7 +15,7 @@ const props = withDefaults(defineProps<{
+   /**
+    * 按钮类型
+    */
+-  type?: 'primary' | 'secondary' | 'danger'
++  type?: 'primary' | 'secondary' | 'danger' | 'success' | 'info' | 'warning'
+   /**
+    * 按钮大小
+    */
+@@ -65,6 +65,10 @@ const buttonClass = computed(() => {
+ .ui-button--danger {
+   background-color: var(--ui-color-danger, #ef4444);
+   color: white;
++}
++
++.ui-button--success {
++  background-color: var(--ui-color-success, #10b981);
++  color: white;
+ }
+ </style>

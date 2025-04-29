@@ -1,3 +1,4 @@
+import fs from 'node:fs'
 // https://nuxt.com/docs/api/configuration/nuxt-config
 import { fileURLToPath } from 'node:url'
 
@@ -18,6 +19,7 @@ export default defineNuxtConfig({
   css: [
     '@unocss/reset/tailwind.css',
     '~/assets/scss/theme.scss',
+    '~/assets/css/prism-theme.css',
   ],
 
   // 优化配置
@@ -28,6 +30,21 @@ export default defineNuxtConfig({
         '@': fileURLToPath(new URL('.', import.meta.url)),
       },
     },
+    optimizeDeps: {
+      exclude: ['fsevents'],
+    },
+    plugins: [
+      {
+        name: 'vite-plugin-raw-import',
+        transform(code, id) {
+          if (id.endsWith('?raw')) {
+            const filePath = id.replace('?raw', '')
+            const fileContent = fs.readFileSync(filePath, 'utf-8')
+            return `export default ${JSON.stringify(fileContent)}`
+          }
+        },
+      },
+    ],
   },
 
   vue: {

@@ -1,0 +1,28 @@
+/* CSS样式示例 */
+:root {
+  --primary-color: #3b82f6;
+  --secondary-color: #10b981;
+  --text-color: #374151;
+  --light-bg: #f9fafb;
+}
+
+/* 基础样式 */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.6;
+  color: var(--text-color);
+  background-color: var(--light-bg);
+  margin: 0;
+  padding: 0;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}

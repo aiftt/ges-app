@@ -56,7 +56,7 @@ const paragraphText = 'Vue.js是一套用于构建用户界面的渐进式框架
 
         <div>
           <p>{{ paragraphText }}</p>
-          <ui-divider position="left">
+          <ui-divider text-position="left">
             左对齐文本
           </ui-divider>
           <p>{{ paragraphText }}</p>
@@ -64,7 +64,7 @@ const paragraphText = 'Vue.js是一套用于构建用户界面的渐进式框架
 
         <div>
           <p>{{ paragraphText }}</p>
-          <ui-divider position="right">
+          <ui-divider text-position="right">
             右对齐文本
           </ui-divider>
           <p>{{ paragraphText }}</p>
@@ -81,7 +81,7 @@ const paragraphText = 'Vue.js是一套用于构建用户界面的渐进式框架
         <div v-for="position in textPositions" :key="position" class="flex items-center">
           <span class="w-20 text-gray-600 dark:text-gray-400">{{ position }}</span>
           <div class="flex-1">
-            <ui-divider :position="position">
+            <ui-divider :text-position="position" with-text>
               {{ position }}
             </ui-divider>
           </div>
@@ -97,11 +97,11 @@ const paragraphText = 'Vue.js是一套用于构建用户界面的渐进式框架
       <div class="border rounded bg-white p-4 dark:bg-gray-800">
         <div class="h-40 flex items-center">
           <span>左侧内容</span>
-          <ui-divider direction="vertical" height="80%" margin="0 20px" />
+          <ui-divider direction="vertical" width="80%" margin="0 20px" />
           <div class="flex-1">
             <p>{{ paragraphText }}</p>
           </div>
-          <ui-divider direction="vertical" height="60%" margin="0 20px" />
+          <ui-divider direction="vertical" width="60%" margin="0 20px" />
           <span>右侧内容</span>
         </div>
       </div>
@@ -164,7 +164,7 @@ const paragraphText = 'Vue.js是一套用于构建用户界面的渐进式框架
           <p>{{ paragraphText }}</p>
           <ui-divider
             color="#FF6B6B"
-            class-name="custom-divider"
+            class="custom-divider"
           >
             自定义颜色
           </ui-divider>
