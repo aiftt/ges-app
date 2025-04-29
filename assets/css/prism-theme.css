@@ -1,7 +1,7 @@
 /**
  * 自定义Prism主题样式
  * 创建日期: 2023-12-12
- * 更新日期: 当前
+ * 更新日期: 2025-04-29 - 强化代码高亮样式
  * 作者: aiftt
  */
 
@@ -95,11 +95,13 @@ pre[class*='language-'] {
   background: var(--prism-background);
 }
 
+/* 确保语法高亮正确应用 */
 .token.comment,
 .token.prolog,
 .token.doctype,
 .token.cdata {
   color: var(--prism-comment);
+  font-style: italic;
 }
 
 .token.punctuation {
@@ -111,7 +113,6 @@ pre[class*='language-'] {
 }
 
 .token.property,
-.token.tag,
 .token.boolean,
 .token.number,
 .token.constant,
@@ -126,6 +127,7 @@ pre[class*='language-'] {
 .token.boolean,
 .token.number {
   color: var(--prism-boolean);
+  font-weight: bold;
 }
 
 .token.selector,
@@ -148,6 +150,7 @@ pre[class*='language-'] {
 .token.attr-value,
 .token.keyword {
   color: var(--prism-keyword);
+  font-weight: bold;
 }
 
 .token.function,
@@ -174,14 +177,15 @@ pre[class*='language-'] {
   cursor: help;
 }
 
-/* 行号插件样式 */
-pre[class*='language-'].line-numbers {
+/* 行号插件样式增强 */
+pre.line-numbers {
   position: relative;
   padding-left: 3.8em;
   counter-reset: linenumber;
+  white-space: pre-wrap;
 }
 
-pre[class*='language-'].line-numbers > code {
+pre.line-numbers > code {
   position: relative;
   white-space: inherit;
 }
@@ -192,10 +196,16 @@ pre[class*='language-'].line-numbers > code {
   top: 0;
   font-size: 100%;
   left: -3.8em;
-  width: 3em; /* works for line-numbers below 1000 lines */
+  width: 3em; /* 增加宽度 */
   letter-spacing: -1px;
-  border-right: 1px solid #999;
+  border-right: 1px solid rgba(0, 0, 0, 0.2);
   user-select: none;
+}
+
+/* 确保在暗黑模式下行号可见 */
+:root.dark .line-numbers .line-numbers-rows,
+.ui-code--dark .line-numbers .line-numbers-rows {
+  border-right: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .line-numbers-rows > span {
@@ -205,16 +215,22 @@ pre[class*='language-'].line-numbers > code {
 
 .line-numbers-rows > span:before {
   content: counter(linenumber);
-  color: var(--prism-line-number);
+  color: rgba(0, 0, 0, 0.4);
   display: block;
   padding-right: 0.8em;
   text-align: right;
 }
 
-/* 行高亮插件样式 */
+/* 暗黑模式下行号颜色 */
+:root.dark .line-numbers-rows > span:before,
+.ui-code--dark .line-numbers-rows > span:before {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+/* 行高亮显示 */
 pre[data-line] {
   position: relative;
-  padding: 1em 0 1em 3em;
+  padding: 1em 0 1em 3.8em;
 }
 
 .line-highlight {
@@ -223,12 +239,28 @@ pre[data-line] {
   right: 0;
   padding: inherit 0;
   margin-top: 1em;
-  background: var(--prism-line-highlight);
-  box-shadow: inset 5px 0 0 var(--prism-keyword);
-  z-index: 0;
+  background: rgba(255, 255, 0, 0.1);
   pointer-events: none;
   line-height: inherit;
   white-space: pre;
+}
+
+/* 已高亮的行 */
+.line-highlight:before,
+.line-highlight:after {
+  content: attr(data-start);
+  position: absolute;
+  left: -0.6em;
+  min-width: 1em;
+  padding: 0 0.5em;
+  background-color: rgba(153, 122, 102, 0.3);
+  color: #f5f2f0;
+  font: bold 65%/1.5 sans-serif;
+  text-align: center;
+  vertical-align: 0.3em;
+  border-radius: 999px;
+  text-shadow: none;
+  box-shadow: 0 1px #fff;
 }
 
 /* 搜索高亮样式 */
@@ -272,6 +304,37 @@ div.code-toolbar > .toolbar > .toolbar-item > button:hover,
 div.code-toolbar > .toolbar > .toolbar-item > button:focus {
   background: rgba(224, 224, 224, 0.4);
   color: inherit;
+}
+
+/* 匹配括号样式 */
+.token.punctuation.brace-hover,
+.token.punctuation.brace-selected {
+  outline: solid 1px;
+  outline-color: var(--prism-tag);
+}
+
+.rainbow-braces .token.punctuation.brace-level-1,
+.rainbow-braces .token.punctuation.brace-level-5,
+.rainbow-braces .token.punctuation.brace-level-9 {
+  color: #e50000;
+}
+
+.rainbow-braces .token.punctuation.brace-level-2,
+.rainbow-braces .token.punctuation.brace-level-6,
+.rainbow-braces .token.punctuation.brace-level-10 {
+  color: #f79762;
+}
+
+.rainbow-braces .token.punctuation.brace-level-3,
+.rainbow-braces .token.punctuation.brace-level-7,
+.rainbow-braces .token.punctuation.brace-level-11 {
+  color: #4169e1;
+}
+
+.rainbow-braces .token.punctuation.brace-level-4,
+.rainbow-braces .token.punctuation.brace-level-8,
+.rainbow-braces .token.punctuation.brace-level-12 {
+  color: #3b9c9c;
 }
 
 /* 响应式调整 */

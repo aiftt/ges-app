@@ -14,6 +14,7 @@ export default defineNuxtConfig({
     '@nuxt/image',
     '@nuxt/scripts',
     '@unocss/nuxt',
+    '@formkit/auto-animate/nuxt',
   ],
 
   css: [

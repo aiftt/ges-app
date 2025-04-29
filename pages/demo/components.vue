@@ -8,6 +8,7 @@
  * 2023-12-12 - 添加主题色彩展示页面
  */
 import { computed, ref } from 'vue'
+import DemoAutoAnimate from '~/components/demo/auto-animate.vue'
 import DemoBorder from '~/components/demo/border.vue'
 import DemoButton from '~/components/demo/button.vue'
 import DemoCode from '~/components/demo/code.vue'
@@ -31,6 +32,7 @@ const categories = [
       { id: 'divider', name: '分割线', component: DemoDivider },
       { id: 'icon', name: '图标', component: DemoIcon },
       { id: 'theme', name: '主题色彩 Theme', component: DemoTheme },
+      { id: 'auto-animate', name: '动画效果', component: DemoAutoAnimate },
     ],
   },
   {

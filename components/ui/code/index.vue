@@ -7,46 +7,47 @@ import Prism from 'prismjs'
  * 作者: aiftt
  * 更新日期: 2023-12-10 - 从highlight.js替换为Prism.js
  * 更新日期: 2023-12-12 - 添加工具栏、代码折叠、搜索和自动链接功能
+ * 更新日期: 2025-04-29 - 修复行号显示问题和代码高亮
  */
-import { computed, nextTick, onMounted, ref, watch } from 'vue'
+import { computed, nextTick, onMounted, onUpdated, ref, watch } from 'vue'
 
-// 引入Prism核心样式 (在nuxt.config.ts中已全局引入)
-// import 'prismjs/themes/prism.css'
+// 引入基础样式
+import 'prismjs/themes/prism.css'
 
 // 引入行号插件
-import 'prismjs/plugins/line-numbers/prism-line-numbers'
+import 'prismjs/plugins/line-numbers/prism-line-numbers.js'
 import 'prismjs/plugins/line-numbers/prism-line-numbers.css'
 
 // 引入工具栏插件
-import 'prismjs/plugins/toolbar/prism-toolbar'
+import 'prismjs/plugins/toolbar/prism-toolbar.js'
 import 'prismjs/plugins/toolbar/prism-toolbar.css'
 
 // 引入复制到剪贴板插件
-import 'prismjs/plugins/copy-to-clipboard/prism-copy-to-clipboard'
+import 'prismjs/plugins/copy-to-clipboard/prism-copy-to-clipboard.js'
 
-// 引入代码折叠插件
-import 'prismjs/plugins/line-highlight/prism-line-highlight'
+// 引入行高亮插件
+import 'prismjs/plugins/line-highlight/prism-line-highlight.js'
 import 'prismjs/plugins/line-highlight/prism-line-highlight.css'
 
-// 引入搜索插件
-import 'prismjs/plugins/match-braces/prism-match-braces'
+// 引入括号匹配插件
+import 'prismjs/plugins/match-braces/prism-match-braces.js'
 import 'prismjs/plugins/match-braces/prism-match-braces.css'
 
 // 引入自动链接插件
-import 'prismjs/plugins/autolinker/prism-autolinker'
+import 'prismjs/plugins/autolinker/prism-autolinker.js'
 import 'prismjs/plugins/autolinker/prism-autolinker.css'
 
 // 引入额外的语言支持
-import 'prismjs/components/prism-typescript'
-import 'prismjs/components/prism-jsx'
-import 'prismjs/components/prism-tsx'
-import 'prismjs/components/prism-scss'
-import 'prismjs/components/prism-bash'
-import 'prismjs/components/prism-json'
-import 'prismjs/components/prism-markdown'
-import 'prismjs/components/prism-yaml'
-import 'prismjs/components/prism-docker'
-import 'prismjs/components/prism-nginx'
+import 'prismjs/components/prism-typescript.js'
+import 'prismjs/components/prism-jsx.js'
+import 'prismjs/components/prism-tsx.js'
+import 'prismjs/components/prism-scss.js'
+import 'prismjs/components/prism-bash.js'
+import 'prismjs/components/prism-json.js'
+import 'prismjs/components/prism-markdown.js'
+import 'prismjs/components/prism-yaml.js'
+import 'prismjs/components/prism-docker.js'
+import 'prismjs/components/prism-nginx.js'
 
 // 定义props
 const props = withDefaults(defineProps<{
@@ -282,45 +283,12 @@ function highlightCode() {
   // 设置语言类
   codeElement.value.className = `language-${normalizedLang.value}`
 
-  // 应用行号
-  if (props.lineNumbers) {
-    codeElement.value.classList.add('line-numbers')
-  }
-  else {
-    codeElement.value.classList.remove('line-numbers')
-  }
-
-  // 应用高亮行
-  if (props.highlightLines) {
-    codeElement.value.setAttribute('data-line', props.highlightLines)
-  }
-  else {
-    codeElement.value.removeAttribute('data-line')
-  }
-
-  // 应用工具栏相关类
-  if (props.showToolbar) {
-    codeElement.value.classList.add('code-toolbar')
-  }
-  else {
-    codeElement.value.classList.remove('code-toolbar')
-  }
-
-  // 应用匹配括号插件
-  if (props.enableFolding) {
-    codeElement.value.classList.add('match-braces')
-  }
-  else {
-    codeElement.value.classList.remove('match-braces')
-  }
-
-  // 自动链接插件不需要特殊处理，由Prism自动应用
-
   // 执行高亮
-  Prism.highlightElement(codeElement.value)
-
-  // 检查代码是否超出最大高度
   nextTick(() => {
+    // 直接在代码元素上应用高亮
+    Prism.highlightElement(codeElement.value)
+
+    // 检查代码是否超出最大高度
     if (codeElement.value && props.maxHeight) {
       const computedHeight = window.getComputedStyle(codeElement.value.parentElement as HTMLElement).height
       originalHeight.value = computedHeight
@@ -347,9 +315,21 @@ watch(searchTerm, () => {
 onMounted(() => {
   if (props.code) {
     codeContent.value = props.code
-    nextTick(() => highlightCode())
+    nextTick(() => {
+      highlightCode()
+    })
   }
 })
+
+// 组件更新时重新高亮代码
+onUpdated(() => {
+  nextTick(() => {
+    if (codeElement.value) {
+      Prism.highlightElement(codeElement.value)
+    }
+  })
+})
+
 // 计算类名和样式
 const wrapperClasses = computed(() => {
   return [
@@ -429,10 +409,19 @@ const wrapperStyles = computed(() => {
     </div>
 
     <!-- 代码展示区域 -->
-    <pre :class="{ 'line-numbers': lineNumbers }" :data-line="highlightLines" :data-line-offset="1"><code
+    <pre
+      class="ui-code-pre"
+      :class="[
+        lineNumbers ? 'line-numbers' : '',
+        props.enableFolding ? 'match-braces' : '',
+        props.showToolbar ? 'code-toolbar' : '',
+      ]"
+      :data-line="highlightLines"
+      :data-line-offset="1"
+    ><code
       :id="uniqueId"
       ref="codeElement"
-      :class="`language-${normalizedLang}`"
+      :class="`language-${normalizedLang.value}`"
     ><slot>{{ props.code }}</slot></code></pre>
 
     <!-- 展开/收起控制按钮 (当代码超出最大高度时显示) -->
@@ -579,12 +568,61 @@ const wrapperStyles = computed(() => {
   transition: max-height 0.3s ease;
 }
 
+.ui-code .ui-code-pre {
+  position: relative;
+  margin: 0;
+}
+
+.ui-code .ui-code-pre.line-numbers {
+  counter-reset: linenumber;
+}
+
+.ui-code .ui-code-pre.line-numbers > code {
+  white-space: inherit;
+}
+
 .ui-code code {
   font-family: inherit;
   padding: 0;
   background: transparent;
   border: none;
   white-space: pre;
+}
+
+/* 行号样式增强 */
+.ui-code .line-numbers-rows {
+  position: absolute;
+  pointer-events: none;
+  top: 0;
+  font-size: 100%;
+  left: -3.8em;
+  width: 3em;
+  letter-spacing: -1px;
+  border-right: 1px solid var(--ui-code-border-color, rgba(0, 0, 0, 0.2));
+  user-select: none;
+}
+
+.ui-code.ui-code--dark .line-numbers-rows,
+:root.dark .ui-code.ui-code--auto .line-numbers-rows {
+  border-right-color: rgba(255, 255, 255, 0.2);
+}
+
+.ui-code .line-numbers-rows > span {
+  display: block;
+  counter-increment: linenumber;
+}
+
+.ui-code .line-numbers-rows > span:before {
+  content: counter(linenumber);
+  color: rgba(0, 0, 0, 0.5);
+  display: block;
+  padding-right: 0.8em;
+  text-align: right;
+}
+
+.ui-code.ui-code--dark .line-numbers-rows > span:before,
+:root.dark .ui-code.ui-code--auto .line-numbers-rows > span:before {
+  color: rgba(255, 255, 255, 0.5);
 }
 
 /* 展开控制按钮 */
