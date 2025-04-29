@@ -3,6 +3,8 @@
  * 创建日期: 2023-12-07
  * 作者: aiftt
  * 更新日期: 2023-12-07 - 从主题变量文件拆分
+ * 更新日期: 2024-01-08 - 添加 date-picker 组件变量
+ * 更新日期: 2024-05-10 - 添加 resizebox 和 popconfirm 组件变量
  */
 
 :root {
@@ -84,4 +86,26 @@
   --ui-input-radius: var(--ui-radius-md);
   --ui-input-padding-y: var(--ui-spacing-sm);
   --ui-input-padding-x: var(--ui-spacing);
+
+  // 日期选择器变量
+  --ui-date-picker-radius: var(--ui-radius-md);
+  --ui-date-picker-width: 280px;
+  --ui-date-picker-z-index: var(--ui-z-index-30);
+  --ui-date-picker-day-size: 30px;
+  --ui-date-picker-item-height: 50px;
+  --ui-date-picker-header-padding: 12px;
+  --ui-date-picker-body-padding: 8px;
+  --ui-date-picker-footer-padding: 8px;
+  --ui-date-picker-input-padding-y: 8px;
+  --ui-date-picker-input-padding-x: 12px 36px 8px 12px;
+  --ui-date-picker-input-padding-small: 6px 32px 6px 8px;
+  --ui-date-picker-input-padding-large: 10px 40px 10px 16px;
+
+  // ResizeBox 变量
+  --ui-resizebox-handle-size: 6px;
+  --ui-resizebox-transition: width 0.2s ease, height 0.2s ease;
+
+  // Popconfirm 变量
+  --ui-popconfirm-min-width: 180px;
+  --ui-popconfirm-max-width: 350px;
 }

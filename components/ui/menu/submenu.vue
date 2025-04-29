@@ -147,7 +147,7 @@ function beforeEnter(el: HTMLElement) {
   el.classList.add('ui-submenu-enter')
 }
 
-function enter(el: HTMLElement) {
+function enter(el: HTMLElement, done: () => void) {
   // 获取内容高度
   const contentHeight = el.scrollHeight
 
@@ -161,6 +161,7 @@ function enter(el: HTMLElement) {
   requestAnimationFrame(() => {
     el.classList.remove('ui-submenu-enter')
     el.classList.add('ui-submenu-enter-to')
+    done()
   })
 }
 
@@ -179,13 +180,14 @@ function beforeLeave(el: HTMLElement) {
   el.classList.add('ui-submenu-leave')
 }
 
-function leave(el: HTMLElement) {
+function leave(el: HTMLElement, done: () => void) {
   el.classList.add('ui-submenu-leave-active')
 
   // 添加结束类名（下一帧）
   requestAnimationFrame(() => {
     el.classList.remove('ui-submenu-leave')
     el.classList.add('ui-submenu-leave-to')
+    done()
   })
 }
 
@@ -216,18 +218,18 @@ function afterLeave(el: HTMLElement) {
         v-if="!menuProps.collapsed || menuProps.mode !== 'vertical'"
         :icon="menuProps.mode === 'horizontal' ? 'carbon:chevron-down' : 'carbon:chevron-right'"
         class="ui-submenu-arrow absolute right-16px text-10px transition-transform"
-        :class="{ 'ui-submenu-arrow-active': isOpen }"
+        :class="isOpen ? 'ui-submenu-arrow-active' : ''"
       />
     </div>
 
     <!-- 子菜单内容 -->
     <transition
-      @before-enter="beforeEnter"
-      @enter="enter"
-      @after-enter="afterEnter"
-      @before-leave="beforeLeave"
-      @leave="leave"
-      @after-leave="afterLeave"
+      @before-enter="(el: Element) => beforeEnter(el as HTMLElement)"
+      @enter="(el: Element, done: () => void) => enter(el as HTMLElement, done)"
+      @after-enter="(el: Element) => afterEnter(el as HTMLElement)"
+      @before-leave="(el: Element) => beforeLeave(el as HTMLElement)"
+      @leave="(el: Element, done: () => void) => leave(el as HTMLElement, done)"
+      @after-leave="(el: Element) => afterLeave(el as HTMLElement)"
     >
       <ul v-show="isOpen" class="ui-submenu-content m-0 list-none p-0 transition-all">
         <slot />

@@ -355,22 +355,5 @@ const colorVar = computed(() => props.color || null)
   opacity: 1;
 }
 
-/* 深色模式适配 */
-@media (prefers-color-scheme: dark) {
-  .ui-typography-text--type-default {
-    color: var(--ui-color-text-dark, #e5e7eb);
-  }
-
-  .ui-typography-text--type-secondary {
-    color: var(--ui-color-text-secondary-dark, #9ca3af);
-  }
-
-  .ui-typography-text--mark {
-    background-color: var(--ui-color-mark-bg-dark, #78350f);
-  }
-
-  .ui-typography-text--code {
-    background-color: var(--ui-color-code-bg-dark, #1f2937);
-  }
-}
+/* CSS变量已移至主题文件中 */
 </style>

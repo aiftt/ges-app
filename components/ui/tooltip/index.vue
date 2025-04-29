@@ -152,8 +152,9 @@ function updatePosition() {
     top = 8
   }
 
-  tooltipRef.value.style.top = `${top}px`
-  tooltipRef.value.style.left = `${left}px`
+  // 使用CSS变量设置位置
+  tooltipRef.value.style.setProperty('--ui-tooltip-top', `${top}px`)
+  tooltipRef.value.style.setProperty('--ui-tooltip-left', `${left}px`)
 }
 
 // 切换提示框显示状态
@@ -278,7 +279,7 @@ onBeforeUnmount(() => {
   border-radius: 4px;
   font-size: 14px;
   line-height: 1.5;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--ui-tooltip-shadow, 0 2px 8px rgba(0, 0, 0, 0.15));
   max-width: var(--ui-tooltip-max-width, 200px);
   word-wrap: break-word;
   pointer-events: none;
@@ -287,6 +288,8 @@ onBeforeUnmount(() => {
     transform 0.3s;
   opacity: 0;
   transform: scale(0.8);
+  top: var(--ui-tooltip-top, 0);
+  left: var(--ui-tooltip-left, 0);
 }
 
 .ui-tooltip--visible {

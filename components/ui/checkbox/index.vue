@@ -151,6 +151,10 @@ function handleChange(event: Event) {
   border-color: var(--ui-color-text-disabled, #9ca3af);
 }
 
+.ui-checkbox--checked.ui-checkbox--disabled .ui-checkbox-inner::after {
+  border-color: var(--ui-color-disabled-text, #ccc);
+}
+
 .ui-checkbox-label {
   padding-left: 8px;
   line-height: 1;
@@ -185,13 +189,5 @@ function handleChange(event: Event) {
   font-size: var(--ui-font-size-lg, 1.125rem);
 }
 
-/* 深色主题适配 */
-:root.dark .ui-checkbox-inner {
-  background-color: var(--ui-color-bg, #1f2937);
-  border-color: var(--ui-color-border, #374151);
-}
-
-:root.dark .ui-checkbox--disabled .ui-checkbox-inner {
-  background-color: var(--ui-color-bg-secondary, #111827);
-}
+/* CSS变量已移至主题文件中 */
 </style>

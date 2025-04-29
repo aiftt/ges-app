@@ -181,16 +181,5 @@ const barHoverColorVar = computed(() => props.barHoverColor || null)
   scrollbar-width: auto;
 }
 
-/* 暗黑模式 */
-:root.dark .ui-scrollbar::-webkit-scrollbar-thumb {
-  background-color: var(--ui-scrollbar-color-dark, rgba(255, 255, 255, 0.2));
-}
-
-:root.dark .ui-scrollbar::-webkit-scrollbar-thumb:hover {
-  background-color: var(--ui-scrollbar-hover-color-dark, rgba(255, 255, 255, 0.4));
-}
-
-:root.dark .ui-scrollbar::-webkit-scrollbar-track {
-  background-color: var(--ui-scrollbar-track-color-dark, rgba(255, 255, 255, 0.05));
-}
+/* CSS变量已移至主题文件中 */
 </style>

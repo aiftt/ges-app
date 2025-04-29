@@ -170,47 +170,5 @@ withDefaults(defineProps<{
   border-radius: 0.375rem;
 }
 
-/* 暗色主题适配 */
-html.dark .ui-typography {
-  color: var(--ui-color-text-dark, #e5e7eb);
-}
-
-html.dark .ui-typography :deep(h1),
-html.dark .ui-typography :deep(h2),
-html.dark .ui-typography :deep(h3),
-html.dark .ui-typography :deep(h4),
-html.dark .ui-typography :deep(h5),
-html.dark .ui-typography :deep(h6) {
-  color: var(--ui-color-text-heading-dark, #f9fafb);
-}
-
-html.dark .ui-typography :deep(blockquote) {
-  background-color: var(--ui-blockquote-bg-dark, rgba(59, 130, 246, 0.15));
-  border-left-color: var(--ui-color-primary-dark, #60a5fa);
-}
-
-html.dark .ui-typography :deep(pre) {
-  background-color: var(--ui-code-bg-dark, #1f2937);
-}
-
-html.dark .ui-typography :deep(code) {
-  background-color: var(--ui-code-inline-bg-dark, rgba(255, 255, 255, 0.1));
-}
-
-html.dark .ui-typography :deep(th) {
-  background-color: var(--ui-table-header-bg-dark, #111827);
-}
-
-html.dark .ui-typography :deep(tr:nth-child(even)) {
-  background-color: var(--ui-table-stripe-bg-dark, #1f2937);
-}
-
-html.dark .ui-typography :deep(td),
-html.dark .ui-typography :deep(th) {
-  border-color: var(--ui-border-color-dark, #374151);
-}
-
-html.dark .ui-typography :deep(hr) {
-  border-top-color: var(--ui-border-color-dark, #374151);
-}
+/* CSS变量已移至主题文件中 */
 </style>

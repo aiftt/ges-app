@@ -1,45 +1,40 @@
 <script setup lang="ts" name="UiSpace">
 /**
- * 空间间距组件
- * 创建日期: 2025-01-15
+ * 空间组件
+ * 创建日期: 2024-01-15
  * 作者: aiftt
- * 更新日期: 2025-02-27 - 将内联样式改为CSS变量
- * 更新日期: 2025-02-28 - 改进CSS变量实现，移除内联style
+ * 更新日期: 2024-02-27 - 将内联样式改为CSS变量
+ * 更新日期: 2024-03-01 - 优化为v-bind+CSS变量实现动态样式
  *
- * 用于设置元素之间的间距，提供水平和垂直方向的间隔
+ * 用于控制元素间距的布局组件
  */
 
-// 定义props
-// 定义VNode类型
-import type { VNode } from 'vue'
+import { Comment, Text, useSlots } from 'vue'
 
+// 定义props
 const props = withDefaults(defineProps<{
+  /**
+   * 间距大小
+   */
+  gap?: 'small' | 'default' | 'large' | string
   /**
    * 排列方向
    */
   direction?: 'horizontal' | 'vertical'
   /**
-   * 间距大小
-   */
-  size?: 'small' | 'medium' | 'large' | number | string
-  /**
    * 对齐方式
    */
-  align?: 'start' | 'end' | 'center' | 'baseline'
+  align?: 'start' | 'end' | 'center' | 'baseline' | 'stretch'
   /**
-   * 是否环绕式布局
+   * 主轴对齐方式
+   */
+  justify?: 'start' | 'end' | 'center' | 'space-around' | 'space-between'
+  /**
+   * 是否自动换行，仅在水平方向有效
    */
   wrap?: boolean
   /**
-   * 是否渲染为行内元素
-   */
-  inline?: boolean
-  /**
-   * 是否填充父容器
-   */
-  fill?: boolean
-  /**
-   * 分隔符
+   * 是否显示分割线
    */
   split?: boolean
   /**
@@ -47,156 +42,171 @@ const props = withDefaults(defineProps<{
    */
   class?: string
 }>(), {
+  gap: 'default',
   direction: 'horizontal',
-  size: 'medium',
   align: 'center',
+  justify: 'start',
   wrap: false,
-  inline: false,
-  fill: false,
   split: false,
   class: '',
 })
 
-// 计算空间容器的类名
+// 获取slots
+const slots = useSlots()
+
+// 计算间距值
+const gapVar = computed(() => {
+  if (typeof props.gap === 'string' && !(['small', 'default', 'large'].includes(props.gap))) {
+    return props.gap
+  }
+
+  // 预设间距值
+  const gapMap = {
+    small: '8px',
+    default: '16px',
+    large: '24px',
+  }
+
+  return gapMap[props.gap as 'small' | 'default' | 'large'] || gapMap.default
+})
+
+// 计算容器类名
 const spaceClass = computed(() => {
   const classes = ['ui-space']
 
-  // 间距方向
-  classes.push(`ui-space--${props.direction}`)
+  // 方向类
+  classes.push(`ui-space-${props.direction}`)
 
-  // 对齐方式
-  classes.push(`ui-space--align-${props.align}`)
+  // 对齐方式类
+  if (props.align !== 'center') {
+    classes.push(`ui-space-align-${props.align}`)
+  }
 
-  // 换行
+  // 主轴对齐方式
+  if (props.justify !== 'start') {
+    classes.push(`ui-space-justify-${props.justify}`)
+  }
+
+  // 是否换行
   if (props.wrap) {
-    classes.push('ui-space--wrap')
+    classes.push('ui-space-wrap')
   }
 
-  // 行内显示
-  if (props.inline) {
-    classes.push('ui-space--inline')
-  }
-
-  // 填充父容器
-  if (props.fill) {
-    classes.push('ui-space--fill')
-  }
-
-  // 添加自定义类名
+  // 自定义类名
   if (props.class) {
     classes.push(props.class)
-  }
-
-  // 添加自定义间距类
-  if (props.size) {
-    classes.push('ui-space--custom-gap')
   }
 
   return classes.join(' ')
 })
 
-// 计算间距变量 - 用于CSS变量绑定
-const gapVar = computed(() => {
-  // 计算间距大小
-  if (typeof props.size === 'number') {
-    return `${props.size}px`
-  }
-  else if (props.size === 'small') {
-    return '8px'
-  }
-  else if (props.size === 'large') {
-    return '24px'
-  }
-  else if (typeof props.size === 'string' && !['small', 'medium', 'large'].includes(props.size)) {
-    return props.size
-  }
-  else {
-    // 默认medium
-    return '16px'
-  }
-})
-
-// 处理子元素，过滤掉null和undefined
-const filteredChildren = computed(() => {
-  return filterEmptyChildren($slots.default?.())
-})
-
-// 过滤空子元素
-function filterEmptyChildren(children?: VNode[]): VNode[] {
-  if (!children)
-    return []
-
-  return children.filter((child) => {
-    // 检查子元素是否为注释或空值
-    return child && !(typeof child.type === 'symbol')
-  })
-}
+// 根据是否有默认槽位来决定是否渲染
+const hasDefaultSlot = computed(() => !!slots.default)
 </script>
 
 <template>
-  <div :class="spaceClass">
-    <template v-for="(child, index) in filteredChildren" :key="index">
-      <div class="ui-space-item">
+  <div v-if="hasDefaultSlot" class="ui-space" :class="[spaceClass]">
+    <template v-for="(child, index) in slots.default?.()">
+      <div
+        v-if="child.type !== Comment && child.type !== Text && !props.split"
+        :key="index"
+        class="ui-space-item"
+      >
         <component :is="child" />
       </div>
-      <div v-if="split && index < filteredChildren.length - 1" class="ui-space-split">
-        <div class="ui-space-split-line" />
-      </div>
+      <template v-else-if="child.type !== Comment && child.type !== Text && props.split">
+        <div
+          :key="`${index}-item`"
+          class="ui-space-item"
+        >
+          <component :is="child" />
+        </div>
+        <div
+          v-if="index < (slots.default?.().length || 0) - 1"
+          :key="`${index}-split`"
+          class="ui-space-split-line"
+        />
+      </template>
     </template>
   </div>
 </template>
 
 <style scoped>
 .ui-space {
-  display: flex;
-  gap: 16px; /* 默认间距 */
-}
-
-.ui-space--custom-gap {
   --ui-space-gap: v-bind(gapVar);
-  gap: var(--ui-space-gap);
+
+  display: flex;
 }
 
-.ui-space--horizontal {
+.ui-space-item {
+  flex: none;
+}
+
+/* 方向 */
+.ui-space-horizontal {
   flex-direction: row;
 }
 
-.ui-space--vertical {
+.ui-space-horizontal > .ui-space-item:not(:last-child) {
+  margin-right: var(--ui-space-gap);
+}
+
+.ui-space-vertical {
   flex-direction: column;
 }
 
-.ui-space--align-start {
+.ui-space-vertical > .ui-space-item:not(:last-child) {
+  margin-bottom: var(--ui-space-gap);
+}
+
+/* 对齐方式 */
+.ui-space-align-start {
   align-items: flex-start;
 }
 
-.ui-space--align-end {
+.ui-space-align-end {
   align-items: flex-end;
 }
 
-.ui-space--align-center {
+.ui-space-align-center {
   align-items: center;
 }
 
-.ui-space--align-baseline {
+.ui-space-align-baseline {
   align-items: baseline;
 }
 
-.ui-space--wrap {
+.ui-space-align-stretch {
+  align-items: stretch;
+}
+
+/* 主轴对齐方式 */
+.ui-space-justify-start {
+  justify-content: flex-start;
+}
+
+.ui-space-justify-end {
+  justify-content: flex-end;
+}
+
+.ui-space-justify-center {
+  justify-content: center;
+}
+
+.ui-space-justify-space-around {
+  justify-content: space-around;
+}
+
+.ui-space-justify-space-between {
+  justify-content: space-between;
+}
+
+/* 是否换行 */
+.ui-space-wrap {
   flex-wrap: wrap;
 }
 
-.ui-space--inline {
-  display: inline-flex;
-}
-
-.ui-space--fill {
-  width: 100%;
-}
-
-.ui-space--fill > .ui-space-item {
-  flex: 1;
-}
-
+/* 分割线 */
 .ui-space-split-line {
   margin-left: 0.5rem;
   margin-right: 0.5rem;
@@ -205,7 +215,5 @@ function filterEmptyChildren(children?: VNode[]): VNode[] {
   background-color: var(--ui-color-split, #e5e7eb);
 }
 
-:root.dark .ui-space-split-line {
-  background-color: var(--ui-color-split-dark, #4b5563);
-}
+/* CSS变量已移至主题文件中 */
 </style>

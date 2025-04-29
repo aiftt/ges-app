@@ -5,6 +5,10 @@
  * 更新日期: 2023-12-07 - 从主题变量文件拆分
  * 更新日期: 2023-12-12 - 优化主题配色方案，区分primary和success色调
  * 更新日期: 2023-12-12 - 调整info颜色为蓝灰色调，增强与默认按钮的区分度
+ * 更新日期: 2024-01-08 - 添加 date-picker 组件主题变量
+ * 更新日期: 2024-05-10 - 添加 resizebox 和 popconfirm 组件主题变量
+ * 更新日期: 2024-07-02 - 集成从UI组件中提取的变量
+ * 更新日期: 2025-07-03 - 添加 Divider, Image, Popover, Tooltip 组件主题变量
  */
 
 :root {
@@ -29,6 +33,7 @@
   --ui-color-bg: #ffffff;
   --ui-color-bg-light: #f5f5f5;
   --ui-color-bg-dark: #e8e8e8;
+  --ui-color-bg-hover: #f3f4f6;
 
   // 文本颜色
   --ui-color-text: #333333;
@@ -37,15 +42,18 @@
   --ui-color-text-lightest: #cccccc;
   --ui-color-text-dark: #000000;
   --ui-color-text-heading: #111111;
+  --ui-color-text-secondary: #6b7280;
 
   // 边框颜色
   --ui-color-border: #d9d9d9;
   --ui-color-border-dark: #999999;
+  --ui-border-color: #d1d5db;
 
   // 禁用状态颜色
   --ui-color-disabled-bg: #f5f5f5;
   --ui-color-disabled-text: #bfbfbf;
   --ui-color-disabled-border: #d9d9d9;
+  --ui-disabled-bg: #f3f4f6;
 
   // 次要颜色
   --ui-color-secondary: #f0f0f0;
@@ -68,4 +76,76 @@
   --ui-table-border: #e8e8e8;
   --ui-table-header-bg: #f5f5f5;
   --ui-table-row-hover-bg: #fafafa;
+
+  // 日期选择器主题相关变量
+  --ui-date-picker-shadow: var(--ui-shadow-md);
+  --ui-date-picker-bg: var(--ui-color-bg);
+  --ui-date-picker-header-border: var(--ui-border-color);
+  --ui-date-picker-day-hover: var(--ui-color-bg-hover);
+  --ui-date-picker-day-selected-bg: var(--ui-color-primary);
+  --ui-date-picker-day-selected-color: white;
+  --ui-date-picker-day-today-color: var(--ui-color-primary);
+  --ui-date-picker-other-month-color: var(--ui-color-text-light);
+
+  // ResizeBox主题相关变量
+  --ui-resizebox-handle-hover-bg: rgba(0, 0, 0, 0.1);
+  --ui-resizebox-handle-active-bg: rgba(0, 0, 0, 0.2);
+
+  // Popconfirm主题相关变量
+  --ui-popconfirm-title-color: rgba(0, 0, 0, 0.85);
+  --ui-popconfirm-content-color: rgba(0, 0, 0, 0.65);
+
+  // 从UI组件中提取的变量
+  // Menu组件变量
+  --ui-menu-bg-color: #fff;
+  --ui-menu-text-color: rgba(0, 0, 0, 0.85);
+  --ui-menu-border-color: #f0f0f0;
+  --ui-menu-hover-color: rgba(0, 0, 0, 0.04);
+  --ui-menu-active-color: #1890ff;
+  --ui-menu-dark-bg-color: #001529;
+  --ui-menu-dark-text-color: rgba(255, 255, 255, 0.65);
+  --ui-menu-dark-border-color: #303030;
+  --ui-menu-dark-hover-color: rgba(255, 255, 255, 0.08);
+  --ui-menu-dark-active-color: #fff;
+
+  // Trigger组件变量
+  --ui-trigger-bg: #ffffff;
+  --ui-trigger-border: #e5e7eb;
+  --ui-trigger-color: #374151;
+
+  // 分割线颜色
+  --ui-color-split: #e5e7eb;
+
+  // 滚动条
+  --ui-scrollbar-track-color: rgba(0, 0, 0, 0.05);
+
+  // Divider组件变量
+  --ui-divider-color: rgb(229, 231, 235);
+  --ui-divider-text-color: rgb(75, 85, 99);
+
+  // Image组件变量
+  --ui-image-bg: #ffffff;
+  --ui-image-spinner: #e6e6e6;
+  --ui-image-spinner-active: #409eff;
+  --ui-image-error-bg: #f3f4f6;
+  --ui-image-error-text: #6b7280;
+
+  // Popover组件变量
+  --ui-popover-bg: #ffffff;
+  --ui-popover-border: #e5e7eb;
+  --ui-popover-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+  --ui-popover-title-color: #333333;
+  --ui-popover-content-color: #666666;
+
+  // Tooltip组件变量
+  --ui-tooltip-bg: rgba(0, 0, 0, 0.85);
+  --ui-tooltip-color: #ffffff;
+  --ui-tooltip-light-bg: #ffffff;
+  --ui-tooltip-light-color: rgba(0, 0, 0, 0.85);
+  --ui-tooltip-light-border: #e5e7eb;
+  --ui-tooltip-arrow-size: 4px;
+  --ui-tooltip-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+
+  // 其他变量
+  --shadow-color: rgba(0, 0, 0, 0.1);
 }

@@ -5,10 +5,12 @@
  * 作者: aiftt
  * 更新日期: 2023-12-01 - 初始实现
  * 更新日期: 2023-12-05 - 修复内联样式问题，改用CSS变量方式实现
+ * 更新日期: 2024-05-10 - 替换console为logger
  */
 
 import * as QRCode from 'qrcode'
 import { computed, onMounted, ref, watch } from 'vue'
+import logger from '~/utils/logger'
 
 // 组件属性定义
 const props = withDefaults(defineProps<{
@@ -82,6 +84,9 @@ const props = withDefaults(defineProps<{
   loadingText: '二维码生成中...',
   logoSize: 0.2,
 })
+
+// 创建二维码组件专用logger
+const qrcodeLogger = logger.client.child({ tag: 'qrcode' })
 
 // 响应式状态
 const loading = ref(true)
@@ -182,7 +187,7 @@ async function generateQRCode() {
   }
   catch (err) {
     error.value = err instanceof Error ? err : new Error('生成二维码时发生错误')
-    console.error('生成二维码错误:', err)
+    qrcodeLogger.error('生成二维码错误:', err)
   }
   finally {
     loading.value = false
@@ -223,7 +228,7 @@ async function addLogoToCanvas(canvas: HTMLCanvasElement) {
     }
 
     logoImg.onerror = () => {
-      console.error('Logo加载失败:')
+      qrcodeLogger.error('Logo加载失败')
       resolve()
     }
   })
@@ -433,20 +438,5 @@ onMounted(() => {
   }
 }
 
-/* 暗黑模式 */
-:root.dark .ui-qrcode-loading {
-  background-color: rgba(0, 0, 0, 0.7);
-}
-
-:root.dark .ui-qrcode-loading-text {
-  color: #e5e7eb;
-}
-
-:root.dark .ui-qrcode-error {
-  background-color: rgba(80, 0, 0, 0.7);
-}
-
-:root.dark .ui-qrcode-error-text {
-  color: #fca5a5;
-}
+/* CSS变量已移至主题文件中 */
 </style>

@@ -1,6 +1,7 @@
 import fs from 'node:fs'
 // https://nuxt.com/docs/api/configuration/nuxt-config
 import { fileURLToPath } from 'node:url'
+import vueJsx from '@vitejs/plugin-vue-jsx'
 
 export default defineNuxtConfig({
   compatibilityDate: '2024-11-01',
@@ -35,6 +36,7 @@ export default defineNuxtConfig({
       exclude: ['fsevents'],
     },
     plugins: [
+      vueJsx(),
       {
         name: 'vite-plugin-raw-import',
         transform(code, id) {

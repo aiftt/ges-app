@@ -9,10 +9,23 @@ import Prism from 'prismjs'
  * 更新日期: 2023-12-12 - 添加工具栏、代码折叠、搜索和自动链接功能
  * 更新日期: 2025-04-29 - 修复行号显示问题和代码高亮
  */
-import { computed, nextTick, onMounted, onUpdated, ref, watch } from 'vue'
+import logger from '~/utils/logger'
 
-// 引入基础样式
 import 'prismjs/themes/prism.css'
+import 'prismjs/themes/prism-tomorrow.css'
+// 引入语言
+import 'prismjs/components/prism-markup.js'
+import 'prismjs/components/prism-javascript.js'
+import 'prismjs/components/prism-typescript.js'
+import 'prismjs/components/prism-css.js'
+import 'prismjs/components/prism-scss.js'
+import 'prismjs/components/prism-json.js'
+import 'prismjs/components/prism-bash.js'
+import 'prismjs/components/prism-markdown.js'
+import 'prismjs/components/prism-yaml.js'
+
+import 'prismjs/components/prism-docker.js'
+import 'prismjs/components/prism-nginx.js'
 
 // 引入行号插件
 import 'prismjs/plugins/line-numbers/prism-line-numbers.js'
@@ -20,8 +33,8 @@ import 'prismjs/plugins/line-numbers/prism-line-numbers.css'
 
 // 引入工具栏插件
 import 'prismjs/plugins/toolbar/prism-toolbar.js'
-import 'prismjs/plugins/toolbar/prism-toolbar.css'
 
+import 'prismjs/plugins/toolbar/prism-toolbar.css'
 // 引入复制到剪贴板插件
 import 'prismjs/plugins/copy-to-clipboard/prism-copy-to-clipboard.js'
 
@@ -38,16 +51,8 @@ import 'prismjs/plugins/autolinker/prism-autolinker.js'
 import 'prismjs/plugins/autolinker/prism-autolinker.css'
 
 // 引入额外的语言支持
-import 'prismjs/components/prism-typescript.js'
 import 'prismjs/components/prism-jsx.js'
 import 'prismjs/components/prism-tsx.js'
-import 'prismjs/components/prism-scss.js'
-import 'prismjs/components/prism-bash.js'
-import 'prismjs/components/prism-json.js'
-import 'prismjs/components/prism-markdown.js'
-import 'prismjs/components/prism-yaml.js'
-import 'prismjs/components/prism-docker.js'
-import 'prismjs/components/prism-nginx.js'
 
 // 定义props
 const props = withDefaults(defineProps<{
@@ -129,6 +134,9 @@ const props = withDefaults(defineProps<{
 // 生成唯一ID，避免SSR水合不匹配
 const uniqueId = ref(`code-${nanoid(6)}`)
 
+// 创建代码组件专用logger
+const codeLogger = logger.client.child({ tag: 'code' })
+
 // 响应式状态
 const codeElement = ref<HTMLElement | null>(null)
 const codeContent = ref(props.code)
@@ -141,7 +149,7 @@ const currentSearchIndex = ref(-1)
 
 // 处理代码折叠
 const isCodeTruncated = ref(false)
-const originalHeight = ref<string>('')
+const _originalHeight = ref('')
 
 // 复制代码到剪贴板
 function copyCode() {
@@ -154,7 +162,7 @@ function copyCode() {
         }, 2000)
       })
       .catch((err) => {
-        console.error('无法复制代码:', err)
+        codeLogger.error('无法复制代码:', err)
       })
   }
 }
@@ -275,26 +283,11 @@ const normalizedLang = computed(() => {
   return langMap[props.lang.toLowerCase()] || props.lang || 'plaintext'
 })
 
-// 使用Prism高亮代码
+// 高亮显示代码
 function highlightCode() {
-  if (!codeElement.value)
-    return
-
-  // 设置语言类
-  codeElement.value.className = `language-${normalizedLang.value}`
-
-  // 执行高亮
-  nextTick(() => {
-    // 直接在代码元素上应用高亮
+  if (codeElement.value) {
     Prism.highlightElement(codeElement.value)
-
-    // 检查代码是否超出最大高度
-    if (codeElement.value && props.maxHeight) {
-      const computedHeight = window.getComputedStyle(codeElement.value.parentElement as HTMLElement).height
-      originalHeight.value = computedHeight
-      isCodeTruncated.value = Number.parseFloat(computedHeight) >= Number.parseFloat(props.maxHeight)
-    }
-  })
+  }
 }
 
 // 当代码内容或语言变化时重新高亮
@@ -421,7 +414,7 @@ const wrapperStyles = computed(() => {
     ><code
       :id="uniqueId"
       ref="codeElement"
-      :class="`language-${normalizedLang.value}`"
+      :class="`language-${normalizedLang}`"
     ><slot>{{ props.code }}</slot></code></pre>
 
     <!-- 展开/收起控制按钮 (当代码超出最大高度时显示) -->
@@ -564,7 +557,7 @@ const wrapperStyles = computed(() => {
   margin: 0;
   padding: 1rem;
   overflow: auto;
-  max-height: v-bind('expanded.value ? "none" : props.maxHeight');
+  max-height: v-bind('expanded ? "none" : props.maxHeight');
   transition: max-height 0.3s ease;
 }
 

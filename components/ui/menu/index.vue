@@ -208,34 +208,7 @@ const menuWidthClass = computed(() => {
   border-bottom-color: var(--ui-menu-dark-border-color, rgba(253, 253, 253, 0.1));
 }
 
-/* 预设CSS变量 */
-:root {
-  --ui-menu-bg-color: #fff;
-  --ui-menu-text-color: rgba(0, 0, 0, 0.85);
-  --ui-menu-border-color: #f0f0f0;
-  --ui-menu-hover-color: rgba(0, 0, 0, 0.04);
-  --ui-menu-active-color: #1890ff;
-
-  --ui-menu-dark-bg-color: #001529;
-  --ui-menu-dark-text-color: rgba(255, 255, 255, 0.65);
-  --ui-menu-dark-border-color: #303030;
-  --ui-menu-dark-hover-color: rgba(255, 255, 255, 0.08);
-  --ui-menu-dark-active-color: #fff;
-}
-
-.dark {
-  --ui-menu-bg-color: #1f1f1f;
-  --ui-menu-text-color: rgba(255, 255, 255, 0.85);
-  --ui-menu-border-color: #434343;
-  --ui-menu-hover-color: rgba(255, 255, 255, 0.08);
-  --ui-menu-active-color: #177ddc;
-
-  --ui-menu-dark-bg-color: #141414;
-  --ui-menu-dark-text-color: rgba(255, 255, 255, 0.65);
-  --ui-menu-dark-border-color: #434343;
-  --ui-menu-dark-hover-color: rgba(255, 255, 255, 0.08);
-  --ui-menu-dark-active-color: #177ddc;
-}
+/* CSS变量已移至主题文件中 */
 
 .ui-menu {
   color: var(--ui-color-text, rgba(0, 0, 0, 0.88));

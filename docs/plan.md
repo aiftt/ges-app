@@ -43,6 +43,23 @@
 
 - [x] Auto-Animate 动画效果 - 引入 `@formkit/auto-animate` 库，通过 Vue 指令 `v-auto-animate` 为列表项添加/删除、条件渲染、卡片切换等场景提供平滑过渡动画，无需编写复杂的动画代码
 
+### 阶段四：表单组件 (进行中)
+
+在阶段四中，我们开始实现基础表单组件，提供数据输入和收集功能。
+
+完成的组件：
+
+- [x] DatePicker - 完成日期选择器组件，支持多种格式、尺寸及交互方式，已重构为更灵活的date/picker.vue结构，便于后续扩展日期相关组件
+
+### 阶段五：技术栈增强 (新增)
+
+在阶段五中，我们对项目的技术栈进行了增强，提供了更多现代化的开发方式。
+
+完成的功能：
+
+- [x] TSX支持 - 添加了Vue TSX支持，允许使用TSX语法编写组件，实现了更灵活的组件编写方式
+- [x] TSX示例组件 - 完成了TSX演示组件，展示了如何使用TSX编写Vue组件，包括状态管理、事件处理和主题支持
+
 ## 组件清单
 
 基于主流UI库的常见组件，我们将实现以下组件：
@@ -88,7 +105,7 @@
 - [ ] Radio - 单选框
 - [ ] Switch - 开关
 - [ ] Slider - 滑块
-- [ ] DatePicker - 日期选择器
+- [x] DatePicker - 日期选择器
 - [ ] DateTimePicker - 日期时间选择器
 - [ ] TimePicker - 时间选择器
 - [ ] TimeSelect - 时间选择
@@ -157,6 +174,7 @@
 
 - [ ] ConfigProvider - 全局配置
 - [ ] OverflowList - 折叠列表
+- [x] TSX Demo - TSX语法演示组件
 
 ### 状态管理
 
@@ -174,6 +192,7 @@
 - **可定制性**: 通过Props提供丰富的配置选项，满足不同使用场景
 - **TypeScript**: 使用TypeScript进行类型定义，提供完善的类型提示
 - **组件结构**: 遵循一致的目录结构和命名规范
+- **TSX支持**: 支持使用TSX语法编写组件，提供更灵活的组件编写方式
 
 ### 目录结构规范
 
@@ -183,11 +202,21 @@
    components/ui/组件名/index.vue
    ```
 
+   或者使用TSX:
+
+   ```
+   components/ui/组件名/index.tsx
+   ```
+
    例如：button组件应放置在 `components/ui/button/index.vue`
 
 2. **子组件结构**:
    ```
    components/ui/父组件名/子组件名.vue
+   ```
+   或者使用TSX:
+   ```
+   components/ui/父组件名/子组件名.tsx
    ```
    例如：typography下的text组件应放置在 `components/ui/typography/text.vue`
 
@@ -196,7 +225,8 @@
 - 所有目录和文件名必须全部**小写**
 - 多词组合时禁止使用**连字符**，禁止使用**驼峰命名**
 - 新建组件时，组件名称和目录名称均以小写单个单词命名
-- 组件内使用 `<script setup lang="ts" name="UiComponentName">` 的格式定义组件名
+- Vue组件内使用 `<script setup lang="ts" name="UiComponentName">` 的格式定义组件名
+- TSX组件使用 `defineComponent({ name: 'UiComponentName', ... })` 定义组件名
 
 ### 样式实现方式
 
@@ -250,15 +280,18 @@
      /**
       * 按钮类型
       */
-     type?: 'default' | 'primary' | 'success' | 'warning' | 'danger'
-     // 其他属性...
+     type?: 'primary' | 'secondary' | 'danger'
+     /**
+      * 按钮大小
+      */
+     size?: 'small' | 'medium' | 'large'
    }>(), {
-     type: 'default',
-     // 默认值...
+     type: 'primary',
+     size: 'medium'
    })
    ```
 
-3. **事件定义**：使用TypeScript定义组件可触发的事件
+3. **事件定义**：使用TypeScript类型定义Emits
 
    ```typescript
    const emit = defineEmits<{
@@ -266,45 +299,70 @@
    }>()
    ```
 
-4. **计算属性**：使用计算属性生成类名和样式
+4. **组件逻辑**：使用Composition API实现组件逻辑
 
    ```typescript
-   const buttonClass = computed(() => {
-     // 类名逻辑...
-   })
+   const isActive = ref(false)
+   function handleClick(event: MouseEvent) {
+     isActive.value = true
+     emit('click', event)
+   }
    ```
 
-5. **模板结构**：保持简洁明了的模板结构
+5. **模板标记**：使用语义化标签和适当的CSS类
+
    ```html
    <template>
-     <button :class="buttonClass" @click="handleClick">
-       <slot />
+     <button class="ui-button" @click="handleClick">
+       <slot></slot>
      </button>
    </template>
    ```
 
-### 组件功能实现规范
+6. **样式定义**：使用scoped样式和CSS变量
 
-1. **可访问性**：
+   ```html
+   <style scoped>
+     .ui-button {
+       /* 样式 */
+     }
+   </style>
+   ```
 
-   - 所有交互组件应支持键盘操作
-   - 提供适当的ARIA属性
-   - 考虑高对比度模式和屏幕阅读器使用场景
+### CSS变量主题系统
 
-2. **暗色模式**：
+组件样式应当通过CSS变量实现主题化：
 
-   - 所有组件应支持暗色模式
-   - 使用 `dark:` 前缀设置暗色模式下的样式
+1. **基础变量**：在全局样式文件中定义基础变量
 
-3. **状态管理**：
+   ```css
+   :root {
+     --ui-color-primary: #10b981;
+     --ui-spacing: 1rem;
+   }
+   ```
 
-   - 组件内部状态使用 `ref` 或 `reactive` 管理
-   - 复杂组件考虑抽取逻辑到composables
+2. **组件使用变量**：组件内使用全局变量，并提供默认值
 
-4. **性能优化**：
-   - 避免不必要的计算和渲染
-   - 大数据场景考虑虚拟化
-   - 使用 `v-memo` 或 `memo` 优化渲染性能
+   ```css
+   .ui-button {
+     color: var(--ui-button-color, var(--ui-color-primary, #10b981));
+   }
+   ```
+
+3. **深色模式**：使用`:root.dark`选择器实现深色模式
+
+   ```css
+   :root.dark {
+     --ui-color-primary: #34d399;
+   }
+   ```
+
+### 组件测试与文档
+
+1. 为每个组件提供完整的demo页面，展示不同配置选项和使用方式
+2. 为每个组件编写清晰的API文档，包括Props、Events和Slots
+3. 编写基本的单元测试确保组件功能正常
 
 ## 实现计划
 

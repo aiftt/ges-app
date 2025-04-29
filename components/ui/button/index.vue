@@ -383,13 +383,5 @@ const iconSize = computed(() => {
   cursor: wait;
 }
 
-/* 深色模式适配 - 使用CSS变量，无需为每种类型单独定义 */
-:root.dark .ui-button::after {
-  background-image: radial-gradient(circle, rgba(0, 0, 0, 0.3) 10%, transparent 10.01%);
-}
-
-/* 焦点时的轮廓在暗色模式下调整 */
-:root.dark .ui-button:focus-visible {
-  outline-color: rgba(255, 255, 255, 0.3);
-}
+/* CSS变量已移至主题文件中 */
 </style>

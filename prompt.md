@@ -7,6 +7,65 @@
 5. 直接应用代码不要询问或者要我手动来应用
 6. 在实现 ui/ 组件的时候按照计划中的实施，且自行根据依赖关系判断实现优先级
 7. 注意！！！创建组件务必遵守规范，禁止出现 `<parent>-<child>.vue` 这样的组件，应该：`<parent>/<child>.vue`
+8. 禁止直接在组件中声明 css `--ui-...` 变量，总是将 `--ui-...` 组件 css 变量声明放到 _*assets/themes/*_ 下的主题样式文件中去统一管理
+9. 禁止使用 console api ，要使用封装好的 Logger，每次完成代码后检查是否使用了 console api ，如果有则替换成 logger api
+10. 禁止使用 style.setProperty 必须使用 css + vue v-bind 方式来实现，如：`--ui-xx: v-bind('varName')`
+
+问题：
+
+1. color/index.vue 组件未实现
+2. Divider, image, popover, resizebox, tooltip 组件主题变量还未迁移
+3. submenu.vue 里还有直接使用 style 的，按照规范替换掉
+
+下面是我查找到的还有直接使用 style 的结果：
+
+```
+6 个结果 - 2 文件
+
+components/ui/tooltip/index.vue:
+  154
+  155:   tooltipRef.value.style.top = `${top}px`
+  156:   tooltipRef.value.style.left = `${left}px`
+  157  }
+
+components/ui/trigger/index.vue:
+  384    // 应用位置
+  385:   contentRef.value.style.top = `${top}px`
+  386:   contentRef.value.style.left = `${left}px`
+  387
+
+  389    if (props.arrow && arrowRef.value) {
+  390:     arrowRef.value.style.top = `${arrowTop}px`
+  391:     arrowRef.value.style.left = `${arrowLeft}px`
+  392    }
+
+components/ui/icon/index.vue:
+  49    if (!isPresetSize.value && props.size) {
+  50:     styles['--ui-icon-custom-size'] = props.size
+  51    }
+
+  54    if (props.color) {
+  55:     styles['--ui-icon-custom-color'] = props.color
+  56    }
+
+```
+
+迭代：
+
+继续按照计划 @plan.md 实施，完成剩余组件，并优化已有组件适配主题
+
+检查：
+
+1. 检查下 popconfirm,popover,trigger，这是上次会话生产的代码但是会话异常结束了，处于半完成状态，优先完成这几个
+
+清理多余代码：
+
+1. `ui/datepicker/` 及相关的 `pages/demo/datepicker.vue` 等
+2. 给项目增加 vue tsx 语法支持
+
+优化：
+
+1. 将 datepicker 拆分成 date/picker.vue 方便后续添加更多日期相关的组件，比如： date/range.vue
 
 问题：
 

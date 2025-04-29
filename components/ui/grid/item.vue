@@ -52,8 +52,8 @@ const props = withDefaults(defineProps<{
   rowStart: '',
   rowEnd: '',
   rowSpan: 0,
-  justify: '',
-  align: '',
+  justify: undefined,
+  align: undefined,
   class: '',
 })
 

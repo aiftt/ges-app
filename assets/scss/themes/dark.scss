@@ -5,67 +5,176 @@
  * 更新日期: 2023-12-07 - 从主题变量文件拆分
  * 更新日期: 2023-12-12 - 优化主题配色方案，区分primary和success色调
  * 更新日期: 2023-12-12 - 调整info颜色为蓝灰色调，增强与默认按钮的区分度
+ * 更新日期: 2024-01-08 - 添加 date-picker 组件主题变量
+ * 更新日期: 2024-05-10 - 添加 resizebox 和 popconfirm 组件主题变量
+ * 更新日期: 2024-07-02 - 集成从UI组件中提取的变量
+ * 更新日期: 2024-07-02 - 添加 QRCode 组件主题变量
+ * 更新日期: 2025-07-03 - 添加 Divider, Image, Popover, Tooltip 组件主题变量
  */
 
 :root.dark {
   // 基础变量 - 颜色
-  --ui-color-primary: #177ddc; // 暗色主题下的蓝色主色调
-  --ui-color-primary-light: #1f94ff;
-  --ui-color-primary-dark: #0958d9;
-  --ui-color-success: #49aa19; // 暗色主题下的绿色成功色调
-  --ui-color-success-light: #6abe39;
-  --ui-color-success-dark: #3c8618;
-  --ui-color-warning: #d89614;
-  --ui-color-warning-light: #e8b339;
-  --ui-color-warning-dark: #aa7714;
-  --ui-color-danger: #a61d24;
-  --ui-color-danger-light: #d32029;
-  --ui-color-danger-dark: #791a1f;
-  --ui-color-info: #4582ec; // 暗色主题下的蓝灰色信息色调
-  --ui-color-info-light: #6a9eef;
-  --ui-color-info-dark: #3167c6;
+  --ui-color-primary: #1890ff;
+  --ui-color-primary-light: #40a9ff;
+  --ui-color-primary-dark: #096dd9;
+  --ui-color-success: #52c41a;
+  --ui-color-success-light: #73d13d;
+  --ui-color-success-dark: #389e0d;
+  --ui-color-warning: #faad14;
+  --ui-color-warning-light: #ffc53d;
+  --ui-color-warning-dark: #d48806;
+  --ui-color-danger: #f5222d;
+  --ui-color-danger-light: #ff4d4f;
+  --ui-color-danger-dark: #cf1322;
+  --ui-color-info: #5470c6;
+  --ui-color-info-light: #7890d6;
+  --ui-color-info-dark: #3c57a5;
 
   // 背景色
-  --ui-color-bg: #141414;
-  --ui-color-bg-light: #262626;
-  --ui-color-bg-dark: #434343;
+  --ui-color-bg: #1f1f1f;
+  --ui-color-bg-light: #2c2c2c;
+  --ui-color-bg-dark: #141414;
+  --ui-color-bg-hover: #333333;
 
   // 文本颜色
-  --ui-color-text: #d9d9d9;
-  --ui-color-text-light: #bfbfbf;
-  --ui-color-text-lighter: #8c8c8c;
-  --ui-color-text-lightest: #595959;
-  --ui-color-text-dark: #f0f0f0;
-  --ui-color-text-heading: #f0f0f0;
+  --ui-color-text: #e0e0e0;
+  --ui-color-text-light: #a0a0a0;
+  --ui-color-text-lighter: #808080;
+  --ui-color-text-lightest: #606060;
+  --ui-color-text-dark: #ffffff;
+  --ui-color-text-heading: #f5f5f5;
+  --ui-color-text-secondary: #a0a0a0;
 
   // 边框颜色
   --ui-color-border: #434343;
-  --ui-color-border-dark: #8c8c8c;
+  --ui-color-border-dark: #5e5e5e;
+  --ui-border-color: #434343;
 
   // 禁用状态颜色
-  --ui-color-disabled-bg: #262626;
-  --ui-color-disabled-text: #595959;
+  --ui-color-disabled-bg: #333333;
+  --ui-color-disabled-text: #666666;
   --ui-color-disabled-border: #434343;
+  --ui-disabled-bg: #2a2a2a;
 
   // 次要颜色
-  --ui-color-secondary: #262626;
-  --ui-color-secondary-light: #434343;
+  --ui-color-secondary: #2a2a2a;
+  --ui-color-secondary-light: #333333;
   --ui-color-secondary-dark: #1f1f1f;
 
   // 阴影
   --ui-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.5);
-  --ui-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.5), 0 1px 2px 0 rgba(0, 0, 0, 0.5);
-  --ui-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -1px rgba(0, 0, 0, 0.5);
-  --ui-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.5);
-  --ui-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.5);
+  --ui-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3), 0 1px 2px 0 rgba(0, 0, 0, 0.2);
+  --ui-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+  --ui-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
+  --ui-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
 
   // 代码块
-  --ui-code-bg: #262626;
+  --ui-code-bg: #2a2a2a;
   --ui-code-color: #ff4d4f;
   --ui-code-border: #434343;
 
   // 表格
-  --ui-table-border: #303030;
-  --ui-table-header-bg: #262626;
-  --ui-table-row-hover-bg: #1f1f1f;
+  --ui-table-border: #434343;
+  --ui-table-header-bg: #2a2a2a;
+  --ui-table-row-hover-bg: #333333;
+
+  // 日期选择器主题相关变量
+  --ui-date-picker-shadow: var(--ui-shadow-md);
+  --ui-date-picker-bg: var(--ui-color-bg);
+  --ui-date-picker-header-border: var(--ui-border-color);
+  --ui-date-picker-day-hover: var(--ui-color-bg-hover);
+  --ui-date-picker-day-selected-bg: var(--ui-color-primary);
+  --ui-date-picker-day-selected-color: var(--ui-color-text-dark);
+  --ui-date-picker-day-today-color: var(--ui-color-primary);
+  --ui-date-picker-other-month-color: var(--ui-color-text-lighter);
+
+  // ResizeBox主题相关变量
+  --ui-resizebox-handle-hover-bg: rgba(255, 255, 255, 0.1);
+  --ui-resizebox-handle-active-bg: rgba(255, 255, 255, 0.2);
+
+  // Popconfirm主题相关变量
+  --ui-popconfirm-title-color: #f9fafb;
+  --ui-popconfirm-content-color: #e5e7eb;
+
+  // 从UI组件中提取的变量
+  // Menu组件变量
+  --ui-menu-bg-color: #1f1f1f;
+  --ui-menu-text-color: rgba(255, 255, 255, 0.85);
+  --ui-menu-border-color: #434343;
+  --ui-menu-hover-color: rgba(255, 255, 255, 0.08);
+  --ui-menu-active-color: #177ddc;
+  --ui-menu-dark-bg-color: #141414;
+  --ui-menu-dark-text-color: rgba(255, 255, 255, 0.65);
+  --ui-menu-dark-border-color: #434343;
+  --ui-menu-dark-hover-color: rgba(255, 255, 255, 0.08);
+  --ui-menu-dark-active-color: #177ddc;
+
+  // Trigger组件变量
+  --ui-trigger-bg: #1f2937;
+  --ui-trigger-border: #374151;
+  --ui-trigger-color: #f9fafb;
+
+  // 分割线颜色
+  --ui-color-split-dark: #4b5563;
+
+  // 滚动条
+  --ui-scrollbar-track-color-dark: rgba(255, 255, 255, 0.05);
+  --ui-scrollbar-color-dark: rgba(255, 255, 255, 0.2);
+  --ui-scrollbar-hover-color-dark: rgba(255, 255, 255, 0.4);
+
+  // 其他变量
+  --shadow-color: rgba(0, 0, 0, 0.25);
+
+  // Typography/Text组件
+  --ui-color-text-dark: #e5e7eb;
+  --ui-color-text-secondary-dark: #9ca3af;
+  --ui-color-mark-bg-dark: #78350f;
+  --ui-color-code-bg-dark: #1f2937;
+
+  // Typography组件
+  --ui-blockquote-bg-dark: rgba(59, 130, 246, 0.15);
+  --ui-color-primary-dark: #60a5fa;
+  --ui-code-bg-dark: #1f2937;
+  --ui-code-inline-bg-dark: rgba(255, 255, 255, 0.1);
+  --ui-table-header-bg-dark: #111827;
+  --ui-table-stripe-bg-dark: #1f2937;
+  --ui-border-color-dark: #374151;
+
+  // Checkbox组件
+  --ui-color-bg-secondary: #111827;
+
+  // Button组件
+  --ui-button-focus-outline-color: rgba(255, 255, 255, 0.3);
+
+  // QRCode组件
+  --ui-qrcode-loading-bg: rgba(0, 0, 0, 0.7);
+  --ui-qrcode-loading-text-color: #e5e7eb;
+  --ui-qrcode-error-bg: rgba(80, 0, 0, 0.7);
+  --ui-qrcode-error-text-color: #fca5a5;
+
+  // Divider组件变量
+  --ui-divider-color: rgb(75, 85, 99);
+  --ui-divider-text-color: rgb(209, 213, 219);
+
+  // Image组件变量
+  --ui-image-bg-dark: #262626;
+  --ui-image-spinner-dark: #444;
+  --ui-image-spinner-active-dark: #69b1ff;
+  --ui-color-background-dark: #1f2937;
+  --ui-color-text-secondary-dark: #9ca3af;
+
+  // Popover组件变量
+  --ui-popover-bg-dark: #1f2937;
+  --ui-popover-border-dark: #374151;
+  --ui-popover-shadow-dark: 0 2px 12px rgba(0, 0, 0, 0.3);
+  --ui-popover-title-color-dark: #f9fafb;
+  --ui-popover-content-color-dark: #e5e7eb;
+
+  // Tooltip组件变量
+  --ui-tooltip-bg-dark: rgba(0, 0, 0, 0.85);
+  --ui-tooltip-color-dark: #ffffff;
+  --ui-tooltip-light-bg-dark: #1f2937;
+  --ui-tooltip-light-color-dark: #f9fafb;
+  --ui-tooltip-light-border-dark: #374151;
+  --ui-tooltip-shadow-dark: 0 2px 8px rgba(0, 0, 0, 0.3);
 }

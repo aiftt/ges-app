@@ -43,7 +43,7 @@ const isPresetSize = computed(() => {
 
 // 计算自定义样式变量
 const customStyle = computed(() => {
-  const styles = {}
+  const styles: Record<string, string> = {}
 
   // 自定义尺寸
   if (!isPresetSize.value && props.size) {

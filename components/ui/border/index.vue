@@ -517,8 +517,5 @@ const hoverScaleVar = computed(() => props.hoverScale || null)
   transform: scale(var(--ui-border-hover-scale, 1.05));
 }
 
-/* 暗黑模式 */
-.dark .ui-border {
-  border-color: var(--ui-dark-border-color, #374151);
-}
+/* CSS变量已移至主题文件中 */
 </style>

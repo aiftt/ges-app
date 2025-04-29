@@ -193,8 +193,5 @@ const shadowVar = computed(() => shadowValue.value)
   overflow: auto;
 }
 
-/* 暗黑模式调整 */
-:root.dark .ui-container {
-  --shadow-color: rgba(0, 0, 0, 0.25);
-}
+/* CSS变量已移至主题文件中 */
 </style>

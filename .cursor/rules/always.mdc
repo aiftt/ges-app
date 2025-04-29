@@ -21,8 +21,9 @@ alwaysApply: true
 - 总是在提供完代码最后执行 `pnpm lint` 检查代码并修复错误
 - 总是在书写组件demo代码时同步提供示例代码
 - 总是删除未使用到的会触发 eslint `unused-imports/no-unused-vars` 的代码
-- 总是尽可能的使用 vue 特性，结合 `v-bind + css variable` 来实现动态样式，如：`--ui-primary-color:v-bind(color)`
 - 总是使用 scss 新语法 `@use 'style.scss';` 引入样式文件
+- 总是以 `<ui-{name}>` 方式使用 `ui/` 下的公共组件
+- 总是将 `--ui-...` 组件 css 变量声明放到 _assets/themes/_ 下的主题样式文件中去统一管理
 
 # 必须禁止的规范
 
@@ -33,3 +34,4 @@ alwaysApply: true
 - 禁止直接使用 style 内联样式除非迫不得已其他方式没法实现的情况下才用
 - 禁止添加或保留未使用的代码，变量等，不需要的东西直接删除
 - 禁止文件描述中使用“当前”作为日期，必须使用实际创建和更新时间
+- 禁止以 `<Ui{Name}>` 使用 ui/ 下的公共组件- 禁止使用 style.setProperty，总是结合 `v-bind + css variable` 来实现动态样式，如：`--ui-primary-color:v-bind(color)`

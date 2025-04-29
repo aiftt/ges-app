@@ -323,14 +323,5 @@ function copyText() {
   opacity: 1;
 }
 
-/* 深色模式适配 */
-@media (prefers-color-scheme: dark) {
-  .ui-typography-paragraph--type-default {
-    color: var(--ui-color-text-dark, #e5e7eb);
-  }
-
-  .ui-typography-paragraph--type-secondary {
-    color: var(--ui-color-text-secondary-dark, #9ca3af);
-  }
-}
+/* CSS变量已移至主题文件中 */
 </style>
