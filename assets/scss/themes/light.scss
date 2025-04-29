@@ -9,6 +9,7 @@
  * 更新日期: 2024-05-10 - 添加 resizebox 和 popconfirm 组件主题变量
  * 更新日期: 2024-07-02 - 集成从UI组件中提取的变量
  * 更新日期: 2025-07-03 - 添加 Divider, Image, Popover, Tooltip 组件主题变量
+ * 更新日期: 2025-05-05 - 添加 Color 组件主题变量
  */
 
 :root {
@@ -145,6 +146,15 @@
   --ui-tooltip-light-border: #e5e7eb;
   --ui-tooltip-arrow-size: 4px;
   --ui-tooltip-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+
+  // Color组件变量
+  --ui-color-component-bg: transparent;
+  --ui-color-component-border: #e5e7eb;
+  --ui-color-component-text-light: #ffffff;
+  --ui-color-component-text-dark: #333333;
+  --ui-color-component-indicator-bg: #ffffff;
+  --ui-color-component-indicator-color: #333333;
+  --ui-color-component-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 
   // 其他变量
   --shadow-color: rgba(0, 0, 0, 0.1);

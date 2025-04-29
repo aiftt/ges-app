@@ -4,6 +4,7 @@
  * 创建日期: 2025-04-30
  * 作者: aiftt
  * 更新日期: 2025-04-30 - 初始版本
+ * 更新日期: 2025-05-05 - 改用 CSS 变量 + v-bind 方式实现动态样式
  */
 import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
 
@@ -58,10 +59,16 @@ const isVisible = ref(false)
 const showTimer = ref<number | null>(null)
 const hideTimer = ref<number | null>(null)
 
+// 位置变量
+const tooltipTop = ref('0px')
+const tooltipLeft = ref('0px')
+
 // 计算提示框位置样式
 const tooltipStyle = computed(() => {
   return {
     '--ui-tooltip-max-width': props.maxWidth,
+    '--ui-tooltip-top': tooltipTop.value,
+    '--ui-tooltip-left': tooltipLeft.value,
   }
 })
 
@@ -152,9 +159,9 @@ function updatePosition() {
     top = 8
   }
 
-  // 使用CSS变量设置位置
-  tooltipRef.value.style.setProperty('--ui-tooltip-top', `${top}px`)
-  tooltipRef.value.style.setProperty('--ui-tooltip-left', `${left}px`)
+  // 更新位置变量
+  tooltipTop.value = `${top}px`
+  tooltipLeft.value = `${left}px`
 }
 
 // 切换提示框显示状态

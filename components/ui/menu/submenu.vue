@@ -5,6 +5,7 @@
  * 作者: aiftt
  * 更新日期: 2023-12-01 - 修复样式方式，符合项目规范
  * 更新日期: 2023-12-05 - 修复保留关键字prop问题
+ * 更新日期: 2025-05-05 - 改用 CSS 变量 + v-bind 方式实现动态样式
  */
 
 // 定义props
@@ -142,17 +143,19 @@ const paddingClass = computed(() => {
   }
   return ''
 })
+
+// 内容高度变量
+const contentHeight = ref('0px')
+
 // 处理子菜单内容过渡动画
 function beforeEnter(el: HTMLElement) {
   el.classList.add('ui-submenu-enter')
+  contentHeight.value = '0px'
 }
 
 function enter(el: HTMLElement, done: () => void) {
   // 获取内容高度
-  const contentHeight = el.scrollHeight
-
-  // 使用自定义属性存储内容高度
-  el.style.setProperty('--ui-submenu-content-height', `${contentHeight}px`)
+  contentHeight.value = `${el.scrollHeight}px`
 
   // 添加激活类名
   el.classList.add('ui-submenu-enter-active')
@@ -172,11 +175,7 @@ function afterEnter(el: HTMLElement) {
 
 function beforeLeave(el: HTMLElement) {
   // 获取内容高度
-  const contentHeight = el.scrollHeight
-
-  // 使用自定义属性存储内容高度
-  el.style.setProperty('--ui-submenu-content-height', `${contentHeight}px`)
-
+  contentHeight.value = `${el.scrollHeight}px`
   el.classList.add('ui-submenu-leave')
 }
 
@@ -342,17 +341,20 @@ function afterLeave(el: HTMLElement) {
   transition:
     height 0.3s ease,
     opacity 0.3s ease;
+  --ui-submenu-content-height: v-bind(contentHeight);
   height: var(--ui-submenu-content-height);
   opacity: 1;
   overflow: hidden;
 }
 
 .ui-submenu-enter-to {
+  --ui-submenu-content-height: v-bind(contentHeight);
   height: var(--ui-submenu-content-height);
   opacity: 1;
 }
 
 .ui-submenu-leave {
+  --ui-submenu-content-height: v-bind(contentHeight);
   height: var(--ui-submenu-content-height);
   opacity: 1;
   overflow: hidden;

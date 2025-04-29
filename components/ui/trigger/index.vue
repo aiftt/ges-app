@@ -4,6 +4,7 @@
  * 创建日期: 2025-05-03
  * 作者: aiftt
  * 提供多种触发方式的弹出内容容器
+ * 更新日期: 2025-05-05 - 改用 CSS 变量 + v-bind 方式实现动态样式
  */
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 
@@ -85,6 +86,12 @@ const isVisible = ref(props.visible)
 const showTimer = ref<number | null>(null)
 const hideTimer = ref<number | null>(null)
 
+// 位置变量
+const contentTop = ref('0px')
+const contentLeft = ref('0px')
+const arrowTop = ref('0px')
+const arrowLeft = ref('0px')
+
 // 箭头尺寸
 const ARROW_SIZE = 8
 
@@ -125,7 +132,11 @@ const contentClass = computed(() => {
 // 计算内容的样式
 const contentStyle = computed(() => {
   return {
-    zIndex: props.zIndex,
+    'zIndex': props.zIndex,
+    '--ui-trigger-content-top': contentTop.value,
+    '--ui-trigger-content-left': contentLeft.value,
+    '--ui-trigger-arrow-top': arrowTop.value,
+    '--ui-trigger-arrow-left': arrowLeft.value,
   }
 })
 
@@ -193,8 +204,8 @@ function updatePosition() {
   let left = 0
 
   // 箭头位置变量
-  let arrowTop = 0
-  let arrowLeft = 0
+  let arrTop = 0
+  let arrLeft = 0
 
   const offset = props.offset
 
@@ -205,8 +216,8 @@ function updatePosition() {
       left = triggerRect.left + (triggerRect.width - contentRect.width) / 2
 
       if (props.arrow) {
-        arrowTop = contentRect.height
-        arrowLeft = contentRect.width / 2 - ARROW_SIZE / 2
+        arrTop = contentRect.height
+        arrLeft = contentRect.width / 2 - ARROW_SIZE / 2
       }
       break
 
@@ -215,8 +226,8 @@ function updatePosition() {
       left = triggerRect.left
 
       if (props.arrow) {
-        arrowTop = contentRect.height
-        arrowLeft = Math.min(triggerRect.width / 2, 20)
+        arrTop = contentRect.height
+        arrLeft = Math.min(triggerRect.width / 2, 20)
       }
       break
 
@@ -225,8 +236,8 @@ function updatePosition() {
       left = triggerRect.right - contentRect.width
 
       if (props.arrow) {
-        arrowTop = contentRect.height
-        arrowLeft = contentRect.width - Math.min(triggerRect.width / 2, 20)
+        arrTop = contentRect.height
+        arrLeft = contentRect.width - Math.min(triggerRect.width / 2, 20)
       }
       break
 
@@ -235,8 +246,8 @@ function updatePosition() {
       left = triggerRect.right + offset
 
       if (props.arrow) {
-        arrowTop = contentRect.height / 2 - ARROW_SIZE / 2
-        arrowLeft = -ARROW_SIZE
+        arrTop = contentRect.height / 2 - ARROW_SIZE / 2
+        arrLeft = -ARROW_SIZE
       }
       break
 
@@ -245,8 +256,8 @@ function updatePosition() {
       left = triggerRect.right + offset
 
       if (props.arrow) {
-        arrowTop = Math.min(triggerRect.height / 2, 20)
-        arrowLeft = -ARROW_SIZE
+        arrTop = Math.min(triggerRect.height / 2, 20)
+        arrLeft = -ARROW_SIZE
       }
       break
 
@@ -255,8 +266,8 @@ function updatePosition() {
       left = triggerRect.right + offset
 
       if (props.arrow) {
-        arrowTop = contentRect.height - Math.min(triggerRect.height / 2, 20)
-        arrowLeft = -ARROW_SIZE
+        arrTop = contentRect.height - Math.min(triggerRect.height / 2, 20)
+        arrLeft = -ARROW_SIZE
       }
       break
 
@@ -265,8 +276,8 @@ function updatePosition() {
       left = triggerRect.left + (triggerRect.width - contentRect.width) / 2
 
       if (props.arrow) {
-        arrowTop = -ARROW_SIZE
-        arrowLeft = contentRect.width / 2 - ARROW_SIZE / 2
+        arrTop = -ARROW_SIZE
+        arrLeft = contentRect.width / 2 - ARROW_SIZE / 2
       }
       break
 
@@ -275,8 +286,8 @@ function updatePosition() {
       left = triggerRect.left
 
       if (props.arrow) {
-        arrowTop = -ARROW_SIZE
-        arrowLeft = Math.min(triggerRect.width / 2, 20)
+        arrTop = -ARROW_SIZE
+        arrLeft = Math.min(triggerRect.width / 2, 20)
       }
       break
 
@@ -285,8 +296,8 @@ function updatePosition() {
       left = triggerRect.right - contentRect.width
 
       if (props.arrow) {
-        arrowTop = -ARROW_SIZE
-        arrowLeft = contentRect.width - Math.min(triggerRect.width / 2, 20)
+        arrTop = -ARROW_SIZE
+        arrLeft = contentRect.width - Math.min(triggerRect.width / 2, 20)
       }
       break
 
@@ -295,8 +306,8 @@ function updatePosition() {
       left = triggerRect.left - contentRect.width - offset
 
       if (props.arrow) {
-        arrowTop = contentRect.height / 2 - ARROW_SIZE / 2
-        arrowLeft = contentRect.width
+        arrTop = contentRect.height / 2 - ARROW_SIZE / 2
+        arrLeft = contentRect.width
       }
       break
 
@@ -305,8 +316,8 @@ function updatePosition() {
       left = triggerRect.left - contentRect.width - offset
 
       if (props.arrow) {
-        arrowTop = Math.min(triggerRect.height / 2, 20)
-        arrowLeft = contentRect.width
+        arrTop = Math.min(triggerRect.height / 2, 20)
+        arrLeft = contentRect.width
       }
       break
 
@@ -315,8 +326,8 @@ function updatePosition() {
       left = triggerRect.left - contentRect.width - offset
 
       if (props.arrow) {
-        arrowTop = contentRect.height - Math.min(triggerRect.height / 2, 20)
-        arrowLeft = contentRect.width
+        arrTop = contentRect.height - Math.min(triggerRect.height / 2, 20)
+        arrLeft = contentRect.width
       }
       break
   }
@@ -334,7 +345,7 @@ function updatePosition() {
     if (props.arrow && oldLeft !== left) {
       const placementSide = props.placement.split('-')[0]
       if (placementSide === 'top' || placementSide === 'bottom') {
-        arrowLeft += (oldLeft - left)
+        arrLeft += (oldLeft - left)
       }
     }
   }
@@ -348,7 +359,7 @@ function updatePosition() {
     if (props.arrow && oldLeft !== left) {
       const placementSide = props.placement.split('-')[0]
       if (placementSide === 'top' || placementSide === 'bottom') {
-        arrowLeft += (oldLeft - left)
+        arrLeft += (oldLeft - left)
       }
     }
   }
@@ -362,7 +373,7 @@ function updatePosition() {
     if (props.arrow && oldTop !== top) {
       const placementSide = props.placement.split('-')[0]
       if (placementSide === 'left' || placementSide === 'right') {
-        arrowTop += (oldTop - top)
+        arrTop += (oldTop - top)
       }
     }
   }
@@ -376,20 +387,16 @@ function updatePosition() {
     if (props.arrow && oldTop !== top) {
       const placementSide = props.placement.split('-')[0]
       if (placementSide === 'left' || placementSide === 'right') {
-        arrowTop += (oldTop - top)
+        arrTop += (oldTop - top)
       }
     }
   }
 
-  // 应用位置
-  contentRef.value.style.setProperty('--ui-trigger-content-top', `${top}px`)
-  contentRef.value.style.setProperty('--ui-trigger-content-left', `${left}px`)
-
-  // 更新箭头位置
-  if (props.arrow && arrowRef.value) {
-    arrowRef.value.style.setProperty('--ui-trigger-arrow-top', `${arrowTop}px`)
-    arrowRef.value.style.setProperty('--ui-trigger-arrow-left', `${arrowLeft}px`)
-  }
+  // 更新位置变量
+  contentTop.value = `${top}px`
+  contentLeft.value = `${left}px`
+  arrowTop.value = `${arrTop}px`
+  arrowLeft.value = `${arrLeft}px`
 }
 
 // 添加事件监听

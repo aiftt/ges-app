@@ -5,6 +5,7 @@
  * 作者: aiftt
  *
  * 用于展示颜色样本，支持不同格式的颜色值
+ * 更新日期: 2025-05-05 - 改用 CSS 变量 + v-bind 方式实现动态样式
  */
 
 import { computed } from 'vue'
@@ -65,7 +66,7 @@ const sizeVar = computed(() => {
 })
 
 // 根据颜色值计算文本颜色（深色背景用浅色文字，浅色背景用深色文字）
-const textColor = computed(() => {
+const textColorVar = computed(() => {
   // 简单判断：如果颜色是HEX格式，可以根据亮度判断
   if (props.value.startsWith('#')) {
     const hex = props.value.replace('#', '')
@@ -132,7 +133,7 @@ const colorClass = computed(() => {
     :style="colorStyle"
     @click="copyColor"
   >
-    <div v-if="showValue" class="ui-color__text" :style="{ color: textColor }">
+    <div v-if="showValue" class="ui-color__text">
       {{ value }}
     </div>
     <div v-if="copyable" class="ui-color__copy-indicator">
@@ -186,6 +187,9 @@ const colorClass = computed(() => {
 
 /* 文本 */
 .ui-color__text {
+  --ui-color-text-color: v-bind(textColorVar);
+  color: var(--ui-color-text-color);
+
   position: absolute;
   left: 0;
   right: 0;
@@ -217,24 +221,18 @@ const colorClass = computed(() => {
   right: -6px;
   width: 14px;
   height: 14px;
-  background-color: var(--ui-color-bg, #ffffff);
+  background-color: var(--ui-color-component-indicator-bg, #ffffff);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--ui-color-text, #333333);
+  color: var(--ui-color-component-indicator-color, #333333);
   opacity: 0;
   transition: opacity 0.2s;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--ui-color-component-shadow, 0 1px 3px rgba(0, 0, 0, 0.1));
 }
 
 .ui-color--copyable:hover .ui-color__copy-indicator {
   opacity: 1;
-}
-
-/* 暗色主题适配 */
-:root.dark .ui-color__copy-indicator {
-  background-color: var(--ui-color-bg-dark, #1f1f1f);
-  color: var(--ui-color-text-dark, #e0e0e0);
 }
 </style>

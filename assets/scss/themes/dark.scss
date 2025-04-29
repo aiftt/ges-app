@@ -10,6 +10,7 @@
  * 更新日期: 2024-07-02 - 集成从UI组件中提取的变量
  * 更新日期: 2024-07-02 - 添加 QRCode 组件主题变量
  * 更新日期: 2025-07-03 - 添加 Divider, Image, Popover, Tooltip 组件主题变量
+ * 更新日期: 2025-05-05 - 添加 Color 组件主题变量
  */
 
 :root.dark {
@@ -177,4 +178,13 @@
   --ui-tooltip-light-color-dark: #f9fafb;
   --ui-tooltip-light-border-dark: #374151;
   --ui-tooltip-shadow-dark: 0 2px 8px rgba(0, 0, 0, 0.3);
+
+  // Color组件变量
+  --ui-color-component-bg: transparent;
+  --ui-color-component-border: #4b5563;
+  --ui-color-component-text-light: #ffffff;
+  --ui-color-component-text-dark: #e5e7eb;
+  --ui-color-component-indicator-bg: #1f2937;
+  --ui-color-component-indicator-color: #e5e7eb;
+  --ui-color-component-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }

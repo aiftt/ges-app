@@ -21,6 +21,7 @@ import DemoQrcode from '~/components/demo/qrcode.vue'
 import DemoText from '~/components/demo/text.vue'
 import DemoTooltip from '~/components/demo/tooltip.vue'
 import DemoTypography from '~/components/demo/typography.vue'
+import DemoColor from '~/pages/demo/color.vue'
 import DemoTheme from '~/pages/demo/theme.vue'
 import DemoTsx from '~/pages/demo/tsx.vue'
 
@@ -39,6 +40,7 @@ const categories = [
       { id: 'auto-animate', name: '动画效果', component: DemoAutoAnimate },
       { id: 'tooltip', name: '文字提示', component: DemoTooltip },
       { id: 'tsx', name: 'TSX组件', component: DemoTsx },
+      { id: 'color', name: '颜色 Color', component: DemoColor },
     ],
   },
   {
