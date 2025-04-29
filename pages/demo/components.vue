@@ -12,6 +12,7 @@ import DemoAutoAnimate from '~/components/demo/auto-animate.vue'
 import DemoBorder from '~/components/demo/border.vue'
 import DemoButton from '~/components/demo/button.vue'
 import DemoCode from '~/components/demo/code.vue'
+import DemoConfigProvider from '~/components/demo/config-provider.vue'
 import DemoDivider from '~/components/demo/divider.vue'
 import DemoIcon from '~/components/demo/icon.vue'
 import DemoImage from '~/components/demo/image.vue'
@@ -30,6 +31,7 @@ const categories = [
       { id: 'border', name: '边框', component: DemoBorder },
       { id: 'button', name: '按钮', component: DemoButton },
       { id: 'code', name: '代码展示', component: DemoCode },
+      { id: 'config-provider', name: '全局配置', component: DemoConfigProvider },
       { id: 'divider', name: '分割线', component: DemoDivider },
       { id: 'icon', name: '图标', component: DemoIcon },
       { id: 'theme', name: '主题色彩 Theme', component: DemoTheme },
