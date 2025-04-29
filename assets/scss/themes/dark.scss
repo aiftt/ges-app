@@ -1,0 +1,71 @@
+/**
+ * 暗色主题变量文件
+ * 创建日期: 2023-12-07
+ * 作者: aiftt
+ * 更新日期: 2023-12-07 - 从主题变量文件拆分
+ * 更新日期: 2023-12-12 - 优化主题配色方案，区分primary和success色调
+ * 更新日期: 2023-12-12 - 调整info颜色为蓝灰色调，增强与默认按钮的区分度
+ */
+
+:root.dark {
+  // 基础变量 - 颜色
+  --ui-color-primary: #177ddc; // 暗色主题下的蓝色主色调
+  --ui-color-primary-light: #1f94ff;
+  --ui-color-primary-dark: #0958d9;
+  --ui-color-success: #49aa19; // 暗色主题下的绿色成功色调
+  --ui-color-success-light: #6abe39;
+  --ui-color-success-dark: #3c8618;
+  --ui-color-warning: #d89614;
+  --ui-color-warning-light: #e8b339;
+  --ui-color-warning-dark: #aa7714;
+  --ui-color-danger: #a61d24;
+  --ui-color-danger-light: #d32029;
+  --ui-color-danger-dark: #791a1f;
+  --ui-color-info: #4582ec; // 暗色主题下的蓝灰色信息色调
+  --ui-color-info-light: #6a9eef;
+  --ui-color-info-dark: #3167c6;
+
+  // 背景色
+  --ui-color-bg: #141414;
+  --ui-color-bg-light: #262626;
+  --ui-color-bg-dark: #434343;
+
+  // 文本颜色
+  --ui-color-text: #d9d9d9;
+  --ui-color-text-light: #bfbfbf;
+  --ui-color-text-lighter: #8c8c8c;
+  --ui-color-text-lightest: #595959;
+  --ui-color-text-dark: #f0f0f0;
+  --ui-color-text-heading: #f0f0f0;
+
+  // 边框颜色
+  --ui-color-border: #434343;
+  --ui-color-border-dark: #8c8c8c;
+
+  // 禁用状态颜色
+  --ui-color-disabled-bg: #262626;
+  --ui-color-disabled-text: #595959;
+  --ui-color-disabled-border: #434343;
+
+  // 次要颜色
+  --ui-color-secondary: #262626;
+  --ui-color-secondary-light: #434343;
+  --ui-color-secondary-dark: #1f1f1f;
+
+  // 阴影
+  --ui-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.5);
+  --ui-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.5), 0 1px 2px 0 rgba(0, 0, 0, 0.5);
+  --ui-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -1px rgba(0, 0, 0, 0.5);
+  --ui-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.5);
+  --ui-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.5);
+
+  // 代码块
+  --ui-code-bg: #262626;
+  --ui-code-color: #ff4d4f;
+  --ui-code-border: #434343;
+
+  // 表格
+  --ui-table-border: #303030;
+  --ui-table-header-bg: #262626;
+  --ui-table-row-hover-bg: #1f1f1f;
+}

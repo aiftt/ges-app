@@ -6,6 +6,9 @@
  * 更新日期: 2023-12-01 - 修复服务端渲染错误
  * 更新日期: 2023-12-03 - 优化主题色调，添加info按钮类型，移除未使用变量
  * 更新日期: 2023-12-05 - 添加v-bind + CSS变量实现方式，支持自定义颜色、圆角
+ * 更新日期: 2023-12-07 - 添加点击动画效果，优化暗色主题，去掉黑色边框
+ * 更新日期: 2023-12-10 - 使用全局主题变量，优化颜色定义
+ * 更新日期: 2023-12-11 - 优化暗色主题适配，使用新的主题变量
  */
 import { useSlots } from 'vue'
 
@@ -198,9 +201,11 @@ const iconSize = computed(() => {
   --ui-button-hover-bg-color: v-bind(hoverBgColorVar);
 
   /* 基础样式 */
-  border-radius: var(--ui-button-radius, 0.375rem);
-  transition: all 0.2s;
+  border-radius: var(--ui-button-radius, var(--ui-radius-md));
+  transition: all var(--ui-transition);
   outline: none;
+  position: relative;
+  overflow: hidden;
 }
 
 .ui-button:focus-visible {
@@ -211,7 +216,33 @@ const iconSize = computed(() => {
 }
 
 .ui-button:active {
-  transform: translateY(2px);
+  transform: scale(0.97);
+}
+
+/* 点击动画效果 */
+.ui-button::after {
+  content: '';
+  display: block;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  background-image: radial-gradient(circle, rgba(255, 255, 255, 0.3) 10%, transparent 10.01%);
+  background-repeat: no-repeat;
+  background-position: 50%;
+  transform: scale(10, 10);
+  opacity: 0;
+  transition:
+    transform 0.5s,
+    opacity 0.8s;
+}
+
+.ui-button:active::after {
+  transform: scale(0, 0);
+  opacity: 0.3;
+  transition: 0s;
 }
 
 /* 自定义样式 - 当有自定义属性时应用 */
@@ -219,83 +250,94 @@ const iconSize = computed(() => {
   background-color: var(--ui-button-bg-color);
   color: var(--ui-button-text-color);
   box-shadow: var(--ui-button-shadow);
-  border-color: var(--ui-button-border-color);
+  border: var(--ui-button-border-color, none);
 }
 
 .ui-button--custom:hover:not(.ui-button--disabled) {
-  background-color: var(--ui-button-hover-bg-color);
+  background-color: var(--ui-button-hover-bg-color, var(--ui-button-bg-color));
+  filter: brightness(0.9);
 }
 
 /* 按钮类型 */
 .ui-button--default {
-  background-color: #f3f4f6;
-  color: #374151;
-  border: 1px solid #d1d5db;
+  background-color: var(--ui-color-secondary-light);
+  color: var(--ui-color-text);
+  border: none;
 }
 
 .ui-button--default:hover:not(.ui-button--disabled) {
-  background-color: #e5e7eb;
+  background-color: var(--ui-color-secondary);
 }
 
 .ui-button--primary {
-  background-color: #3b82f6;
+  background-color: var(--ui-color-primary);
   color: white;
+  border: none;
 }
 
 .ui-button--primary:hover:not(.ui-button--disabled) {
-  background-color: #2563eb;
+  background-color: var(--ui-color-primary);
+  filter: brightness(0.9);
 }
 
 .ui-button--success {
-  background-color: #10b981;
+  background-color: var(--ui-color-success);
   color: white;
+  border: none;
 }
 
 .ui-button--success:hover:not(.ui-button--disabled) {
-  background-color: #059669;
+  background-color: var(--ui-color-success);
+  filter: brightness(0.9);
 }
 
 .ui-button--warning {
-  background-color: #f59e0b;
+  background-color: var(--ui-color-warning);
   color: white;
+  border: none;
 }
 
 .ui-button--warning:hover:not(.ui-button--disabled) {
-  background-color: #d97706;
+  background-color: var(--ui-color-warning);
+  filter: brightness(0.9);
 }
 
 .ui-button--danger {
-  background-color: #ef4444;
+  background-color: var(--ui-color-danger);
   color: white;
+  border: none;
 }
 
 .ui-button--danger:hover:not(.ui-button--disabled) {
-  background-color: #dc2626;
+  background-color: var(--ui-color-danger);
+  filter: brightness(0.9);
 }
 
 .ui-button--info {
-  background-color: #06b6d4;
+  background-color: var(--ui-color-info);
   color: white;
+  border: none;
 }
 
 .ui-button--info:hover:not(.ui-button--disabled) {
-  background-color: #0891b2;
+  background-color: var(--ui-color-info);
+  filter: brightness(0.9);
 }
 
 /* 按钮尺寸 */
 .ui-button--small {
-  padding: 0.375rem 0.625rem;
-  font-size: 0.875rem;
+  padding: calc(var(--ui-spacing-xs) + 0.125rem) var(--ui-spacing-sm);
+  font-size: var(--ui-font-size-sm);
 }
 
 .ui-button--default {
-  padding: 0.5rem 1rem;
-  font-size: 1rem;
+  padding: var(--ui-spacing-sm) var(--ui-spacing);
+  font-size: var(--ui-font-size);
 }
 
 .ui-button--large {
-  padding: 0.75rem 1.5rem;
-  font-size: 1.125rem;
+  padding: var(--ui-spacing-sm) var(--ui-spacing-md);
+  font-size: var(--ui-font-size-lg);
 }
 
 /* 圆形按钮 */
@@ -303,26 +345,26 @@ const iconSize = computed(() => {
   width: 2rem;
   height: 2rem;
   padding: 0;
-  border-radius: 9999px;
+  border-radius: var(--ui-radius-full);
 }
 
 .ui-button--circle.ui-button--default {
   width: 2.5rem;
   height: 2.5rem;
   padding: 0;
-  border-radius: 9999px;
+  border-radius: var(--ui-radius-full);
 }
 
 .ui-button--circle.ui-button--large {
   width: 3rem;
   height: 3rem;
   padding: 0;
-  border-radius: 9999px;
+  border-radius: var(--ui-radius-full);
 }
 
 /* 图标按钮 */
 .ui-button--icon-only {
-  padding: 0.5rem;
+  padding: var(--ui-spacing-sm);
 }
 
 /* 禁用状态 */
@@ -330,6 +372,9 @@ const iconSize = computed(() => {
   opacity: 0.5;
   cursor: not-allowed;
   pointer-events: none;
+  background-color: var(--ui-color-disabled-bg, var(--ui-color-secondary-light)) !important;
+  color: var(--ui-color-disabled-text, var(--ui-color-text-light)) !important;
+  border-color: var(--ui-color-disabled-border, transparent) !important;
 }
 
 /* 加载状态 */
@@ -338,56 +383,13 @@ const iconSize = computed(() => {
   cursor: wait;
 }
 
-/* 深色模式适配 */
-@media (prefers-color-scheme: dark) {
-  .ui-button--default {
-    background-color: #374151;
-    color: #f9fafb;
-    border-color: #4b5563;
-  }
+/* 深色模式适配 - 使用CSS变量，无需为每种类型单独定义 */
+:root.dark .ui-button::after {
+  background-image: radial-gradient(circle, rgba(0, 0, 0, 0.3) 10%, transparent 10.01%);
+}
 
-  .ui-button--default:hover:not(.ui-button--disabled) {
-    background-color: #4b5563;
-  }
-
-  .ui-button--primary {
-    background-color: #3b82f6;
-  }
-
-  .ui-button--primary:hover:not(.ui-button--disabled) {
-    background-color: #2563eb;
-  }
-
-  .ui-button--success {
-    background-color: #10b981;
-  }
-
-  .ui-button--success:hover:not(.ui-button--disabled) {
-    background-color: #059669;
-  }
-
-  .ui-button--warning {
-    background-color: #f59e0b;
-  }
-
-  .ui-button--warning:hover:not(.ui-button--disabled) {
-    background-color: #d97706;
-  }
-
-  .ui-button--danger {
-    background-color: #ef4444;
-  }
-
-  .ui-button--danger:hover:not(.ui-button--disabled) {
-    background-color: #dc2626;
-  }
-
-  .ui-button--info {
-    background-color: #06b6d4;
-  }
-
-  .ui-button--info:hover:not(.ui-button--disabled) {
-    background-color: #0891b2;
-  }
+/* 焦点时的轮廓在暗色模式下调整 */
+:root.dark .ui-button:focus-visible {
+  outline-color: rgba(255, 255, 255, 0.3);
 }
 </style>

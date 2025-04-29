@@ -292,9 +292,9 @@ const componentClass = computed(() => {
 <script setup lang="ts" name="UiButton">
 /**
  * 按钮组件
- * 创建日期: 2023-05-10
+ * 创建日期: {date}
  * 作者: aiftt
- * 更新日期: 2023-05-15 - 添加图标支持
+ * 更新日期: {date} - 添加图标支持
  */
 
 // 定义props
@@ -408,9 +408,9 @@ const handleClick = (event: MouseEvent) => {
 <script setup lang="ts" name="UiTypographyTitle">
 /**
  * 排版标题组件
- * 创建日期: 2023-05-12
+ * 创建日期: {date}
  * 作者: aiftt
- * 更新日期: 2023-05-15 - 添加字重选项
+ * 更新日期: {date}- 添加字重选项
  */
 
 // 定义props

@@ -177,9 +177,9 @@ alwaysApply: true
 <script setup lang="ts" name="UiPhoneInput">
 /**
  * 中国手机号码输入组件
- * 创建日期: 2023-05-15
+ * 创建日期: {date}
  * 作者: aiftt
- * 更新日期: 2023-05-20 - 添加号码段验证
+ * 更新日期: {date} - 添加号码段验证
  */
 
 import { ref, computed } from 'vue'
@@ -308,9 +308,9 @@ const formattedValue = computed(() => {
 <script setup lang="ts" name="UiAddressPicker">
 /**
  * 中国地址选择器组件
- * 创建日期: 2023-05-18
+ * 创建日期: {date}
  * 作者: aiftt
- * 更新日期: 2023-05-25 - 添加县区级选择
+ * 更新日期: {date} - 添加县区级选择
  */
 
 import { ref, reactive, watch } from 'vue'

@@ -1,0 +1,87 @@
+/**
+ * 基础主题变量文件 - 与主题无关的通用变量
+ * 创建日期: 2023-12-07
+ * 作者: aiftt
+ * 更新日期: 2023-12-07 - 从主题变量文件拆分
+ */
+
+:root {
+  // 字体
+  --ui-font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --ui-font-family-mono: SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+
+  // 字体大小
+  --ui-font-size-xs: 0.75rem; // 12px
+  --ui-font-size-sm: 0.875rem; // 14px
+  --ui-font-size: 1rem; // 16px
+  --ui-font-size-lg: 1.125rem; // 18px
+  --ui-font-size-xl: 1.25rem; // 20px
+  --ui-font-size-2xl: 1.5rem; // 24px
+  --ui-font-size-3xl: 1.875rem; // 30px
+  --ui-font-size-4xl: 2.25rem; // 36px
+  --ui-font-size-5xl: 3rem; // 48px
+
+  // 行高
+  --ui-line-height-tight: 1.25;
+  --ui-line-height: 1.5;
+  --ui-line-height-loose: 1.75;
+
+  // 间距
+  --ui-spacing-0: 0;
+  --ui-spacing-xxs: 0.125rem; // 2px
+  --ui-spacing-xs: 0.25rem; // 4px
+  --ui-spacing-sm: 0.5rem; // 8px
+  --ui-spacing: 1rem; // 16px
+  --ui-spacing-md: 1.5rem; // 24px
+  --ui-spacing-lg: 2rem; // 32px
+  --ui-spacing-xl: 2.5rem; // 40px
+  --ui-spacing-2xl: 3rem; // 48px
+  --ui-spacing-3xl: 4rem; // 64px
+
+  // 圆角
+  --ui-radius-none: 0;
+  --ui-radius-sm: 0.125rem; // 2px
+  --ui-radius: 0.25rem; // 4px
+  --ui-radius-md: 0.375rem; // 6px
+  --ui-radius-lg: 0.5rem; // 8px
+  --ui-radius-xl: 0.75rem; // 12px
+  --ui-radius-2xl: 1rem; // 16px
+  --ui-radius-full: 9999px;
+
+  // 边框宽度
+  --ui-border-width-none: 0;
+  --ui-border-width: 1px;
+  --ui-border-width-md: 2px;
+  --ui-border-width-lg: 4px;
+
+  // z-index
+  --ui-z-index-0: 0;
+  --ui-z-index-10: 10;
+  --ui-z-index-20: 20;
+  --ui-z-index-30: 30;
+  --ui-z-index-40: 40;
+  --ui-z-index-50: 50;
+  --ui-z-index-auto: auto;
+
+  // 动画过渡
+  --ui-transition-fast: 150ms;
+  --ui-transition: 300ms;
+  --ui-transition-slow: 500ms;
+
+  // 不透明度
+  --ui-opacity-0: 0;
+  --ui-opacity-25: 0.25;
+  --ui-opacity-50: 0.5;
+  --ui-opacity-75: 0.75;
+  --ui-opacity-100: 1;
+
+  // 组件特定变量 - 可被主题变量覆盖
+  --ui-button-radius: var(--ui-radius-md);
+  --ui-button-padding-y: var(--ui-spacing-sm);
+  --ui-button-padding-x: var(--ui-spacing);
+  --ui-card-radius: var(--ui-radius-md);
+  --ui-card-padding: var(--ui-spacing);
+  --ui-input-radius: var(--ui-radius-md);
+  --ui-input-padding-y: var(--ui-spacing-sm);
+  --ui-input-padding-x: var(--ui-spacing);
+}

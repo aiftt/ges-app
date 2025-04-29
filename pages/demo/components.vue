@@ -5,6 +5,7 @@
  * 作者: aiftt
  * 更新日期: 2023-11-15 - 添加 Image 组件
  * 2023-12-01 - 添加 QRCode 组件和 Menu 组件
+ * 2023-12-12 - 添加主题色彩展示页面
  */
 import { computed, ref } from 'vue'
 import DemoBorder from '~/components/demo/border.vue'
@@ -16,6 +17,7 @@ import DemoMenu from '~/components/demo/menu.vue'
 import DemoQrcode from '~/components/demo/qrcode.vue'
 import DemoText from '~/components/demo/text.vue'
 import DemoTypography from '~/components/demo/typography.vue'
+import DemoTheme from '~/pages/demo/theme.vue'
 
 // 定义组件分类
 const categories = [
@@ -26,6 +28,7 @@ const categories = [
       { id: 'icon', name: '图标 Icon', component: DemoIcon },
       { id: 'divider', name: '分割线 Divider', component: DemoDivider },
       { id: 'border', name: '边框 Border', component: DemoBorder },
+      { id: 'theme', name: '主题色彩 Theme', component: DemoTheme },
     ],
   },
   {
