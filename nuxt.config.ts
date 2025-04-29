@@ -15,6 +15,10 @@ export default defineNuxtConfig({
     '@unocss/nuxt',
   ],
 
+  css: [
+    '@unocss/reset/tailwind.css',
+  ],
+
   // 优化配置
   vite: {
     resolve: {
