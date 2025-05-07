@@ -1,10 +1,11 @@
-规范：@.cursors/now.mdc
+规范：@.cursor/rules/now.mdc
 
 计划：@plan.md
 
 问题：
 
 1. textarea 自动调整大小并没效果，输入更多行，会出现滚动条高度并没变
+1. 不要使用 textareaStyle 内联 style
 
 需求：按照计划推进，实现其他组件
 

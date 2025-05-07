@@ -52,6 +52,9 @@
 完成的组件：
 
 - [x] DatePicker - 完成日期选择器组件，支持多种格式、尺寸及交互方式，已重构为更灵活的date/picker.vue结构，便于后续扩展日期相关组件
+- [x] Input - 完成输入框组件，支持各种尺寸、状态（禁用、只读、错误）、前后缀图标、清除功能和密码切换，使用v-bind+CSS变量实现自定义样式，支持明暗主题切换
+- [x] Textarea - 完成文本域组件，支持自动调整高度、字数统计、清除功能、错误状态和自定义样式，适配明暗主题切换
+- [x] Checkbox - 完成复选框组件和复选框组，支持单选/多选模式、中间状态、禁用状态、尺寸变体和主题切换，复选框组支持最大/最小选择数量限制及垂直/水平排列
 
 ### 阶段五：技术栈增强 (新增)
 
@@ -92,14 +95,14 @@
 ### 表单组件
 
 - [x] Input - 输入框
+- [x] Textarea - 文本域
 - [ ] Input Number
 - [ ] Input Tag
 - [ ] VerificationCode
-- [ ] Textarea
 - [ ] Autocomplete
 - [ ] Select
 - [ ] Cascader
-- [ ] Checkbox
+- [x] Checkbox - 复选框
 - [ ] Radio
 - [ ] Switch
 - [ ] Slider
@@ -399,14 +402,14 @@
 ### 阶段三：表单组件 (第11-22天)
 
 - [x] Input - 输入框
+- [x] Textarea - 文本域，支持自动调整高度、字数统计、清除功能、错误状态和自定义样式
 - [ ] Input Number
 - [ ] Input Tag
 - [ ] VerificationCode
-- [ ] Textarea
 - [ ] Autocomplete
 - [ ] Select
 - [ ] Cascader
-- [ ] Checkbox
+- [x] Checkbox - 复选框
 - [ ] Radio
 - [ ] Switch
 - [ ] Slider

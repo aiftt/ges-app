@@ -196,18 +196,17 @@ function adjustHeight() {
   const minHeight = props.minRows * lineHeight
   const maxHeight = props.maxRows ? props.maxRows * lineHeight : Infinity
 
-  // 设置为内容高度（scrollHeight包含padding，但我们只想要内容高度）
-  const paddingTop = Number.parseInt(window.getComputedStyle(textarea).paddingTop) || 0
-  const paddingBottom = Number.parseInt(window.getComputedStyle(textarea).paddingBottom) || 0
+  // 设置临时高度以获取准确的scrollHeight
+  textarea.style.height = `${minHeight}px`
 
-  // 内容高度 = scrollHeight - padding - border
-  const contentHeight = textarea.scrollHeight - paddingTop - paddingBottom
+  // 获取实际内容需要的高度
+  const contentHeight = textarea.scrollHeight
 
-  // 最终高度：在minHeight和maxHeight之间的内容高度
-  const height = Math.max(minHeight, Math.min(contentHeight, maxHeight))
+  // 计算最终高度（在minHeight和maxHeight之间）
+  const finalHeight = Math.max(minHeight, Math.min(contentHeight, maxHeight))
 
   // 设置高度
-  textareaHeight.value = `${height}px`
+  textareaHeight.value = `${finalHeight}px`
 }
 
 // 计算文本域样式

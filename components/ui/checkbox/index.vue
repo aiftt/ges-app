@@ -1,11 +1,11 @@
 <script setup lang="ts" name="UiCheckbox">
 /**
  * 复选框组件
- * 创建日期: 2025-04-30
+ * 创建日期: 2024-04-30
  * 作者: aiftt
- * 更新日期: 2025-04-30 - 初始版本
+ * 更新日期: 2024-06-12 - 增加与CheckboxGroup的集成，添加value属性
  */
-import { computed } from 'vue'
+import { computed, inject } from 'vue'
 
 // 定义props
 const props = withDefaults(defineProps<{
@@ -14,6 +14,10 @@ const props = withDefaults(defineProps<{
    */
   modelValue?: boolean
   /**
+   * 复选框值（用于CheckboxGroup）
+   */
+  value?: string | number
+  /**
    * 是否禁用
    */
   disabled?: boolean
@@ -21,10 +25,19 @@ const props = withDefaults(defineProps<{
    * 复选框尺寸
    */
   size?: 'small' | 'default' | 'large'
+  /**
+   * 名称
+   */
+  name?: string
+  /**
+   * 是否为中间状态
+   */
+  indeterminate?: boolean
 }>(), {
   modelValue: false,
   disabled: false,
   size: 'default',
+  indeterminate: false,
 })
 
 // 定义emit
@@ -33,21 +46,54 @@ const emit = defineEmits<{
   (e: 'change', value: boolean): void
 }>()
 
+// 注入CheckboxGroup上下文
+const checkboxGroup = inject<{
+  name: string
+  size: { value: 'small' | 'default' | 'large' }
+  disabled: { value: boolean }
+  modelValue: { value: (string | number)[] }
+  handleChange: (value: string | number, checked: boolean) => void
+  isChecked: (value: string | number) => boolean
+} | null>('checkboxGroup', null)
+
+// 计算选中状态
+const isChecked = computed(() => {
+  if (checkboxGroup && props.value !== undefined) {
+    return checkboxGroup.isChecked(props.value)
+  }
+  return props.modelValue
+})
+
+// 计算禁用状态
+const isDisabled = computed(() => {
+  return checkboxGroup ? checkboxGroup.disabled.value || props.disabled : props.disabled
+})
+
+// 计算尺寸
+const checkboxSize = computed(() => {
+  return checkboxGroup ? checkboxGroup.size.value : props.size
+})
+
 // 复选框样式类
 const checkboxClass = computed(() => {
   const classes = ['ui-checkbox']
 
   // 尺寸
-  classes.push(`ui-checkbox--${props.size}`)
+  classes.push(`ui-checkbox--${checkboxSize.value}`)
 
   // 禁用状态
-  if (props.disabled) {
+  if (isDisabled.value) {
     classes.push('ui-checkbox--disabled')
   }
 
   // 选中状态
-  if (props.modelValue) {
+  if (isChecked.value) {
     classes.push('ui-checkbox--checked')
+  }
+
+  // 中间状态
+  if (props.indeterminate) {
+    classes.push('ui-checkbox--indeterminate')
   }
 
   return classes.join(' ')
@@ -55,14 +101,21 @@ const checkboxClass = computed(() => {
 
 // 处理复选框点击
 function handleChange(event: Event) {
-  if (props.disabled)
+  if (isDisabled.value)
     return
 
   const target = event.target as HTMLInputElement
-  const newValue = target.checked
+  const checked = target.checked
 
-  emit('update:modelValue', newValue)
-  emit('change', newValue)
+  if (checkboxGroup && props.value !== undefined) {
+    // 如果在组内，通知组处理
+    checkboxGroup.handleChange(props.value, checked)
+  }
+  else {
+    // 单独使用时，直接更新值
+    emit('update:modelValue', checked)
+    emit('change', checked)
+  }
 }
 </script>
 
@@ -71,12 +124,14 @@ function handleChange(event: Event) {
     <input
       type="checkbox"
       class="ui-checkbox-input"
-      :checked="modelValue"
-      :disabled="disabled"
+      :checked="isChecked"
+      :disabled="isDisabled"
+      :name="name"
+      :indeterminate="indeterminate"
       @change="handleChange"
     >
     <span class="ui-checkbox-inner" />
-    <span class="ui-checkbox-label">
+    <span v-if="$slots.default" class="ui-checkbox-label">
       <slot />
     </span>
   </label>
@@ -124,6 +179,15 @@ function handleChange(event: Event) {
   opacity: 0;
   content: '';
   transition: all 0.1s cubic-bezier(0.71, -0.46, 0.88, 0.6);
+}
+
+/* 中间状态 */
+.ui-checkbox--indeterminate .ui-checkbox-inner::after {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+  width: 8px;
+  height: 0;
+  border-width: 0 0 2px 0;
 }
 
 .ui-checkbox--checked .ui-checkbox-inner {
@@ -187,6 +251,25 @@ function handleChange(event: Event) {
 
 .ui-checkbox--large {
   font-size: var(--ui-font-size-lg, 1.125rem);
+}
+
+/* 深色模式适配 */
+:root.dark .ui-checkbox {
+  color: var(--ui-color-text-dark, #e5e7eb);
+}
+
+:root.dark .ui-checkbox-inner {
+  border-color: var(--ui-color-border-dark, #4b5563);
+  background-color: var(--ui-color-bg-dark, #1f2937);
+}
+
+:root.dark .ui-checkbox--disabled .ui-checkbox-inner {
+  background-color: var(--ui-color-bg-secondary-dark, #111827);
+}
+
+:root.dark .ui-checkbox--disabled.ui-checkbox--checked .ui-checkbox-inner {
+  background-color: var(--ui-color-text-disabled-dark, #6b7280);
+  border-color: var(--ui-color-text-disabled-dark, #6b7280);
 }
 
 /* CSS变量已移至主题文件中 */

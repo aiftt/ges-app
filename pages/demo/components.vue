@@ -13,6 +13,7 @@ import { computed, ref } from 'vue'
 import DemoAutoAnimate from '~/components/demo/auto-animate.vue'
 import DemoBorder from '~/components/demo/border.vue'
 import DemoButton from '~/components/demo/button.vue'
+import DemoCheckbox from '~/components/demo/checkbox.vue'
 import DemoCode from '~/components/demo/code.vue'
 import DemoColor from '~/components/demo/color.vue'
 import DemoConfigProvider from '~/components/demo/config-provider.vue'
@@ -67,7 +68,7 @@ const categories = [
       { id: 'input', name: '输入框 Input', component: DemoInput },
       { id: 'textarea', name: '文本域 Textarea', component: DemoTextarea },
       { id: 'select', name: '选择器 Select', component: undefined },
-      { id: 'checkbox', name: '复选框 Checkbox', component: undefined },
+      { id: 'checkbox', name: '复选框 Checkbox', component: DemoCheckbox },
       { id: 'radio', name: '单选框 Radio', component: undefined },
       { id: 'switch', name: '开关 Switch', component: undefined },
       { id: 'form', name: '表单 Form', component: undefined },
