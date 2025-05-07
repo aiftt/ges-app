@@ -56,13 +56,8 @@ async function main() {
     // 检查是否有未暂存的修改
     const changedFiles = execSync('git status --porcelain', { encoding: 'utf8' }).trim()
 
-    // 如果没有文件在暂存区，但有未暂存的修改
-    if (!stagedFiles && changedFiles) {
-      log('没有文件在暂存区，自动执行 git add .', 'yellow')
-      execSync('git add .', { stdio: 'inherit' })
-      log('✅ 已自动添加所有修改的文件', 'green')
-    }
-    else if (!stagedFiles && !changedFiles) {
+    execSync('git add .', { stdio: 'inherit' })
+    if (!stagedFiles && !changedFiles) {
       log('没有修改需要提交', 'yellow')
       process.exit(0)
     }

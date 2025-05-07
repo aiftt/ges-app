@@ -9,7 +9,6 @@
     "generate": "cross-env NODE_NO_WARNINGS=1 nuxt generate",
     "preview": "cross-env NODE_NO_WARNINGS=1 nuxt preview",
     "postinstall": "cross-env NODE_NO_WARNINGS=1 nuxt prepare",
-    "submit": "cross-env NODE_NO_WARNINGS=1 node scripts/submit.js",
     "explore-db": "cross-env NODE_NO_WARNINGS=1 tsx scripts/explore-mongodb.ts",
     "lint": "cross-env NODE_NO_WARNINGS=1 eslint --ext .ts,.js,.vue --fix .",
     "commit": "cross-env NODE_NO_WARNINGS=1 node scripts/commit.js",

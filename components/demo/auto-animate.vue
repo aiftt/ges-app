@@ -77,7 +77,7 @@ const sections = [
   { id: 3, title: '第三部分', content: '这是第三部分的内容，包含了更多的详细信息和说明', isOpen: false },
 ]
 
-function toggleSection(index) {
+function toggleSection(index: number) {
   sections[index].isOpen = !sections[index].isOpen
 }
 

@@ -19,3 +19,4 @@ alwaysApply: false
 12. 主题相关的样式全部在 assets/scss/themes 下，禁止创建新目录
 13. [index.vue](mdc:components/ui/code/index.vue) 注意代码组件中不要添加多余的代码，一切尽可能使用 Highlight.js 默认功能
 14.在 scss 中导入样式的时候总是使用新语法 `@use ...`，禁用 `@import ...`
+15. 我发现你用的时间都不对(2023?)，注意当前时间
