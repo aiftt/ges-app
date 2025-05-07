@@ -26,6 +26,7 @@ import DemoPopover from '~/components/demo/popover.vue'
 import DemoQrcode from '~/components/demo/qrcode.vue'
 import DemoScrollbar from '~/components/demo/scrollbar.vue'
 import DemoText from '~/components/demo/text.vue'
+import DemoTextarea from '~/components/demo/textarea.vue'
 import DemoTheme from '~/components/demo/theme.vue'
 import DemoTooltip from '~/components/demo/tooltip.vue'
 import DemoTrigger from '~/components/demo/trigger.vue'
@@ -64,6 +65,7 @@ const categories = [
     title: '表单组件',
     items: [
       { id: 'input', name: '输入框 Input', component: DemoInput },
+      { id: 'textarea', name: '文本域 Textarea', component: DemoTextarea },
       { id: 'select', name: '选择器 Select', component: undefined },
       { id: 'checkbox', name: '复选框 Checkbox', component: undefined },
       { id: 'radio', name: '单选框 Radio', component: undefined },

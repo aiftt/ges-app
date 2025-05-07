@@ -3,7 +3,7 @@ description:
 globs:
 alwaysApply: false
 ---
-请按照项目规范 @.cursor/rules 及以下规范提供专业代码：
+请按照项目规范 @.curors/rules/ 及以下规范提供专业代码：
 
 1. 在书写组件demo代码时总是要提供示例代码
 2. 提供完代码后执行 pnpm lint 检查代码修复错误，对于未使用的代码直接删除
