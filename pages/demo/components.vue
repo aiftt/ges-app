@@ -27,6 +27,7 @@ import DemoPopover from '~/components/demo/popover.vue'
 import DemoQrcode from '~/components/demo/qrcode.vue'
 import DemoRadio from '~/components/demo/radio.vue'
 import DemoScrollbar from '~/components/demo/scrollbar.vue'
+import DemoSlider from '~/components/demo/slider.vue'
 import DemoSwitch from '~/components/demo/switch.vue'
 import DemoText from '~/components/demo/text.vue'
 import DemoTextarea from '~/components/demo/textarea.vue'
@@ -73,6 +74,7 @@ const categories = [
       { id: 'checkbox', name: '复选框 Checkbox', component: DemoCheckbox },
       { id: 'radio', name: '单选框 Radio', component: DemoRadio },
       { id: 'switch', name: '开关 Switch', component: DemoSwitch },
+      { id: 'slider', name: '滑块 Slider', component: DemoSlider },
       { id: 'form', name: '表单 Form', component: undefined },
     ],
   },

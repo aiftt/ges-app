@@ -36,3 +36,4 @@ alwaysApply: true
 - 禁止添加或保留未使用的代码，变量等，不需要的东西直接删除
 - 禁止文件描述中使用“当前”作为日期，必须使用实际创建和更新时间
 - 禁止以 `<Ui{Name}>` 使用 ui/ 下的公共组件- 禁止使用 style.setProperty，总是结合 `v-bind + css variable` 来实现动态样式，如：`--ui-primary-color:v-bind(color)`
+- 禁止每次提供完代码执行 `pnpm dev` 运行项目，我有启动项目，你不需要做多余的动作。

@@ -194,4 +194,14 @@
   --ui-scrollbar-thumb-active-color: rgba(255, 255, 255, 0.6);
   --ui-scrollbar-track-bg: rgba(255, 255, 255, 0.1);
   --ui-scrollbar-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+
+  // Slider组件变量
+  --ui-slider-color: var(--ui-color-primary);
+  --ui-slider-inactive-color: #4b5563;
+  --ui-slider-mark-color: #4b5563;
+  --ui-slider-handle-bg: #e5e7eb;
+  --ui-slider-handle-shadow: 0 0 0 5px rgba(16, 185, 129, 0.2);
+  --ui-slider-tooltip-bg: var(--ui-color-primary);
+  --ui-slider-tooltip-color: #ffffff;
+  --ui-slider-stop-active-color: #e5e7eb;
 }

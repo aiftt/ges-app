@@ -1,8 +1,8 @@
-规范：@.cursor/rules/now.mdc
+规范：请遵循 @.cursor/rules/now.mdc 及 @.cursor/rules/ 下的所有规范
 
 计划：@plan.md
 
-需求：按照计划推进，实现其他组件，注意上面的规范和计划
+需求：按照计划推进，实现其他组件
 
 问题：
 
