@@ -65,7 +65,7 @@ const exampleCode = {
         </ui-button>
       </div>
       <div class="rounded bg-gray-100 p-4 dark:bg-gray-800">
-        <pre class="overflow-auto text-sm"><code>{{ exampleCode.basic }}</code></pre>
+        <ui-code :code="exampleCode.basic" lang="vue" :line-numbers="true" theme="auto" />
       </div>
     </section>
 
@@ -84,7 +84,7 @@ const exampleCode = {
         </ui-button>
       </div>
       <div class="rounded bg-gray-100 p-4 dark:bg-gray-800">
-        <pre class="overflow-auto text-sm"><code>{{ exampleCode.sizes }}</code></pre>
+        <ui-code :code="exampleCode.sizes" lang="vue" :line-numbers="true" theme="auto" />
       </div>
     </section>
 
@@ -108,7 +108,7 @@ const exampleCode = {
         </ui-button>
       </div>
       <div class="rounded bg-gray-100 p-4 dark:bg-gray-800">
-        <pre class="overflow-auto text-sm"><code>{{ exampleCode.disabled }}</code></pre>
+        <ui-code :code="exampleCode.disabled" lang="vue" :line-numbers="true" theme="auto" />
       </div>
     </section>
 
@@ -135,7 +135,7 @@ const exampleCode = {
         <ui-button icon="carbon:trash-can" type="danger" circle />
       </div>
       <div class="rounded bg-gray-100 p-4 dark:bg-gray-800">
-        <pre class="overflow-auto text-sm"><code>{{ exampleCode.icon }}</code></pre>
+        <ui-code :code="exampleCode.icon" lang="vue" :line-numbers="true" theme="auto" />
       </div>
     </section>
 
@@ -164,7 +164,7 @@ const exampleCode = {
         </ui-button>
       </div>
       <div class="rounded bg-gray-100 p-4 dark:bg-gray-800">
-        <pre class="overflow-auto text-sm"><code>{{ exampleCode.loading }}</code></pre>
+        <ui-code :code="exampleCode.loading" lang="vue" :line-numbers="true" theme="auto" />
       </div>
     </section>
   </div>
@@ -224,23 +224,6 @@ const exampleCode = {
 
 .demo-code-button:hover {
   text-decoration: underline;
-}
-
-.demo-code {
-  background-color: var(--ui-code-bg, #f3f4f6);
-  border-radius: 0.25rem;
-  padding: 1rem;
-  margin-bottom: 1rem;
-  overflow-x: auto;
-}
-
-.demo-code pre {
-  margin: 0;
-  white-space: pre-wrap;
-  word-wrap: break-word;
-  font-family: monospace;
-  font-size: 0.875rem;
-  color: var(--ui-code-color, #1f2937);
 }
 
 .demo-api-table {

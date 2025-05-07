@@ -408,9 +408,9 @@ const handleClick = (event: MouseEvent) => {
 <script setup lang="ts" name="UiTypographyTitle">
 /**
  * 排版标题组件
- * 创建日期: {date}
+ * 创建日期: date
  * 作者: aiftt
- * 更新日期: {date}- 添加字重选项
+ * 更新日期: date - 添加字重选项
  */
 
 // 定义props

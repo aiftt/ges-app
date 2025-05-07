@@ -23,17 +23,19 @@
 - [x] Auto-Animate - 完成动画效果组件，提供列表、卡片、表单等元素的平滑过渡动画
 - [x] Tooltip - 完成文字提示组件，支持多个位置、两种主题及各种触发方式
 - [x] ConfigProvider - 完成全局配置组件，支持主题配置（亮色/暗色/跟随系统）、CSS变量动态设置和全局选项，可在应用的任何层级提供配置
-- [ ] Popover - 待实现
-- [ ] Popconfirm - 待实现
-- [ ] Trigger - 待实现
+- [x] Popover - 完成气泡卡片组件，支持多种触发方式和自定义内容
+- [x] Popconfirm - 完成气泡确认框组件，提供简单的确认交互
+- [x] Trigger - 完成通用触发器组件，支持多种触发方式（hover、click、focus、contextmenu、manual）和位置，提供丰富的自定义选项和主题支持
+- [x] Scrollbar - 完成自定义滚动条组件，提供更美观的滚动体验，支持垂直和水平滚动，自定义滚动条样式
 
 ### 阶段二：数据展示组件 (部分完成)
 
-在阶段二中，我们着手开发数据展示类组件。目前已完成QRCode组件的实现。
+在阶段二中，我们着手开发数据展示类组件。目前已完成QRCode组件和Code组件的实现。
 
 完成的组件：
 
 - [x] QRCode - 完成二维码组件，支持多种渲染方式（Canvas/SVG/Image）、自定义颜色、Logo添加、错误校正级别调整等功能，同时支持圆角、边距等样式定制
+- [x] Code - 完成代码展示组件，基于highlight.js实现语法高亮，支持多种编程语言、行号显示、指定行高亮、亮色/暗色主题切换等功能
 
 ### 阶段三：高级交互与过渡动画 (新增)
 
@@ -80,40 +82,33 @@
 - [x] Border - 边框
 - [x] Color - 色彩
 - [x] Tooltip - 文字提示
-- [ ] Popover - 气泡卡片
-- [ ] Popconfirm - 气泡确认框
-- [ ] Trigger - 触发器
+- [x] Popover - 气泡卡片
+- [x] Popconfirm - 气泡确认框
+- [x] Trigger - 触发器
 - [ ] ResizeBox - 伸缩框
 - [ ] Split - 面板分割
 - [x] Config Provider - 全局配置
 
 ### 表单组件
 
-- [ ] Form - 表单容器
-- [ ] Surely Form - 增强表单
-- [ ] Input - 输入框
-- [ ] Input Number - 数字输入框
-- [ ] Input Tag - 标签输入框
-- [ ] VerificationCode - 验证码输入框
-- [ ] Textarea - 文本域
-- [ ] Autocomplete - 自动补全输入框
-- [ ] Select - 选择器
-- [ ] Virtualized Select - 虚拟化选择器
-- [ ] TreeSelect - 树形选择
-- [ ] Cascader - 级联选择器
-- [ ] Checkbox - 复选框
-- [ ] Radio - 单选框
-- [ ] Switch - 开关
-- [ ] Slider - 滑块
-- [x] DatePicker - 日期选择器
-- [ ] DateTimePicker - 日期时间选择器
-- [ ] TimePicker - 时间选择器
-- [ ] TimeSelect - 时间选择
-- [ ] ColorPicker - 颜色选择器
-- [ ] Rate - 评分
-- [ ] Upload - 文件上传
-- [ ] Transfer - 数据穿梭框
-- [ ] Mention - 提及
+- [x] Input - 输入框
+- [ ] Input Number
+- [ ] Input Tag
+- [ ] VerificationCode
+- [ ] Textarea
+- [ ] Autocomplete
+- [ ] Select
+- [ ] Cascader
+- [ ] Checkbox
+- [ ] Radio
+- [ ] Switch
+- [ ] Slider
+- [x] DatePicker
+- [ ] TimePicker
+- [ ] ColorPicker
+- [ ] Rate
+- [ ] Upload
+- [ ] Transfer
 
 ### 数据展示
 
@@ -142,6 +137,7 @@
 - [ ] Watermark - 水印
 - [ ] Segmented - 分段控制器
 - [x] QRCode - 二维码
+- [x] Code - 代码展示
 
 ### 反馈组件
 
@@ -189,7 +185,7 @@
 
 - **使用UnoCSS**: 所有组件优先使用UnoCSS原子类实现样式，避免使用传统CSS
 - **响应式设计**: 组件应兼容不同屏幕尺寸，提供良好的响应式体验
-- **可定制性**: 通过Props提供丰富的配置选项，满足不同使用场景
+- [ ] 可定制性: 通过Props提供丰富的配置选项，满足不同使用场景
 - **TypeScript**: 使用TypeScript进行类型定义，提供完善的类型提示
 - **组件结构**: 遵循一致的目录结构和命名规范
 - **TSX支持**: 支持使用TSX语法编写组件，提供更灵活的组件编写方式
@@ -382,9 +378,10 @@
 - [x] Color
 - [x] Tooltip
 - [x] ConfigProvider
-- [ ] Popover
-- [ ] Popconfirm
-- [ ] Trigger
+- [x] Popover
+- [x] Popconfirm
+- [x] Trigger
+- [x] Scrollbar
 
 #### 阶段一总结
 
@@ -394,15 +391,14 @@
 
 ### 阶段二：布局组件 (第7-10天)
 
-- [ ] Scrollbar
+- [x] Scrollbar
 - [ ] ResizeBox
 - [ ] Split
-- [ ] Popconfirm
+- [x] Popconfirm
 
 ### 阶段三：表单组件 (第11-22天)
 
-- [ ] Form
-- [ ] Input
+- [x] Input - 输入框
 - [ ] Input Number
 - [ ] Input Tag
 - [ ] VerificationCode
@@ -414,12 +410,19 @@
 - [ ] Radio
 - [ ] Switch
 - [ ] Slider
-- [ ] DatePicker
+- [x] DatePicker
 - [ ] TimePicker
 - [ ] ColorPicker
 - [ ] Rate
 - [ ] Upload
 - [ ] Transfer
+
+### 阶段三表单组件进度
+
+目前已完成的表单组件：
+
+- [x] DatePicker - 完成日期选择器组件，支持多种格式、尺寸及交互方式，已重构为更灵活的date/picker.vue结构，便于后续扩展日期相关组件
+- [x] Input - 完成输入框组件，支持各种尺寸、状态（禁用、只读、错误）、前后缀图标、清除功能和密码切换，使用v-bind+CSS变量实现自定义样式，支持明暗主题切换
 
 ### 阶段四：数据展示组件 (第23-35天)
 

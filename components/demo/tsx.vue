@@ -1,6 +1,6 @@
-<script setup lang="ts">
+<script setup lang="ts" name="DemoTsx">
 /**
- * TSX组件演示页面
+ * TSX组件演示
  * 创建日期: 2024-01-08
  * 作者: aiftt
  */
@@ -13,10 +13,10 @@ function handleClick(_count: number) {
 </script>
 
 <template>
-  <div class="p-6 space-y-8">
-    <div class="text-2xl font-bold">
+  <div class="demo-section">
+    <h2 class="demo-title">
       TSX组件演示
-    </div>
+    </h2>
 
     <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
       <!-- 基础用法 -->
@@ -24,7 +24,7 @@ function handleClick(_count: number) {
         <div class="text-xl font-medium">
           基础用法
         </div>
-        <div class="rounded bg-white p-4 shadow dark:bg-gray-800">
+        <div class="demo-card">
           <ui-tsx-demo @click="handleClick">
             <div class="mt-2 text-sm text-gray-500 dark:text-gray-400">
               这是默认插槽内容
@@ -39,10 +39,13 @@ function handleClick(_count: number) {
             <div class="text-sm font-medium">
               示例代码：
             </div>
-            <pre class="mt-2 rounded bg-gray-100 p-3 text-sm dark:bg-gray-900">
-&lt;ui-tsx-demo @click="handleClick"&gt;
-  &lt;div class="text-sm"&gt;这是默认插槽内容&lt;/div&gt;
-&lt;/ui-tsx-demo&gt;</pre>
+            <ui-code language="html">
+              <template #code>
+                &lt;ui-tsx-demo @click="handleClick"&gt;
+                &lt;div class="text-sm"&gt;这是默认插槽内容&lt;/div&gt;
+                &lt;/ui-tsx-demo&gt;
+              </template>
+            </ui-code>
           </div>
         </div>
       </div>
@@ -52,7 +55,7 @@ function handleClick(_count: number) {
         <div class="text-xl font-medium">
           不同主题
         </div>
-        <div class="rounded bg-white p-4 shadow dark:bg-gray-800">
+        <div class="demo-card">
           <div class="space-y-4">
             <div>
               <div class="mb-1 text-sm">
@@ -91,11 +94,14 @@ function handleClick(_count: number) {
             <div class="text-sm font-medium">
               示例代码：
             </div>
-            <pre class="mt-2 rounded bg-gray-100 p-3 text-sm dark:bg-gray-900">
-&lt;ui-tsx-demo theme="primary" buttonText="Primary按钮" /&gt;
-&lt;ui-tsx-demo theme="success" buttonText="Success按钮" /&gt;
-&lt;ui-tsx-demo theme="warning" buttonText="Warning按钮" /&gt;
-&lt;ui-tsx-demo theme="danger" buttonText="Danger按钮" /&gt;</pre>
+            <ui-code language="html">
+              <template #code>
+                &lt;ui-tsx-demo theme="primary" button-text="Primary按钮" /&gt;
+                &lt;ui-tsx-demo theme="success" button-text="Success按钮" /&gt;
+                &lt;ui-tsx-demo theme="warning" button-text="Warning按钮" /&gt;
+                &lt;ui-tsx-demo theme="danger" button-text="Danger按钮" /&gt;
+              </template>
+            </ui-code>
           </div>
         </div>
       </div>
@@ -105,7 +111,7 @@ function handleClick(_count: number) {
         <div class="text-xl font-medium">
           自定义内容
         </div>
-        <div class="rounded bg-white p-4 shadow dark:bg-gray-800">
+        <div class="demo-card">
           <ui-tsx-demo
             title="自定义标题"
             content="这是自定义的内容文本，可以通过props传入"
@@ -120,12 +126,15 @@ function handleClick(_count: number) {
             <div class="text-sm font-medium">
               示例代码：
             </div>
-            <pre class="mt-2 rounded bg-gray-100 p-3 text-sm dark:bg-gray-900">
-&lt;ui-tsx-demo
-  title="自定义标题"
-  content="这是自定义的内容文本，可以通过props传入"
-  buttonText="自定义按钮文本"
-/&gt;</pre>
+            <ui-code language="html">
+              <template #code>
+                &lt;ui-tsx-demo
+                title="自定义标题"
+                content="这是自定义的内容文本，可以通过props传入"
+                button-text="自定义按钮文本"
+                /&gt;
+              </template>
+            </ui-code>
           </div>
         </div>
       </div>
@@ -136,7 +145,7 @@ function handleClick(_count: number) {
       <div class="text-xl font-medium">
         API
       </div>
-      <div class="rounded bg-white p-4 shadow dark:bg-gray-800">
+      <div class="demo-card">
         <h3 class="mb-3 text-lg font-medium">
           属性
         </h3>
@@ -188,7 +197,7 @@ function handleClick(_count: number) {
             </tr>
             <tr class="border-b dark:border-gray-700">
               <td class="px-4 py-2">
-                buttonText
+                button-text
               </td>
               <td class="px-4 py-2">
                 按钮文本
@@ -200,18 +209,18 @@ function handleClick(_count: number) {
                 点击我
               </td>
             </tr>
-            <tr>
+            <tr class="border-b dark:border-gray-700">
               <td class="px-4 py-2">
                 theme
               </td>
               <td class="px-4 py-2">
-                组件主题
+                主题风格
               </td>
               <td class="px-4 py-2">
-                primary | success | warning | danger
+                'default' | 'primary' | 'success' | 'warning' | 'danger'
               </td>
               <td class="px-4 py-2">
-                primary
+                default
               </td>
             </tr>
           </tbody>
@@ -230,46 +239,20 @@ function handleClick(_count: number) {
                 说明
               </th>
               <th class="px-4 py-2 text-left">
-                回调参数
+                参数
               </th>
             </tr>
           </thead>
           <tbody>
-            <tr>
+            <tr class="border-b dark:border-gray-700">
               <td class="px-4 py-2">
                 click
               </td>
               <td class="px-4 py-2">
-                点击按钮时触发
+                按钮点击事件
               </td>
               <td class="px-4 py-2">
-                (count: number)
-              </td>
-            </tr>
-          </tbody>
-        </table>
-
-        <h3 class="mb-3 mt-6 text-lg font-medium">
-          插槽
-        </h3>
-        <table class="w-full text-sm">
-          <thead>
-            <tr class="border-b dark:border-gray-700">
-              <th class="px-4 py-2 text-left">
-                名称
-              </th>
-              <th class="px-4 py-2 text-left">
-                说明
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td class="px-4 py-2">
-                default
-              </td>
-              <td class="px-4 py-2">
-                自定义内容，将显示在组件底部
+                (count: number) 点击次数
               </td>
             </tr>
           </tbody>
@@ -278,3 +261,22 @@ function handleClick(_count: number) {
     </div>
   </div>
 </template>
+
+<style scoped>
+.demo-section {
+  margin-bottom: 2rem;
+}
+
+.demo-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.demo-card {
+  border: 1px solid var(--ui-border-color, #e5e7eb);
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  background-color: var(--ui-card-bg, white);
+}
+</style>

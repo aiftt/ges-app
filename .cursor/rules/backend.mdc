@@ -187,7 +187,7 @@ process.on('SIGTERM', () => {
  * 数据库连接测试脚本
  *
  * 作者: aiftt
- * 创建日期: {date}
+ * 创建日期: <date>
  * 用途: 测试MongoDB连接并验证基本操作
  */
 import * as process from 'node:process';

@@ -285,6 +285,4 @@ defineExpose({
   gap: 8px;
   margin-top: 12px;
 }
-
-/* CSS变量已移至主题文件中 */
 </style>

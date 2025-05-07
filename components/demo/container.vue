@@ -5,62 +5,17 @@
  * 作者: aiftt
  */
 
-const basicCode = ref(`<ui-container padding="16px">
+const examples = {
+  basic: `<ui-container padding="16px">
   <div>基础容器组件</div>
-</ui-container>`)
+</ui-container>`,
 
-const directionCode = ref(`<ui-container direction="horizontal" padding="16px">
-  <div class="bg-gray-100 dark:bg-gray-800 p-4 m-2">
-    水平项目 1
-  </div>
-  <div class="bg-gray-100 dark:bg-gray-800 p-4 m-2">
-    水平项目 2
-  </div>
-</ui-container>
+  width: `<ui-container width="500px" border="1px solid #e5e7eb" padding="1rem">
+  <div class="m-2 bg-gray-100 p-4 dark:bg-gray-800">水平项目 1</div>
+  <div class="m-2 bg-gray-100 p-4 dark:bg-gray-800">水平项目 2</div>
+</ui-container>`,
 
-<ui-container direction="vertical" padding="16px" class="mt-4">
-  <div class="bg-gray-100 dark:bg-gray-800 p-4 m-2">
-    垂直项目 1
-  </div>
-  <div class="bg-gray-100 dark:bg-gray-800 p-4 m-2">
-    垂直项目 2
-  </div>
-</ui-container>`)
-
-const styleCode = ref(`<ui-container
-  padding="20px"
-  background="#f0f9ff"
-  border="1px solid #38bdf8"
-  radius="8px"
-  shadow="md"
->
-  <div>样式定制容器</div>
-</ui-container>`)
-
-const overflowCode = ref(`<ui-container
-  height="100px"
-  padding="16px"
-  overflow="auto"
-  border="1px solid #ddd"
-  radius="4px"
->
-  <div>
-    <p>这是一个内容溢出的例子。</p>
-    <p>当内容超出容器高度时会出现滚动条。</p>
-    <p>你可以尝试滚动查看全部内容。</p>
-    <p>这是更多的内容...</p>
-    <p>再多一些内容...</p>
-    <p>最后一行内容。</p>
-  </div>
-</ui-container>`)
-
-const nestedCode = ref(`<ui-container
-  padding="16px"
-  background="#f8fafc"
-  border="1px solid #e2e8f0"
-  radius="8px"
-  shadow="sm"
->
+  nesting: `<ui-container padding="1rem" border="1px solid #e5e7eb" radius="0.5rem">
   <h3 class="mb-4 text-lg font-medium">嵌套容器</h3>
 
   <ui-container
@@ -88,7 +43,47 @@ const nestedCode = ref(`<ui-container
       <div>右侧区域</div>
     </ui-container>
   </ui-container>
-</ui-container>`)
+</ui-container>`,
+
+  style: `<ui-container
+  padding="20px"
+  background="#f0f9ff"
+  border="1px solid #38bdf8"
+  radius="8px"
+  shadow="md"
+>
+  <div>样式定制容器</div>
+</ui-container>`,
+
+  overflow: `<ui-container
+  height="100px"
+  padding="16px"
+  overflow="auto"
+  border="1px solid #ddd"
+  radius="4px"
+>
+  <div>
+    <p>这是一个内容溢出的例子。</p>
+    <p>当内容超出容器高度时会出现滚动条。</p>
+    <p>你可以尝试滚动查看全部内容。</p>
+    <p>这是更多的内容...</p>
+    <p>再多一些内容...</p>
+    <p>最后一行内容。</p>
+  </div>
+</ui-container>`,
+
+  horizontal: `<ui-container
+  direction="horizontal"
+  padding="16px"
+>
+  <div class="m-2 bg-gray-100 p-4 dark:bg-gray-800">
+    水平项目 1
+  </div>
+  <div class="m-2 bg-gray-100 p-4 dark:bg-gray-800">
+    水平项目 2
+  </div>
+</ui-container>`,
+}
 </script>
 
 <template>
@@ -102,13 +97,14 @@ const nestedCode = ref(`<ui-container
       <h3 class="mb-4 text-xl font-medium">
         基础用法
       </h3>
-      <div class="demo-block">
+      <div class="demo-example mb-4">
+        <pre class="demo-code mb-4">{{ examples.basic }}</pre>
         <ui-container padding="16px">
           <div>基础容器组件</div>
         </ui-container>
       </div>
       <div class="demo-code">
-        <pre><code>{{ basicCode }}</code></pre>
+        <ui-code :code="examples.basic" lang="vue" :line-numbers="true" theme="auto" />
       </div>
     </div>
 
@@ -117,8 +113,9 @@ const nestedCode = ref(`<ui-container
       <h3 class="mb-4 text-xl font-medium">
         布局方向
       </h3>
-      <div class="demo-block">
-        <ui-container direction="horizontal" padding="16px">
+      <div class="demo-example mb-4">
+        <pre class="demo-code mb-4">{{ examples.width }}</pre>
+        <ui-container width="500px" border="1px solid #e5e7eb" padding="1rem">
           <div class="m-2 bg-gray-100 p-4 dark:bg-gray-800">
             水平项目 1
           </div>
@@ -126,83 +123,21 @@ const nestedCode = ref(`<ui-container
             水平项目 2
           </div>
         </ui-container>
-
-        <ui-container direction="vertical" padding="16px" class="mt-4">
+      </div>
+      <div class="demo-example mb-4">
+        <ui-code :code="examples.width" lang="vue" :line-numbers="true" theme="auto" />
+        <ui-container width="500px" border="1px solid #e5e7eb" padding="1rem">
           <div class="m-2 bg-gray-100 p-4 dark:bg-gray-800">
-            垂直项目 1
+            水平项目 1
           </div>
           <div class="m-2 bg-gray-100 p-4 dark:bg-gray-800">
-            垂直项目 2
+            水平项目 2
           </div>
         </ui-container>
       </div>
-      <div class="demo-code">
-        <pre><code>{{ directionCode }}</code></pre>
-      </div>
-    </div>
-
-    <!-- 样式定制 -->
-    <div class="demo-section">
-      <h3 class="mb-4 text-xl font-medium">
-        样式定制
-      </h3>
-      <div class="demo-block">
-        <ui-container
-          padding="20px"
-          background="#f0f9ff"
-          border="1px solid #38bdf8"
-          radius="8px"
-          shadow="md"
-        >
-          <div>样式定制容器</div>
-        </ui-container>
-      </div>
-      <div class="demo-code">
-        <pre><code>{{ styleCode }}</code></pre>
-      </div>
-    </div>
-
-    <!-- 溢出处理 -->
-    <div class="demo-section">
-      <h3 class="mb-4 text-xl font-medium">
-        溢出处理
-      </h3>
-      <div class="demo-block">
-        <ui-container
-          height="100px"
-          padding="16px"
-          overflow="auto"
-          border="1px solid #ddd"
-          radius="4px"
-        >
-          <div>
-            <p>这是一个内容溢出的例子。</p>
-            <p>当内容超出容器高度时会出现滚动条。</p>
-            <p>你可以尝试滚动查看全部内容。</p>
-            <p>这是更多的内容...</p>
-            <p>再多一些内容...</p>
-            <p>最后一行内容。</p>
-          </div>
-        </ui-container>
-      </div>
-      <div class="demo-code">
-        <pre><code>{{ overflowCode }}</code></pre>
-      </div>
-    </div>
-
-    <!-- 嵌套容器 -->
-    <div class="demo-section">
-      <h3 class="mb-4 text-xl font-medium">
-        嵌套容器
-      </h3>
-      <div class="demo-block">
-        <ui-container
-          padding="16px"
-          background="#f8fafc"
-          border="1px solid #e2e8f0"
-          radius="8px"
-          shadow="sm"
-        >
+      <div class="demo-example mb-4">
+        <pre class="demo-code mb-4">{{ examples.nesting }}</pre>
+        <ui-container padding="1rem" border="1px solid #e5e7eb" radius="0.5rem">
           <h3 class="mb-4 text-lg font-medium">
             嵌套容器
           </h3>
@@ -234,8 +169,141 @@ const nestedCode = ref(`<ui-container
           </ui-container>
         </ui-container>
       </div>
+      <div class="demo-example mb-4">
+        <ui-code :code="examples.nesting" lang="vue" :line-numbers="true" theme="auto" />
+        <ui-container padding="1rem" border="1px solid #e5e7eb" radius="0.5rem">
+          <h3 class="mb-4 text-lg font-medium">
+            嵌套容器
+          </h3>
+
+          <ui-container
+            direction="horizontal"
+            padding="12px"
+            background="#fff"
+            border="1px dashed #cbd5e1"
+            radius="4px"
+          >
+            <ui-container
+              width="40%"
+              padding="8px"
+              background="#eff6ff"
+              radius="4px"
+            >
+              <div>左侧区域</div>
+            </ui-container>
+
+            <ui-container
+              width="60%"
+              padding="8px"
+              background="#f0fdf4"
+              radius="4px"
+            >
+              <div>右侧区域</div>
+            </ui-container>
+          </ui-container>
+        </ui-container>
+      </div>
+    </div>
+
+    <!-- 样式定制 -->
+    <div class="demo-section">
+      <h3 class="mb-4 text-xl font-medium">
+        样式定制
+      </h3>
+      <div class="demo-example mb-4">
+        <pre class="demo-code mb-4">{{ examples.style }}</pre>
+        <ui-container
+          padding="20px"
+          background="#f0f9ff"
+          border="1px solid #38bdf8"
+          radius="8px"
+          shadow="md"
+        >
+          <div>样式定制容器</div>
+        </ui-container>
+      </div>
       <div class="demo-code">
-        <pre><code>{{ nestedCode }}</code></pre>
+        <ui-code :code="examples.style" lang="vue" :line-numbers="true" theme="auto" />
+      </div>
+    </div>
+
+    <!-- 溢出处理 -->
+    <div class="demo-section">
+      <h3 class="mb-4 text-xl font-medium">
+        溢出处理
+      </h3>
+      <div class="demo-example mb-4">
+        <pre class="demo-code mb-4">{{ examples.overflow }}</pre>
+        <ui-container
+          height="100px"
+          padding="16px"
+          overflow="auto"
+          border="1px solid #ddd"
+          radius="4px"
+        >
+          <div>
+            <p>这是一个内容溢出的例子。</p>
+            <p>当内容超出容器高度时会出现滚动条。</p>
+            <p>你可以尝试滚动查看全部内容。</p>
+            <p>这是更多的内容...</p>
+            <p>再多一些内容...</p>
+            <p>最后一行内容。</p>
+          </div>
+        </ui-container>
+      </div>
+      <div class="demo-example mb-4">
+        <ui-code :code="examples.overflow" lang="vue" :line-numbers="true" theme="auto" />
+        <ui-container
+          height="100px"
+          padding="16px"
+          overflow="auto"
+          border="1px solid #ddd"
+          radius="4px"
+        >
+          <div>
+            <p>这是一个内容溢出的例子。</p>
+            <p>当内容超出容器高度时会出现滚动条。</p>
+            <p>你可以尝试滚动查看全部内容。</p>
+            <p>这是更多的内容...</p>
+            <p>再多一些内容...</p>
+            <p>最后一行内容。</p>
+          </div>
+        </ui-container>
+      </div>
+    </div>
+
+    <!-- 嵌套容器 -->
+    <div class="demo-section">
+      <h3 class="mb-4 text-xl font-medium">
+        嵌套容器
+      </h3>
+      <div class="demo-example mb-4">
+        <pre class="demo-code mb-4">{{ examples.horizontal }}</pre>
+        <ui-container
+          direction="horizontal"
+          padding="16px"
+        >
+          <div class="m-2 bg-gray-100 p-4 dark:bg-gray-800">
+            水平项目 1
+          </div>
+          <div class="m-2 bg-gray-100 p-4 dark:bg-gray-800">
+            水平项目 2
+          </div>
+        </ui-container>
+      </div>
+      <div class="demo-example mb-4">
+        <ui-code :code="examples.horizontal" lang="vue" :line-numbers="true" theme="auto" />
+        <ui-container
+          direction="horizontal"
+          padding="16px"
+        >
+          <div class="m-2 bg-gray-100 p-4 dark:bg-gray-800">
+            水平项目 1
+          </div>
+          <div class="m-2 bg-gray-100 p-4 dark:bg-gray-800">
+            水平项目 2
+          </div>
+        </ui-container>
       </div>
     </div>
   </div>
@@ -250,7 +318,7 @@ const nestedCode = ref(`<ui-container
   margin-bottom: 32px;
 }
 
-.demo-block {
+.demo-example {
   margin-bottom: 16px;
   border: 1px solid #e5e7eb;
   border-radius: 8px;
@@ -259,26 +327,22 @@ const nestedCode = ref(`<ui-container
 }
 
 .demo-code {
-  background-color: #f8fafc;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  padding: 16px;
+  background-color: #f8f9fa;
+  border-radius: 0.25rem;
+  padding: 0.75rem;
+  font-family: monospace;
+  font-size: 0.875rem;
+  white-space: pre-wrap;
   overflow-x: auto;
 }
 
-pre {
-  margin: 0;
-  font-family: monospace;
-  font-size: 14px;
-}
-
-:root.dark .demo-block {
+:root.dark .demo-example {
   background-color: #1e293b;
   border-color: #334155;
 }
 
 :root.dark .demo-code {
-  background-color: #0f172a;
-  border-color: #334155;
+  background-color: #1f2937;
+  color: #e5e7eb;
 }
 </style>

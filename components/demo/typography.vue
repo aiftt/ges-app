@@ -86,7 +86,7 @@ const showCode = ref({
 })
 
 // 切换代码显示
-function toggleCode(section) {
+function toggleCode(section: 'title' | 'text' | 'paragraph' | 'typography') {
   showCode.value[section] = !showCode.value[section]
 }
 </script>
@@ -123,8 +123,8 @@ function toggleCode(section) {
           {{ showCode.title ? '隐藏代码' : '显示代码' }}
         </button>
       </div>
-      <div v-if="showCode.title" class="demo-code">
-        <pre><code>{{ titleCode }}</code></pre>
+      <div v-if="showCode.title">
+        <ui-code :code="titleCode" lang="vue" :line-numbers="true" theme="auto" />
       </div>
     </div>
 
@@ -180,8 +180,8 @@ function toggleCode(section) {
           {{ showCode.text ? '隐藏代码' : '显示代码' }}
         </button>
       </div>
-      <div v-if="showCode.text" class="demo-code">
-        <pre><code>{{ textCode }}</code></pre>
+      <div v-if="showCode.text">
+        <ui-code :code="textCode" lang="vue" :line-numbers="true" theme="auto" />
       </div>
     </div>
 
@@ -210,8 +210,8 @@ function toggleCode(section) {
           {{ showCode.paragraph ? '隐藏代码' : '显示代码' }}
         </button>
       </div>
-      <div v-if="showCode.paragraph" class="demo-code">
-        <pre><code>{{ paragraphCode }}</code></pre>
+      <div v-if="showCode.paragraph">
+        <ui-code :code="paragraphCode" lang="vue" :line-numbers="true" theme="auto" />
       </div>
     </div>
 
@@ -262,8 +262,8 @@ function example() {
           {{ showCode.typography ? '隐藏代码' : '显示代码' }}
         </button>
       </div>
-      <div v-if="showCode.typography" class="demo-code">
-        <pre><code>{{ typographyCode }}</code></pre>
+      <div v-if="showCode.typography">
+        <ui-code :code="typographyCode" lang="vue" :line-numbers="true" theme="auto" />
       </div>
     </div>
 

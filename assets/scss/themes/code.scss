@@ -1,0 +1,73 @@
+/**
+ * 代码高亮主题样式
+ * 创建日期: 2025-05-14
+ * 作者: aiftt
+ * 更新日期: 2025-05-14 - 初始创建，添加highlight.js主题
+ */
+
+@use 'sass:meta';
+
+// GitHub系列
+html[data-code-theme='github'] {
+  @include meta.load-css('highlight.js/styles/github.css');
+}
+
+html[data-code-theme='github-dark'] {
+  @include meta.load-css('highlight.js/styles/github-dark.css');
+}
+
+html[data-code-theme='github-dark-dimmed'] {
+  @include meta.load-css('highlight.js/styles/github-dark-dimmed.css');
+}
+
+// Atom系列
+html[data-code-theme='atom-one-dark'] {
+  @include meta.load-css('highlight.js/styles/atom-one-dark.css');
+}
+
+html[data-code-theme='atom-one-light'] {
+  @include meta.load-css('highlight.js/styles/atom-one-light.css');
+}
+
+// Monokai系列
+html[data-code-theme='monokai'] {
+  @include meta.load-css('highlight.js/styles/monokai.css');
+}
+
+html[data-code-theme='monokai-sublime'] {
+  @include meta.load-css('highlight.js/styles/monokai-sublime.css');
+}
+
+// VS系列
+html[data-code-theme='vs'] {
+  @include meta.load-css('highlight.js/styles/vs.css');
+}
+
+html[data-code-theme='vs2015'] {
+  @include meta.load-css('highlight.js/styles/vs2015.css');
+}
+
+// 其他流行主题
+html[data-code-theme='a11y-dark'] {
+  @include meta.load-css('highlight.js/styles/a11y-dark.css');
+}
+
+html[data-code-theme='a11y-light'] {
+  @include meta.load-css('highlight.js/styles/a11y-light.css');
+}
+
+html[data-code-theme='nord'] {
+  @include meta.load-css('highlight.js/styles/nord.css');
+}
+
+html[data-code-theme='xcode'] {
+  @include meta.load-css('highlight.js/styles/xcode.css');
+}
+
+html[data-code-theme='tokyo-night-dark'] {
+  @include meta.load-css('highlight.js/styles/tokyo-night-dark.css');
+}
+
+html[data-code-theme='tokyo-night-light'] {
+  @include meta.load-css('highlight.js/styles/tokyo-night-light.css');
+}

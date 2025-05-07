@@ -98,6 +98,34 @@ function copyToClipboard(text: string) {
       })
   }
 }
+
+const examples = {
+  variableSample: `:root {
+  --ui-color-primary: #10b981;
+  --ui-color-secondary: #6b7280;
+  --ui-color-accent: #8b5cf6;
+  --ui-color-success: #10b981;
+  --ui-color-warning: #f59e0b;
+  --ui-color-danger: #ef4444;
+  --ui-color-info: #3b82f6;
+
+  --ui-color-text: #1f2937;
+  --ui-color-text-secondary: #6b7280;
+  --ui-color-text-disabled: #d1d5db;
+  --ui-color-border: #e5e7eb;
+  --ui-color-divider: #f3f4f6;
+  --ui-color-background: #ffffff;
+}
+
+.dark {
+  --ui-color-text: #f9fafb;
+  --ui-color-text-secondary: #e5e7eb;
+  --ui-color-text-disabled: #6b7280;
+  --ui-color-border: #374151;
+  --ui-color-divider: #1f2937;
+  --ui-color-background: #111827;
+}`,
+}
 </script>
 
 <template>
@@ -361,6 +389,7 @@ function copyToClipboard(text: string) {
   --ui-color-background: #111827;
 }
           </pre>
+          <ui-code :code="examples.variableSample" lang="css" :line-numbers="true" theme="auto" />
         </div>
       </div>
     </section>

@@ -4,6 +4,8 @@
  * 创建日期: 2023-10-15
  * 作者: aiftt
  * 更新日期: 2023-10-20 - 添加更多语言支持和主题选项
+ * 更新日期: 2023-05-11 - 更新为支持Highlight.js的新版本
+ * 更新日期: 2023-06-10 - 添加自定义样式演示
  */
 
 import { computed, ref } from 'vue'
@@ -23,12 +25,15 @@ const showLineNumbers = ref(true)
 const selectedLanguage = ref('javascript')
 
 // 启用高级功能
-const searchable = ref(false)
-const foldable = ref(false)
-const autolink = ref(false)
-const showToolbar = ref(false)
 const useHighlightLines = ref(false)
 const highlightLines = ref('1,3-5')
+
+// 自定义样式
+const useCustomStyle = ref(false)
+const bgColor = ref('#f8f9fa')
+const borderColor = ref('#ced4da')
+const headerBgColor = ref('#e9ecef')
+const maxHeight = ref('400px')
 
 // 语言选项
 const languages = [
@@ -48,9 +53,29 @@ const languages = [
 
 // 主题选项
 const themes = [
-  { value: 'light', label: '亮色主题' },
-  { value: 'dark', label: '暗色主题' },
   { value: 'auto', label: '自动(跟随系统)' },
+  { value: 'light', label: '浅色主题' },
+  { value: 'dark', label: '暗色主题' },
+  // GitHub系列
+  { value: 'github', label: 'GitHub' },
+  { value: 'github-dark', label: 'GitHub暗色' },
+  { value: 'github-dark-dimmed', label: 'GitHub暗淡' },
+  // Atom系列
+  { value: 'atom-one-dark', label: 'Atom One Dark' },
+  { value: 'atom-one-light', label: 'Atom One Light' },
+  // Monokai系列
+  { value: 'monokai', label: 'Monokai' },
+  { value: 'monokai-sublime', label: 'Monokai Sublime' },
+  // VS系列
+  { value: 'vs', label: 'Visual Studio' },
+  { value: 'vs2015', label: 'Visual Studio 2015' },
+  // 其他流行主题
+  { value: 'a11y-dark', label: 'A11y Dark' },
+  { value: 'a11y-light', label: 'A11y Light' },
+  { value: 'nord', label: 'Nord' },
+  { value: 'xcode', label: 'XCode' },
+  { value: 'tokyo-night-dark', label: 'Tokyo Night Dark' },
+  { value: 'tokyo-night-light', label: 'Tokyo Night Light' },
 ]
 
 // 定义内联代码示例
@@ -62,25 +87,16 @@ const highlightLinesExample = `function example() {
   return x + y;
 }`
 
-const searchExample = `// 启用搜索
-const data = {
-  name: "UI代码组件",
-  version: "1.0.0"
-};`
+const customStyleExample = `// 自定义样式示例
+import { defineComponent } from 'vue'
 
-const autolinkExample = `// 自动识别链接
-const url = "example.com";
-const email = "contact@example.com";`
-
-const foldingExample = `// 启用代码折叠功能
-function longFunction() {
-  // 这是一个很长的函数
-  const a = 1;
-  const b = 2;
-  const c = 3;
-  // 继续更多代码...
-  return a + b + c;
-}`
+export default defineComponent({
+  name: 'CustomStyleExample',
+  setup() {
+    const message = 'Hello World'
+    return { message }
+  }
+})`
 
 // 根据选择的语言切换代码示例
 const currentCode = computed(() => {
@@ -101,13 +117,18 @@ const currentCode = computed(() => {
 })
 
 // 修改主题
-function changeTheme(theme) {
+function changeTheme(theme: string) {
   currentTheme.value = theme
+  // 更新HTML根元素的data-code-theme属性
+  if (import.meta.client) {
+    document.documentElement.dataset.codeTheme = theme
+  }
 }
 
 // 主题变化处理
-function onThemeChange(event) {
-  const theme = event.target.value
+function onThemeChange(event: Event) {
+  const target = event.target as HTMLSelectElement
+  const theme = target.value
   changeTheme(theme)
 }
 </script>
@@ -167,42 +188,6 @@ function onThemeChange(event) {
         </div>
 
         <div class="control-group">
-          <label for="demo-searchable">搜索功能:</label>
-          <input
-            id="demo-searchable"
-            v-model="searchable"
-            type="checkbox"
-          >
-        </div>
-
-        <div class="control-group">
-          <label for="demo-foldable">代码折叠:</label>
-          <input
-            id="demo-foldable"
-            v-model="foldable"
-            type="checkbox"
-          >
-        </div>
-
-        <div class="control-group">
-          <label for="demo-autolink">自动链接:</label>
-          <input
-            id="demo-autolink"
-            v-model="autolink"
-            type="checkbox"
-          >
-        </div>
-
-        <div class="control-group">
-          <label for="demo-toolbar">显示工具栏:</label>
-          <input
-            id="demo-toolbar"
-            v-model="showToolbar"
-            type="checkbox"
-          >
-        </div>
-
-        <div class="control-group">
           <label for="demo-highlight">高亮行:</label>
           <input
             id="demo-highlight"
@@ -224,91 +209,174 @@ function onThemeChange(event) {
         :lang="selectedLanguage"
         :line-numbers="showLineNumbers"
         :theme="currentTheme"
-        :enable-search="searchable"
-        :enable-folding="foldable"
-        :enable-autolink="autolink"
-        :show-toolbar="showToolbar"
         :highlight-lines="useHighlightLines ? highlightLines : ''"
-        max-height="400px"
       />
     </div>
 
     <div class="demo-code__section">
       <h2 class="demo-code__subtitle">
-        使用插槽
+        行高亮示例
       </h2>
-      <ui-code lang="javascript">
-        const greeting = "Hello, World!";
-        console.log(greeting);
-
-        function add(a, b) {
-        return a + b;
-        }
-      </ui-code>
+      <p class="demo-code__description">
+        使用高亮行功能可以突出显示代码的特定行，格式为：1,3-5（第1行和第3至5行）
+      </p>
+      <ui-code
+        :code="highlightLinesExample"
+        lang="javascript"
+        :line-numbers="true"
+        theme="github"
+        highlight-lines="1,3-5"
+      />
     </div>
 
     <div class="demo-code__section">
       <h2 class="demo-code__subtitle">
         自定义样式
       </h2>
+      <p class="demo-code__description">
+        使用CSS变量可以自定义代码块的样式
+      </p>
+
+      <div class="demo-code__controls">
+        <div class="control-group">
+          <label for="demo-custom-style">使用自定义样式:</label>
+          <input
+            id="demo-custom-style"
+            v-model="useCustomStyle"
+            type="checkbox"
+          >
+        </div>
+
+        <template v-if="useCustomStyle">
+          <div class="control-group">
+            <label for="demo-bg-color">背景颜色:</label>
+            <input
+              id="demo-bg-color"
+              v-model="bgColor"
+              type="color"
+            >
+          </div>
+
+          <div class="control-group">
+            <label for="demo-border-color">边框颜色:</label>
+            <input
+              id="demo-border-color"
+              v-model="borderColor"
+              type="color"
+            >
+          </div>
+
+          <div class="control-group">
+            <label for="demo-header-bg-color">头部背景:</label>
+            <input
+              id="demo-header-bg-color"
+              v-model="headerBgColor"
+              type="color"
+            >
+          </div>
+
+          <div class="control-group">
+            <label for="demo-max-height">最大高度:</label>
+            <input
+              id="demo-max-height"
+              v-model="maxHeight"
+              type="text"
+              placeholder="400px"
+            >
+          </div>
+        </template>
+      </div>
+
       <ui-code
-        lang="css"
-        bg-color="#3b82f61a"
-        text-color="#1e40af"
-        border-color="#3b82f6"
-      >
-        .custom-styled {
-        background-color: #f3f4f6;
-        padding: 1rem;
-        border-radius: 0.5rem;
-        }
-      </ui-code>
+        :code="customStyleExample"
+        lang="typescript"
+        :line-numbers="true"
+        theme="github"
+        :bg-color="useCustomStyle ? bgColor : undefined"
+        :border-color="useCustomStyle ? borderColor : undefined"
+        :header-bg-color="useCustomStyle ? headerBgColor : undefined"
+        :max-height="useCustomStyle ? maxHeight : undefined"
+      />
     </div>
 
     <div class="demo-code__section">
       <h2 class="demo-code__subtitle">
-        高级功能展示
+        API参考
       </h2>
-
-      <div class="feature-cards">
-        <div class="feature-card">
-          <h3>行号和高亮</h3>
-          <ui-code
-            :code="highlightLinesExample"
-            lang="javascript"
-            highlight-lines="2,4-5"
-          />
-        </div>
-
-        <div class="feature-card">
-          <h3>搜索功能</h3>
-          <ui-code
-            :code="searchExample"
-            lang="javascript"
-            :enable-search="true"
-            :show-toolbar="true"
-          />
-        </div>
-
-        <div class="feature-card">
-          <h3>自动链接</h3>
-          <ui-code
-            :code="autolinkExample"
-            lang="javascript"
-            :enable-autolink="true"
-            theme="auto"
-          />
-        </div>
-
-        <div class="feature-card">
-          <h3>代码折叠</h3>
-          <ui-code
-            :code="foldingExample"
-            lang="javascript"
-            :enable-folding="true"
-            :show-toolbar="true"
-          />
-        </div>
+      <div class="demo-api">
+        <h3>Props</h3>
+        <table class="demo-api__table">
+          <thead>
+            <tr>
+              <th>属性</th>
+              <th>类型</th>
+              <th>默认值</th>
+              <th>说明</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>code</td>
+              <td>string</td>
+              <td>''</td>
+              <td>代码内容</td>
+            </tr>
+            <tr>
+              <td>lang</td>
+              <td>string</td>
+              <td>'plaintext'</td>
+              <td>编程语言</td>
+            </tr>
+            <tr>
+              <td>lineNumbers</td>
+              <td>boolean</td>
+              <td>true</td>
+              <td>是否显示行号</td>
+            </tr>
+            <tr>
+              <td>showLanguage</td>
+              <td>boolean</td>
+              <td>true</td>
+              <td>是否显示语言标签</td>
+            </tr>
+            <tr>
+              <td>theme</td>
+              <td>string</td>
+              <td>'github'</td>
+              <td>代码高亮主题</td>
+            </tr>
+            <tr>
+              <td>highlightLines</td>
+              <td>string</td>
+              <td>''</td>
+              <td>高亮行数，格式如："1,3-5"</td>
+            </tr>
+            <tr>
+              <td>maxHeight</td>
+              <td>string</td>
+              <td>undefined</td>
+              <td>代码块最大高度</td>
+            </tr>
+            <tr>
+              <td>bgColor</td>
+              <td>string</td>
+              <td>undefined</td>
+              <td>自定义背景颜色</td>
+            </tr>
+            <tr>
+              <td>borderColor</td>
+              <td>string</td>
+              <td>undefined</td>
+              <td>自定义边框颜色</td>
+            </tr>
+            <tr>
+              <td>headerBgColor</td>
+              <td>string</td>
+              <td>undefined</td>
+              <td>自定义头部背景颜色</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
   </div>
@@ -316,34 +384,37 @@ function onThemeChange(event) {
 
 <style scoped>
 .demo-code {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 2rem 1rem;
+  padding: 1rem;
 }
 
 .demo-code__title {
   font-size: 2rem;
-  margin-bottom: 2rem;
-  color: var(--ui-color-primary);
+  font-weight: bold;
+  margin-bottom: 1.5rem;
 }
 
 .demo-code__subtitle {
   font-size: 1.5rem;
-  margin: 1.5rem 0 1rem;
-  color: var(--ui-color-text);
+  font-weight: bold;
+  margin: 2rem 0 1rem;
+}
+
+.demo-code__description {
+  margin-bottom: 1rem;
+  color: #666;
 }
 
 .demo-code__section {
-  margin-bottom: 3rem;
+  margin-bottom: 2rem;
 }
 
 .demo-code__controls {
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
   padding: 1rem;
-  background-color: var(--ui-color-bg-subtle);
+  background-color: #f8f9fa;
   border-radius: 0.5rem;
 }
 
@@ -353,69 +424,43 @@ function onThemeChange(event) {
   gap: 0.5rem;
 }
 
-.control-group label {
-  font-size: 0.875rem;
-  font-weight: 500;
-}
-
-.control-group select,
-.control-group input[type='text'] {
-  padding: 0.25rem 0.5rem;
-  border: 1px solid var(--ui-color-border);
-  border-radius: 0.25rem;
-  font-size: 0.875rem;
-}
-
 .highlight-input {
-  width: 100px;
+  width: 5rem;
+  padding: 0.25rem;
 }
 
-.feature-cards {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 1.5rem;
-  margin-top: 1.5rem;
+.demo-api__table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
 }
 
-.feature-card {
-  border: 1px solid var(--ui-color-border);
-  border-radius: 0.5rem;
-  padding: 1rem;
-  background-color: var(--ui-color-bg);
+.demo-api__table th,
+.demo-api__table td {
+  border: 1px solid #ddd;
+  padding: 0.5rem;
+  text-align: left;
 }
 
-.feature-card h3 {
-  font-size: 1.25rem;
-  margin-top: 0;
-  margin-bottom: 1rem;
-  color: var(--ui-color-primary);
+.demo-api__table th {
+  background-color: #f2f2f2;
+  font-weight: bold;
 }
 
-/* 暗色主题适配 */
-@media (prefers-color-scheme: dark) {
-  .demo-code__controls {
-    background-color: rgba(255, 255, 255, 0.05);
-  }
-
-  .feature-card {
-    background-color: rgba(255, 255, 255, 0.03);
-    border-color: rgba(255, 255, 255, 0.1);
-  }
+:root.dark .demo-code__controls {
+  background-color: #2d3748;
 }
 
-/* 响应式 */
-@media (max-width: 640px) {
-  .demo-code__controls {
-    flex-direction: column;
-    align-items: flex-start;
-  }
+:root.dark .demo-code__description {
+  color: #a0aec0;
+}
 
-  .control-group {
-    width: 100%;
-  }
+:root.dark .demo-api__table th {
+  background-color: #2d3748;
+}
 
-  .feature-cards {
-    grid-template-columns: 1fr;
-  }
+:root.dark .demo-api__table th,
+:root.dark .demo-api__table td {
+  border-color: #4a5568;
 }
 </style>

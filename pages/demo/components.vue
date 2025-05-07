@@ -6,24 +6,31 @@
  * 更新日期: 2023-11-15 - 添加 Image 组件
  * 2023-12-01 - 添加 QRCode 组件和 Menu 组件
  * 2023-12-12 - 添加主题色彩展示页面
+ * 2023-05-07 - 添加 Scrollbar, Popover, Popconfirm 和 Trigger 组件
+ * 2023-05-08 - 统一使用 components/demo 下的组件
  */
 import { computed, ref } from 'vue'
 import DemoAutoAnimate from '~/components/demo/auto-animate.vue'
 import DemoBorder from '~/components/demo/border.vue'
 import DemoButton from '~/components/demo/button.vue'
 import DemoCode from '~/components/demo/code.vue'
+import DemoColor from '~/components/demo/color.vue'
 import DemoConfigProvider from '~/components/demo/config-provider.vue'
 import DemoDivider from '~/components/demo/divider.vue'
 import DemoIcon from '~/components/demo/icon.vue'
 import DemoImage from '~/components/demo/image.vue'
+import DemoInput from '~/components/demo/input.vue'
 import DemoMenu from '~/components/demo/menu.vue'
+import DemoPopconfirm from '~/components/demo/popconfirm.vue'
+import DemoPopover from '~/components/demo/popover.vue'
 import DemoQrcode from '~/components/demo/qrcode.vue'
+import DemoScrollbar from '~/components/demo/scrollbar.vue'
 import DemoText from '~/components/demo/text.vue'
+import DemoTheme from '~/components/demo/theme.vue'
 import DemoTooltip from '~/components/demo/tooltip.vue'
+import DemoTrigger from '~/components/demo/trigger.vue'
+import DemoTsx from '~/components/demo/tsx.vue'
 import DemoTypography from '~/components/demo/typography.vue'
-import DemoColor from '~/pages/demo/color.vue'
-import DemoTheme from '~/pages/demo/theme.vue'
-import DemoTsx from '~/pages/demo/tsx.vue'
 
 // 定义组件分类
 const categories = [
@@ -39,6 +46,9 @@ const categories = [
       { id: 'theme', name: '主题色彩 Theme', component: DemoTheme },
       { id: 'auto-animate', name: '动画效果', component: DemoAutoAnimate },
       { id: 'tooltip', name: '文字提示', component: DemoTooltip },
+      { id: 'popover', name: '气泡卡片', component: DemoPopover },
+      { id: 'trigger', name: '触发器', component: DemoTrigger },
+      { id: 'scrollbar', name: '滚动条', component: DemoScrollbar },
       { id: 'tsx', name: 'TSX组件', component: DemoTsx },
       { id: 'color', name: '颜色 Color', component: DemoColor },
     ],
@@ -53,7 +63,7 @@ const categories = [
   {
     title: '表单组件',
     items: [
-      { id: 'input', name: '输入框 Input', component: undefined },
+      { id: 'input', name: '输入框 Input', component: DemoInput },
       { id: 'select', name: '选择器 Select', component: undefined },
       { id: 'checkbox', name: '复选框 Checkbox', component: undefined },
       { id: 'radio', name: '单选框 Radio', component: undefined },
@@ -86,7 +96,7 @@ const categories = [
       { id: 'message', name: '消息提示 Message', component: undefined },
       { id: 'notification', name: '通知 Notification', component: undefined },
       { id: 'progress', name: '进度条 Progress', component: undefined },
-      { id: 'popconfirm', name: '气泡确认框 Popconfirm', component: undefined },
+      { id: 'popconfirm', name: '气泡确认框', component: DemoPopconfirm },
       { id: 'result', name: '结果 Result', component: undefined },
       { id: 'skeleton', name: '骨架屏 Skeleton', component: undefined },
     ],

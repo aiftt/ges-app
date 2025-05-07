@@ -1,0 +1,21 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+请按照项目规范 @.cursor/rules 及以下规范提供专业代码：
+
+1. 在书写组件demo代码时总是要提供示例代码
+2. 提供完代码后执行 pnpm lint 检查代码修复错误，对于未使用的代码直接删除
+3. 在提供代码的时候必须提供至少 light, dark 两套主题方案
+4. 在完成某个组件或功能之后及时更新或补全 @docs/plan.md 计划文档
+5. 直接应用代码不要询问或者要我手动来应用
+6. 在实现 ui/ 组件的时候按照计划中的实施，且自行根据依赖关系判断实现优先级
+7. 注意！！！创建组件务必遵守规范，禁止出现 `<parent>-<child>.vue` 这样的组件，应该：`<parent>/<child>.vue`
+8. 禁止直接在组件中声明 css `--ui-...` 变量，总是将 `--ui-...` 组件 css 变量声明放到 _*assets/themes/*_ 下的主题样式文件中去统一管理
+9. 禁止使用 console api ，要使用封装好的 Logger，每次完成代码后检查是否使用了 console api ，如果有则替换成 logger api
+10. 禁止使用 style.setProperty 必须使用 css + vue v-bind 方式来实现，如：`--ui-xx: v-bind('varName')`
+11. 总是将新增的组件的演示添加到 pages/demo/components.vue 中
+12. 主题相关的样式全部在 assets/scss/themes 下，禁止创建新目录
+13. [index.vue](mdc:components/ui/code/index.vue) 注意代码组件中不要添加多余的代码，一切尽可能使用 Highlight.js 默认功能
+14.在 scss 中导入样式的时候总是使用新语法 `@use ...`，禁用 `@import ...`

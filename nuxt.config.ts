@@ -21,7 +21,6 @@ export default defineNuxtConfig({
   css: [
     '@unocss/reset/tailwind.css',
     '~/assets/scss/theme.scss',
-    '~/assets/css/prism-theme.css',
   ],
 
   // 优化配置

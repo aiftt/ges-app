@@ -156,6 +156,13 @@
   --ui-color-component-indicator-color: #333333;
   --ui-color-component-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 
+  // Scrollbar组件变量
+  --ui-scrollbar-thumb-color: rgba(0, 0, 0, 0.3);
+  --ui-scrollbar-thumb-hover-color: rgba(0, 0, 0, 0.5);
+  --ui-scrollbar-thumb-active-color: rgba(0, 0, 0, 0.6);
+  --ui-scrollbar-track-bg: rgba(0, 0, 0, 0.1);
+  --ui-scrollbar-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+
   // 其他变量
   --shadow-color: rgba(0, 0, 0, 0.1);
 }

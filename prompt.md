@@ -1,15 +1,23 @@
-请按照项目规范 @.cursor/rules 及以下规范提供专业代码：
+规范：@now.mdc
 
-1. 在书写组件demo代码时总是要提供示例代码
-2. 提供完代码后执行 pnpm lint 检查代码修复错误，对于未使用的代码直接删除
-3. 在提供代码的时候必须提供至少 light, dark 两套主题方案
-4. 在完成某个组件或功能之后及时更新或补全 @docs/plan.md 计划文档
-5. 直接应用代码不要询问或者要我手动来应用
-6. 在实现 ui/ 组件的时候按照计划中的实施，且自行根据依赖关系判断实现优先级
-7. 注意！！！创建组件务必遵守规范，禁止出现 `<parent>-<child>.vue` 这样的组件，应该：`<parent>/<child>.vue`
-8. 禁止直接在组件中声明 css `--ui-...` 变量，总是将 `--ui-...` 组件 css 变量声明放到 _*assets/themes/*_ 下的主题样式文件中去统一管理
-9. 禁止使用 console api ，要使用封装好的 Logger，每次完成代码后检查是否使用了 console api ，如果有则替换成 logger api
-10. 禁止使用 style.setProperty 必须使用 css + vue v-bind 方式来实现，如：`--ui-xx: v-bind('varName')`
+计划：@plan.md
+
+需求：
+
+1. 在 composables/ 目录下，结合 pinia + vueuse 实现一个带过期时间的持久化的 store 主要用来保存，比如主题配置，认证配置，菜单配置等需要持久化配置的
+
+问题：
+
+1. 请检查 highlight.js 包下面有哪些样式，不要凭空想想，在切换主题的时候报错：Failed to load theme: github TypeError: Failed to resolve module specifier 'highlight.js/styles/github.css'
+2. 我摘出了部分主题可使用，github 系列, atom-one 系列,monokai系列, solarized系列，帮我添加这几个系列的主题即可，然后样式直接静态写死导入
+
+---
+
+问题：
+
+1. trigger/index.vue 内联style 改成 css 变量方式实现
+2. trigger/index.vue `<style>` 中主题相关的变量移到全局主题样式下去
+3. 删掉 assets/themes 合并到 assets/scss/themes/ 下去
 
 问题：
 

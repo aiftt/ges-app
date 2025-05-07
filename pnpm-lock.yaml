@@ -29,6 +29,9 @@ importers:
       '@nuxt/scripts':
         specifier: 0.11.6
         version: 0.11.6(@netlify/blobs@8.2.0)(@unhead/vue@2.0.8(vue@3.5.13(typescript@5.8.3)))(db0@0.3.2(better-sqlite3@11.9.1))(ioredis@5.6.1)(magicast@0.3.5)(nuxt@3.17.1(@netlify/blobs@8.2.0)(@parcel/watcher@2.5.1)(@types/node@22.15.2)(better-sqlite3@11.9.1)(db0@0.3.2(better-sqlite3@11.9.1))(eslint@9.25.1(jiti@2.4.2))(ioredis@5.6.1)(magicast@0.3.5)(optionator@0.9.4)(rollup@4.40.0)(sass-embedded@1.87.0)(terser@5.39.0)(tsx@4.19.3)(typescript@5.8.3)(vite@6.3.3(@types/node@22.15.2)(jiti@2.4.2)(sass-embedded@1.87.0)(terser@5.39.0)(tsx@4.19.3)(yaml@2.7.1))(yaml@2.7.1))(typescript@5.8.3)(vue@3.5.13(typescript@5.8.3))
+      '@types/highlight.js':
+        specifier: ^10.1.0
+        version: 10.1.0
       '@unhead/vue':
         specifier: ^2.0.3
         version: 2.0.8(vue@3.5.13(typescript@5.8.3))
@@ -44,6 +47,9 @@ importers:
       eslint:
         specifier: ^9.0.0
         version: 9.25.1(jiti@2.4.2)
+      highlight.js:
+        specifier: ^11.11.1
+        version: 11.11.1
       mongodb:
         specifier: ^6.16.0
         version: 6.16.0
@@ -1553,6 +1559,10 @@ packages:
 
   '@types/hast@3.0.4':
     resolution: {integrity: sha512-WPs+bbQw5aCj+x6laNGWLH3wviHtoCv/P3+otBhbOhJgG8qtpdAMlTCxLtsTWA7LH1Oh/bFCHsBn0TPS5m30EQ==}
+
+  '@types/highlight.js@10.1.0':
+    resolution: {integrity: sha512-77hF2dGBsOgnvZll1vymYiNUtqJ8cJfXPD6GG/2M0aLRc29PkvB7Au6sIDjIEFcSICBhCh2+Pyq6WSRS7LUm6A==}
+    deprecated: This is a stub types definition. highlight.js provides its own type definitions, so you do not need this installed.
 
   '@types/json-schema@7.0.15':
     resolution: {integrity: sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==}
@@ -3823,6 +3833,10 @@ packages:
   he@1.2.0:
     resolution: {integrity: sha512-F/1DnUGPopORZi0ni+CvrCgHQ5FyEAHRLSApuYWMmrbSwoN2Mn/7k+Gl38gJnR7yyDZk6WLXwiGod1JOWNDKGw==}
     hasBin: true
+
+  highlight.js@11.11.1:
+    resolution: {integrity: sha512-Xwwo44whKBVCYoliBQwaPvtd/2tYFkRQtXDWj1nackaV2JPXx3L0+Jvd8/qCJ2p+ML0/XVkJ2q+Mr+UVdpJK5w==}
+    engines: {node: '>=12.0.0'}
 
   homedir-polyfill@1.0.3:
     resolution: {integrity: sha512-eSmmWE5bZTK2Nou4g0AI3zZ9rswp7GRKoKXS1BLUkvPviOqs4YTN1djQIqrXy9k5gEtdLPy86JjRwsNM9tnDcA==}
@@ -8730,6 +8744,10 @@ snapshots:
     dependencies:
       '@types/unist': 3.0.3
 
+  '@types/highlight.js@10.1.0':
+    dependencies:
+      highlight.js: 11.11.1
+
   '@types/json-schema@7.0.15': {}
 
   '@types/mdast@4.0.4':
@@ -11449,6 +11467,8 @@ snapshots:
       space-separated-tokens: 2.0.2
 
   he@1.2.0: {}
+
+  highlight.js@11.11.1: {}
 
   homedir-polyfill@1.0.3:
     dependencies:

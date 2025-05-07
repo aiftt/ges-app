@@ -5,6 +5,7 @@
  * 作者: aiftt
  * 提供多种触发方式的弹出内容容器
  * 更新日期: 2025-05-05 - 改用 CSS 变量 + v-bind 方式实现动态样式
+ * 更新日期: 2025-05-06 - 移除内联样式，统一使用CSS变量
  */
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 
@@ -92,6 +93,9 @@ const contentLeft = ref('0px')
 const arrowTop = ref('0px')
 const arrowLeft = ref('0px')
 
+// z-index变量
+const zIndexValue = computed(() => props.zIndex)
+
 // 箭头尺寸
 const ARROW_SIZE = 8
 
@@ -127,17 +131,6 @@ const contentClass = computed(() => {
   classes.push(placementClass)
 
   return classes.join(' ')
-})
-
-// 计算内容的样式
-const contentStyle = computed(() => {
-  return {
-    'zIndex': props.zIndex,
-    '--ui-trigger-content-top': contentTop.value,
-    '--ui-trigger-content-left': contentLeft.value,
-    '--ui-trigger-arrow-top': arrowTop.value,
-    '--ui-trigger-arrow-left': arrowLeft.value,
-  }
 })
 
 // 显示内容
@@ -499,7 +492,7 @@ defineExpose({
         v-if="isVisible"
         ref="contentRef"
         :class="contentClass"
-        :style="contentStyle"
+        class="ui-trigger-content"
       >
         <div v-if="arrow" ref="arrowRef" class="ui-trigger-arrow" />
         <div class="ui-trigger-content-inner">
@@ -522,9 +515,9 @@ defineExpose({
 
 .ui-trigger-content {
   position: fixed;
-  z-index: var(--ui-trigger-z-index, 1000);
-  top: var(--ui-trigger-content-top, 0);
-  left: var(--ui-trigger-content-left, 0);
+  z-index: v-bind(zIndexValue);
+  top: v-bind(contentTop);
+  left: v-bind(contentLeft);
   transition:
     opacity 0.2s,
     transform 0.2s;
@@ -580,8 +573,8 @@ defineExpose({
   border-style: solid;
   border-width: 8px;
   z-index: -1;
-  top: var(--ui-trigger-arrow-top, 0);
-  left: var(--ui-trigger-arrow-left, 0);
+  top: v-bind(arrowTop);
+  left: v-bind(arrowLeft);
 }
 
 /* 箭头方向样式 */
@@ -610,21 +603,9 @@ defineExpose({
 }
 
 /* 主题样式 */
-.ui-trigger-theme-dark {
-  --ui-trigger-bg: rgba(0, 0, 0, 0.85);
-  --ui-trigger-border: rgba(0, 0, 0, 0.85);
-  --ui-trigger-color: white;
-}
-
 .ui-trigger-theme-dark .ui-trigger-content-inner {
   background-color: var(--ui-trigger-bg);
   color: var(--ui-trigger-color);
-}
-
-.ui-trigger-theme-light {
-  --ui-trigger-bg: white;
-  --ui-trigger-border: #e5e7eb;
-  --ui-trigger-color: rgba(0, 0, 0, 0.85);
 }
 
 .ui-trigger-theme-light .ui-trigger-content-inner {
@@ -657,6 +638,4 @@ defineExpose({
 .ui-trigger-theme-light.ui-trigger-placement-left-end .ui-trigger-arrow {
   border-left-color: var(--ui-trigger-border);
 }
-
-/* CSS变量已移至主题文件中 */
 </style>

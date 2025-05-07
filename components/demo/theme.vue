@@ -259,7 +259,7 @@ function toggleDarkMode() {
             使用CSS变量定制卡片样式
           </div>
           <div class="overflow-auto rounded-md bg-gray-100 p-4 dark:bg-gray-800">
-            <pre class="text-sm text-gray-800 dark:text-gray-200">{{ sampleCode }}</pre>
+            <ui-code :code="sampleCode" lang="css" :line-numbers="true" theme="auto" />
           </div>
         </div>
         <div>
@@ -270,7 +270,7 @@ function toggleDarkMode() {
             使用预定义的主题辅助类
           </div>
           <div class="overflow-auto rounded-md bg-gray-100 p-4 dark:bg-gray-800">
-            <pre class="text-sm text-gray-800 dark:text-gray-200">{{ unocssCode }}</pre>
+            <ui-code :code="unocssCode" lang="css" :line-numbers="true" theme="auto" />
           </div>
         </div>
       </div>
