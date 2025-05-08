@@ -8,6 +8,7 @@
  * 2023-12-12 - 添加主题色彩展示页面
  * 2023-05-07 - 添加 Scrollbar, Popover, Popconfirm 和 Trigger 组件
  * 2023-05-08 - 统一使用 components/demo 下的组件
+ * 2024-05-26 - 添加 Select 组件
  */
 import { computed, ref } from 'vue'
 import DemoAutoAnimate from '~/components/demo/auto-animate.vue'
@@ -27,6 +28,7 @@ import DemoPopover from '~/components/demo/popover.vue'
 import DemoQrcode from '~/components/demo/qrcode.vue'
 import DemoRadio from '~/components/demo/radio.vue'
 import DemoScrollbar from '~/components/demo/scrollbar.vue'
+import DemoSelect from '~/components/demo/select.vue'
 import DemoSlider from '~/components/demo/slider.vue'
 import DemoSwitch from '~/components/demo/switch.vue'
 import DemoText from '~/components/demo/text.vue'
@@ -70,7 +72,7 @@ const categories = [
     items: [
       { id: 'input', name: '输入框 Input', component: DemoInput },
       { id: 'textarea', name: '文本域 Textarea', component: DemoTextarea },
-      { id: 'select', name: '选择器 Select', component: undefined },
+      { id: 'select', name: '选择器 Select', component: DemoSelect },
       { id: 'checkbox', name: '复选框 Checkbox', component: DemoCheckbox },
       { id: 'radio', name: '单选框 Radio', component: DemoRadio },
       { id: 'switch', name: '开关 Switch', component: DemoSwitch },

@@ -10,6 +10,7 @@
  * 更新日期: 2024-07-02 - 集成从UI组件中提取的变量
  * 更新日期: 2025-07-03 - 添加 Divider, Image, Popover, Tooltip 组件主题变量
  * 更新日期: 2025-05-05 - 添加 Color 组件主题变量
+ * 更新日期: 2024-05-26 - 添加 Select 组件主题变量
  */
 
 :root {
@@ -172,6 +173,20 @@
   --ui-slider-tooltip-bg: var(--ui-color-primary);
   --ui-slider-tooltip-color: #ffffff;
   --ui-slider-stop-active-color: #ffffff;
+
+  // Select组件变量
+  --ui-select-border-color: var(--ui-border-color);
+  --ui-select-bg: var(--ui-color-bg);
+  --ui-select-hover-border: var(--ui-color-primary);
+  --ui-select-focus-shadow: rgba(24, 144, 255, 0.2);
+  --ui-select-disabled-bg: var(--ui-disabled-bg);
+  --ui-select-disabled-border: var(--ui-color-disabled-border);
+  --ui-select-disabled-text: var(--ui-color-disabled-text);
+  --ui-select-dropdown-bg: var(--ui-color-bg);
+  --ui-select-option-hover-bg: var(--ui-color-bg-hover);
+  --ui-select-option-selected-bg: rgba(24, 144, 255, 0.1);
+  --ui-select-option-selected-color: var(--ui-color-primary);
+  --ui-select-placeholder-color: var(--ui-color-text-light);
 
   // 其他变量
   --shadow-color: rgba(0, 0, 0, 0.1);
