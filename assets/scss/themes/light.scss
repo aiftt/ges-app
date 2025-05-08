@@ -11,6 +11,7 @@
  * 更新日期: 2025-07-03 - 添加 Divider, Image, Popover, Tooltip 组件主题变量
  * 更新日期: 2025-05-05 - 添加 Color 组件主题变量
  * 更新日期: 2024-05-26 - 添加 Select 组件主题变量
+ * 更新日期: 2024-06-20 - 添加 Badge 组件主题变量
  */
 
 :root {
@@ -206,6 +207,22 @@
   --ui-tag-danger-bg: rgba(245, 34, 45, 0.08);
   --ui-tag-danger-color: var(--ui-color-danger);
   --ui-tag-danger-border-color: rgba(245, 34, 45, 0.2);
+
+  // Badge组件变量
+  --ui-badge-bg: var(--ui-color-danger);
+  --ui-badge-color: white;
+  --ui-badge-font-size: 12px;
+  --ui-badge-font-weight: 500;
+  --ui-badge-padding: 0.25rem 0.4rem;
+  --ui-badge-primary-bg: var(--ui-color-primary);
+  --ui-badge-success-bg: var(--ui-color-success);
+  --ui-badge-warning-bg: var(--ui-color-warning);
+  --ui-badge-info-bg: var(--ui-color-info);
+  --ui-badge-primary-color: white;
+  --ui-badge-success-color: white;
+  --ui-badge-warning-color: white;
+  --ui-badge-info-color: white;
+  --ui-badge-border-color: white;
 
   // 其他变量
   --shadow-color: rgba(0, 0, 0, 0.1);

@@ -9,9 +9,11 @@
  * 2023-05-07 - 添加 Scrollbar, Popover, Popconfirm 和 Trigger 组件
  * 2023-05-08 - 统一使用 components/demo 下的组件
  * 2024-05-26 - 添加 Select 组件
+ * 2024-06-20 - 添加 Badge 组件
  */
 import { computed, ref } from 'vue'
 import DemoAutoAnimate from '~/components/demo/auto-animate.vue'
+import DemoBadge from '~/components/demo/badge.vue'
 import DemoBorder from '~/components/demo/border.vue'
 import DemoButton from '~/components/demo/button.vue'
 import DemoCheckbox from '~/components/demo/checkbox.vue'
@@ -88,7 +90,7 @@ const categories = [
       { id: 'qrcode', name: '二维码', component: DemoQrcode },
       { id: 'tag', name: '标签 Tag', component: DemoTag },
       { id: 'avatar', name: '头像 Avatar', component: undefined },
-      { id: 'badge', name: '徽章 Badge', component: undefined },
+      { id: 'badge', name: '徽章 Badge', component: DemoBadge },
       { id: 'card', name: '卡片 Card', component: undefined },
       { id: 'carousel', name: '轮播图 Carousel', component: undefined },
       { id: 'collapse', name: '折叠面板 Collapse', component: undefined },
