@@ -10,9 +10,12 @@
  * 2023-05-08 - 统一使用 components/demo 下的组件
  * 2024-05-26 - 添加 Select 组件
  * 2024-06-20 - 添加 Badge 组件
+ * 2024-06-21 - 添加 Avatar 组件
+ * 2024-06-21 - 修复组件引用性能警告
  */
-import { computed, ref } from 'vue'
+import { computed, markRaw, ref } from 'vue'
 import DemoAutoAnimate from '~/components/demo/auto-animate.vue'
+import DemoAvatar from '~/components/demo/avatar.vue'
 import DemoBadge from '~/components/demo/badge.vue'
 import DemoBorder from '~/components/demo/border.vue'
 import DemoButton from '~/components/demo/button.vue'
@@ -20,10 +23,14 @@ import DemoCheckbox from '~/components/demo/checkbox.vue'
 import DemoCode from '~/components/demo/code.vue'
 import DemoColor from '~/components/demo/color.vue'
 import DemoConfigProvider from '~/components/demo/config-provider.vue'
+// import DemoDatePicker from '~/components/demo/date-picker.vue' // 暂未实现
 import DemoDivider from '~/components/demo/divider.vue'
+// import DemoGrid from '~/components/demo/grid.vue' // 暂未实现
 import DemoIcon from '~/components/demo/icon.vue'
 import DemoImage from '~/components/demo/image.vue'
 import DemoInput from '~/components/demo/input.vue'
+// import DemoLayout from '~/components/demo/layout.vue' // 暂未实现
+// import DemoLink from '~/components/demo/link.vue' // 暂未实现
 import DemoMenu from '~/components/demo/menu.vue'
 import DemoPopconfirm from '~/components/demo/popconfirm.vue'
 import DemoPopover from '~/components/demo/popover.vue'
@@ -32,181 +39,171 @@ import DemoRadio from '~/components/demo/radio.vue'
 import DemoScrollbar from '~/components/demo/scrollbar.vue'
 import DemoSelect from '~/components/demo/select.vue'
 import DemoSlider from '~/components/demo/slider.vue'
+import DemoSpace from '~/components/demo/space.vue'
 import DemoSwitch from '~/components/demo/switch.vue'
 import DemoTag from '~/components/demo/tag.vue'
 import DemoText from '~/components/demo/text.vue'
 import DemoTextarea from '~/components/demo/textarea.vue'
-import DemoTheme from '~/components/demo/theme.vue'
 import DemoTooltip from '~/components/demo/tooltip.vue'
 import DemoTrigger from '~/components/demo/trigger.vue'
-import DemoTsx from '~/components/demo/tsx.vue'
 import DemoTypography from '~/components/demo/typography.vue'
 
-// 定义组件分类
-const categories = [
+// 组件列表
+interface ComponentGroup {
+  title: string
+  components: {
+    name: string
+    label: string
+    component: any
+  }[]
+}
+
+const groups = ref<ComponentGroup[]>([
   {
     title: '基础组件',
-    items: [
-      { id: 'border', name: '边框', component: DemoBorder },
-      { id: 'button', name: '按钮', component: DemoButton },
-      { id: 'code', name: '代码展示', component: DemoCode },
-      { id: 'config-provider', name: '全局配置', component: DemoConfigProvider },
-      { id: 'divider', name: '分割线', component: DemoDivider },
-      { id: 'icon', name: '图标', component: DemoIcon },
-      { id: 'theme', name: '主题色彩 Theme', component: DemoTheme },
-      { id: 'auto-animate', name: '动画效果', component: DemoAutoAnimate },
-      { id: 'tooltip', name: '文字提示', component: DemoTooltip },
-      { id: 'popover', name: '气泡卡片', component: DemoPopover },
-      { id: 'trigger', name: '触发器', component: DemoTrigger },
-      { id: 'scrollbar', name: '滚动条', component: DemoScrollbar },
-      { id: 'tsx', name: 'TSX组件', component: DemoTsx },
-      { id: 'color', name: '颜色 Color', component: DemoColor },
-    ],
-  },
-  {
-    title: '文本展示',
-    items: [
-      { id: 'text', name: '文本', component: DemoText },
-      { id: 'typography', name: '排版', component: DemoTypography },
-    ],
-  },
-  {
-    title: '表单组件',
-    items: [
-      { id: 'input', name: '输入框 Input', component: DemoInput },
-      { id: 'textarea', name: '文本域 Textarea', component: DemoTextarea },
-      { id: 'select', name: '选择器 Select', component: DemoSelect },
-      { id: 'checkbox', name: '复选框 Checkbox', component: DemoCheckbox },
-      { id: 'radio', name: '单选框 Radio', component: DemoRadio },
-      { id: 'switch', name: '开关 Switch', component: DemoSwitch },
-      { id: 'slider', name: '滑块 Slider', component: DemoSlider },
-      { id: 'form', name: '表单 Form', component: undefined },
+    components: [
+      { name: 'button', label: 'Button 按钮', component: markRaw(DemoButton) },
+      { name: 'icon', label: 'Icon 图标', component: markRaw(DemoIcon) },
+      { name: 'typography', label: 'Typography 排版', component: markRaw(DemoTypography) },
+      { name: 'divider', label: 'Divider 分割线', component: markRaw(DemoDivider) },
+      { name: 'space', label: 'Space 间距', component: markRaw(DemoSpace) },
+      // { name: 'layout', label: 'Layout 布局', component: DemoLayout }, // 暂未实现
+      // { name: 'grid', label: 'Grid 栅格', component: DemoGrid }, // 暂未实现
+      { name: 'text', label: 'Text 文本', component: markRaw(DemoText) },
+      { name: 'color', label: 'Color 色彩', component: markRaw(DemoColor) },
+      { name: 'border', label: 'Border 边框', component: markRaw(DemoBorder) },
+      // { name: 'link', label: 'Link 链接', component: DemoLink }, // 暂未实现
+      { name: 'tooltip', label: 'Tooltip 文字提示', component: markRaw(DemoTooltip) },
+      { name: 'popover', label: 'Popover 气泡卡片', component: markRaw(DemoPopover) },
+      { name: 'popconfirm', label: 'Popconfirm 气泡确认框', component: markRaw(DemoPopconfirm) },
+      { name: 'trigger', label: 'Trigger 触发器', component: markRaw(DemoTrigger) },
+      { name: 'scrollbar', label: 'Scrollbar 滚动条', component: markRaw(DemoScrollbar) },
+      { name: 'auto-animate', label: 'AutoAnimate 自动动画', component: markRaw(DemoAutoAnimate) },
     ],
   },
   {
     title: '数据展示',
-    items: [
-      { id: 'image', name: '图片', component: DemoImage },
-      { id: 'qrcode', name: '二维码', component: DemoQrcode },
-      { id: 'tag', name: '标签 Tag', component: DemoTag },
-      { id: 'avatar', name: '头像 Avatar', component: undefined },
-      { id: 'badge', name: '徽章 Badge', component: DemoBadge },
-      { id: 'card', name: '卡片 Card', component: undefined },
-      { id: 'carousel', name: '轮播图 Carousel', component: undefined },
-      { id: 'collapse', name: '折叠面板 Collapse', component: undefined },
-      { id: 'table', name: '表格 Table', component: undefined },
-      { id: 'tree', name: '树形控件 Tree', component: undefined },
+    components: [
+      { name: 'qrcode', label: 'QRCode 二维码', component: markRaw(DemoQrcode) },
+      { name: 'code', label: 'Code 代码', component: markRaw(DemoCode) },
+      { name: 'image', label: 'Image 图片', component: markRaw(DemoImage) },
+      { name: 'tag', label: 'Tag 标签', component: markRaw(DemoTag) },
+      { name: 'badge', label: 'Badge 徽章', component: markRaw(DemoBadge) },
+      { name: 'avatar', label: 'Avatar 头像', component: markRaw(DemoAvatar) },
     ],
   },
   {
-    title: '反馈组件',
-    items: [
-      { id: 'alert', name: '警告 Alert', component: undefined },
-      { id: 'dialog', name: '对话框 Dialog', component: undefined },
-      { id: 'drawer', name: '抽屉 Drawer', component: undefined },
-      { id: 'loading', name: '加载 Loading', component: undefined },
-      { id: 'message', name: '消息提示 Message', component: undefined },
-      { id: 'notification', name: '通知 Notification', component: undefined },
-      { id: 'progress', name: '进度条 Progress', component: undefined },
-      { id: 'popconfirm', name: '气泡确认框', component: DemoPopconfirm },
-      { id: 'result', name: '结果 Result', component: undefined },
-      { id: 'skeleton', name: '骨架屏 Skeleton', component: undefined },
+    title: '表单组件',
+    components: [
+      { name: 'input', label: 'Input 输入框', component: markRaw(DemoInput) },
+      { name: 'textarea', label: 'Textarea 文本域', component: markRaw(DemoTextarea) },
+      { name: 'checkbox', label: 'Checkbox 复选框', component: markRaw(DemoCheckbox) },
+      { name: 'radio', label: 'Radio 单选框', component: markRaw(DemoRadio) },
+      { name: 'select', label: 'Select 选择器', component: markRaw(DemoSelect) },
+      { name: 'switch', label: 'Switch 开关', component: markRaw(DemoSwitch) },
+      { name: 'slider', label: 'Slider 滑块', component: markRaw(DemoSlider) },
+      // { name: 'date-picker', label: 'DatePicker 日期选择器', component: DemoDatePicker }, // 暂未实现
     ],
   },
   {
     title: '导航组件',
-    items: [
-      { id: 'menu', name: '菜单 Menu', component: DemoMenu },
-      { id: 'tabs', name: '标签页 Tabs', component: undefined },
-      { id: 'breadcrumb', name: '面包屑 Breadcrumb', component: undefined },
-      { id: 'dropdown', name: '下拉菜单 Dropdown', component: undefined },
-      { id: 'pagination', name: '分页 Pagination', component: undefined },
-      { id: 'steps', name: '步骤条 Steps', component: undefined },
-      { id: 'anchor', name: '锚点 Anchor', component: undefined },
-      { id: 'page-header', name: '页头 PageHeader', component: undefined },
-      { id: 'backtop', name: '回到顶部 BackTop', component: undefined },
+    components: [
+      { name: 'menu', label: 'Menu 菜单', component: markRaw(DemoMenu) },
     ],
   },
-]
+  {
+    title: '其他',
+    components: [
+      { name: 'config-provider', label: 'ConfigProvider 全局配置', component: markRaw(DemoConfigProvider) },
+    ],
+  },
+])
 
-// 当前选中的组件ID
-const activeComponentId = ref('button')
+// 当前选中的组件
+const currentComponent = ref(groups.value[0].components[0].name)
 
-// 获取所有组件的扁平列表
-const allComponents = computed(() => {
-  return categories.flatMap(category => category.items)
-})
+// 查询参数
+const route = useRoute()
+const name = computed(() => route.query.name as string || '')
 
-// 当前选中的组件信息
+if (name.value) {
+  // 查找是否有与查询参数匹配的组件
+  for (const group of groups.value) {
+    const found = group.components.find(item => item.name === name.value)
+    if (found) {
+      currentComponent.value = name.value
+      break
+    }
+  }
+}
+
+// 根据当前组件名查找组件实例
 const activeComponent = computed(() => {
-  return allComponents.value.find(comp => comp.id === activeComponentId.value)
+  for (const group of groups.value) {
+    const found = group.components.find(item => item.name === currentComponent.value)
+    if (found)
+      return found.component
+  }
+  return null
 })
 
-// 处理组件点击
-function handleComponentClick(componentId: string) {
-  activeComponentId.value = componentId
+// 更改当前组件
+function setComponent(componentName: string) {
+  currentComponent.value = componentName
+  navigateTo({
+    query: { name: componentName },
+  }, { replace: true })
 }
 
-// 主题切换
-const darkMode = ref(false)
-function toggleDarkMode() {
-  darkMode.value = !darkMode.value
-  document.documentElement.classList.toggle('dark', darkMode.value)
-}
+// 侧边栏样式
+const sideBarClass = computed(() => [
+  'hidden md:block',
+  'md:w-60 lg:w-72',
+  'p-4',
+  'border-r border-gray-200 dark:border-gray-700',
+  'bg-white dark:bg-gray-900',
+  'h-full',
+])
+
+// 导航项样式
+const navItemClass = computed(() => (item: string) => [
+  'py-2 px-3 mb-0.5',
+  'cursor-pointer',
+  'rounded',
+  'transition-colors',
+  'truncate',
+  item === currentComponent.value
+    ? 'bg-primary-50 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400 font-medium'
+    : 'hover:bg-gray-100 dark:hover:bg-gray-800',
+])
 </script>
 
 <template>
-  <div class="ui-demo" :class="{ dark: darkMode }">
-    <header class="ui-demo-header">
-      <h1 class="ui-demo-title">
-        UI组件库
-      </h1>
-      <div class="ui-demo-theme-switch">
-        <span>主题模式：</span>
-        <button class="ui-demo-theme-button" @click="toggleDarkMode">
-          {{ darkMode ? '暗色' : '亮色' }}
-        </button>
-      </div>
-    </header>
-
-    <div class="ui-demo-container">
-      <!-- 左侧菜单 -->
-      <div class="ui-demo-sidebar">
-        <div v-for="category in categories" :key="category.title" class="ui-demo-category">
-          <h3 class="ui-demo-category-title">
-            {{ category.title }}
-          </h3>
-          <ul class="ui-demo-component-list">
-            <li
-              v-for="component in category.items"
-              :key="component.id"
-              class="ui-demo-component-item"
-              :class="{ active: activeComponentId === component.id }"
-              @click="handleComponentClick(component.id)"
-            >
-              {{ component.name }}
-            </li>
-          </ul>
+  <div h-full flex>
+    <!-- 左侧导航 -->
+    <div :class="sideBarClass">
+      <!-- 分组导航 -->
+      <div v-for="(group, i) in groups" :key="i" mb-6>
+        <div mb-3 text-sm text-gray-500 font-medium dark:text-gray-400>
+          {{ group.title }}
         </div>
-      </div>
-
-      <!-- 右侧展示区域 -->
-      <div class="ui-demo-content">
-        <h2 class="ui-demo-component-title">
-          {{ activeComponent?.name }}
-        </h2>
-
-        <!-- 组件展示区域 -->
-        <div class="ui-demo-component-showcase">
-          <component
-            :is="activeComponent.component"
-            v-if="activeComponent?.component"
-          />
-          <div v-else class="ui-demo-empty">
-            {{ activeComponent ? '该组件尚未实现' : '请选择一个组件' }}
+        <div>
+          <div
+            v-for="item in group.components"
+            :key="item.name"
+            :class="navItemClass(item.name)"
+            text-sm
+            @click="setComponent(item.name)"
+          >
+            {{ item.label }}
           </div>
         </div>
       </div>
+    </div>
+
+    <!-- 右侧内容 -->
+    <div flex-1 overflow-auto p-6>
+      <component :is="activeComponent" />
     </div>
   </div>
 </template>

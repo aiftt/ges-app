@@ -12,6 +12,7 @@
  * 更新日期: 2025-05-05 - 添加 Color 组件主题变量
  * 更新日期: 2024-05-26 - 添加 Select 组件主题变量
  * 更新日期: 2024-06-20 - 添加 Badge 组件主题变量
+ * 更新日期: 2024-06-21 - 添加 Avatar 组件主题变量
  */
 
 :root {
@@ -223,6 +224,19 @@
   --ui-badge-warning-color: white;
   --ui-badge-info-color: white;
   --ui-badge-border-color: white;
+
+  // Avatar组件变量
+  --ui-avatar-bg: var(--ui-color-bg-light);
+  --ui-avatar-color: var(--ui-color-text);
+  --ui-avatar-border-color: var(--ui-color-border);
+  --ui-avatar-font-weight: 500;
+  --ui-avatar-size-small: 32px;
+  --ui-avatar-size-default: 40px;
+  --ui-avatar-size-large: 48px;
+  --ui-avatar-font-small: 14px;
+  --ui-avatar-font-default: 16px;
+  --ui-avatar-font-large: 20px;
+  --ui-avatar-border-radius: 4px;
 
   // 其他变量
   --shadow-color: rgba(0, 0, 0, 0.1);
