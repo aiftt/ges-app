@@ -259,6 +259,38 @@
   --ui-card-loading-bg: rgba(255, 255, 255, 0.7);
   --ui-card-spinner-color: var(--ui-color-primary);
 
+  // Collapse组件变量
+  --ui-collapse-bg: var(--ui-color-bg);
+  --ui-collapse-color: var(--ui-color-text);
+  --ui-collapse-border: var(--ui-border-color);
+  --ui-collapse-border-radius: 4px;
+  --ui-collapse-header-padding: 12px 16px;
+  --ui-collapse-content-padding: 0 16px 16px;
+  --ui-collapse-simple-header-padding: 8px 0;
+  --ui-collapse-simple-content-padding: 0 0 8px 24px;
+  --ui-collapse-header-hover-bg: rgba(0, 0, 0, 0.02);
+  --ui-collapse-arrow-size: 16px;
+  --ui-collapse-icon-size: 16px;
+
+  // Modal组件变量
+  --ui-modal-bg: var(--ui-color-bg);
+  --ui-modal-color: var(--ui-color-text);
+  --ui-modal-border: var(--ui-border-color);
+  --ui-modal-border-radius: 6px;
+  --ui-modal-z-index: 1000;
+  --ui-modal-mask-z-index: 1000;
+  --ui-modal-content-z-index: 1001;
+  --ui-modal-shadow: 0 3px 6px -4px rgba(0, 0, 0, 0.12), 0 6px 16px 0 rgba(0, 0, 0, 0.08);
+  --ui-modal-mask-bg: rgba(0, 0, 0, 0.45);
+  --ui-modal-header-padding: 16px 24px;
+  --ui-modal-body-padding: 24px;
+  --ui-modal-footer-padding: 10px 24px;
+  --ui-modal-title-font-size: 16px;
+  --ui-modal-title-font-weight: 500;
+  --ui-modal-title-color: var(--ui-color-text-heading);
+  --ui-modal-close-color: var(--ui-color-text-secondary);
+  --ui-modal-close-hover-color: var(--ui-color-text);
+
   // 其他变量
   --shadow-color: rgba(0, 0, 0, 0.1);
 }

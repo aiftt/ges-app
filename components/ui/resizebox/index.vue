@@ -1,16 +1,15 @@
-<script setup lang="ts" name="UiResizebox">
+<script setup lang="ts" name="UiResizeBox">
 /**
- * 可调整大小的容器组件
- * 创建日期: 2023-05-03
+ * ResizeBox 伸缩框组件
+ * 创建日期: 2024-06-22
  * 作者: aiftt
- * 更新日期: 2023-05-03 - 初始版本
- * 更新日期: 2024-05-10 - 规范化CSS变量，移除内联样式
- * 允许用户通过拖动调整容器大小
+ * 更新日期: 2024-06-22 - 初始版本
  */
-import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
-import logger from '~/utils/logger'
 
-const props = withDefaults(defineProps<{
+import { computed, onMounted, onUnmounted, ref } from 'vue'
+
+// 定义props类型
+interface ResizeBoxProps {
   /**
    * 初始宽度
    */
@@ -36,352 +35,340 @@ const props = withDefaults(defineProps<{
    */
   maxHeight?: string | number
   /**
-   * 是否可调整宽度
-   */
-  resizableWidth?: boolean
-  /**
-   * 是否可调整高度
-   */
-  resizableHeight?: boolean
-  /**
-   * 是否启用调整大小的动画效果
-   */
-  animate?: boolean
-  /**
-   * 控制器大小
-   */
-  handleSize?: number
-  /**
-   * 是否禁用
+   * 是否禁用调整大小
    */
   disabled?: boolean
   /**
-   * 调整大小结束后是否保存尺寸到本地存储
+   * 调整方向，可以是单个方向或多个方向的组合
    */
-  storage?: boolean
+  directions?: ('top' | 'right' | 'bottom' | 'left' | 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left')[]
   /**
-   * 本地存储的键名
+   * 是否显示调整手柄
    */
-  storageKey?: string
-}>(), {
+  showHandle?: boolean
+  /**
+   * 手柄样式类
+   */
+  handleClass?: string
+  /**
+   * 是否显示辅助线
+   */
+  showGuides?: boolean
+  /**
+   * 调整大小时是否保持比例
+   */
+  keepRatio?: boolean
+  /**
+   * 调整的最小步长（像素）
+   */
+  step?: number
+}
+
+// 定义事件类型
+interface ResizeBoxEmits {
+  (e: 'update:width', width: number): void
+  (e: 'update:height', height: number): void
+  (e: 'resize', size: { width: number, height: number }): void
+  (e: 'resizestart', event: MouseEvent): void
+  (e: 'resizeend', size: { width: number, height: number }): void
+}
+
+// 定义props默认值
+const props = withDefaults(defineProps<ResizeBoxProps>(), {
   width: 'auto',
   height: 'auto',
   minWidth: 20,
   minHeight: 20,
-  maxWidth: '100%',
-  maxHeight: '100%',
-  resizableWidth: true,
-  resizableHeight: true,
-  animate: true,
-  handleSize: 6,
+  maxWidth: Number.MAX_SAFE_INTEGER,
+  maxHeight: Number.MAX_SAFE_INTEGER,
   disabled: false,
-  storage: false,
-  storageKey: 'ui-resizebox-size',
+  directions: () => ['right', 'bottom', 'bottom-right'] as ('top' | 'right' | 'bottom' | 'left' | 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left')[],
+  showHandle: true,
+  showGuides: false,
+  keepRatio: false,
+  step: 1,
 })
 
-const emit = defineEmits<{
-  (e: 'update:width', width: number): void
-  (e: 'update:height', height: number): void
-  (e: 'resizeStart', size: { width: number, height: number }): void
-  (e: 'resizing', size: { width: number, height: number }): void
-  (e: 'resizeEnd', size: { width: number, height: number }): void
-}>()
-
-// 创建组件专用logger
-const resizeboxLogger = logger.client.child({ tag: 'resizebox' })
+// 定义事件
+const emit = defineEmits<ResizeBoxEmits>()
 
 // 容器引用
-const boxRef = ref<HTMLElement | null>(null)
+const containerRef = ref<HTMLElement | null>(null)
 
 // 当前尺寸
-const currentWidth = ref<number>(
-  typeof props.width === 'number' ? props.width : 0,
-)
-const currentHeight = ref<number>(
-  typeof props.height === 'number' ? props.height : 0,
-)
+const currentWidth = ref<number>(typeof props.width === 'number' ? props.width : 0)
+const currentHeight = ref<number>(typeof props.height === 'number' ? props.height : 0)
 
-// 拖拽状态
+// 调整状态
 const isResizing = ref(false)
-const resizeDirection = ref<{
-  right: boolean
-  bottom: boolean
-  corner: boolean
-}>({
-  right: false,
-  bottom: false,
-  corner: false,
-})
-
-// 开始点
+const resizeDirection = ref<string>('')
 const startPosition = ref({ x: 0, y: 0 })
 const startSize = ref({ width: 0, height: 0 })
+const originalRatio = ref(1)
 
-// CSS变量
-const widthVar = computed(() => currentWidth.value > 0 ? `${currentWidth.value}px` : typeof props.width === 'string' ? props.width : null)
-const heightVar = computed(() => currentHeight.value > 0 ? `${currentHeight.value}px` : typeof props.height === 'string' ? props.height : null)
-const minWidthVar = computed(() => typeof props.minWidth === 'number' ? `${props.minWidth}px` : props.minWidth)
-const minHeightVar = computed(() => typeof props.minHeight === 'number' ? `${props.minHeight}px` : props.minHeight)
-const maxWidthVar = computed(() => typeof props.maxWidth === 'number' ? `${props.maxWidth}px` : props.maxWidth)
-const maxHeightVar = computed(() => typeof props.maxHeight === 'number' ? `${props.maxHeight}px` : props.maxHeight)
-const handleSizeVar = computed(() => `${props.handleSize}px`)
-const transitionVar = computed(() => props.animate && !isResizing.value ? 'width 0.2s ease, height 0.2s ease' : 'none')
+// 计算样式
+const boxStyle = computed(() => {
+  const style: Record<string, string> = {}
 
-// 监听尺寸变化
-watch(() => props.width, (val) => {
-  if (typeof val === 'number' && val !== currentWidth.value) {
-    currentWidth.value = val
+  // 使用当前尺寸而不是props中的初始值
+  style.width = `${currentWidth.value}px`
+  style.height = `${currentHeight.value}px`
+
+  return style
+})
+
+// 计算最小尺寸
+const minWidth = computed(() => {
+  return typeof props.minWidth === 'number' ? props.minWidth : Number.parseInt(props.minWidth as string, 10) || 20
+})
+
+const minHeight = computed(() => {
+  return typeof props.minHeight === 'number' ? props.minHeight : Number.parseInt(props.minHeight as string, 10) || 20
+})
+
+// 计算最大尺寸
+const maxWidth = computed(() => {
+  return typeof props.maxWidth === 'number' ? props.maxWidth : Number.parseInt(props.maxWidth as string, 10) || Number.MAX_SAFE_INTEGER
+})
+
+const maxHeight = computed(() => {
+  return typeof props.maxHeight === 'number' ? props.maxHeight : Number.parseInt(props.maxHeight as string, 10) || Number.MAX_SAFE_INTEGER
+})
+
+// 初始化尺寸
+onMounted(() => {
+  if (containerRef.value) {
+    if (props.width === 'auto') {
+      currentWidth.value = containerRef.value.offsetWidth
+    }
+    else if (typeof props.width === 'string') {
+      currentWidth.value = containerRef.value.offsetWidth
+    }
+    else {
+      currentWidth.value = props.width
+    }
+
+    if (props.height === 'auto') {
+      currentHeight.value = containerRef.value.offsetHeight
+    }
+    else if (typeof props.height === 'string') {
+      currentHeight.value = containerRef.value.offsetHeight
+    }
+    else {
+      currentHeight.value = props.height
+    }
+
+    originalRatio.value = currentWidth.value / currentHeight.value
+
+    // 初始化后立即更新样式
+    if (containerRef.value) {
+      containerRef.value.style.width = `${currentWidth.value}px`
+      containerRef.value.style.height = `${currentHeight.value}px`
+    }
   }
 })
 
-watch(() => props.height, (val) => {
-  if (typeof val === 'number' && val !== currentHeight.value) {
-    currentHeight.value = val
-  }
-})
-
-// 调整大小处理
-function handleResizeStart(e: MouseEvent | TouchEvent, direction: 'right' | 'bottom' | 'corner') {
+// 处理调整开始
+function handleResizeStart(direction: string, e: MouseEvent) {
   if (props.disabled)
     return
 
   e.preventDefault()
-  e.stopPropagation()
-
-  // 设置调整方向
-  resizeDirection.value = {
-    right: direction === 'right' || direction === 'corner',
-    bottom: direction === 'bottom' || direction === 'corner',
-    corner: direction === 'corner',
-  }
-
+  resizeDirection.value = direction
   isResizing.value = true
+  startPosition.value = { x: e.clientX, y: e.clientY }
+  startSize.value = { width: currentWidth.value, height: currentHeight.value }
+  originalRatio.value = currentWidth.value / currentHeight.value
 
-  // 获取起始位置
-  const touchEvent = e as TouchEvent
-  const mouseEvent = e as MouseEvent
+  window.addEventListener('mousemove', handleResizeMove)
+  window.addEventListener('mouseup', handleResizeEnd)
 
-  startPosition.value = {
-    x: touchEvent.touches ? touchEvent.touches[0].clientX : mouseEvent.clientX,
-    y: touchEvent.touches ? touchEvent.touches[0].clientY : mouseEvent.clientY,
-  }
-
-  // 获取初始尺寸
-  const box = boxRef.value
-  if (box) {
-    startSize.value = {
-      width: box.offsetWidth,
-      height: box.offsetHeight,
-    }
-
-    currentWidth.value = box.offsetWidth
-    currentHeight.value = box.offsetHeight
-  }
-
-  // 添加事件监听
-  document.addEventListener('mousemove', handleResizeMove)
-  document.addEventListener('touchmove', handleResizeMove, { passive: false })
-  document.addEventListener('mouseup', handleResizeEnd)
-  document.addEventListener('touchend', handleResizeEnd)
-
-  // 发出事件
-  emit('resizeStart', {
-    width: currentWidth.value,
-    height: currentHeight.value,
-  })
+  emit('resizestart', e)
 }
 
-function handleResizeMove(e: MouseEvent | TouchEvent) {
+// 处理调整移动
+function handleResizeMove(e: MouseEvent) {
   if (!isResizing.value)
     return
 
   e.preventDefault()
+  const deltaX = e.clientX - startPosition.value.x
+  const deltaY = e.clientY - startPosition.value.y
 
-  // 获取当前位置
-  const touchEvent = e as TouchEvent
-  const mouseEvent = e as MouseEvent
+  let newWidth = startSize.value.width
+  let newHeight = startSize.value.height
 
-  const currentPosition = {
-    x: touchEvent.touches ? touchEvent.touches[0].clientX : mouseEvent.clientX,
-    y: touchEvent.touches ? touchEvent.touches[0].clientY : mouseEvent.clientY,
+  // 根据调整方向计算新尺寸
+  if (resizeDirection.value.includes('right')) {
+    newWidth = Math.max(minWidth.value, Math.min(maxWidth.value, startSize.value.width + deltaX))
+    if (newWidth % props.step !== 0) {
+      newWidth = Math.round(newWidth / props.step) * props.step
+    }
   }
 
-  // 计算偏移量
-  const deltaX = currentPosition.x - startPosition.value.x
-  const deltaY = currentPosition.y - startPosition.value.y
-
-  // 根据方向调整大小
-  if (resizeDirection.value.right && props.resizableWidth) {
-    let newWidth = startSize.value.width + deltaX
-
-    // 应用边界限制
-    const minWidth = typeof props.minWidth === 'number' ? props.minWidth : 0
-    if (newWidth < minWidth)
-      newWidth = minWidth
-
-    const maxWidth = typeof props.maxWidth === 'number' ? props.maxWidth : Infinity
-    if (newWidth > maxWidth)
-      newWidth = maxWidth
-
-    currentWidth.value = Math.round(newWidth)
-    emit('update:width', currentWidth.value)
+  if (resizeDirection.value.includes('left')) {
+    const maxDeltaX = startSize.value.width - minWidth.value
+    const adjustedDeltaX = Math.max(-maxDeltaX, Math.min(startSize.value.width - minWidth.value, deltaX))
+    newWidth = startSize.value.width - adjustedDeltaX
+    if (newWidth % props.step !== 0) {
+      newWidth = Math.round(newWidth / props.step) * props.step
+    }
   }
 
-  if (resizeDirection.value.bottom && props.resizableHeight) {
-    let newHeight = startSize.value.height + deltaY
-
-    // 应用边界限制
-    const minHeight = typeof props.minHeight === 'number' ? props.minHeight : 0
-    if (newHeight < minHeight)
-      newHeight = minHeight
-
-    const maxHeight = typeof props.maxHeight === 'number' ? props.maxHeight : Infinity
-    if (newHeight > maxHeight)
-      newHeight = maxHeight
-
-    currentHeight.value = Math.round(newHeight)
-    emit('update:height', currentHeight.value)
+  if (resizeDirection.value.includes('bottom')) {
+    newHeight = Math.max(minHeight.value, Math.min(maxHeight.value, startSize.value.height + deltaY))
+    if (newHeight % props.step !== 0) {
+      newHeight = Math.round(newHeight / props.step) * props.step
+    }
   }
 
-  // 发出事件
-  emit('resizing', {
-    width: currentWidth.value,
-    height: currentHeight.value,
-  })
+  if (resizeDirection.value.includes('top')) {
+    const maxDeltaY = startSize.value.height - minHeight.value
+    const adjustedDeltaY = Math.max(-maxDeltaY, Math.min(startSize.value.height - minHeight.value, deltaY))
+    newHeight = startSize.value.height - adjustedDeltaY
+    if (newHeight % props.step !== 0) {
+      newHeight = Math.round(newHeight / props.step) * props.step
+    }
+  }
+
+  // 保持比例
+  if (props.keepRatio) {
+    if (resizeDirection.value.includes('right') || resizeDirection.value.includes('left')) {
+      newHeight = newWidth / originalRatio.value
+    }
+    else if (resizeDirection.value.includes('bottom') || resizeDirection.value.includes('top')) {
+      newWidth = newHeight * originalRatio.value
+    }
+
+    // 确保尺寸在范围内
+    if (newWidth < minWidth.value) {
+      newWidth = minWidth.value
+      newHeight = newWidth / originalRatio.value
+    }
+    else if (newWidth > maxWidth.value) {
+      newWidth = maxWidth.value
+      newHeight = newWidth / originalRatio.value
+    }
+
+    if (newHeight < minHeight.value) {
+      newHeight = minHeight.value
+      newWidth = newHeight * originalRatio.value
+    }
+    else if (newHeight > maxHeight.value) {
+      newHeight = maxHeight.value
+      newWidth = newHeight * originalRatio.value
+    }
+  }
+
+  // 更新尺寸
+  currentWidth.value = newWidth
+  currentHeight.value = newHeight
+
+  // 发射事件
+  emit('update:width', newWidth)
+  emit('update:height', newHeight)
+  emit('resize', { width: newWidth, height: newHeight })
 }
 
+// 处理调整结束
 function handleResizeEnd() {
-  if (!isResizing.value)
-    return
-
   isResizing.value = false
+  window.removeEventListener('mousemove', handleResizeMove)
+  window.removeEventListener('mouseup', handleResizeEnd)
 
-  // 移除事件监听
-  document.removeEventListener('mousemove', handleResizeMove)
-  document.removeEventListener('touchmove', handleResizeMove)
-  document.removeEventListener('mouseup', handleResizeEnd)
-  document.removeEventListener('touchend', handleResizeEnd)
-
-  // 保存到本地存储
-  if (props.storage && props.storageKey) {
-    try {
-      const sizeData = {
-        width: currentWidth.value,
-        height: currentHeight.value,
-      }
-      localStorage.setItem(props.storageKey, JSON.stringify(sizeData))
-    }
-    catch (e) {
-      resizeboxLogger.error('保存ResizeBox尺寸到本地存储失败:', e)
-    }
-  }
-
-  // 发出事件
-  emit('resizeEnd', {
-    width: currentWidth.value,
-    height: currentHeight.value,
-  })
+  emit('resizeend', { width: currentWidth.value, height: currentHeight.value })
 }
 
-// 初始化
-onMounted(() => {
-  // 尝试从本地存储加载尺寸
-  if (props.storage && props.storageKey) {
-    try {
-      const savedData = localStorage.getItem(props.storageKey)
-      if (savedData) {
-        const { width, height } = JSON.parse(savedData)
-        if (width && props.resizableWidth) {
-          currentWidth.value = width
-        }
-        if (height && props.resizableHeight) {
-          currentHeight.value = height
-        }
-      }
-    }
-    catch (e) {
-      resizeboxLogger.error('从本地存储加载ResizeBox尺寸失败:', e)
-    }
-  }
-
-  // 初始化尺寸
-  const box = boxRef.value
-  if (box) {
-    if (currentWidth.value === 0 && box.offsetWidth > 0) {
-      currentWidth.value = box.offsetWidth
-    }
-    if (currentHeight.value === 0 && box.offsetHeight > 0) {
-      currentHeight.value = box.offsetHeight
-    }
-  }
+// 清理事件监听
+onUnmounted(() => {
+  window.removeEventListener('mousemove', handleResizeMove)
+  window.removeEventListener('mouseup', handleResizeEnd)
 })
 
-// 组件卸载时清理
-onBeforeUnmount(() => {
-  document.removeEventListener('mousemove', handleResizeMove)
-  document.removeEventListener('touchmove', handleResizeMove)
-  document.removeEventListener('mouseup', handleResizeEnd)
-  document.removeEventListener('touchend', handleResizeEnd)
-})
+// 生成手柄类名
+function getHandleClass(direction: string) {
+  return [
+    'ui-resizebox-handle',
+    `ui-resizebox-handle--${direction}`,
+    { 'ui-resizebox-handle--disabled': props.disabled },
+    props.handleClass,
+  ]
+}
+
+// 判断是否显示特定方向的手柄
+function shouldShowHandle(direction: string) {
+  return props.showHandle && props.directions.includes(direction as any)
+}
 </script>
 
 <template>
   <div
-    ref="boxRef"
+    ref="containerRef"
     class="ui-resizebox"
-    :class="{ 'ui-resizebox--resizing': isResizing, 'ui-resizebox--disabled': disabled }"
+    :class="{ 'ui-resizebox--resizing': isResizing }"
+    :style="boxStyle"
   >
     <div class="ui-resizebox-content">
       <slot />
     </div>
 
-    <!-- 右侧调整柄 -->
+    <!-- 调整手柄 -->
     <div
-      v-if="resizableWidth"
-      class="ui-resizebox-handle ui-resizebox-handle-right"
-      @mousedown="(e) => handleResizeStart(e, 'right')"
-      @touchstart="(e) => handleResizeStart(e, 'right')"
+      v-if="shouldShowHandle('top')"
+      :class="getHandleClass('top')"
+      @mousedown="handleResizeStart('top', $event)"
+    />
+    <div
+      v-if="shouldShowHandle('right')"
+      :class="getHandleClass('right')"
+      @mousedown="handleResizeStart('right', $event)"
+    />
+    <div
+      v-if="shouldShowHandle('bottom')"
+      :class="getHandleClass('bottom')"
+      @mousedown="handleResizeStart('bottom', $event)"
+    />
+    <div
+      v-if="shouldShowHandle('left')"
+      :class="getHandleClass('left')"
+      @mousedown="handleResizeStart('left', $event)"
+    />
+    <div
+      v-if="shouldShowHandle('top-left')"
+      :class="getHandleClass('top-left')"
+      @mousedown="handleResizeStart('top-left', $event)"
+    />
+    <div
+      v-if="shouldShowHandle('top-right')"
+      :class="getHandleClass('top-right')"
+      @mousedown="handleResizeStart('top-right', $event)"
+    />
+    <div
+      v-if="shouldShowHandle('bottom-right')"
+      :class="getHandleClass('bottom-right')"
+      @mousedown="handleResizeStart('bottom-right', $event)"
+    />
+    <div
+      v-if="shouldShowHandle('bottom-left')"
+      :class="getHandleClass('bottom-left')"
+      @mousedown="handleResizeStart('bottom-left', $event)"
     />
 
-    <!-- 底部调整柄 -->
-    <div
-      v-if="resizableHeight"
-      class="ui-resizebox-handle ui-resizebox-handle-bottom"
-      @mousedown="(e) => handleResizeStart(e, 'bottom')"
-      @touchstart="(e) => handleResizeStart(e, 'bottom')"
-    />
-
-    <!-- 角落调整柄 -->
-    <div
-      v-if="resizableWidth && resizableHeight"
-      class="ui-resizebox-handle ui-resizebox-handle-corner"
-      @mousedown="(e) => handleResizeStart(e, 'corner')"
-      @touchstart="(e) => handleResizeStart(e, 'corner')"
-    />
+    <!-- 辅助线 -->
+    <div v-if="showGuides && isResizing" class="ui-resizebox-guides">
+      <div class="ui-resizebox-guide ui-resizebox-guide--horizontal" />
+      <div class="ui-resizebox-guide ui-resizebox-guide--vertical" />
+    </div>
   </div>
 </template>
 
 <style scoped>
 .ui-resizebox {
-  --ui-resizebox-width: v-bind(widthVar);
-  --ui-resizebox-height: v-bind(heightVar);
-  --ui-resizebox-min-width: v-bind(minWidthVar);
-  --ui-resizebox-min-height: v-bind(minHeightVar);
-  --ui-resizebox-max-width: v-bind(maxWidthVar);
-  --ui-resizebox-max-height: v-bind(maxHeightVar);
-  --ui-resizebox-handle-size: v-bind(handleSizeVar);
-  --ui-resizebox-transition: v-bind(transitionVar);
-
   position: relative;
   box-sizing: border-box;
   overflow: visible;
-  width: var(--ui-resizebox-width, auto);
-  height: var(--ui-resizebox-height, auto);
-  min-width: var(--ui-resizebox-min-width, 20px);
-  min-height: var(--ui-resizebox-min-height, 20px);
-  max-width: var(--ui-resizebox-max-width, 100%);
-  max-height: var(--ui-resizebox-max-height, 100%);
-  transition: var(--ui-resizebox-transition);
+  transition: none;
+  touch-action: none;
 }
 
 .ui-resizebox-content {
@@ -390,52 +377,120 @@ onBeforeUnmount(() => {
   overflow: hidden;
 }
 
+.ui-resizebox--resizing {
+  user-select: none;
+}
+
 .ui-resizebox-handle {
   position: absolute;
-  background: transparent;
   z-index: 1;
+}
+
+.ui-resizebox-handle--top {
+  top: -3px;
+  left: 0;
+  width: 100%;
+  height: 6px;
+  cursor: ns-resize;
+}
+
+.ui-resizebox-handle--right {
+  top: 0;
+  right: -3px;
+  width: 6px;
+  height: 100%;
+  cursor: ew-resize;
+}
+
+.ui-resizebox-handle--bottom {
+  bottom: -3px;
+  left: 0;
+  width: 100%;
+  height: 6px;
+  cursor: ns-resize;
+}
+
+.ui-resizebox-handle--left {
+  top: 0;
+  left: -3px;
+  width: 6px;
+  height: 100%;
+  cursor: ew-resize;
+}
+
+.ui-resizebox-handle--top-left {
+  top: -3px;
+  left: -3px;
+  width: 10px;
+  height: 10px;
+  cursor: nwse-resize;
+}
+
+.ui-resizebox-handle--top-right {
+  top: -3px;
+  right: -3px;
+  width: 10px;
+  height: 10px;
+  cursor: nesw-resize;
+}
+
+.ui-resizebox-handle--bottom-right {
+  bottom: -3px;
+  right: -3px;
+  width: 10px;
+  height: 10px;
+  cursor: nwse-resize;
+}
+
+.ui-resizebox-handle--bottom-left {
+  bottom: -3px;
+  left: -3px;
+  width: 10px;
+  height: 10px;
+  cursor: nesw-resize;
 }
 
 .ui-resizebox-handle:hover {
   background-color: var(--ui-resizebox-handle-hover-bg, rgba(0, 0, 0, 0.1));
 }
 
-.ui-resizebox--resizing .ui-resizebox-handle,
 .ui-resizebox-handle:active {
   background-color: var(--ui-resizebox-handle-active-bg, rgba(0, 0, 0, 0.2));
 }
 
-.ui-resizebox-handle-right {
-  top: 0;
-  right: calc(var(--ui-resizebox-handle-size, 6px) / -2);
-  height: 100%;
-  width: var(--ui-resizebox-handle-size, 6px);
-  cursor: ew-resize;
+.ui-resizebox-handle--disabled {
+  pointer-events: none;
+  opacity: 0.5;
 }
 
-.ui-resizebox-handle-bottom {
-  bottom: calc(var(--ui-resizebox-handle-size, 6px) / -2);
+.ui-resizebox-guides {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+}
+
+.ui-resizebox-guide {
+  position: absolute;
+  background-color: var(--ui-color-primary, #1890ff);
+  opacity: 0.5;
+}
+
+.ui-resizebox-guide--horizontal {
+  top: 50%;
   left: 0;
   width: 100%;
-  height: var(--ui-resizebox-handle-size, 6px);
-  cursor: ns-resize;
+  height: 1px;
+  transform: translateY(-50%);
 }
 
-.ui-resizebox-handle-corner {
-  right: calc(var(--ui-resizebox-handle-size, 6px) / -2);
-  bottom: calc(var(--ui-resizebox-handle-size, 6px) / -2);
-  width: var(--ui-resizebox-handle-size, 6px);
-  height: var(--ui-resizebox-handle-size, 6px);
-  cursor: nwse-resize;
-}
-
-.ui-resizebox--disabled .ui-resizebox-handle {
-  display: none;
-}
-
-/* 深色模式适配 */
-:root.dark {
-  --ui-resizebox-handle-hover-bg: rgba(255, 255, 255, 0.1);
-  --ui-resizebox-handle-active-bg: rgba(255, 255, 255, 0.2);
+.ui-resizebox-guide--vertical {
+  top: 0;
+  left: 50%;
+  width: 1px;
+  height: 100%;
+  transform: translateX(-50%);
 }
 </style>

@@ -4,6 +4,16 @@
 
 需求：按照计划推进，实现其他组件，直到所有组件完成
 
+问题：
+
+1. Resizablebox 组件不生效 我拖动的时候大小并没变化
+2. modal 模态框问题
+   1. modal 组件弹出和关闭都太生硬了加点动画，可以考虑使用现有的 auto animate 不行就自己实现
+   2. modal 关闭的时候感觉有延迟？？点完会停顿下才消失
+   3. modal 不同动画效果 不生效
+
+---
+
 1. 先实现 tag 组件，然后将 select 折叠标签的多选 里的标签改成 tag 组件并且支持配置样式(按照 tag 组件实现)
 2. 给 select 下拉框添加个小箭头(美观度你自己设计，参考其他UI库，如element-plus, ant design)
 3. 像 element-plus select 一样，要支持 teleport 功能，类似的组件都应该要支持这个功能
@@ -179,3 +189,12 @@ components/ui/icon/index.vue:
 1. 将主题相关的样式提取到公共的 scss 文件，方便后续进行主题动态定制
 2. 然后在组件中通过 unocss 如 `bg-[var(--var-name)]` 方式来引用，否则后续进行主题定制会很麻烦还得修改每个组件的classname
 3. 检查现有的 ui/ 组件中是否用到了 style 内联样式，如果有用到都改成unocss, css 或 css 变量方式
+
+# TODOs
+
+1. [magic](https://github.com/miniMAC/magic)
+2. [css shake](https://github.com/elrumordelaluz/csshake)
+3. [css loaders](https://css-loaders.com/)
+4. [css generators](https://css-generators.com/)
+5. [css shapes](https://css-shape.com/)
+6. [css tip](https://css-tip.com/)

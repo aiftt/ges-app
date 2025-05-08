@@ -13,6 +13,9 @@
  * 2024-06-21 - 添加 Avatar 组件
  * 2024-06-21 - 修复组件引用性能警告
  * 2024-06-22 - 添加 Card 组件
+ * 2024-06-22 - 添加 ResizeBox 组件
+ * 2024-06-22 - 添加 Collapse 组件
+ * 2024-06-23 - 添加 Modal 组件
  */
 import { computed, markRaw, ref } from 'vue'
 import DemoAutoAnimate from '~/components/demo/auto-animate.vue'
@@ -23,6 +26,7 @@ import DemoButton from '~/components/demo/button.vue'
 import DemoCard from '~/components/demo/card.vue'
 import DemoCheckbox from '~/components/demo/checkbox.vue'
 import DemoCode from '~/components/demo/code.vue'
+import DemoCollapse from '~/components/demo/collapse.vue'
 import DemoColor from '~/components/demo/color.vue'
 import DemoConfigProvider from '~/components/demo/config-provider.vue'
 // import DemoDatePicker from '~/components/demo/date-picker.vue' // 暂未实现
@@ -34,10 +38,12 @@ import DemoInput from '~/components/demo/input.vue'
 // import DemoLayout from '~/components/demo/layout.vue' // 暂未实现
 // import DemoLink from '~/components/demo/link.vue' // 暂未实现
 import DemoMenu from '~/components/demo/menu.vue'
+import DemoModal from '~/components/demo/modal.vue'
 import DemoPopconfirm from '~/components/demo/popconfirm.vue'
 import DemoPopover from '~/components/demo/popover.vue'
 import DemoQrcode from '~/components/demo/qrcode.vue'
 import DemoRadio from '~/components/demo/radio.vue'
+import DemoResizeBox from '~/components/demo/resizebox.vue'
 import DemoScrollbar from '~/components/demo/scrollbar.vue'
 import DemoSelect from '~/components/demo/select.vue'
 import DemoSlider from '~/components/demo/slider.vue'
@@ -81,6 +87,7 @@ const groups = ref<ComponentGroup[]>([
       { name: 'trigger', label: 'Trigger 触发器', component: markRaw(DemoTrigger) },
       { name: 'scrollbar', label: 'Scrollbar 滚动条', component: markRaw(DemoScrollbar) },
       { name: 'auto-animate', label: 'AutoAnimate 自动动画', component: markRaw(DemoAutoAnimate) },
+      { name: 'resize-box', label: 'ResizeBox 可调整大小的盒子', component: markRaw(DemoResizeBox) },
     ],
   },
   {
@@ -93,6 +100,7 @@ const groups = ref<ComponentGroup[]>([
       { name: 'badge', label: 'Badge 徽章', component: markRaw(DemoBadge) },
       { name: 'avatar', label: 'Avatar 头像', component: markRaw(DemoAvatar) },
       { name: 'card', label: 'Card 卡片', component: markRaw(DemoCard) },
+      { name: 'collapse', label: 'Collapse 折叠面板', component: markRaw(DemoCollapse) },
     ],
   },
   {
@@ -106,6 +114,12 @@ const groups = ref<ComponentGroup[]>([
       { name: 'switch', label: 'Switch 开关', component: markRaw(DemoSwitch) },
       { name: 'slider', label: 'Slider 滑块', component: markRaw(DemoSlider) },
       // { name: 'date-picker', label: 'DatePicker 日期选择器', component: DemoDatePicker }, // 暂未实现
+    ],
+  },
+  {
+    title: '反馈组件',
+    components: [
+      { name: 'modal', label: 'Modal 模态对话框', component: markRaw(DemoModal) },
     ],
   },
   {
