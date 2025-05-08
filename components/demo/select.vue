@@ -3,6 +3,7 @@
  * Select 选择器组件演示
  * 创建日期: 2024-05-26
  * 作者: aiftt
+ * 更新日期: 2024-05-27 - 添加更多功能演示
  */
 
 import { ref } from 'vue'
@@ -32,6 +33,59 @@ const manyOptions = Array.from({ length: 20 }).map((_, index) => ({
   value: String(index + 1),
   disabled: index % 10 === 9, // 每10个禁用一个选项
 }))
+
+// 分组选项数据
+const groupOptions = [
+  {
+    value: 'hotcities',
+    label: '热门城市',
+    children: [
+      { value: 'shanghai', label: '上海' },
+      { value: 'beijing', label: '北京' },
+      { value: 'guangzhou', label: '广州' },
+      { value: 'shenzhen', label: '深圳' },
+    ],
+  },
+  {
+    value: 'jiangsu',
+    label: '江苏',
+    children: [
+      { value: 'nanjing', label: '南京' },
+      { value: 'suzhou', label: '苏州' },
+      { value: 'hangzhou', label: '杭州' },
+    ],
+  },
+]
+
+// 可筛选值
+const filterableValue = ref('')
+
+// 可创建值
+const creationValue = ref('')
+
+// 多选折叠标签值
+const collapseTagsValue = ref<string[]>([])
+
+// 远程搜索值
+const remoteValue = ref('')
+
+// 远程选项
+const remoteOptions = ref<Array<{ label: string, value: string }>>([])
+
+// 远程搜索
+const remoteLoading = ref(false)
+function remoteSearch(query: string) {
+  remoteLoading.value = true
+  setTimeout(() => {
+    remoteOptions.value = query
+      ? Array.from({ length: 5 }).map((_, idx) => ({
+          value: `${query}-${idx}`,
+          label: `${query}-${idx}`,
+        }))
+      : []
+    remoteLoading.value = false
+  }, 1000)
+}
 </script>
 
 <template>
@@ -168,6 +222,171 @@ const manyOptions = Array.from({ length: 20 }).map((_, index) => ({
         <div class="space-y-4">
           <ui-select :options="manyOptions" placeholder="大量选项" />
           <ui-select :options="manyOptions" max-height="150px" placeholder="下拉菜单最大高度150px" />
+        </div>
+      </div>
+    </section>
+
+    <!-- 可筛选选项 -->
+    <section>
+      <h3 class="mb-4 text-lg text-gray-900 font-semibold dark:text-white">
+        可筛选选项
+      </h3>
+      <p class="mb-4 text-gray-600 dark:text-gray-400">
+        设置filterable属性，可以对选项进行搜索和筛选。
+      </p>
+      <div class="border rounded bg-white p-4 dark:bg-gray-800">
+        <div class="mb-4">
+          <ui-select
+            v-model="filterableValue"
+            :options="options"
+            filterable
+            placeholder="可筛选选项"
+          />
+        </div>
+      </div>
+    </section>
+
+    <!-- 创建新选项 -->
+    <section>
+      <h3 class="mb-4 text-lg text-gray-900 font-semibold dark:text-white">
+        创建新选项
+      </h3>
+      <p class="mb-4 text-gray-600 dark:text-gray-400">
+        设置allowCreate属性，可以创建并选中选项中不存在的条目。
+      </p>
+      <div class="border rounded bg-white p-4 dark:bg-gray-800">
+        <div class="mb-4">
+          <ui-select
+            v-model="creationValue"
+            :options="options"
+            filterable
+            allow-create
+            placeholder="输入内容并回车创建新选项"
+          />
+        </div>
+      </div>
+    </section>
+
+    <!-- 分组选项 -->
+    <section>
+      <h3 class="mb-4 text-lg text-gray-900 font-semibold dark:text-white">
+        分组选项
+      </h3>
+      <p class="mb-4 text-gray-600 dark:text-gray-400">
+        通过children属性对选项进行分组显示。
+      </p>
+      <div class="border rounded bg-white p-4 dark:bg-gray-800">
+        <div class="mb-4">
+          <ui-select
+            v-model="singleValue"
+            :options="groupOptions"
+            placeholder="选择城市"
+          />
+        </div>
+      </div>
+    </section>
+
+    <!-- 折叠标签的多选 -->
+    <section>
+      <h3 class="mb-4 text-lg text-gray-900 font-semibold dark:text-white">
+        折叠标签的多选
+      </h3>
+      <p class="mb-4 text-gray-600 dark:text-gray-400">
+        使用collapseTags属性和maxCollapseTagCount属性控制多选模式下的标签显示。
+      </p>
+      <div class="border rounded bg-white p-4 dark:bg-gray-800">
+        <div class="mb-4">
+          <ui-select
+            v-model="collapseTagsValue"
+            :options="manyOptions"
+            multiple
+            collapse-tags
+            :max-collapse-tag-count="2"
+            tag-type="primary"
+            placeholder="可折叠标签的多选"
+          />
+        </div>
+      </div>
+    </section>
+
+    <!-- 远程搜索 -->
+    <section>
+      <h3 class="mb-4 text-lg text-gray-900 font-semibold dark:text-white">
+        远程搜索
+      </h3>
+      <p class="mb-4 text-gray-600 dark:text-gray-400">
+        使用remote和remoteMethod属性进行远程搜索。
+      </p>
+      <div class="border rounded bg-white p-4 dark:bg-gray-800">
+        <div class="mb-4">
+          <ui-select
+            v-model="remoteValue"
+            :options="remoteOptions"
+            filterable
+            remote
+            :remote-method="remoteSearch"
+            :loading="remoteLoading"
+            placeholder="输入关键字远程搜索"
+          />
+        </div>
+      </div>
+    </section>
+
+    <!-- 自定义模板 -->
+    <section>
+      <h3 class="mb-4 text-lg text-gray-900 font-semibold dark:text-white">
+        自定义选项模板
+      </h3>
+      <p class="mb-4 text-gray-600 dark:text-gray-400">
+        使用option插槽自定义选项的显示方式。
+      </p>
+      <div class="border rounded bg-white p-4 dark:bg-gray-800">
+        <div class="mb-4">
+          <ui-select
+            v-model="singleValue"
+            :options="options"
+            placeholder="自定义选项模板"
+          >
+            <template #option="{ option, selected }">
+              <div class="flex items-center" :class="[selected ? 'text-blue-500' : '']">
+                <ui-icon icon="carbon:user" class="mr-2" />
+                <span>{{ option.label }}</span>
+                <span v-if="selected" class="ml-auto">
+                  <ui-icon icon="carbon:checkmark" />
+                </span>
+              </div>
+            </template>
+          </ui-select>
+        </div>
+      </div>
+    </section>
+
+    <!-- 自定义头尾 -->
+    <section>
+      <h3 class="mb-4 text-lg text-gray-900 font-semibold dark:text-white">
+        自定义下拉菜单头部和底部
+      </h3>
+      <p class="mb-4 text-gray-600 dark:text-gray-400">
+        使用header和footer插槽自定义下拉菜单的头部和底部。
+      </p>
+      <div class="border rounded bg-white p-4 dark:bg-gray-800">
+        <div class="mb-4">
+          <ui-select
+            v-model="singleValue"
+            :options="options"
+            placeholder="自定义下拉菜单头部和底部"
+          >
+            <template #header>
+              <div class="border-b border-gray-200 p-2 text-center text-sm text-blue-600 dark:border-gray-700">
+                自定义头部内容
+              </div>
+            </template>
+            <template #footer>
+              <div class="p-2 text-center text-sm text-gray-500">
+                自定义底部内容
+              </div>
+            </template>
+          </ui-select>
         </div>
       </div>
     </section>

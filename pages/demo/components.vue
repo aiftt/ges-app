@@ -31,6 +31,7 @@ import DemoScrollbar from '~/components/demo/scrollbar.vue'
 import DemoSelect from '~/components/demo/select.vue'
 import DemoSlider from '~/components/demo/slider.vue'
 import DemoSwitch from '~/components/demo/switch.vue'
+import DemoTag from '~/components/demo/tag.vue'
 import DemoText from '~/components/demo/text.vue'
 import DemoTextarea from '~/components/demo/textarea.vue'
 import DemoTheme from '~/components/demo/theme.vue'
@@ -85,7 +86,7 @@ const categories = [
     items: [
       { id: 'image', name: '图片', component: DemoImage },
       { id: 'qrcode', name: '二维码', component: DemoQrcode },
-      { id: 'tag', name: '标签 Tag', component: undefined },
+      { id: 'tag', name: '标签 Tag', component: DemoTag },
       { id: 'avatar', name: '头像 Avatar', component: undefined },
       { id: 'badge', name: '徽章 Badge', component: undefined },
       { id: 'card', name: '卡片 Card', component: undefined },

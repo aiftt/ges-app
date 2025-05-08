@@ -4,6 +4,44 @@
 
 需求：按照计划推进，实现其他组件
 
+1. 先实现 tag 组件，然后将 select 折叠标签的多选 里的标签改成 tag 组件并且支持配置样式(按照 tag 组件实现)
+2. 给 select 下拉框添加个小箭头(美观度你自己设计，参考其他UI库，如element-plus, ant design)
+3. 像 element-plus select 一样，要支持 teleport 功能，类似的组件都应该要支持这个功能
+4. 要处理页面缩放的时候 select 下拉框位置问题
+
+改进：
+
+1. 不筛选的时候保持使用非 input，只有需要筛选的时候使用 input
+
+2. 选中选择器的时候(不管单选还是有筛选)也要能展开或收起下拉框而不是只能点击箭头，如果是筛选使用的 input 那么在聚焦 input 的时候展开下拉框
+
+问题：
+
+1. 点击选择器的时候会弹出下拉框再次点击的时候应该隐藏下拉框
+
+2. placeholder 重复，输入光标位置不对，如图1
+
+   ![image-20250508103730221](/Users/lizhicheng/Library/Application Support/typora-user-images/image-20250508103730221.png)
+
+3. 分组选项选中后没反应
+
+4. 折叠标签的样式需要适配下 ，如图2：
+
+   ![image-20250508103940272](/Users/lizhicheng/Library/Application Support/typora-user-images/image-20250508103940272.png)
+
+5. 自定义下拉菜单头部样式需要优化，如图3：
+
+   ![image-20250508104059497](/Users/lizhicheng/Library/Application Support/typora-user-images/image-20250508104059497.png)
+
+建议：选择器本身应该使用 input 作为基础，参考 element-plus
+
+问题：
+
+1. 参考 element-plus el-select + el-select-v2，基于现在的实现将element-plus 中下拉框的功能都实现过来(包括但不限于：多选, 自定义模板, 自定义下拉菜单的头部, 自定义下拉菜单的底部, 分组, 筛选选项, 远程搜索, 创建新的选项, 自定义标签，隐藏多余标签的多选, 可过滤的多选, 自定义加载, 空值配置, 自定义宽度等等)
+2. 给 ui select 下来面板加上动画效果，可考虑使用 auto animate 功能(参考 auto-animate.vue)
+3. 参考 element-plus 源码：/Users/lizhicheng/github/vue/element-plus/packages/components/select 和 select-v2
+4. 注意我要的是 ui select 一个组件内完整实现 element-plus select 和 select-v2 完整功能
+
 问题：
 
 1. textarea 自动调整大小并没效果，输入更多行，会出现滚动条高度并没变

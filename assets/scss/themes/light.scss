@@ -175,18 +175,37 @@
   --ui-slider-stop-active-color: #ffffff;
 
   // Select组件变量
-  --ui-select-border-color: var(--ui-border-color);
-  --ui-select-bg: var(--ui-color-bg);
+  --ui-select-border-color: var(--ui-color-border);
   --ui-select-hover-border: var(--ui-color-primary);
-  --ui-select-focus-shadow: rgba(24, 144, 255, 0.2);
+  --ui-select-bg: var(--ui-color-bg);
+  --ui-select-placeholder-color: var(--ui-color-text-light);
   --ui-select-disabled-bg: var(--ui-disabled-bg);
   --ui-select-disabled-border: var(--ui-color-disabled-border);
   --ui-select-disabled-text: var(--ui-color-disabled-text);
   --ui-select-dropdown-bg: var(--ui-color-bg);
   --ui-select-option-hover-bg: var(--ui-color-bg-hover);
-  --ui-select-option-selected-bg: rgba(24, 144, 255, 0.1);
+  --ui-select-option-selected-bg: rgba(24, 144, 255, 0.08);
   --ui-select-option-selected-color: var(--ui-color-primary);
-  --ui-select-placeholder-color: var(--ui-color-text-light);
+  --ui-select-focus-shadow: rgba(24, 144, 255, 0.2);
+
+  // Tag
+  --ui-tag-bg: var(--ui-color-bg-light);
+  --ui-tag-color: var(--ui-color-text);
+  --ui-tag-border-color: var(--ui-color-border);
+  --ui-tag-border-radius: 4px;
+  --ui-tag-font-size: 12px;
+  --ui-tag-primary-bg: rgba(24, 144, 255, 0.08);
+  --ui-tag-primary-color: var(--ui-color-primary);
+  --ui-tag-primary-border-color: rgba(24, 144, 255, 0.2);
+  --ui-tag-success-bg: rgba(82, 196, 26, 0.08);
+  --ui-tag-success-color: var(--ui-color-success);
+  --ui-tag-success-border-color: rgba(82, 196, 26, 0.2);
+  --ui-tag-warning-bg: rgba(250, 173, 20, 0.08);
+  --ui-tag-warning-color: var(--ui-color-warning);
+  --ui-tag-warning-border-color: rgba(250, 173, 20, 0.2);
+  --ui-tag-danger-bg: rgba(245, 34, 45, 0.08);
+  --ui-tag-danger-color: var(--ui-color-danger);
+  --ui-tag-danger-border-color: rgba(245, 34, 45, 0.2);
 
   // 其他变量
   --shadow-color: rgba(0, 0, 0, 0.1);
