@@ -16,8 +16,10 @@
  * 2024-06-22 - 添加 ResizeBox 组件
  * 2024-06-22 - 添加 Collapse 组件
  * 2024-06-23 - 添加 Modal 组件
+ * 2024-06-24 - 添加 Alert 组件
  */
 import { computed, markRaw, ref } from 'vue'
+import DemoAlert from '~/components/demo/alert.vue'
 import DemoAutoAnimate from '~/components/demo/auto-animate.vue'
 import DemoAvatar from '~/components/demo/avatar.vue'
 import DemoBadge from '~/components/demo/badge.vue'
@@ -119,6 +121,7 @@ const groups = ref<ComponentGroup[]>([
   {
     title: '反馈组件',
     components: [
+      { name: 'alert', label: 'Alert 警告提示', component: markRaw(DemoAlert) },
       { name: 'modal', label: 'Modal 模态对话框', component: markRaw(DemoModal) },
     ],
   },

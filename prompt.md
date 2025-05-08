@@ -2,7 +2,7 @@
 
 计划：@plan.md
 
-需求：按照计划推进，实现其他组件，直到所有组件完成
+需求：按照计划推进，实现其他组件，完成一个组件之后继续下一个直到所有组件完成，不需要询问
 
 问题：
 
@@ -192,9 +192,18 @@ components/ui/icon/index.vue:
 
 # TODOs
 
+## css
+
 1. [magic](https://github.com/miniMAC/magic)
 2. [css shake](https://github.com/elrumordelaluz/csshake)
 3. [css loaders](https://css-loaders.com/)
 4. [css generators](https://css-generators.com/)
 5. [css shapes](https://css-shape.com/)
 6. [css tip](https://css-tip.com/)
+
+## 组件
+
+### Modal
+
+- [ ] 添加动画，解决太生硬问题
+- [ ] 嵌套问题

@@ -15,6 +15,7 @@
  * 更新日期: 2024-06-20 - 添加 Badge 组件主题变量
  * 更新日期: 2024-06-21 - 添加 Avatar 组件主题变量
  * 更新日期: 2024-06-22 - 添加 Card 组件主题变量
+ * 更新日期: 2024-06-24 - 添加 Alert 组件主题变量
  */
 
 :root.dark {
@@ -314,4 +315,22 @@
   --ui-modal-title-color: var(--ui-color-text-heading);
   --ui-modal-close-color: var(--ui-color-text-secondary);
   --ui-modal-close-hover-color: var(--ui-color-text);
+
+  // Alert组件变量
+  --ui-alert-info-bg: rgba(24, 144, 255, 0.1);
+  --ui-alert-info-border: rgba(24, 144, 255, 0.2);
+  --ui-alert-info-color: #40a9ff;
+  --ui-alert-success-bg: rgba(82, 196, 26, 0.1);
+  --ui-alert-success-border: rgba(82, 196, 26, 0.2);
+  --ui-alert-success-color: #73d13d;
+  --ui-alert-warning-bg: rgba(250, 173, 20, 0.1);
+  --ui-alert-warning-border: rgba(250, 173, 20, 0.2);
+  --ui-alert-warning-color: #ffc53d;
+  --ui-alert-error-bg: rgba(245, 34, 45, 0.1);
+  --ui-alert-error-border: rgba(245, 34, 45, 0.2);
+  --ui-alert-error-color: #ff4d4f;
+  --ui-alert-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  --ui-alert-icon-color: currentColor;
+  --ui-alert-close-hover-color: rgba(255, 255, 255, 0.45);
+  --ui-alert-border-radius: 4px;
 }
