@@ -12,6 +12,7 @@
  * 2024-06-20 - 添加 Badge 组件
  * 2024-06-21 - 添加 Avatar 组件
  * 2024-06-21 - 修复组件引用性能警告
+ * 2024-06-22 - 添加 Card 组件
  */
 import { computed, markRaw, ref } from 'vue'
 import DemoAutoAnimate from '~/components/demo/auto-animate.vue'
@@ -19,6 +20,7 @@ import DemoAvatar from '~/components/demo/avatar.vue'
 import DemoBadge from '~/components/demo/badge.vue'
 import DemoBorder from '~/components/demo/border.vue'
 import DemoButton from '~/components/demo/button.vue'
+import DemoCard from '~/components/demo/card.vue'
 import DemoCheckbox from '~/components/demo/checkbox.vue'
 import DemoCode from '~/components/demo/code.vue'
 import DemoColor from '~/components/demo/color.vue'
@@ -90,6 +92,7 @@ const groups = ref<ComponentGroup[]>([
       { name: 'tag', label: 'Tag 标签', component: markRaw(DemoTag) },
       { name: 'badge', label: 'Badge 徽章', component: markRaw(DemoBadge) },
       { name: 'avatar', label: 'Avatar 头像', component: markRaw(DemoAvatar) },
+      { name: 'card', label: 'Card 卡片', component: markRaw(DemoCard) },
     ],
   },
   {

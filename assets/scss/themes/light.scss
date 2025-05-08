@@ -13,6 +13,7 @@
  * 更新日期: 2024-05-26 - 添加 Select 组件主题变量
  * 更新日期: 2024-06-20 - 添加 Badge 组件主题变量
  * 更新日期: 2024-06-21 - 添加 Avatar 组件主题变量
+ * 更新日期: 2024-06-22 - 添加 Card 组件主题变量
  */
 
 :root {
@@ -237,6 +238,26 @@
   --ui-avatar-font-default: 16px;
   --ui-avatar-font-large: 20px;
   --ui-avatar-border-radius: 4px;
+
+  // Card组件变量
+  --ui-card-bg: var(--ui-color-bg);
+  --ui-card-color: var(--ui-color-text);
+  --ui-card-border-radius: 6px;
+  --ui-card-font-small: 14px;
+  --ui-card-font-default: 14px;
+  --ui-card-font-large: 16px;
+  --ui-card-shadow: var(--ui-shadow);
+  --ui-card-header-padding: 16px;
+  --ui-card-body-padding: 16px;
+  --ui-card-footer-padding: 16px;
+  --ui-card-title-font-size: 16px;
+  --ui-card-title-font-weight: 500;
+  --ui-card-title-color: var(--ui-color-text-heading);
+  --ui-card-subtitle-font-size: 14px;
+  --ui-card-subtitle-color: var(--ui-color-text-secondary);
+  --ui-card-subtitle-margin: 4px 0 0 0;
+  --ui-card-loading-bg: rgba(255, 255, 255, 0.7);
+  --ui-card-spinner-color: var(--ui-color-primary);
 
   // 其他变量
   --shadow-color: rgba(0, 0, 0, 0.1);
