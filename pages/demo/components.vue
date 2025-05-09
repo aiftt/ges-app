@@ -26,6 +26,7 @@
  * 2024-07-09 - 添加 Cascader 组件
  * 2024-07-09 - 修复布局组件分组中的重复组件和未实现组件引用
  * 2024-07-16 - 添加 Table 和 Pagination 组件
+ * 2024-07-23 - 添加 Carousel 组件
  */
 import { computed, markRaw, ref } from 'vue'
 import DemoAlert from '~/components/demo/alert.vue'
@@ -36,6 +37,7 @@ import DemoBadge from '~/components/demo/badge.vue'
 import DemoBorder from '~/components/demo/border.vue'
 import DemoButton from '~/components/demo/button.vue'
 import DemoCard from '~/components/demo/card.vue'
+import DemoCarousel from '~/components/demo/carousel.vue'
 import DemoCascader from '~/components/demo/cascader.vue'
 import DemoCheckbox from '~/components/demo/checkbox.vue'
 import DemoCode from '~/components/demo/code.vue'
@@ -143,6 +145,7 @@ const groups = ref<ComponentGroup[]>([
       { name: 'card', label: 'Card 卡片', component: markRaw(DemoCard) },
       { name: 'collapse', label: 'Collapse 折叠面板', component: markRaw(DemoCollapse) },
       { name: 'overflowlist', label: 'OverflowList 折叠列表', component: markRaw(DemoOverflowlist) },
+      { name: 'carousel', label: 'Carousel 轮播图', component: markRaw(DemoCarousel) },
     ],
   },
   {

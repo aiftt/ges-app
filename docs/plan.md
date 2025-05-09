@@ -154,12 +154,12 @@
 - [x] Badge - 徽章
 - [x] Avatar - 头像
 - [x] Card - 卡片
-- [ ] Carousel - 图片轮播
+- [x] Carousel - 轮播图组件，支持水平和垂直方向轮播，淡入淡出和滑动两种效果，自定义指示器和箭头，2024-07-22
 - [x] Collapse - 折叠面板
 - [ ] Comment - 评论
 - [ ] Descriptions - 描述列表
 - [ ] List - 列表
-- [x] OverflowList - 折叠列表
+- [x] OverflowList - 折叠列表，支持水平和垂直方向布局，自动处理空间不足时的项目折叠，2024-07-22
 - [ ] Tree - 树形控件
 - [ ] Virtualized Tree - 虚拟化树形控件
 - [ ] Calendar - 日历
@@ -467,12 +467,12 @@
 - [x] Badge
 - [x] Avatar
 - [x] Card
-- [ ] Carousel
+- [x] Carousel - 轮播图组件，支持水平和垂直方向轮播，淡入淡出和滑动两种效果，自定义指示器和箭头，2024-07-22
 - [x] Collapse
 - [ ] Comment
 - [ ] Descriptions
 - [ ] List
-- [x] OverflowList
+- [x] OverflowList - 折叠列表，支持水平和垂直方向布局，自动处理空间不足时的项目折叠，2024-07-22
 - [ ] Tree
 - [ ] Calendar
 - [x] Image
@@ -588,3 +588,5 @@
 2024-06-24: 添加 Alert 组件到反馈组件
 2024-06-25: 添加 Drawer 组件到反馈组件
 2024-07-16: 添加 Table 组件到数据展示组件
+2024-07-22: 添加 OverflowList 组件到数据展示组件
+2024-07-22: 添加 Carousel 组件到数据展示组件
