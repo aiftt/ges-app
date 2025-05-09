@@ -159,7 +159,7 @@
 - [ ] Comment - 评论
 - [ ] Descriptions - 描述列表
 - [ ] List - 列表
-- [ ] OverflowList - 折叠列表
+- [x] OverflowList - 折叠列表
 - [ ] Tree - 树形控件
 - [ ] Virtualized Tree - 虚拟化树形控件
 - [ ] Calendar - 日历
@@ -204,7 +204,6 @@
 ### 其他组件
 
 - [ ] ConfigProvider - 全局配置
-- [ ] OverflowList - 折叠列表
 - [x] TSX Demo - TSX语法演示组件
 
 ### 状态管理
@@ -473,7 +472,7 @@
 - [ ] Comment
 - [ ] Descriptions
 - [ ] List
-- [ ] OverflowList
+- [x] OverflowList
 - [ ] Tree
 - [ ] Calendar
 - [x] Image

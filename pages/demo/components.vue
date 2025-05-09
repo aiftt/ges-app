@@ -60,6 +60,7 @@ import DemoInput from '~/components/demo/input.vue'
 import DemoLogger from '~/components/demo/logger.vue'
 import DemoMenu from '~/components/demo/menu.vue'
 import DemoModal from '~/components/demo/modal.vue'
+import DemoOverflowlist from '~/components/demo/overflowlist-demo.vue'
 import DemoPagination from '~/components/demo/pagination-demo.vue'
 import DemoParagraph from '~/components/demo/paragraph.vue'
 import DemoPopconfirm from '~/components/demo/popconfirm.vue'
@@ -141,6 +142,7 @@ const groups = ref<ComponentGroup[]>([
       { name: 'avatar', label: 'Avatar 头像', component: markRaw(DemoAvatar) },
       { name: 'card', label: 'Card 卡片', component: markRaw(DemoCard) },
       { name: 'collapse', label: 'Collapse 折叠面板', component: markRaw(DemoCollapse) },
+      { name: 'overflowlist', label: 'OverflowList 折叠列表', component: markRaw(DemoOverflowlist) },
     ],
   },
   {
