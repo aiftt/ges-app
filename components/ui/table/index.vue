@@ -901,6 +901,7 @@ watch(dataSource, () => {
   border-collapse: separate;
   border-spacing: 0;
   width: 100%;
+  min-width: 100%;
 }
 
 .ui-table-header-row {
@@ -991,25 +992,6 @@ watch(dataSource, () => {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  position: relative;
-}
-
-.ui-table-cell--show-overflow-tooltip:hover::after {
-  content: attr(title);
-  position: absolute;
-  left: 0;
-  top: calc(100% + 5px);
-  background-color: var(--ui-color-bg-dark, #333);
-  color: white;
-  padding: 5px 8px;
-  border-radius: 4px;
-  z-index: 10;
-  max-width: 300px;
-  word-wrap: break-word;
-  white-space: normal;
-  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
-  font-size: 12px;
-  pointer-events: none;
 }
 
 /* 表头单元格 */
@@ -1029,6 +1011,7 @@ watch(dataSource, () => {
 /* 排序图标 */
 .ui-table-sort-icon {
   display: inline-flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   margin-left: 4px;
@@ -1036,8 +1019,13 @@ watch(dataSource, () => {
   color: var(--ui-color-text-secondary);
 }
 
-.ui-table-sort-icon--asc,
-.ui-table-sort-icon--desc {
+.ui-table-sort-icon-up,
+.ui-table-sort-icon-down {
+  cursor: pointer;
+  color: var(--ui-color-text-secondary);
+}
+
+.ui-table-sort-icon--active {
   color: var(--ui-color-primary);
 }
 

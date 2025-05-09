@@ -99,10 +99,10 @@ const rateTexts = ['极差', '失望', '一般', '满意', '惊喜']
       </ui-typography-title>
       <ui-typography-paragraph>可以通过 icon 和 void-icon 属性自定义图标。</ui-typography-paragraph>
       <div class="demo-component">
-        <ui-rate v-model="iconRate" icon="carbon:heart-filled" void-icon="carbon:heart" color="#F56C6C" />
+        <ui-rate v-model="iconRate" icon="mdi:heart" void-icon="mdi:heart-outline" color="#F56C6C" />
       </div>
       <div class="demo-code">
-        <pre><code>{{ `<ui-rate v-model="iconRate" icon="carbon:heart-filled" void-icon="carbon:heart" color="#F56C6C" />` }}</code></pre>
+        <pre><code>{{ `<ui-rate v-model="iconRate" icon="mdi:heart" void-icon="mdi:heart-outline" color="#F56C6C" />` }}</code></pre>
       </div>
     </div>
 
@@ -113,7 +113,7 @@ const rateTexts = ['极差', '失望', '一般', '满意', '惊喜']
       </ui-typography-title>
       <ui-typography-paragraph>readonly 属性将评分设置为只读状态，通常用于展示评分。</ui-typography-paragraph>
       <div class="demo-component">
-        <ui-rate v-model="readonlyRate" readonly allow-half />
+        <ui-rate v-model="readonlyRate" allow-half readonly />
       </div>
       <div class="demo-code">
         <pre><code>{{ `<ui-rate v-model="readonlyRate" readonly allow-half />` }}</code></pre>

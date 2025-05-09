@@ -232,14 +232,6 @@ function _isOptionGroup(item: Option | OptionGroup): item is OptionGroup {
   return Array.isArray((item as OptionGroup).options)
 }
 
-// 安全访问选项属性
-function _getOptionProp(option: Option | OptionGroup, key: string): string | number {
-  if (isOption(option)) {
-    return option[key]
-  }
-  return ''
-}
-
 // 安全获取选项属性值
 function getOptionValue(option: Option | OptionGroup, key: string): string | number | undefined {
   if (isOption(option)) {
@@ -876,7 +868,7 @@ onMounted(() => {
   window.addEventListener('resize', handleWindowEvents)
 
   // 初始化可见选项
-  if (props.showAllOnEmpty) {
+  if (props.showAllOnEmpty && props.options) {
     filteredOptions.value = props.options
   }
 })

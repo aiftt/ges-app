@@ -265,7 +265,7 @@ const navItemClass = computed(() => (item: string) => [
 <template>
   <div h-full flex>
     <!-- 左侧导航 -->
-    <div :class="sideBarClass">
+    <div :class="sideBarClass" fixed left-0 top-0 h-full overflow-y-auto>
       <!-- 分组导航 -->
       <div v-for="(group, i) in groups" :key="i" mb-6>
         <div mb-3 text-sm text-gray-500 font-medium dark:text-gray-400>
@@ -284,6 +284,9 @@ const navItemClass = computed(() => (item: string) => [
         </div>
       </div>
     </div>
+
+    <!-- 用于占位的元素，确保内容区域不被菜单遮挡 -->
+    <div class="hidden md:block lg:w-72 md:w-60" />
 
     <!-- 右侧内容 -->
     <div flex-1 overflow-auto p-6>
