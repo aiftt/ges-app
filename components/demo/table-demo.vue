@@ -107,6 +107,28 @@ function toggleLoading() {
 // 排序变更时的处理函数
 function handleSortChange(info: any) {
   console.warn('排序变更:', info)
+
+  // 根据排序信息对数据进行实际排序
+  if (info.prop && info.order) {
+    tableData.value = [...tableData.value].sort((a: any, b: any) => {
+      const valueA = a[info.prop]
+      const valueB = b[info.prop]
+
+      // 升序
+      if (info.order === 'ascending') {
+        return valueA > valueB ? 1 : -1
+      }
+      // 降序
+      else if (info.order === 'descending') {
+        return valueA < valueB ? 1 : -1
+      }
+      return 0
+    })
+  }
+  else {
+    // 恢复原始顺序（这里简单通过ID排序模拟）
+    tableData.value = [...tableData.value].sort((a: any, b: any) => a.id - b.id)
+  }
 }
 
 // 选择行变更时的处理函数

@@ -519,7 +519,13 @@ function handleSortClick(column: TableColumn, order: string | null) {
   if (!column.sortable)
     return
 
-  sortInfo.value = { prop: column.prop, order }
+  // 如果点击的是当前已经排序的列，并且使用相同的排序方式，则取消排序
+  if (sortInfo.value.prop === column.prop && sortInfo.value.order === order) {
+    sortInfo.value = { prop: '', order: null }
+  }
+  else {
+    sortInfo.value = { prop: column.prop, order }
+  }
 
   emit('sortChange', {
     column,
@@ -1017,12 +1023,15 @@ watch(dataSource, () => {
   margin-left: 4px;
   vertical-align: middle;
   color: var(--ui-color-text-secondary);
+  line-height: 0;
 }
 
 .ui-table-sort-icon-up,
 .ui-table-sort-icon-down {
   cursor: pointer;
   color: var(--ui-color-text-secondary);
+  padding: 1px;
+  font-size: 0.8em;
 }
 
 .ui-table-sort-icon--active {
