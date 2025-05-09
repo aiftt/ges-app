@@ -398,7 +398,6 @@ defineExpose({
 </script>
 
 <template>
-  <!-- @ts-ignore -->
   <div
     ref="carouselRef"
     class="ui-carousel"
@@ -459,9 +458,9 @@ defineExpose({
 
     <!-- 箭头导航 -->
     <div
-      v-if="props.arrow !== 'never' && props.items.length > 1"
+      v-if="(props.arrow as 'always' | 'hover' | 'never') !== 'never' && props.items.length > 1"
       class="ui-carousel-arrow ui-carousel-arrow--prev"
-      :class="{ 'ui-carousel-arrow--hover': props.arrow === 'hover' }"
+      :class="{ 'ui-carousel-arrow--hover': (props.arrow as 'always' | 'hover' | 'never') === 'hover' }"
       @click.stop="prev"
     >
       <slot name="arrow-prev">
@@ -469,9 +468,9 @@ defineExpose({
       </slot>
     </div>
     <div
-      v-if="props.arrow !== 'never' && props.items.length > 1"
+      v-if="(props.arrow as 'always' | 'hover' | 'never') !== 'never' && props.items.length > 1"
       class="ui-carousel-arrow ui-carousel-arrow--next"
-      :class="{ 'ui-carousel-arrow--hover': props.arrow === 'hover' }"
+      :class="{ 'ui-carousel-arrow--hover': (props.arrow as 'always' | 'hover' | 'never') === 'hover' }"
       @click.stop="next"
     >
       <slot name="arrow-next">

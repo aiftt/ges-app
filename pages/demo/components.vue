@@ -86,6 +86,7 @@ import DemoText from '~/components/demo/text.vue'
 import DemoTextarea from '~/components/demo/textarea.vue'
 import DemoTheme from '~/components/demo/theme.vue'
 import DemoTimePicker from '~/components/demo/time-picker.vue'
+import DemoTimeline from '~/components/demo/timeline.vue'
 import DemoTitle from '~/components/demo/title.vue'
 import DemoTooltip from '~/components/demo/tooltip.vue'
 import DemoTrigger from '~/components/demo/trigger.vue'
@@ -149,6 +150,7 @@ const groups = ref<ComponentGroup[]>([
       { name: 'overflowlist', label: 'OverflowList 折叠列表', component: markRaw(DemoOverflowlist) },
       { name: 'carousel', label: 'Carousel 轮播图', component: markRaw(DemoCarousel) },
       { name: 'empty', label: 'Empty 空状态', component: markRaw(DemoEmpty) },
+      { name: 'timeline', label: 'Timeline 时间线', component: markRaw(DemoTimeline) },
     ],
   },
   {
