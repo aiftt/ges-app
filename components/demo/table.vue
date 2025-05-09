@@ -7,8 +7,25 @@
  */
 import { ref } from 'vue'
 
+// 定义表格数据类型
+interface TableItem {
+  id: number
+  name: string
+  age: number
+  address: string
+  date: string
+  status: string
+  desc: string
+}
+
+// 定义排序信息类型
+interface SortInfo {
+  prop: string
+  order: 'ascending' | 'descending' | null
+}
+
 // 表格数据
-const tableData = ref([
+const tableData = ref<TableItem[]>([
   {
     id: 1,
     name: '张三',
@@ -52,7 +69,7 @@ const columns = ref([
   {
     prop: 'name',
     label: '姓名',
-    width: 120,
+    width: 100,
   },
   {
     prop: 'age',
@@ -63,16 +80,19 @@ const columns = ref([
   {
     prop: 'address',
     label: '地址',
+    width: 180,
     showOverflowTooltip: true,
   },
   {
     prop: 'date',
     label: '日期',
+    width: 120,
     sortable: true,
   },
   {
     prop: 'status',
     label: '状态',
+    width: 100,
     slot: 'status',
   },
   {
@@ -83,82 +103,83 @@ const columns = ref([
 ])
 
 // 排序变更时的处理函数
-function handleSortChange(info) {
+function handleSortChange(info: SortInfo) {
   console.warn('排序变更:', info)
 }
 
 // 选择行变更时的处理函数
-function handleSelectionChange(selection) {
+function handleSelectionChange(selection: TableItem[]) {
   console.warn('选中行:', selection)
 }
 
 // 展开行变更时的处理函数
-function handleExpandChange(row, expanded) {
+function handleExpandChange(row: TableItem, expanded: boolean) {
   console.warn('展开行:', row, expanded)
 }
 
-// 带边框的表格
-const borderTableColumns = ref([
-  { prop: 'name', label: '姓名' },
-  { prop: 'age', label: '年龄' },
-  { prop: 'address', label: '地址' },
-])
+// 加载状态
+const loading = ref(false)
 
-// 斑马纹表格
-const stripeTableColumns = ref([
-  { prop: 'name', label: '姓名' },
-  { prop: 'age', label: '年龄' },
-  { prop: 'address', label: '地址' },
-])
-
-// 不同尺寸表格
-const tableSize = ref('default')
-
-// 固定高度表格
-const fixedHeightColumns = ref([
-  { prop: 'id', label: 'ID', width: 80 },
-  { prop: 'name', label: '姓名', width: 120 },
-  { prop: 'age', label: '年龄', width: 100 },
-  { prop: 'address', label: '地址' },
-  { prop: 'date', label: '日期', width: 180 },
-  { prop: 'desc', label: '描述' },
-])
-
-// 准备大量数据，用于测试固定高度
-const largeData = ref([])
-for (let i = 0; i < 20; i++) {
-  largeData.value.push({
-    id: i + 1,
-    name: `用户 ${i + 1}`,
-    age: Math.floor(Math.random() * 40) + 20,
-    address: `测试地址 ${i + 1}`,
-    date: `2024-07-${Math.floor(Math.random() * 30) + 1}`,
-    desc: `这是第 ${i + 1} 条测试数据的描述信息，包含一些随机的长文本内容`,
-  })
+// 设置加载状态
+function toggleLoading() {
+  loading.value = !loading.value
 }
 
-// 当前行高亮表格
-const highlightTableColumns = ref([
-  { prop: 'name', label: '姓名' },
-  { prop: 'age', label: '年龄' },
-  { prop: 'address', label: '地址' },
-])
-
-// 行操作表格
-const operationTableColumns = ref([
-  { prop: 'name', label: '姓名' },
-  { prop: 'age', label: '年龄' },
-  { prop: 'address', label: '地址' },
-  { prop: 'operation', label: '操作', slot: 'operation' },
-])
+// 更换数据
+function changeData() {
+  // 模拟异步加载
+  loading.value = true
+  setTimeout(() => {
+    tableData.value = [
+      {
+        id: 5,
+        name: '周七',
+        age: 27,
+        address: '南京市玄武区',
+        date: '2024-05-12',
+        status: 'success',
+        desc: '这是新加载的数据，测试表格数据更新功能',
+      },
+      {
+        id: 6,
+        name: '吴八',
+        age: 31,
+        address: '杭州市西湖区',
+        date: '2024-06-18',
+        status: 'warning',
+        desc: '这是新加载的数据，测试表格数据更新功能',
+      },
+      {
+        id: 7,
+        name: '郑九',
+        age: 29,
+        address: '成都市武侯区',
+        date: '2024-07-20',
+        status: 'danger',
+        desc: '这是新加载的数据，测试表格数据更新功能',
+      },
+    ]
+    loading.value = false
+  }, 1500)
+}
 
 // 操作行
-function handleEdit(row) {
+function handleEdit(row: TableItem) {
   console.warn('编辑行:', row)
 }
 
-function handleDelete(row) {
+function handleDelete(row: TableItem) {
   console.warn('删除行:', row)
+}
+
+// 加载一行数据的详细信息 - 用于展开行功能
+function _loadRowDetail() {
+  return {
+    createTime: '2024-07-01 10:30:25',
+    updateTime: '2024-07-15 14:22:10',
+    creator: '管理员',
+    remark: '这是该记录的详细备注信息，包含更多的文本内容和说明。',
+  }
 }
 </script>
 
@@ -168,134 +189,36 @@ function handleDelete(row) {
       表格组件演示
     </h1>
 
+    <!-- 操作按钮 -->
+    <div class="mb-4 flex gap-4">
+      <button
+        class="rounded bg-blue-500 px-4 py-2 text-white"
+        @click="toggleLoading"
+      >
+        切换加载状态
+      </button>
+      <button
+        class="rounded bg-green-500 px-4 py-2 text-white"
+        @click="changeData"
+      >
+        更换数据
+      </button>
+    </div>
+
+    <!-- 基础表格 -->
     <section class="mb-8">
       <h2 class="mb-4 text-xl font-bold">
         基础表格
       </h2>
-      <ui-table :data="tableData" :columns="columns" />
-    </section>
-
-    <section class="mb-8">
-      <h2 class="mb-4 text-xl font-bold">
-        带边框表格
-      </h2>
-      <ui-table :data="tableData" :columns="borderTableColumns" border />
-    </section>
-
-    <section class="mb-8">
-      <h2 class="mb-4 text-xl font-bold">
-        带斑马纹表格
-      </h2>
-      <ui-table :data="tableData" :columns="stripeTableColumns" stripe />
-    </section>
-
-    <section class="mb-8">
-      <h2 class="mb-4 text-xl font-bold">
-        不同尺寸表格
-      </h2>
-      <div class="mb-4">
-        <span class="mr-2">尺寸：</span>
-        <button
-          v-for="size in ['small', 'default', 'large']"
-          :key="size"
-          class="mr-2 border rounded px-3 py-1"
-          :class="{ 'bg-blue-500 text-white': size === tableSize }"
-          @click="tableSize = size"
-        >
-          {{ size }}
-        </button>
-      </div>
-      <ui-table :data="tableData" :columns="stripeTableColumns" :size="tableSize" border />
-    </section>
-
-    <section class="mb-8">
-      <h2 class="mb-4 text-xl font-bold">
-        固定高度表格
-      </h2>
-      <ui-table
-        :data="largeData"
-        :columns="fixedHeightColumns"
-        border
-        :height="300"
-      />
-    </section>
-
-    <section class="mb-8">
-      <h2 class="mb-4 text-xl font-bold">
-        带序号表格
-      </h2>
       <ui-table
         :data="tableData"
         :columns="columns"
-        show-index
-        index-label="序号"
-      />
-    </section>
+        :loading="loading"
+        loading-text="加载中..."
 
-    <section class="mb-8">
-      <h2 class="mb-4 text-xl font-bold">
-        多选表格
-      </h2>
-      <ui-table
-        :data="tableData"
-        :columns="columns"
-        show-selection
-        @selection-change="handleSelectionChange"
-      />
-    </section>
-
-    <section class="mb-8">
-      <h2 class="mb-4 text-xl font-bold">
-        可排序表格
-      </h2>
-      <ui-table
-        :data="tableData"
-        :columns="columns"
+        stripe border
+        max-height="400px"
         @sort-change="handleSortChange"
-      />
-    </section>
-
-    <section class="mb-8">
-      <h2 class="mb-4 text-xl font-bold">
-        可展开表格
-      </h2>
-      <ui-table
-        :data="tableData"
-        :columns="columns"
-        expandable
-        @expand-change="handleExpandChange"
-      >
-        <template #expand="{ row }">
-          <div class="bg-gray-50 p-4">
-            <h3 class="mb-2 font-bold">
-              {{ row.name }} 的详细信息
-            </h3>
-            <p><strong>年龄：</strong>{{ row.age }}</p>
-            <p><strong>地址：</strong>{{ row.address }}</p>
-            <p><strong>描述：</strong>{{ row.desc }}</p>
-          </div>
-        </template>
-      </ui-table>
-    </section>
-
-    <section class="mb-8">
-      <h2 class="mb-4 text-xl font-bold">
-        高亮当前行表格
-      </h2>
-      <ui-table
-        :data="tableData"
-        :columns="highlightTableColumns"
-        highlight-current-row
-      />
-    </section>
-
-    <section class="mb-8">
-      <h2 class="mb-4 text-xl font-bold">
-        自定义单元格内容
-      </h2>
-      <ui-table
-        :data="tableData"
-        :columns="columns"
       >
         <template #status="{ row }">
           <span
@@ -313,15 +236,45 @@ function handleDelete(row) {
       </ui-table>
     </section>
 
+    <!-- 带选择功能 -->
     <section class="mb-8">
       <h2 class="mb-4 text-xl font-bold">
-        操作列表格
+        带选择功能
       </h2>
       <ui-table
         :data="tableData"
-        :columns="operationTableColumns"
+        :columns="columns"
+
+        show-selection border
+        @selection-change="handleSelectionChange"
+      />
+    </section>
+
+    <!-- 带序号 -->
+    <section class="mb-8">
+      <h2 class="mb-4 text-xl font-bold">
+        带序号
+      </h2>
+      <ui-table
+        :data="tableData"
+        :columns="columns"
+
+        show-index border
+        index-label="#"
+      />
+    </section>
+
+    <!-- 带操作栏 -->
+    <section class="mb-8">
+      <h2 class="mb-4 text-xl font-bold">
+        带操作栏
+      </h2>
+      <ui-table
+        :data="tableData"
+        :columns="columns"
+        border
       >
-        <template #operation="{ row }">
+        <template #action="{ row }">
           <button
             class="mr-2 text-blue-500"
             @click="handleEdit(row)"
@@ -338,26 +291,83 @@ function handleDelete(row) {
       </ui-table>
     </section>
 
+    <!-- 可展开行 -->
     <section class="mb-8">
       <h2 class="mb-4 text-xl font-bold">
-        空数据表格
-      </h2>
-      <ui-table
-        :data="[]"
-        :columns="columns"
-        empty-text="暂无数据，请稍后再试"
-      />
-    </section>
-
-    <section class="mb-8">
-      <h2 class="mb-4 text-xl font-bold">
-        加载中表格
+        可展开行
       </h2>
       <ui-table
         :data="tableData"
         :columns="columns"
-        loading
-      />
+
+        show-expand border
+        @expand-change="handleExpandChange"
+      >
+        <template #expand="{ row }">
+          <div class="bg-gray-50 p-4">
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <span class="text-gray-600">创建时间：</span>
+                <span>2024-07-01 10:30:25</span>
+              </div>
+              <div>
+                <span class="text-gray-600">更新时间：</span>
+                <span>2024-07-15 14:22:10</span>
+              </div>
+              <div>
+                <span class="text-gray-600">创建人：</span>
+                <span>管理员</span>
+              </div>
+              <div>
+                <span class="text-gray-600">备注：</span>
+                <span>{{ row.desc }}</span>
+              </div>
+            </div>
+          </div>
+        </template>
+      </ui-table>
+    </section>
+
+    <!-- 不同尺寸 -->
+    <section class="mb-8">
+      <h2 class="mb-4 text-xl font-bold">
+        不同尺寸
+      </h2>
+      <div class="space-y-6">
+        <div>
+          <h3 class="mb-2 text-lg">
+            大尺寸
+          </h3>
+          <ui-table
+            :data="tableData.slice(0, 2)"
+            :columns="columns.slice(0, 4)"
+            border
+            size="large"
+          />
+        </div>
+        <div>
+          <h3 class="mb-2 text-lg">
+            默认尺寸
+          </h3>
+          <ui-table
+            :data="tableData.slice(0, 2)"
+            :columns="columns.slice(0, 4)"
+            border
+            size="default"
+          />
+        </div>
+        <div>
+          <h3 class="mb-2 text-lg">
+            小尺寸
+          </h3>
+          <ui-table
+            :data="tableData.slice(0, 2)"
+            :columns="columns.slice(0, 4)"
+            border
+            size="small"
+          />
+        </div>
+      </div>
     </section>
   </div>
 </template>

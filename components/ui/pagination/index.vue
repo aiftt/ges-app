@@ -498,5 +498,6 @@ const isNextDisabled = computed(() => props.disabled || props.currentPage >= tot
 
 .ui-pagination-jumper-input[type='number'] {
   -moz-appearance: textfield;
+  appearance: textfield;
 }
 </style>

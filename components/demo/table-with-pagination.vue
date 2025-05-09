@@ -7,8 +7,19 @@
  */
 import { computed, ref } from 'vue'
 
+// 定义表格数据类型
+interface TableItem {
+  id: number
+  name: string
+  age: number
+  address: string
+  date: string
+  status: string
+  desc: string
+}
+
 // 表格数据(模拟后端分页)
-const allData = ref([])
+const allData = ref<TableItem[]>([])
 const currentPage = ref(1)
 const pageSize = ref(10)
 const total = ref(85)
