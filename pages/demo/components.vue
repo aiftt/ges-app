@@ -86,6 +86,7 @@ import DemoTooltip from '~/components/demo/tooltip.vue'
 import DemoTrigger from '~/components/demo/trigger.vue'
 import DemoTsx from '~/components/demo/tsx.vue'
 import DemoTypography from '~/components/demo/typography.vue'
+import DemoUpload from '~/components/demo/upload.vue'
 import DemoVerificationCode from '~/components/demo/verification-code.vue'
 
 // 组件列表
@@ -160,6 +161,7 @@ const groups = ref<ComponentGroup[]>([
       { name: 'slider', label: 'Slider 滑块', component: markRaw(DemoSlider) },
       { name: 'ColorPicker', label: 'ColorPicker 颜色选择器', component: markRaw(DemoColorPicker) },
       { name: 'Rate', label: 'Rate 评分', component: markRaw(DemoRate) },
+      { name: 'upload', label: 'Upload 上传', component: markRaw(DemoUpload) },
       // { name: 'date-picker', label: 'DatePicker 日期选择器', component: DemoDatePicker }, // 暂未实现
     ],
   },

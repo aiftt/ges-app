@@ -191,7 +191,7 @@
 - [x] Menu - 菜单
 - [ ] Tabs - 标签页
 - [ ] Breadcrumb - 面包屑
-- [ ] Pagination - 分页
+- [x] Pagination - 完成分页组件，支持页码导航、跳页、每页条数设置，2024-07-16
 - [ ] Steps - 步骤条
 - [ ] Dropdown - 下拉菜单
 - [ ] Affix - 固钉
@@ -499,7 +499,7 @@
 - [x] Menu
 - [ ] Tabs
 - [ ] Breadcrumb
-- [ ] Pagination
+- [x] Pagination - 完成分页组件，支持页码导航、跳页、每页条数设置，2024-07-16
 - [ ] Steps
 - [ ] Dropdown
 - [ ] Affix

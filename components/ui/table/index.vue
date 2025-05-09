@@ -515,27 +515,9 @@ function isExpanded(row: any): boolean {
 }
 
 // 排序相关方法
-function handleSortClick(column: TableColumn) {
+function handleSortClick(column: TableColumn, order: string | null) {
   if (!column.sortable)
     return
-
-  // 切换排序状态：ascending -> descending -> null
-  let order: string | null = null
-
-  if (sortInfo.value.prop === column.prop) {
-    if (sortInfo.value.order === 'ascending') {
-      order = 'descending'
-    }
-    else if (sortInfo.value.order === 'descending') {
-      order = null
-    }
-    else {
-      order = 'ascending'
-    }
-  }
-  else {
-    order = 'ascending'
-  }
 
   sortInfo.value = { prop: column.prop, order }
 
@@ -691,7 +673,7 @@ watch(dataSource, () => {
                     'ui-table-cell--align-right': column.headerAlign === 'right' || (!column.headerAlign && column.align === 'right'),
                   },
                 ]"
-                @click="column.sortable && handleSortClick(column)"
+                @click="column.sortable && handleSortClick(column, 'ascending')"
               >
                 <!-- 选择列 -->
                 <template v-if="column.prop === '__selection'">
@@ -727,12 +709,19 @@ watch(dataSource, () => {
                   <span
                     v-if="column.sortable"
                     class="ui-table-sort-icon"
-                    :class="{
-                      'ui-table-sort-icon--asc': sortInfo.prop === column.prop && sortInfo.order === 'ascending',
-                      'ui-table-sort-icon--desc': sortInfo.prop === column.prop && sortInfo.order === 'descending',
-                    }"
                   >
-                    <ui-icon icon="carbon:caret-sort" />
+                    <!-- 升序箭头 -->
+                    <ui-icon
+                      icon="carbon:caret-up"
+                      :class="`ui-table-sort-icon-up ${sortInfo.prop === column.prop && sortInfo.order === 'ascending' ? 'ui-table-sort-icon--active' : ''}`"
+                      @click.stop="handleSortClick(column, 'ascending')"
+                    />
+                    <!-- 降序箭头 -->
+                    <ui-icon
+                      icon="carbon:caret-down"
+                      :class="`ui-table-sort-icon-down ${sortInfo.prop === column.prop && sortInfo.order === 'descending' ? 'ui-table-sort-icon--active' : ''}`"
+                      @click.stop="handleSortClick(column, 'descending')"
+                    />
                   </span>
 
                   <!-- 筛选图标和下拉菜单 -->
@@ -797,6 +786,7 @@ watch(dataSource, () => {
                     },
                     typeof cellClassName === 'function' ? cellClassName(row, column, rowIndex) : cellClassName,
                   ]"
+                  :title="column.showOverflowTooltip ? getCellValue(row, column) : ''"
                   :style="typeof cellStyle === 'function' ? cellStyle(row, column, rowIndex) : cellStyle"
                   @click.stop="(event) => handleCellClick(row, column, event.target as HTMLElement, event)"
                 >
@@ -882,6 +872,7 @@ watch(dataSource, () => {
 .ui-table-wrapper {
   position: relative;
   width: 100%;
+  overflow: hidden;
 }
 
 .ui-table {
@@ -889,7 +880,7 @@ watch(dataSource, () => {
   width: 100%;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  overflow: auto;
   font-size: var(--ui-font-size);
   background-color: var(--ui-color-bg);
   border-radius: var(--ui-border-radius);
@@ -929,6 +920,7 @@ watch(dataSource, () => {
 .ui-table-body {
   flex: 1;
   overflow: auto;
+  width: 100%;
 }
 
 .ui-table-body-table {
@@ -936,6 +928,7 @@ watch(dataSource, () => {
   border-collapse: separate;
   border-spacing: 0;
   width: 100%;
+  min-width: 100%;
 }
 
 .ui-table-row {
@@ -998,6 +991,25 @@ watch(dataSource, () => {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  position: relative;
+}
+
+.ui-table-cell--show-overflow-tooltip:hover::after {
+  content: attr(title);
+  position: absolute;
+  left: 0;
+  top: calc(100% + 5px);
+  background-color: var(--ui-color-bg-dark, #333);
+  color: white;
+  padding: 5px 8px;
+  border-radius: 4px;
+  z-index: 10;
+  max-width: 300px;
+  word-wrap: break-word;
+  white-space: normal;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+  font-size: 12px;
+  pointer-events: none;
 }
 
 /* 表头单元格 */
