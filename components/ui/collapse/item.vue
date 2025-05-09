@@ -4,6 +4,7 @@
  * 创建日期: 2024-06-22
  * 作者: aiftt
  * 更新日期: 2024-06-22 - 初始版本
+ * 更新日期: 2024-06-25 - 修复 TypeScript 错误
  */
 
 import { computed, inject, onBeforeUnmount, onMounted, ref, useSlots, watch } from 'vue'
@@ -51,13 +52,14 @@ const contentHeight = ref(0)
 const {
   activeItems,
   updateActiveItems,
+  accordion: _parentAccordion,
   expandIcon: parentExpandIcon,
   iconPosition,
   showArrow,
   simple,
 } = inject('collapseContext', {
   activeItems: ref<string[]>([]),
-  updateActiveItems: () => {},
+  updateActiveItems: (_name: string) => {},
   accordion: computed(() => false),
   expandIcon: computed(() => undefined),
   iconPosition: computed(() => 'left'),
@@ -76,6 +78,11 @@ const isActive = computed(() => {
 // 使用的展开图标
 const finalExpandIcon = computed(() => {
   return props.expandIcon || parentExpandIcon.value || 'heroicons:chevron-right-20-solid'
+})
+
+// 计算图标的 class
+const arrowClass = computed(() => {
+  return isActive.value ? 'ui-collapse-item__arrow ui-collapse-item__arrow--expanded' : 'ui-collapse-item__arrow'
 })
 
 // 处理点击标题事件
@@ -136,8 +143,8 @@ watch(isActive, () => {
       {
         'ui-collapse-item--active': isActive,
         'ui-collapse-item--disabled': disabled,
-        'ui-collapse-item--bordered': bordered && !simple.value,
-        'ui-collapse-item--simple': simple.value,
+        'ui-collapse-item--bordered': bordered && simple === false,
+        'ui-collapse-item--simple': simple === true,
       },
     ]"
   >
@@ -145,7 +152,7 @@ watch(isActive, () => {
     <div
       class="ui-collapse-item__header"
       :class="[
-        `ui-collapse-item__header--${iconPosition.value}`,
+        `ui-collapse-item__header--${iconPosition}`,
       ]"
       @click="handleHeaderClick"
     >
@@ -158,10 +165,9 @@ watch(isActive, () => {
 
       <!-- 展开图标 (左侧) -->
       <ui-icon
-        v-if="showArrow.value && iconPosition.value === 'left'"
+        v-if="showArrow && iconPosition === 'left'"
         :icon="finalExpandIcon"
-        class="ui-collapse-item__arrow"
-        :class="{ 'ui-collapse-item__arrow--expanded': isActive }"
+        :class="arrowClass"
       />
 
       <!-- 标题 -->
@@ -180,10 +186,9 @@ watch(isActive, () => {
 
       <!-- 展开图标 (右侧) -->
       <ui-icon
-        v-if="showArrow.value && iconPosition.value === 'right'"
+        v-if="showArrow && iconPosition === 'right'"
         :icon="finalExpandIcon"
-        class="ui-collapse-item__arrow"
-        :class="{ 'ui-collapse-item__arrow--expanded': isActive }"
+        :class="arrowClass"
       />
     </div>
 
@@ -273,10 +278,21 @@ watch(isActive, () => {
   transition:
     height 0.2s,
     opacity 0.2s;
+  overflow: hidden;
 }
 
 .ui-collapse-item__body {
   padding: var(--ui-collapse-content-padding, 0 16px 16px);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* 嵌套折叠面板的样式 */
+.ui-collapse-item .ui-collapse {
+  width: 100%;
+  margin: 0;
+  border: none;
+  box-sizing: border-box;
 }
 
 /* 简洁模式 */

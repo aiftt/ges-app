@@ -15,6 +15,8 @@
  * 更新日期: 2024-06-21 - 添加 Avatar 组件主题变量
  * 更新日期: 2024-06-22 - 添加 Card 组件主题变量
  * 更新日期: 2024-06-24 - 添加 Alert 组件主题变量
+ * 更新日期: 2024-06-24 - 添加 Drawer 组件主题变量
+ * 更新日期: 2024-07-05 - 添加 Input Number 组件主题变量
  */
 
 :root {
@@ -309,6 +311,36 @@
   --ui-modal-title-color: var(--ui-color-text-heading);
   --ui-modal-close-color: var(--ui-color-text-secondary);
   --ui-modal-close-hover-color: var(--ui-color-text);
+
+  // Drawer组件变量
+  --ui-drawer-bg: var(--ui-color-bg);
+  --ui-drawer-header-bg: var(--ui-color-bg);
+  --ui-drawer-border-color: var(--ui-color-border);
+  --ui-drawer-shadow:
+    0 8px 10px -5px rgba(0, 0, 0, 0.2), 0 16px 24px 2px rgba(0, 0, 0, 0.14), 0 6px 30px 5px rgba(0, 0, 0, 0.12);
+  --ui-drawer-close-hover-bg: var(--ui-color-bg-hover);
+  --ui-drawer-title-color: var(--ui-color-text);
+  --ui-drawer-mask-bg: rgba(0, 0, 0, 0.45);
+  --ui-drawer-padding: 24px;
+  --ui-drawer-header-padding: 16px 24px;
+  --ui-drawer-body-padding: 24px;
+  --ui-drawer-footer-padding: 16px 24px;
+  --ui-drawer-border-radius: 4px;
+
+  // Input Number组件变量
+  --ui-input-number-bg: var(--ui-color-bg);
+  --ui-input-number-border-color: var(--ui-color-border);
+  --ui-input-number-text-color: var(--ui-color-text);
+  --ui-input-number-placeholder-color: var(--ui-color-text-light);
+  --ui-input-number-hover-border: var(--ui-color-primary);
+  --ui-input-number-focus-shadow: rgba(24, 144, 255, 0.2);
+  --ui-input-number-control-bg: var(--ui-color-bg-light);
+  --ui-input-number-control-color: var(--ui-color-text-light);
+  --ui-input-number-control-hover-color: var(--ui-color-primary);
+  --ui-input-number-control-hover-bg: var(--ui-color-bg-hover);
+  --ui-input-number-disabled-bg: var(--ui-disabled-bg);
+  --ui-input-number-disabled-border: var(--ui-color-disabled-border);
+  --ui-input-number-disabled-text: var(--ui-color-disabled-text);
 
   // 其他变量
   --shadow-color: rgba(0, 0, 0, 0.1);

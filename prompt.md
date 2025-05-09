@@ -2,7 +2,47 @@
 
 计划：@plan.md
 
+记录：将所有问题记录到 docs/issues.md 下面记录下来，按照问题类型和相关组件划分章节，记录下问题修复时间，状态
+
 需求：按照计划推进，实现其他组件，完成一个组件之后继续下一个直到所有组件完成，不需要询问
+
+迭代：
+
+1. input tag 添加不同 ui-tag 颜色演示
+2. Cascader 级联选择器 改成鼠标放在节点上的时候自动展示下一级，单击选中，去掉双击选中
+
+问题：
+
+1. Autocomplete 选项分组，我选中一个之后，再展开下拉框的时候里面是空的
+2. ColorPicker 颜色选择器 带透明度 时候 无法选中颜色，圆圈一值在右下角位置不动，值变成了 rgba(NaN, NaN, NaN, 0.5) 这种无效值，不同颜色格式 也是一样的问题，所有的都有问题 选中颜色都变成了 NaN 这种
+3. rate 组件：[Icon] failed to load icon `carbon:heart-filled`，可以考虑换个图标集的图标，如果 carbon 里没有
+4. TimePicker 时间选择器 问题还是没解决，不要选择时间的时候就关闭下拉框，点击确定的时候才关闭
+5. Split 面板分割：
+   1. 分割位置 的值没有随便我拖动发生变化
+   2. 最小尺寸限制 不生效
+   3. 自定义分隔条样式，我拖动到最右边之后拖动元素消失了导致我没法继续拖动了
+6. Collapse 折叠面板
+   1. 嵌套面板的时候，里面嵌套的折叠面板超出了外层内容区，如图1
+
+---
+
+迭代：
+
+1. 给最近添加的组件添加 demo（input autocomplete, verification） ，完成之后继续按照计划走
+2. input tag 使用已经有的 ui tag 而不是自定义
+
+优化：
+
+1. input number 操作按钮总是要在输入框内部
+
+---
+
+问题：
+
+1. 键盘导航 下拉框 - 点击组件下拉框出不来
+1. input number 上下箭头超出范围了，如图1，按钮在两侧的时候有问题+-号都在左边了，聚焦时候边框太丑太粗了优化下
+
+---
 
 问题：
 
@@ -200,6 +240,11 @@ components/ui/icon/index.vue:
 4. [css generators](https://css-generators.com/)
 5. [css shapes](https://css-shape.com/)
 6. [css tip](https://css-tip.com/)
+7. [hover](https://ianlunn.github.io/Hover/)
+
+## 插件
+
+1. [splitpanes](https://antoniandre.github.io/splitpanes/)
 
 ## 组件
 
@@ -207,3 +252,7 @@ components/ui/icon/index.vue:
 
 - [ ] 添加动画，解决太生硬问题
 - [ ] 嵌套问题
+
+### Input
+
+- [ ] Input 添加补全列表支持

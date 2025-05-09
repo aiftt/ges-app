@@ -4,6 +4,7 @@
  * 创建日期: 2024-05-26
  * 作者: aiftt
  * 更新日期: 2024-05-27 - 扩展功能，增加Element Plus的全部功能
+ * 更新日期: 2024-07-05 - 优化代码，增强键盘导航
  */
 
 import { debounce } from 'lodash'
@@ -218,6 +219,8 @@ const createdOptions = ref<ISelectOption[]>([])
 const isFocused = ref(false)
 // 标签标签溢出
 const tagOverflow = ref(false)
+// 当前高亮选项的索引
+const highlightedIndex = ref(-1)
 // 下拉菜单位置
 const dropdownPosition = ref({
   top: '0px',
@@ -255,6 +258,27 @@ const filteredOptions = computed(() => {
       )
     }
   }
+
+  return result
+})
+
+// 获取所有可用的选项(用于键盘导航)
+const navigableOptions = computed(() => {
+  const result: ISelectOption[] = []
+
+  // 扁平化处理选项列表，包括嵌套的子选项
+  filteredOptions.value.forEach((option) => {
+    if ('children' in option && Array.isArray(option.children)) {
+      option.children.forEach((child) => {
+        if (!child.disabled) {
+          result.push(child)
+        }
+      })
+    }
+    else if (!option.disabled) {
+      result.push(option)
+    }
+  })
 
   return result
 })
@@ -528,21 +552,110 @@ function createNewOption() {
 
 // 处理键盘事件
 function handleKeydown(event: KeyboardEvent) {
-  if (!visible.value)
+  // 避免处理未打开的下拉框
+  if (!visible.value && event.key !== 'Enter' && event.key !== 'Space') {
     return
+  }
 
   switch (event.key) {
     case 'Enter':
-      if (props.allowCreate && query.value && props.filterable) {
-        createNewOption()
+      // 如果下拉框未打开，则打开
+      if (!visible.value) {
         event.preventDefault()
+        showDropdown()
+        return
+      }
+
+      // 选中当前高亮的选项
+      if (highlightedIndex.value > -1) {
+        event.preventDefault()
+        const option = navigableOptions.value[highlightedIndex.value]
+        if (option && !option.disabled) {
+          handleOptionClick(option)
+        }
       }
       break
+
+    case ' ':
+    case 'Space':
+      // 空格键打开下拉框
+      if (!visible.value && !props.filterable) {
+        event.preventDefault()
+        showDropdown()
+      }
+      break
+
     case 'Escape':
-      hideDropdown()
+      // ESC键关闭下拉框
       event.preventDefault()
+      hideDropdown()
+      break
+
+    case 'ArrowDown':
+      // 向下移动高亮
+      event.preventDefault()
+      navigateOption('next')
+      break
+
+    case 'ArrowUp':
+      // 向上移动高亮
+      event.preventDefault()
+      navigateOption('prev')
+      break
+
+    case 'Tab':
+      // Tab键关闭下拉框
+      hideDropdown()
       break
   }
+}
+
+// 导航选项
+function navigateOption(direction: 'prev' | 'next') {
+  const options = navigableOptions.value
+  if (options.length === 0)
+    return
+
+  if (highlightedIndex.value === -1) {
+    highlightedIndex.value = 0
+    return
+  }
+
+  const optionsLength = options.length
+  let nextIndex = direction === 'next'
+    ? (highlightedIndex.value + 1) % optionsLength
+    : (highlightedIndex.value - 1 + optionsLength) % optionsLength
+
+  // 跳过禁用的选项
+  const startIndex = nextIndex
+  while (
+    options[nextIndex].disabled
+    && nextIndex !== startIndex
+  ) {
+    nextIndex = direction === 'next'
+      ? (nextIndex + 1) % optionsLength
+      : (nextIndex - 1 + optionsLength) % optionsLength
+  }
+
+  highlightedIndex.value = nextIndex
+
+  // 确保高亮的选项可见
+  nextTick(() => {
+    const highlightedOption = document.querySelector('.ui-select-option--highlighted')
+    if (highlightedOption && dropdownRef.value) {
+      const container = dropdownRef.value
+      const htmlElement = highlightedOption as HTMLElement
+      const itemTop = htmlElement.offsetTop
+      const itemBottom = itemTop + htmlElement.clientHeight
+
+      if (itemBottom > container.scrollTop + container.clientHeight) {
+        container.scrollTop = itemBottom - container.clientHeight
+      }
+      else if (itemTop < container.scrollTop) {
+        container.scrollTop = itemTop
+      }
+    }
+  })
 }
 
 // 计算下拉菜单位置
@@ -586,24 +699,20 @@ function showDropdown() {
   emit('focus')
   emit('visibleChange', true)
 
-  // 在下一个事件循环中设置焦点
+  // 修复：打开下拉框后聚焦输入框，确保键盘导航正常工作
   nextTick(() => {
-    if (inputRef.value) {
+    if (props.filterable && inputRef.value) {
       inputRef.value.focus()
-      isFocused.value = true
-
-      // 单选模式下，选中输入框内容便于用户直接输入
-      if (props.filterable && !props.multiple && props.modelValue) {
-        inputRef.value.select()
-      }
     }
 
-    // 监听点击外部关闭下拉菜单
-    document.addEventListener('click', handleOutsideClick)
-    // 监听窗口大小变化
-    window.addEventListener('resize', handleWindowResize)
-    // 监听滚动事件
-    window.addEventListener('scroll', handleWindowScroll, true)
+    // 重置高亮索引
+    if (navigableOptions.value.length > 0) {
+      const selectedIndex = navigableOptions.value.findIndex(option =>
+        isSelected(option),
+      )
+
+      highlightedIndex.value = selectedIndex >= 0 ? selectedIndex : 0
+    }
   })
 }
 
@@ -646,6 +755,11 @@ function isSelected(option: ISelectOption) {
     return Array.isArray(props.modelValue) && props.modelValue.includes(option.value)
   }
   return props.modelValue === option.value
+}
+
+// 获取选项在可导航选项中的索引
+function getOptionIndex(option: ISelectOption): number {
+  return navigableOptions.value.findIndex(opt => opt.value === option.value)
 }
 
 // 监听焦点变化
@@ -879,6 +993,7 @@ provide('select', {
                 :class="{
                   'ui-select-option--selected': isSelected(option),
                   'ui-select-option--disabled': option.disabled,
+                  'ui-select-option--highlighted': highlightedIndex === getOptionIndex(option),
                 }"
                 :style="option.style"
                 @click.stop="handleOptionClick(option)"
@@ -909,6 +1024,7 @@ provide('select', {
                   :class="{
                     'ui-select-option--selected': isSelected(option),
                     'ui-select-option--disabled': option.disabled,
+                    'ui-select-option--highlighted': highlightedIndex === getOptionIndex(option),
                   }"
                   :style="option.style"
                   @click.stop="handleOptionClick(option)"
@@ -937,6 +1053,7 @@ provide('select', {
                     :class="{
                       'ui-select-option--selected': isSelected(option),
                       'ui-select-option--disabled': option.disabled,
+                      'ui-select-option--highlighted': highlightedIndex === getOptionIndex(option),
                     }"
                     :style="option.style"
                     @click.stop="handleOptionClick(option)"
@@ -1269,6 +1386,10 @@ provide('select', {
   color: var(--ui-select-option-selected-color, var(--ui-color-primary));
   background-color: var(--ui-select-option-selected-bg, var(--ui-color-primary-light, rgba(24, 144, 255, 0.1)));
   font-weight: 500;
+}
+
+.ui-select-option--highlighted {
+  background-color: var(--ui-select-option-hover-bg, var(--ui-color-bg-hover));
 }
 
 .ui-select-option--disabled {

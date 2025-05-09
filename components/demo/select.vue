@@ -4,6 +4,7 @@
  * 创建日期: 2024-05-26
  * 作者: aiftt
  * 更新日期: 2024-05-27 - 添加更多功能演示
+ * 更新日期: 2024-07-05 - 添加键盘导航演示，修复尺寸类型问题
  */
 
 import { ref } from 'vue'
@@ -24,7 +25,7 @@ const singleValue = ref('')
 // 多选值
 const multipleValue = ref<string[]>([])
 
-// 尺寸数据
+// 尺寸数据 - 使用as const确保正确的类型推断
 const sizes = ['small', 'default', 'large'] as const
 
 // 大量选项数据
@@ -387,6 +388,33 @@ function remoteSearch(query: string) {
               </div>
             </template>
           </ui-select>
+        </div>
+      </div>
+    </section>
+
+    <!-- 键盘导航 -->
+    <section>
+      <h3 class="mb-4 text-lg text-gray-900 font-semibold dark:text-white">
+        键盘导航
+      </h3>
+      <p class="mb-4 text-gray-600 dark:text-gray-400">
+        支持使用键盘上下箭头选择选项，回车键确认选择。
+      </p>
+      <div class="border rounded bg-white p-4 dark:bg-gray-800">
+        <div class="mb-4">
+          <ui-select
+            v-model="singleValue"
+            :options="options"
+            placeholder="使用键盘导航选择选项"
+          />
+        </div>
+        <div class="mt-2 text-sm text-gray-600 dark:text-gray-400">
+          <p>试试以下键盘操作：</p>
+          <ul class="ml-5 mt-2 list-disc">
+            <li>点击选择器，然后使用上/下箭头键浏览选项</li>
+            <li>按回车键选择当前高亮的选项</li>
+            <li>按ESC键关闭下拉菜单</li>
+          </ul>
         </div>
       </div>
     </section>

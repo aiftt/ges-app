@@ -17,16 +17,16 @@ alwaysApply: true
   1. `<script setup>` 标签
   2. `<template>` 标签
   3. `<style>` 标签
-  
+
 - 必须使用`<script setup lang="ts">`，启用TypeScript类型检查
 
 - 在需要使用到 tsx 语法时，必须使用 `[name].vue` 和 `<script setup lang="tsx">` 语法来实现，禁止使用 `[name].tsx` 文件格式：
 
   ```vue
   // [name].vue 使用 tsx 语法， 正确示范
-  
+
   <script setup lang="tsx" name="[name]">
-  
+
   // tsx define component
     const Component = () => <div/> // ...
   </script>
@@ -166,7 +166,7 @@ const emit = defineEmits<{
 - 事件名使用kebab-case（短横线命名法）
 - 为每个事件提供正确的参数类型
 - v-model相关事件使用`update:propName`格式
-- 对于简单的相同事件声明可以合并：
+- 总是将简单的相同事件声明进行合并：
   ```typescript
   const emit = defineEmits<{
     (e: 'click' | 'press' | 'tap'): void

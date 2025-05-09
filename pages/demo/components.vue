@@ -17,46 +17,72 @@
  * 2024-06-22 - 添加 Collapse 组件
  * 2024-06-23 - 添加 Modal 组件
  * 2024-06-24 - 添加 Alert 组件
+ * 2024-06-25 - 添加 Drawer 组件
+ * 2024-07-05 - 添加 Input Number 组件
+ * 2024-07-08 - 添加 Input Tag 组件
+ * 2024-07-09 - 添加缺失的演示组件
+ * 2024-07-09 - 添加 Autocomplete 和 VerificationCode 组件
+ * 2024-07-09 - 添加 Split 组件
+ * 2024-07-09 - 添加 Cascader 组件
+ * 2024-07-09 - 修复布局组件分组中的重复组件和未实现组件引用
  */
 import { computed, markRaw, ref } from 'vue'
 import DemoAlert from '~/components/demo/alert.vue'
 import DemoAutoAnimate from '~/components/demo/auto-animate.vue'
+import DemoAutocomplete from '~/components/demo/autocomplete.vue'
 import DemoAvatar from '~/components/demo/avatar.vue'
 import DemoBadge from '~/components/demo/badge.vue'
 import DemoBorder from '~/components/demo/border.vue'
 import DemoButton from '~/components/demo/button.vue'
 import DemoCard from '~/components/demo/card.vue'
+import DemoCascader from '~/components/demo/cascader.vue'
 import DemoCheckbox from '~/components/demo/checkbox.vue'
 import DemoCode from '~/components/demo/code.vue'
 import DemoCollapse from '~/components/demo/collapse.vue'
+import DemoColorPicker from '~/components/demo/color-picker.vue'
 import DemoColor from '~/components/demo/color.vue'
+import DemoComponents from '~/components/demo/components.vue'
 import DemoConfigProvider from '~/components/demo/config-provider.vue'
+import DemoContainer from '~/components/demo/container.vue'
 // import DemoDatePicker from '~/components/demo/date-picker.vue' // 暂未实现
 import DemoDivider from '~/components/demo/divider.vue'
+import DemoDrawer from '~/components/demo/drawer.vue'
+import DemoDynamicStyles from '~/components/demo/dynamic-styles.vue'
 // import DemoGrid from '~/components/demo/grid.vue' // 暂未实现
 import DemoIcon from '~/components/demo/icon.vue'
 import DemoImage from '~/components/demo/image.vue'
+import DemoInputNumber from '~/components/demo/input-number.vue'
+import DemoInputTag from '~/components/demo/input-tag.vue'
 import DemoInput from '~/components/demo/input.vue'
 // import DemoLayout from '~/components/demo/layout.vue' // 暂未实现
 // import DemoLink from '~/components/demo/link.vue' // 暂未实现
+import DemoLogger from '~/components/demo/logger.vue'
 import DemoMenu from '~/components/demo/menu.vue'
 import DemoModal from '~/components/demo/modal.vue'
+import DemoParagraph from '~/components/demo/paragraph.vue'
 import DemoPopconfirm from '~/components/demo/popconfirm.vue'
 import DemoPopover from '~/components/demo/popover.vue'
 import DemoQrcode from '~/components/demo/qrcode.vue'
 import DemoRadio from '~/components/demo/radio.vue'
+import DemoRate from '~/components/demo/rate.vue'
 import DemoResizeBox from '~/components/demo/resizebox.vue'
 import DemoScrollbar from '~/components/demo/scrollbar.vue'
 import DemoSelect from '~/components/demo/select.vue'
 import DemoSlider from '~/components/demo/slider.vue'
 import DemoSpace from '~/components/demo/space.vue'
+import DemoSplit from '~/components/demo/split.vue'
 import DemoSwitch from '~/components/demo/switch.vue'
 import DemoTag from '~/components/demo/tag.vue'
 import DemoText from '~/components/demo/text.vue'
 import DemoTextarea from '~/components/demo/textarea.vue'
+import DemoTheme from '~/components/demo/theme.vue'
+import DemoTimePicker from '~/components/demo/time-picker.vue'
+import DemoTitle from '~/components/demo/title.vue'
 import DemoTooltip from '~/components/demo/tooltip.vue'
 import DemoTrigger from '~/components/demo/trigger.vue'
+import DemoTsx from '~/components/demo/tsx.vue'
 import DemoTypography from '~/components/demo/typography.vue'
+import DemoVerificationCode from '~/components/demo/verification-code.vue'
 
 // 组件列表
 interface ComponentGroup {
@@ -75,8 +101,11 @@ const groups = ref<ComponentGroup[]>([
       { name: 'button', label: 'Button 按钮', component: markRaw(DemoButton) },
       { name: 'icon', label: 'Icon 图标', component: markRaw(DemoIcon) },
       { name: 'typography', label: 'Typography 排版', component: markRaw(DemoTypography) },
+      { name: 'title', label: 'Title 标题', component: markRaw(DemoTitle) },
+      { name: 'paragraph', label: 'Paragraph 段落', component: markRaw(DemoParagraph) },
       { name: 'divider', label: 'Divider 分割线', component: markRaw(DemoDivider) },
       { name: 'space', label: 'Space 间距', component: markRaw(DemoSpace) },
+      { name: 'container', label: 'Container 容器', component: markRaw(DemoContainer) },
       // { name: 'layout', label: 'Layout 布局', component: DemoLayout }, // 暂未实现
       // { name: 'grid', label: 'Grid 栅格', component: DemoGrid }, // 暂未实现
       { name: 'text', label: 'Text 文本', component: markRaw(DemoText) },
@@ -90,6 +119,7 @@ const groups = ref<ComponentGroup[]>([
       { name: 'scrollbar', label: 'Scrollbar 滚动条', component: markRaw(DemoScrollbar) },
       { name: 'auto-animate', label: 'AutoAnimate 自动动画', component: markRaw(DemoAutoAnimate) },
       { name: 'resize-box', label: 'ResizeBox 可调整大小的盒子', component: markRaw(DemoResizeBox) },
+      { name: 'split', label: 'Split 面板分割', component: markRaw(DemoSplit) },
     ],
   },
   {
@@ -110,11 +140,19 @@ const groups = ref<ComponentGroup[]>([
     components: [
       { name: 'input', label: 'Input 输入框', component: markRaw(DemoInput) },
       { name: 'textarea', label: 'Textarea 文本域', component: markRaw(DemoTextarea) },
+      { name: 'input-number', label: 'Input Number 数字输入框', component: markRaw(DemoInputNumber) },
+      { name: 'input-tag', label: 'Input Tag 标签输入框', component: markRaw(DemoInputTag) },
+      { name: 'autocomplete', label: 'Autocomplete 自动完成', component: markRaw(DemoAutocomplete) },
+      { name: 'verification-code', label: 'VerificationCode 验证码输入', component: markRaw(DemoVerificationCode) },
+      { name: 'cascader', label: 'Cascader 级联选择器', component: markRaw(DemoCascader) },
+      { name: 'time-picker', label: 'TimePicker 时间选择器', component: markRaw(DemoTimePicker) },
       { name: 'checkbox', label: 'Checkbox 复选框', component: markRaw(DemoCheckbox) },
       { name: 'radio', label: 'Radio 单选框', component: markRaw(DemoRadio) },
       { name: 'select', label: 'Select 选择器', component: markRaw(DemoSelect) },
       { name: 'switch', label: 'Switch 开关', component: markRaw(DemoSwitch) },
       { name: 'slider', label: 'Slider 滑块', component: markRaw(DemoSlider) },
+      { name: 'ColorPicker', label: 'ColorPicker 颜色选择器', component: markRaw(DemoColorPicker) },
+      { name: 'Rate', label: 'Rate 评分', component: markRaw(DemoRate) },
       // { name: 'date-picker', label: 'DatePicker 日期选择器', component: DemoDatePicker }, // 暂未实现
     ],
   },
@@ -123,6 +161,7 @@ const groups = ref<ComponentGroup[]>([
     components: [
       { name: 'alert', label: 'Alert 警告提示', component: markRaw(DemoAlert) },
       { name: 'modal', label: 'Modal 模态对话框', component: markRaw(DemoModal) },
+      { name: 'drawer', label: 'Drawer 抽屉', component: markRaw(DemoDrawer) },
     ],
   },
   {
@@ -132,11 +171,27 @@ const groups = ref<ComponentGroup[]>([
     ],
   },
   {
+    title: '工具组件',
+    components: [
+      { name: 'logger', label: 'Logger 日志', component: markRaw(DemoLogger) },
+      { name: 'tsx', label: 'TSX 支持', component: markRaw(DemoTsx) },
+    ],
+  },
+  {
+    title: '主题与样式',
+    components: [
+      { name: 'theme', label: 'Theme 主题', component: markRaw(DemoTheme) },
+      { name: 'dynamic-styles', label: 'DynamicStyles 动态样式', component: markRaw(DemoDynamicStyles) },
+    ],
+  },
+  {
     title: '其他',
     components: [
       { name: 'config-provider', label: 'ConfigProvider 全局配置', component: markRaw(DemoConfigProvider) },
+      { name: 'components', label: 'Components 组件集合', component: markRaw(DemoComponents) },
     ],
   },
+  // 移除重复的布局组件分组，因为其中引用了未实现的组件，且大部分组件与基础组件中重复
 ])
 
 // 当前选中的组件
