@@ -198,6 +198,42 @@ const props = withDefaults(defineProps<{
    * 单元格样式
    */
   cellStyle?: CSSProperties | ((row: any, column: TableColumn, index: number) => CSSProperties)
+  /**
+   * 是否启用分页
+   */
+  pagination?: boolean
+  /**
+   * 总条目数，启用分页时必须提供
+   */
+  total?: number
+  /**
+   * 当前页码
+   */
+  currentPage?: number
+  /**
+   * 每页显示条数
+   */
+  pageSize?: number
+  /**
+   * 可选的每页条数选项
+   */
+  pageSizes?: number[]
+  /**
+   * 分页组件的布局
+   */
+  paginationLayout?: string[]
+  /**
+   * 是否显示条目总数
+   */
+  showTotal?: boolean
+  /**
+   * 分页小尺寸
+   */
+  smallPagination?: boolean
+  /**
+   * 是否显示跳转页码控件
+   */
+  showJumper?: boolean
 }>(), {
   data: () => [],
   columns: () => [],
@@ -205,7 +241,7 @@ const props = withDefaults(defineProps<{
   stripe: false,
   showHeader: true,
   showIndex: false,
-  indexLabel: '#',
+  indexLabel: '序号',
   indexWidth: 50,
   indexStart: 1,
   showSelection: false,
@@ -218,6 +254,15 @@ const props = withDefaults(defineProps<{
   loadingText: '加载中...',
   emptyText: '暂无数据',
   highlightCurrentRow: false,
+  pagination: false,
+  total: 0,
+  currentPage: 1,
+  pageSize: 10,
+  pageSizes: () => [10, 20, 50, 100],
+  paginationLayout: () => ['total', 'prev', 'pager', 'next', 'sizes'],
+  showTotal: true,
+  smallPagination: false,
+  showJumper: false,
 })
 
 // 定义emit
@@ -229,11 +274,11 @@ const emit = defineEmits<{
   /**
    * 当用户点击排序头时触发
    */
-  (e: 'sortChange', { column, prop, order }: { column: TableColumn, prop: string, order: 'ascending' | 'descending' | null }): void
+  (e: 'sortChange', { column, prop, order }: { column: TableColumn, prop: string, order: string | null }): void
   /**
    * 当用户手动过滤时触发
    */
-  (e: 'filterChange', filters: Record<string, any>): void
+  (e: 'filterChange', filters: Record<string, any[]>): void
   /**
    * 当某一行被点击时会触发该事件
    */
@@ -274,7 +319,18 @@ const emit = defineEmits<{
    * 当展开行时触发
    */
   (e: 'expandChange', row: any, expanded: boolean): void
-
+  /**
+   * 当前页变化
+   */
+  (e: 'update:currentPage', page: number): void
+  /**
+   * 每页条数变化
+   */
+  (e: 'update:pageSize', size: number): void
+  /**
+   * 分页变化
+   */
+  (e: 'pageChange', page: number, size: number): void
 }>()
 
 // 内部状态
@@ -285,28 +341,29 @@ const tableColumns = toRef(props, 'columns')
 // 选中行数据
 const selectedRows = ref<any[]>([])
 // 当前排序字段和方式
-const sortInfo = ref<{ prop: string, order: 'ascending' | 'descending' | null }>({
+const sortInfo = ref<{ prop: string, order: string | null }>({
   prop: '',
   order: null,
 })
 // 当前过滤条件
-const filterInfo = ref<Record<string, any>>({})
+const filterInfo = ref<Record<string, any[]>>({})
 // 当前高亮行
 const currentRow = ref<any>(null)
 // 展开行
 const expandedRows = ref<any[]>([])
 
 // 表格布局类
-const tableClass = computed(() => [
-  'ui-table',
-  {
+const tableClass = computed(() => {
+  return {
+    'ui-table': true,
     'ui-table--border': props.border,
     'ui-table--stripe': props.stripe,
     'ui-table--large': props.size === 'large',
+    'ui-table--default': props.size === 'default',
     'ui-table--small': props.size === 'small',
-  },
-  props.tableClass,
-])
+    [props.tableClass || '']: !!props.tableClass,
+  }
+})
 
 // 表格样式
 const tableStyle = computed(() => {
@@ -463,7 +520,7 @@ function handleSortClick(column: TableColumn) {
     return
 
   // 切换排序状态：ascending -> descending -> null
-  let order: 'ascending' | 'descending' | null = null
+  let order: string | null = null
 
   if (sortInfo.value.prop === column.prop) {
     if (sortInfo.value.order === 'ascending') {
@@ -571,6 +628,21 @@ defineExpose({
   setCurrentRow,
 })
 
+// 处理分页变化
+function handlePageChange(page: number, size: number) {
+  emit('update:currentPage', page)
+  emit('update:pageSize', size)
+  emit('pageChange', page, size)
+}
+
+// 修复删除未使用的tableClass变量
+// const tableClass 不是未使用的变量，而是在模板中使用的计算属性
+
+// 修复icon类属性
+function getFilterIconClass(column: TableColumn) {
+  return filterInfo.value[column.prop]?.length > 0 ? 'ui-table-filter-icon--active' : ''
+}
+
 onMounted(() => {
   initialize()
 })
@@ -582,16 +654,16 @@ watch(dataSource, () => {
 </script>
 
 <template>
-  <div class="ui-table-container">
+  <div class="ui-table-wrapper">
     <!-- 表格加载中遮罩 -->
     <div v-if="loading" class="ui-table-loading-mask">
-      <div class="ui-table-loading-text">
-        <ui-icon icon="carbon:circle-dash" class="ui-table-loading-icon" />
+      <div class="ui-table-loading-content">
+        <ui-icon icon="carbon:progress-bar" spin />
         <span>{{ loadingText }}</span>
       </div>
     </div>
 
-    <!-- 表格主体 -->
+    <!-- 表格主体部分 -->
     <div
       ref="tableRef"
       :class="tableClass"
@@ -668,9 +740,7 @@ watch(dataSource, () => {
                     <ui-icon
                       icon="carbon:filter"
                       class="ui-table-filter-icon"
-                      :class="{
-                        'ui-table-filter-icon--active': filterInfo[column.prop] && filterInfo[column.prop].length,
-                      }"
+                      :class="getFilterIconClass(column)"
                     />
                     <!-- 这里需要实现过滤下拉面板 -->
                   </div>
@@ -788,11 +858,28 @@ watch(dataSource, () => {
         <slot name="footer" />
       </div>
     </div>
+
+    <!-- 分页组件 -->
+    <div v-if="pagination" class="ui-table-pagination">
+      <ui-pagination
+        :total="total"
+        :current-page="currentPage"
+        :page-size="pageSize"
+        :page-sizes="pageSizes"
+        :layout="paginationLayout"
+        :show-total="showTotal"
+        :show-jumper="showJumper"
+        :small="smallPagination"
+        @update:current-page="(page) => emit('update:currentPage', page)"
+        @update:page-size="(size) => emit('update:pageSize', size)"
+        @change="handlePageChange"
+      />
+    </div>
   </div>
 </template>
 
 <style scoped>
-.ui-table-container {
+.ui-table-wrapper {
   position: relative;
   width: 100%;
 }
@@ -1007,7 +1094,7 @@ watch(dataSource, () => {
   background-color: rgba(255, 255, 255, 0.8);
 }
 
-.ui-table-loading-text {
+.ui-table-loading-content {
   display: flex;
   align-items: center;
   color: var(--ui-color-primary);
@@ -1026,5 +1113,10 @@ watch(dataSource, () => {
   to {
     transform: rotate(360deg);
   }
+}
+
+/* 分页样式 */
+.ui-table-pagination {
+  margin-top: 16px;
 }
 </style>
