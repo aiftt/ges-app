@@ -25,6 +25,7 @@
  * 2024-07-09 - 添加 Split 组件
  * 2024-07-09 - 添加 Cascader 组件
  * 2024-07-09 - 修复布局组件分组中的重复组件和未实现组件引用
+ * 2024-07-16 - 添加 Table 和 Pagination 组件
  */
 import { computed, markRaw, ref } from 'vue'
 import DemoAlert from '~/components/demo/alert.vue'
@@ -59,6 +60,7 @@ import DemoInput from '~/components/demo/input.vue'
 import DemoLogger from '~/components/demo/logger.vue'
 import DemoMenu from '~/components/demo/menu.vue'
 import DemoModal from '~/components/demo/modal.vue'
+import DemoPagination from '~/components/demo/pagination-demo.vue'
 import DemoParagraph from '~/components/demo/paragraph.vue'
 import DemoPopconfirm from '~/components/demo/popconfirm.vue'
 import DemoPopover from '~/components/demo/popover.vue'
@@ -72,6 +74,8 @@ import DemoSlider from '~/components/demo/slider.vue'
 import DemoSpace from '~/components/demo/space.vue'
 import DemoSplit from '~/components/demo/split.vue'
 import DemoSwitch from '~/components/demo/switch.vue'
+import DemoTable from '~/components/demo/table-demo.vue'
+import DemoTablePagination from '~/components/demo/table-pagination-demo.vue'
 import DemoTag from '~/components/demo/tag.vue'
 import DemoText from '~/components/demo/text.vue'
 import DemoTextarea from '~/components/demo/textarea.vue'
@@ -120,11 +124,14 @@ const groups = ref<ComponentGroup[]>([
       { name: 'auto-animate', label: 'AutoAnimate 自动动画', component: markRaw(DemoAutoAnimate) },
       { name: 'resize-box', label: 'ResizeBox 可调整大小的盒子', component: markRaw(DemoResizeBox) },
       { name: 'split', label: 'Split 面板分割', component: markRaw(DemoSplit) },
+      { name: 'pagination', label: 'Pagination 分页', component: markRaw(DemoPagination) },
     ],
   },
   {
     title: '数据展示',
     components: [
+      { name: 'table', label: 'Table 表格', component: markRaw(DemoTable) },
+      { name: 'table-pagination', label: 'Table+Pagination 表格分页', component: markRaw(DemoTablePagination) },
       { name: 'qrcode', label: 'QRCode 二维码', component: markRaw(DemoQrcode) },
       { name: 'code', label: 'Code 代码', component: markRaw(DemoCode) },
       { name: 'image', label: 'Image 图片', component: markRaw(DemoImage) },
