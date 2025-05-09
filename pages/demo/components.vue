@@ -26,7 +26,8 @@
  * 2024-07-09 - 添加 Cascader 组件
  * 2024-07-09 - 修复布局组件分组中的重复组件和未实现组件引用
  * 2024-07-16 - 添加 Table 和 Pagination 组件
- * 2024-07-23 - 添加 Carousel 组件
+ * 2024-07-22 - 添加 Carousel 组件
+ * 2024-07-23 - 添加 Empty 组件
  */
 import { computed, markRaw, ref } from 'vue'
 import DemoAlert from '~/components/demo/alert.vue'
@@ -51,6 +52,7 @@ import DemoContainer from '~/components/demo/container.vue'
 import DemoDivider from '~/components/demo/divider.vue'
 import DemoDrawer from '~/components/demo/drawer.vue'
 import DemoDynamicStyles from '~/components/demo/dynamic-styles.vue'
+import DemoEmpty from '~/components/demo/empty.vue'
 // import DemoGrid from '~/components/demo/grid.vue' // 暂未实现
 import DemoIcon from '~/components/demo/icon.vue'
 import DemoImage from '~/components/demo/image.vue'
@@ -146,6 +148,7 @@ const groups = ref<ComponentGroup[]>([
       { name: 'collapse', label: 'Collapse 折叠面板', component: markRaw(DemoCollapse) },
       { name: 'overflowlist', label: 'OverflowList 折叠列表', component: markRaw(DemoOverflowlist) },
       { name: 'carousel', label: 'Carousel 轮播图', component: markRaw(DemoCarousel) },
+      { name: 'empty', label: 'Empty 空状态', component: markRaw(DemoEmpty) },
     ],
   },
   {
