@@ -33,6 +33,7 @@
  * 2024-07-31 - 添加 Calendar 和 Tour 组件
  * 2024-08-01 - 添加 Watermark 和 Segmented 组件
  * 2024-08-10 - 添加 Message 组件
+ * 2024-08-16 - 添加 Spin 和 Steps 组件
  */
 import { computed, markRaw, ref } from 'vue'
 import DemoAlert from '~/components/demo/alert.vue'
@@ -71,9 +72,7 @@ import DemoList from '~/components/demo/list.vue'
 import DemoLogger from '~/components/demo/logger.vue'
 import DemoMenu from '~/components/demo/menu.vue'
 import DemoMessage from '~/components/demo/message.vue'
-import DemoMessageBox from '~/components/demo/messagebox.vue'
 import DemoModal from '~/components/demo/modal.vue'
-import DemoNotification from '~/components/demo/notification.vue'
 import DemoOverflowlist from '~/components/demo/overflowlist-demo.vue'
 import DemoPagination from '~/components/demo/pagination-demo.vue'
 import DemoParagraph from '~/components/demo/paragraph.vue'
@@ -90,7 +89,9 @@ import DemoSelect from '~/components/demo/select.vue'
 import DemoSkeleton from '~/components/demo/skeleton.vue'
 import DemoSlider from '~/components/demo/slider.vue'
 import DemoSpace from '~/components/demo/space.vue'
+import DemoSpin from '~/components/demo/spin.vue'
 import DemoSplit from '~/components/demo/split.vue'
+import DemoSteps from '~/components/demo/steps.vue'
 import DemoSwitch from '~/components/demo/switch.vue'
 import DemoTable from '~/components/demo/table-demo.vue'
 import DemoTablePagination from '~/components/demo/table-pagination-demo.vue'
@@ -201,21 +202,21 @@ const groups = ref<ComponentGroup[]>([
     components: [
       { name: 'alert', label: 'Alert 警告提示', component: markRaw(DemoAlert) },
       { name: 'dialog', label: 'Dialog 对话框', component: markRaw(DemoDialog) },
-      { name: 'modal', label: 'Modal 模态对话框', component: markRaw(DemoModal) },
       { name: 'drawer', label: 'Drawer 抽屉', component: markRaw(DemoDrawer) },
+      { name: 'message', label: 'Message 消息提示', component: markRaw(DemoMessage) },
+      { name: 'modal', label: 'Modal 模态框', component: markRaw(DemoModal) },
       { name: 'progress', label: 'Progress 进度条', component: markRaw(DemoProgress) },
-      { name: 'message', label: 'Message 消息', component: markRaw(DemoMessage) },
-      { name: 'messagebox', label: 'MessageBox 消息弹框', component: markRaw(DemoMessageBox) },
-      { name: 'notification', label: 'Notification 通知', component: markRaw(DemoNotification) },
       { name: 'skeleton', label: 'Skeleton 骨架屏', component: markRaw(DemoSkeleton) },
+      { name: 'spin', label: 'Spin 加载中', component: markRaw(DemoSpin) },
     ],
   },
   {
     title: '导航组件',
     components: [
+      { name: 'breadcrumb', label: 'Breadcrumb 面包屑', component: markRaw(DemoBreadcrumb) },
       { name: 'menu', label: 'Menu 菜单', component: markRaw(DemoMenu) },
       { name: 'tabs', label: 'Tabs 标签页', component: markRaw(DemoTabs) },
-      { name: 'breadcrumb', label: 'Breadcrumb 面包屑', component: markRaw(DemoBreadcrumb) },
+      { name: 'steps', label: 'Steps 步骤条', component: markRaw(DemoSteps) },
     ],
   },
   {

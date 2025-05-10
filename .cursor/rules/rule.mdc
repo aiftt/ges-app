@@ -46,6 +46,8 @@ alwaysApply: true
 
 - 禁止任何导致类型错误、语法错误的代码
 
+- 禁止安装任何 @iconify 相关的图标包，项目中用的是 Nuxt 自带的 nuxt-icon，已经封装在 `<ui-icon/>` 组件了
+
 
 
 ## 文件组织规范
@@ -153,6 +155,7 @@ const emit = defineEmits<{
 ### 组件开发
 
 - 总是开发组件对应的 demo 代码，并添加到 `pages/demo/components.vue` 页面，禁止单独新建页面
+- 图标组件正确示范：`<ui-icon icon="carbon:close" />`，错误示范：`<ui-icon-some-name/>`
 
 ### 目录和命名
 
