@@ -31,6 +31,7 @@
  * 2024-07-20 - 添加日历组件
  * 2024-07-30 - 添加 Tree 组件
  * 2024-07-31 - 添加 Calendar 和 Tour 组件
+ * 2024-08-01 - 添加 Watermark 和 Segmented 组件
  */
 import { computed, markRaw, ref } from 'vue'
 import DemoAlert from '~/components/demo/alert.vue'
@@ -77,6 +78,7 @@ import DemoRadio from '~/components/demo/radio.vue'
 import DemoRate from '~/components/demo/rate.vue'
 import DemoResizeBox from '~/components/demo/resizebox.vue'
 import DemoScrollbar from '~/components/demo/scrollbar.vue'
+import DemoSegmented from '~/components/demo/segmented.vue'
 import DemoSelect from '~/components/demo/select.vue'
 import DemoSlider from '~/components/demo/slider.vue'
 import DemoSpace from '~/components/demo/space.vue'
@@ -99,6 +101,7 @@ import DemoTsx from '~/components/demo/tsx.vue'
 import DemoTypography from '~/components/demo/typography.vue'
 import DemoUpload from '~/components/demo/upload.vue'
 import DemoVerificationCode from '~/components/demo/verification-code.vue'
+import DemoWatermark from '~/components/demo/watermark.vue'
 
 // 组件列表
 interface ComponentGroup {
@@ -134,6 +137,8 @@ const groups = ref<ComponentGroup[]>([
       { name: 'resize-box', label: 'ResizeBox 可调整大小的盒子', component: markRaw(DemoResizeBox) },
       { name: 'split', label: 'Split 面板分割', component: markRaw(DemoSplit) },
       { name: 'pagination', label: 'Pagination 分页', component: markRaw(DemoPagination) },
+      { name: 'segmented', label: 'Segmented 分段控制器', component: markRaw(DemoSegmented) },
+      { name: 'watermark', label: 'Watermark 水印', component: markRaw(DemoWatermark) },
     ],
   },
   {
