@@ -53,6 +53,9 @@ const emit = defineEmits<{
 // 内部选中值，使用ref跟踪
 const selectedValue = ref<string | number | undefined>(props.modelValue)
 
+// 生成一个稳定的radio组名称
+const groupId = ref<string>(props.name || 'ui-radio-group')
+
 // 监听外部传入的modelValue变化
 watch(() => props.modelValue, (newVal) => {
   selectedValue.value = newVal
@@ -67,7 +70,7 @@ function handleRadioChange(value: string | number) {
 
 // 提供给子组件的上下文
 provide('radioGroup', {
-  name: props.name || `radio-group-${Date.now()}`,
+  name: computed(() => props.name || groupId.value),
   modelValue: computed(() => selectedValue.value),
   size: computed(() => props.size),
   disabled: computed(() => props.disabled),

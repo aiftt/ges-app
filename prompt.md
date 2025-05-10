@@ -1,8 +1,32 @@
 规范：请遵循 @.cursor/rules/now.mdc 及 @.cursor/rules/ 下的所有规范
 
+UI: 组件下如果有类似 `useMessage` 这种组件方式，单独创建 `composables/useMessage` 对起封装一层，禁止直接调用 `~/components/ui/[message]/composable`
+
 计划：@plan.md，按照计划推进，每次只完成两个组件以便更仔细的思考实现细节,别忘记添加对应的演示组件和在 pages/demo/components.vue 中添加演示代码。
 
 记录：将所有问题记录到 docs/issues.md 下面记录下来，按照问题类型和相关组件划分章节，记录下问题修复时间，状态
+
+问题：
+
+1. dialog
+
+   - 点击按钮报错：runtime-core.esm-bundler.js:268 Uncaught TypeError: emit.includes is not a function
+   - 不同类型弹窗：图标应该在放在标题前面比较合适
+   - 关闭有延迟，体验不太好
+   - 居中对话框应该计算对话框高度或者固定高度，然后垂直要居中(即上下的间距一致)，而不是现在对话框的上面居中
+   - 要支持点击非对话框区域，按 esc 关闭弹窗，关闭时销毁弹窗，具体参考主流ui库的功能
+
+2. message 组件有问题，点击弹不出来
+
+3. nuxt.js:228 Uncaught (in promise) TypeError: Cannot read properties of null (reading '$nuxt') at tryUseNuxtApp (nuxt.js:228:59) at useNuxtApp (nuxt.js:234:27) at setup (index.js:30:21) at callWithErrorHandling (runtime-core.esm-bundler.js:199:19) at setupStatefulComponent (runtime-core.esm-bundler.js:7907:25) at setupComponent (runtime-core.esm-bundler.js:7868:36) at mountComponent (runtime-core.esm-bundler.js:5216:7) at processComponent (runtime-core.esm-bundler.js:5182:9) at patch (runtime-core.esm-bundler.js:4700:11) at ReactiveEffect.componentUpdateFn [as fn] (runtime-core.esm-bundler.js:5326:11)
+
+   service.ts:96 Uncaught
+
+   runtime-core.esm-bundler.js:51 [Vue warn]: Unhandled error during execution of component update at <BaseTransition appear=false persisted=false mode=undefined ... > at <Transition name="ui-message-fade" > at <Index content="这是一条简单的消息提示" type="info" id="message_1746888422341_7" ... >
+
+   runtime-dom.esm-bundler.js:28 Uncaught (in promise)
+
+---
 
 问题：
 
