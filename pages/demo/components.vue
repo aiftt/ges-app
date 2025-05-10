@@ -73,6 +73,7 @@ import DemoPagination from '~/components/demo/pagination-demo.vue'
 import DemoParagraph from '~/components/demo/paragraph.vue'
 import DemoPopconfirm from '~/components/demo/popconfirm.vue'
 import DemoPopover from '~/components/demo/popover.vue'
+import DemoProgress from '~/components/demo/progress.vue'
 import DemoQrcode from '~/components/demo/qrcode.vue'
 import DemoRadio from '~/components/demo/radio.vue'
 import DemoRate from '~/components/demo/rate.vue'
@@ -86,6 +87,7 @@ import DemoSplit from '~/components/demo/split.vue'
 import DemoSwitch from '~/components/demo/switch.vue'
 import DemoTable from '~/components/demo/table-demo.vue'
 import DemoTablePagination from '~/components/demo/table-pagination-demo.vue'
+import DemoTabs from '~/components/demo/tabs.vue'
 import DemoTag from '~/components/demo/tag.vue'
 import DemoText from '~/components/demo/text.vue'
 import DemoTextarea from '~/components/demo/textarea.vue'
@@ -193,12 +195,14 @@ const groups = ref<ComponentGroup[]>([
       { name: 'alert', label: 'Alert 警告提示', component: markRaw(DemoAlert) },
       { name: 'modal', label: 'Modal 模态对话框', component: markRaw(DemoModal) },
       { name: 'drawer', label: 'Drawer 抽屉', component: markRaw(DemoDrawer) },
+      { name: 'progress', label: 'Progress 进度条', component: markRaw(DemoProgress) },
     ],
   },
   {
     title: '导航组件',
     components: [
       { name: 'menu', label: 'Menu 菜单', component: markRaw(DemoMenu) },
+      { name: 'tabs', label: 'Tabs 标签页', component: markRaw(DemoTabs) },
     ],
   },
   {
