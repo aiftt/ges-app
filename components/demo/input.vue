@@ -3,7 +3,7 @@
  * 输入框组件演示
  * 创建日期: 2023-06-10
  * 作者: aiftt
- * 更新日期: 2023-06-10 - 初始实现
+ * 更新日期: 2025-05-10 - 添加更多表单功能和SSR兼容性的演示
  */
 import { ref } from 'vue'
 
@@ -35,9 +35,31 @@ const clearableInput = ref('可清除内容')
 // 错误状态
 const isError = ref(true)
 
+// 键盘事件
+const keyEventValue = ref('')
+const lastKeyEvent = ref('无')
+
+// 输入模式
+const numericInput = ref('')
+const telInput = ref('')
+const emailInput = ref('')
+
 // 切换错误状态
 function toggleError() {
   isError.value = !isError.value
+}
+
+// 键盘事件处理
+function handleKeyDown(event: KeyboardEvent) {
+  lastKeyEvent.value = `keydown: ${event.key}`
+}
+
+function handleKeyUp(event: KeyboardEvent) {
+  lastKeyEvent.value = `keyup: ${event.key}`
+}
+
+function handleKeyPress(event: KeyboardEvent) {
+  lastKeyEvent.value = `keypress: ${event.key}`
 }
 
 // 主题模式
@@ -191,6 +213,85 @@ function toggleDarkMode() {
       </div>
     </div>
 
+    <!-- 新增：键盘事件监听 -->
+    <div class="demo-section">
+      <h2 class="demo-title">
+        键盘事件监听
+      </h2>
+      <div class="demo-row">
+        <ui-input
+          v-model="keyEventValue"
+          placeholder="按下键盘按键触发事件"
+          @keydown="handleKeyDown"
+          @keyup="handleKeyUp"
+          @keypress="handleKeyPress"
+        />
+        <div class="demo-value">
+          最后触发的事件: {{ lastKeyEvent }}
+        </div>
+      </div>
+    </div>
+
+    <!-- 新增：输入模式 -->
+    <div class="demo-section">
+      <h2 class="demo-title">
+        输入模式
+      </h2>
+      <div class="demo-row">
+        <ui-input
+          v-model="numericInput"
+          inputmode="numeric"
+          placeholder="数字输入(移动设备显示数字键盘)"
+        />
+      </div>
+
+      <div class="demo-row">
+        <ui-input
+          v-model="telInput"
+          inputmode="tel"
+          placeholder="电话号码输入"
+        />
+      </div>
+
+      <div class="demo-row">
+        <ui-input
+          v-model="emailInput"
+          inputmode="email"
+          autocapitalize="off"
+          placeholder="邮箱地址输入"
+        />
+      </div>
+    </div>
+
+    <!-- 新增：表单属性 -->
+    <div class="demo-section">
+      <h2 class="demo-title">
+        表单属性
+      </h2>
+      <form class="demo-form" action="#" method="get">
+        <div class="demo-row">
+          <ui-input
+            name="username"
+            placeholder="用户名"
+            autocomplete="username"
+          />
+        </div>
+        <div class="demo-row">
+          <ui-input
+            type="password"
+            name="password"
+            placeholder="密码"
+            autocomplete="current-password"
+          />
+        </div>
+        <div class="demo-row">
+          <button type="submit" class="demo-button">
+            提交表单
+          </button>
+        </div>
+      </form>
+    </div>
+
     <div class="demo-section">
       <h2 class="demo-title">
         自定义样式
@@ -247,38 +348,47 @@ function toggleDarkMode() {
         代码示例
       </h2>
       <ui-code
-        code="<ui-input v-model='value' placeholder='请输入内容' />"
-        lang="vue"
-        :line-numbers="false"
-      />
+        code="<!-- 基本用法 -->
+<ui-input v-model='value' placeholder='请输入内容' />
 
-      <h3 class="demo-subtitle">
-        带图标的输入框
-      </h3>
-      <ui-code
-        code="<ui-input
-  v-model='searchValue'
-  prefix-icon='carbon:search'
-  placeholder='搜索...'
-  clearable
-/>"
-        lang="vue"
-        :line-numbers="false"
-      />
+<!-- 不同类型 -->
+<ui-input v-model='password' type='password' placeholder='请输入密码' />
 
-      <h3 class="demo-subtitle">
-        自定义样式
-      </h3>
-      <ui-code
-        code="<ui-input
-  v-model='input'
-  bg-color='#eef2ff'
+<!-- 状态变体 -->
+<ui-input disabled placeholder='禁用状态' />
+<ui-input readonly placeholder='只读状态' />
+<ui-input :error='true' error-message='错误信息' placeholder='错误状态' />
+
+<!-- 尺寸变体 -->
+<ui-input size='small' placeholder='小尺寸' />
+<ui-input size='default' placeholder='默认尺寸' />
+<ui-input size='large' placeholder='大尺寸' />
+
+<!-- 图标输入框 -->
+<ui-input prefix-icon='carbon:search' placeholder='搜索' />
+<ui-input prefix-icon='carbon:user' suffix-icon='carbon:checkmark' placeholder='用户名' />
+
+<!-- 可清除输入框 -->
+<ui-input v-model='clearValue' clearable placeholder='输入内容后可清除' />
+
+<!-- 键盘事件 -->
+<ui-input @keydown='handleKeyDown' @keyup='handleKeyUp' @keypress='handleKeyPress' />
+
+<!-- 输入模式 -->
+<ui-input inputmode='numeric' placeholder='数字输入' />
+<ui-input inputmode='email' autocapitalize='off' placeholder='邮箱地址' />
+
+<!-- 表单属性 -->
+<ui-input name='username' autocomplete='username' placeholder='用户名' />
+
+<!-- 自定义样式 -->
+<ui-input
   border-color='#6366f1'
+  bg-color='#eef2ff'
   text-color='#4338ca'
   placeholder='自定义样式'
 />"
-        lang="vue"
-        :line-numbers="false"
+        language="html"
       />
     </div>
 

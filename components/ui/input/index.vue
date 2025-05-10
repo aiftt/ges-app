@@ -3,9 +3,9 @@
  * 输入框组件
  * 创建日期: 2023-06-10
  * 作者: aiftt
- * 更新日期: 2023-06-10 - 初始实现
+ * 更新日期: 2025-05-10 - 增强SSR兼容性和添加更多表单功能
  */
-import { computed, ref, watch } from 'vue'
+import { computed, nextTick, onMounted, ref, watch } from 'vue'
 
 // 定义props
 const props = withDefaults(defineProps<{
@@ -24,7 +24,7 @@ const props = withDefaults(defineProps<{
   /**
    * 输入框值
    */
-  modelValue?: string
+  modelValue?: string | number
   /**
    * 是否禁用
    */
@@ -81,6 +81,30 @@ const props = withDefaults(defineProps<{
    * 自定义文本颜色
    */
   textColor?: string
+  /**
+   * 自动完成属性
+   */
+  autocomplete?: string
+  /**
+   * 所属表单ID
+   */
+  form?: string
+  /**
+   * 自动纠正
+   */
+  autocorrect?: 'on' | 'off'
+  /**
+   * 自动大小写
+   */
+  autocapitalize?: 'on' | 'off' | 'words' | 'characters'
+  /**
+   * 拼写检查
+   */
+  spellcheck?: boolean
+  /**
+   * 输入模式
+   */
+  inputmode?: 'none' | 'text' | 'decimal' | 'numeric' | 'tel' | 'search' | 'email' | 'url'
 }>(), {
   type: 'text',
   placeholder: '',
@@ -91,16 +115,22 @@ const props = withDefaults(defineProps<{
   size: 'default',
   error: false,
   autofocus: false,
+  autocomplete: 'off',
+  autocorrect: 'off',
+  spellcheck: false,
 })
 
 // 定义emit
 const emit = defineEmits<{
-  (e: 'update:modelValue', value: string): void
+  (e: 'update:modelValue', value: string | number): void
   (e: 'focus', event: FocusEvent): void
   (e: 'blur', event: FocusEvent): void
   (e: 'change', value: string): void
   (e: 'input', value: string): void
   (e: 'clear'): void
+  (e: 'keydown', event: KeyboardEvent): void
+  (e: 'keyup', event: KeyboardEvent): void
+  (e: 'keypress', event: KeyboardEvent): void
 }>()
 
 // 内部状态
@@ -108,6 +138,7 @@ const inputRef = ref<HTMLInputElement | null>(null)
 const isFocused = ref(false)
 const inputValue = ref(props.modelValue)
 const showPasswordText = ref(false)
+const isClientMounted = ref(false)
 
 // 监听modelValue变化
 watch(() => props.modelValue, (newValue) => {
@@ -117,6 +148,18 @@ watch(() => props.modelValue, (newValue) => {
 // 监听内部值变化
 watch(inputValue, (newValue) => {
   emit('update:modelValue', newValue)
+})
+
+// 在客户端挂载完成后标记已挂载状态
+onMounted(() => {
+  isClientMounted.value = true
+
+  // 仅在客户端且设置了autofocus时自动获取焦点
+  if (props.autofocus && import.meta.client) {
+    nextTick(() => {
+      focus()
+    })
+  }
 })
 
 // 输入事件处理
@@ -142,6 +185,19 @@ function handleFocus(event: FocusEvent) {
 function handleBlur(event: FocusEvent) {
   isFocused.value = false
   emit('blur', event)
+}
+
+// 按键事件处理
+function handleKeydown(event: KeyboardEvent) {
+  emit('keydown', event)
+}
+
+function handleKeyup(event: KeyboardEvent) {
+  emit('keyup', event)
+}
+
+function handleKeypress(event: KeyboardEvent) {
+  emit('keypress', event)
 }
 
 // 清除输入内容
@@ -225,12 +281,21 @@ defineExpose({
       :disabled="disabled"
       :readonly="readonly"
       :maxlength="maxlength"
-      :autofocus="autofocus"
+      :autofocus="autofocus && isClientMounted"
+      :autocomplete="autocomplete"
+      :form="form"
+      :autocorrect="autocorrect"
+      :autocapitalize="autocapitalize"
+      :spellcheck="spellcheck"
+      :inputmode="inputmode"
       class="ui-input-inner"
       @input="handleInput"
       @change="handleChange"
       @focus="handleFocus"
       @blur="handleBlur"
+      @keydown="handleKeydown"
+      @keyup="handleKeyup"
+      @keypress="handleKeypress"
     >
 
     <!-- 后缀内容 -->

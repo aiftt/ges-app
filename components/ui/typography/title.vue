@@ -80,9 +80,7 @@ const titleClasses = computed(() => [
 ])
 
 // 生成唯一ID避免冲突
-const titleId = import.meta.client
-  ? Math.random().toString(36).substring(2, 10)
-  : 'ssr-placeholder'
+const titleId = Math.random().toString(36).substring(2, 10)
 const copied = ref(false)
 
 // 自定义颜色CSS变量
@@ -111,17 +109,19 @@ function copyText() {
 </script>
 
 <template>
-  <component
-    :is="`h${level}`"
-    :id="`ui-title-${titleId}`"
-    :class="titleClasses"
-    @click="copyable && copyText()"
-  >
-    <slot />
-    <span v-if="copyable" class="ui-typography-title__copyable" :class="{ copied }">
-      <ui-icon :icon="copied ? 'carbon:checkmark' : 'carbon:copy'" size="small" />
-    </span>
-  </component>
+  <client-only>
+    <component
+      :is="`h${level}`"
+      :id="`ui-title-${titleId}`"
+      :class="titleClasses"
+      @click="copyable && copyText()"
+    >
+      <slot />
+      <span v-if="copyable" class="ui-typography-title__copyable" :class="{ copied }">
+        <ui-icon :icon="copied ? 'carbon:checkmark' : 'carbon:copy'" size="small" />
+      </span>
+    </component>
+  </client-only>
 </template>
 
 <style scoped>

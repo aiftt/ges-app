@@ -32,7 +32,7 @@
  * 2024-07-30 - 添加 Tree 组件
  * 2024-07-31 - 添加 Calendar 和 Tour 组件
  * 2024-08-01 - 添加 Watermark 和 Segmented 组件
- * 2024-08-04 - 添加 Dialog 和 Message 组件
+ * 2024-08-10 - 添加 Message 组件
  */
 import { computed, markRaw, ref } from 'vue'
 import DemoAlert from '~/components/demo/alert.vue'
@@ -70,6 +70,7 @@ import DemoList from '~/components/demo/list.vue'
 import DemoLogger from '~/components/demo/logger.vue'
 import DemoMenu from '~/components/demo/menu.vue'
 import DemoMessage from '~/components/demo/message.vue'
+import DemoMessageBox from '~/components/demo/messagebox.vue'
 import DemoModal from '~/components/demo/modal.vue'
 import DemoOverflowlist from '~/components/demo/overflowlist-demo.vue'
 import DemoPagination from '~/components/demo/pagination-demo.vue'
@@ -197,10 +198,11 @@ const groups = ref<ComponentGroup[]>([
     components: [
       { name: 'alert', label: 'Alert 警告提示', component: markRaw(DemoAlert) },
       { name: 'dialog', label: 'Dialog 对话框', component: markRaw(DemoDialog) },
-      { name: 'message', label: 'Message 消息', component: markRaw(DemoMessage) },
       { name: 'modal', label: 'Modal 模态对话框', component: markRaw(DemoModal) },
       { name: 'drawer', label: 'Drawer 抽屉', component: markRaw(DemoDrawer) },
       { name: 'progress', label: 'Progress 进度条', component: markRaw(DemoProgress) },
+      { name: 'message', label: 'Message 消息', component: markRaw(DemoMessage) },
+      { name: 'messagebox', label: 'MessageBox 消息弹框', component: markRaw(DemoMessageBox) },
     ],
   },
   {

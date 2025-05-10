@@ -61,7 +61,7 @@ function handleAsyncOk() {
   setTimeout(() => {
     loading.value = false
     asyncVisible.value = false
-    logger.success('异步操作完成')
+    logger.info('异步操作完成')
   }, 2000)
 }
 
