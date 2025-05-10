@@ -40,6 +40,6 @@ const theme = ref<Theme>('light')
     <!-- 添加全局消息和通知组件 -->
     <ui-message />
     <ui-notification />
-    <ui-messagebox />
+    <ui-message-box />
   </ui-config-provider>
 </template>
