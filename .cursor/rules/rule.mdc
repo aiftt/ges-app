@@ -1,0 +1,281 @@
+---
+description:
+globs:
+alwaysApply: true
+---
+# 项目规范汇总
+
+本文档整合了项目所有开发规范的核心内容，旨在提供简洁明了的指导，确保代码质量和一致性。
+
+## 核心规范
+
+### 总是要遵守的规则
+
+- 总是以中文回答问题
+- 总是使用成熟的工具库（如`@vueuse/core`、`lodash`），避免重复造轮子
+- 总是使用 `unocss classname + css variable` 实现UI组件和页面样式
+- 总是使用封装后的 logger 进行日志打印，禁止直接调用 `console.<api>`
+- 总是使用 `import.meta.client/server` 判断环境，禁用 `typeof window`
+- 总是遵循目录结构和命名规范
+- 总是在提供代码后执行 `pnpm lint` 检查并修复错误
+- 总是删除未使用的代码和变量
+- 总是使用 `v-bind + CSS变量` 实现动态样式，禁止内联样式
+- 总是以 `<ui-{name}>` 方式使用UI组件
+- 总是使用实际时间更新文件描述，禁止使用"当前"作为日期
+- 总是在组件demo代码时提供示例代码
+- 总是使用 scss 新语法 `@use 'style.scss';` 引入样式文件
+- 总是充分利用 scss 的特性，避免添加重复无意义的样式
+
+### 绝对禁止的行为
+
+- 禁止在`components/ui/`目录下创建驼峰命名的文件（如`CamelCase.vue`）
+
+- 禁止组件命名使用连字符（如`camel-case.vue`），正确格式：`camel/case.vue`
+
+- 禁止使用 `style.setProperty`，必须使用 `v-bind + CSS变量`
+
+- 禁止使用 `typeof window` 判断环境
+
+- 禁止使用 `ts-ignore` 规避问题
+
+- 禁止保留未使用的代码和变量
+
+- 禁止直接使用 `localStorage/sessionStorage` API
+
+- 禁止在单文件组件中混用 Options API 和 Composition API
+
+- 禁止任何导致类型错误、语法错误的代码
+
+
+
+## 文件组织规范
+
+### 目录结构
+
+Nuxt项目标准目录结构：
+
+- **assets/** - 静态资源（SCSS、图片等）
+- **components/** - Vue组件
+  - **ui/** - 自定义UI组件目录
+- **composables/** - 组合式函数
+- **content/** - 基于文件的CMS内容
+- **layouts/** - 布局组件
+- **middleware/** - 路由中间件
+- **pages/** - 页面组件
+- **plugins/** - 插件
+- **public/** - 静态文件
+- **server/** - 服务器端代码
+- **types/** - TypeScript类型定义
+- **utils/** - 工具函数
+
+### 命名规范
+
+- **变量/函数**: camelCase（小驼峰）
+- **类/接口**: PascalCase（大驼峰）
+- **常量**: UPPER_SNAKE_CASE（大写下划线）
+- **文件**: kebab-case（短横线）
+- **布尔变量**: 使用 `is`/`has`/`should` 前缀
+- **组件文件**: 子目录形式，如 `button/index.vue`、`date/picker.vue`
+- **事件名**：camelCase（小驼峰）
+
+## Vue组件开发规范
+
+### 基础规范
+
+- 总是用 `h(...)` 方式来实现函数式组件，禁止使用 `jsx` 方式声明组件
+
+### 基本结构
+
+```vue
+<script setup lang="ts" name="ComponentName">
+/**
+ * 组件描述
+ * 创建日期: YYYY-MM-DD
+ * 作者: [作者名称]
+ * 更新日期: YYYY-MM-DD - 更新内容
+ */
+
+// Props定义
+const props = withDefaults(defineProps<{
+  /**
+   * 属性描述
+   */
+  propName?: string
+}>(), {
+  propName: 'default'
+})
+
+// 事件定义
+const emit = defineEmits<{
+  (e: 'change', value: string): void
+  // 正确示例：合并同质化事件
+  (e: 'eNameA' | 'eNameB' | ...): void
+  // 错误示例：
+  (e: 'eNameA'): void
+  (e: 'eNameB'): void
+}>()
+
+// 其他逻辑...
+</script>
+
+<template>
+  <!-- 组件模板 -->
+</template>
+
+<style lang="scss" scoped>
+/* 组件样式 */
+</style>
+```
+
+### Composition API规范
+
+- 强制使用 `<script setup lang="ts">` 语法
+- 简单数据类型使用 `ref()`，引用类型使用 `reactive()`
+- 派生状态使用 `computed()`
+- 组合式函数命名为 `useXxx`，放在 `composables/` 目录下
+
+### Props和事件规范
+
+- 总是使用 `defineProps<{...}>()` 定义props，并用 `withDefaults` 设置默认值
+- 每个prop添加JSDoc注释说明用途
+- 使用 `defineEmits<{...}>()` 定义事件
+- Boolean类型props直接书写，错误示范：`<div :bool="true"/>`，正确示范：`<div bool/>`
+- 总是使用 `defineModel()` 实现双向绑定
+
+### 模板规范
+
+- v-for必须使用key
+- 避免模板中的复杂表达式，使用computed代替
+- 合理处理null/undefined情况，使用可选链操作符
+
+## UI组件规范
+
+### 组件开发
+
+- 总是开发组件对应的 demo 代码，并添加到 `pages/demo/components.vue` 页面，禁止单独新建页面
+
+### 目录和命名
+
+- UI组件放在 `components/ui/` 目录下
+- 单个组件：`ui/button/index.vue`
+- 组件族：`ui/typography/title.vue`
+- 使用方式：`<ui-button>` 或 `<ui-typography-title>`
+
+### 样式实现（v-bind + CSS变量）
+
+```vue
+<script setup>
+// 定义props
+const props = defineProps({
+  color: String
+})
+
+// 计算属性
+const colorVar = computed(() => props.color || null)
+</script>
+
+<style scoped>
+.ui-component {
+  --ui-component-color: v-bind(colorVar);
+  color: var(--ui-component-color, var(--ui-color-default));
+}
+</style>
+```
+
+### 主题实现
+
+- CSS变量在 `assets/scss/themes/` 下统一管理
+- 支持亮色和暗色两套主题
+- 组件使用主题变量，不硬编码颜色值
+
+## TypeScript规范
+
+- 禁止使用 `any` 类型，除非有充分理由
+- 使用接口（interface）定义对象结构，以 `I` 开头
+- 为函数添加返回类型
+- 使用 `type` 关键字导入类型
+
+```typescript
+import type { IUser } from '~/types';
+
+interface IResponse {
+  data: IUser[];
+  total: number;
+}
+
+async function fetchUsers(): Promise<IResponse> {
+  // 实现...
+}
+```
+
+## Nuxt特有规范
+
+### 路由和页面
+
+- `definePageMeta` 必须在script标签内，import语句之后
+- 使用目录结构自动路由，动态路由使用 `[id].vue` 语法
+
+### 数据获取
+
+- 使用 `useFetch` 和 `useAsyncData` 获取数据
+- 通过 `watch` 监听路由参数变化刷新数据
+
+```typescript
+const route = useRoute();
+const { data, refresh } = await useFetch(() => `/api/items/${route.params.id}`);
+
+watch(() => route.params.id, () => refresh());
+```
+
+### 状态管理
+
+- 简单状态用 `useState`，复杂状态用Pinia
+- 避免使用全局变量存储状态
+
+## 后端开发规范
+
+### API设计
+
+- 遵循RESTful原则
+- 使用统一的响应格式
+- API路径使用kebab-case
+
+### Node.js规范
+
+- 内置模块使用 `node:` 前缀导入
+- 使用 async/await 处理异步操作
+- 总是处理错误，实现优雅退出
+
+```typescript
+import * as fs from 'node:fs/promises';
+import * as path from 'node:path';
+
+async function readConfig() {
+  try {
+    const content = await fs.readFile(path.resolve('./config.json'), 'utf-8');
+    return JSON.parse(content);
+  } catch (error) {
+    logger.error('读取配置失败', error);
+    throw error;
+  }
+}
+```
+
+## 质量保证
+
+- 使用ESLint进行静态代码分析
+- 使用TypeScript进行类型检查
+- 提交代码前执行 `pnpm lint` 和 `pnpm typecheck`
+- 编写JSDoc风格的注释
+- 遵循DRY、KISS、YAGNI原则
+- 及时更新文档
+
+## 最佳实践
+
+- 组件拆分适当，保持单一职责
+- 避免过深的组件嵌套
+- 合理使用计算属性和监听器
+- 适当的错误处理和边界情况处理
+- 使用 `v-if` 替代 `v-show` 处理条件渲染复杂组件
+- 大型列表使用虚拟滚动
+- 按需加载大型依赖

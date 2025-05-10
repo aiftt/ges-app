@@ -41,6 +41,7 @@ import DemoAutocomplete from '~/components/demo/autocomplete.vue'
 import DemoAvatar from '~/components/demo/avatar.vue'
 import DemoBadge from '~/components/demo/badge.vue'
 import DemoBorder from '~/components/demo/border.vue'
+import DemoBreadcrumb from '~/components/demo/breadcrumb.vue'
 import DemoButton from '~/components/demo/button.vue'
 import DemoCalendar from '~/components/demo/calendar.vue'
 import DemoCard from '~/components/demo/card.vue'
@@ -86,6 +87,7 @@ import DemoResizeBox from '~/components/demo/resizebox.vue'
 import DemoScrollbar from '~/components/demo/scrollbar.vue'
 import DemoSegmented from '~/components/demo/segmented.vue'
 import DemoSelect from '~/components/demo/select.vue'
+import DemoSkeleton from '~/components/demo/skeleton.vue'
 import DemoSlider from '~/components/demo/slider.vue'
 import DemoSpace from '~/components/demo/space.vue'
 import DemoSplit from '~/components/demo/split.vue'
@@ -205,6 +207,7 @@ const groups = ref<ComponentGroup[]>([
       { name: 'message', label: 'Message 消息', component: markRaw(DemoMessage) },
       { name: 'messagebox', label: 'MessageBox 消息弹框', component: markRaw(DemoMessageBox) },
       { name: 'notification', label: 'Notification 通知', component: markRaw(DemoNotification) },
+      { name: 'skeleton', label: 'Skeleton 骨架屏', component: markRaw(DemoSkeleton) },
     ],
   },
   {
@@ -212,6 +215,7 @@ const groups = ref<ComponentGroup[]>([
     components: [
       { name: 'menu', label: 'Menu 菜单', component: markRaw(DemoMenu) },
       { name: 'tabs', label: 'Tabs 标签页', component: markRaw(DemoTabs) },
+      { name: 'breadcrumb', label: 'Breadcrumb 面包屑', component: markRaw(DemoBreadcrumb) },
     ],
   },
   {

@@ -1,4 +1,4 @@
-规范：请遵循 @.cursor/rules/now.mdc 及 @.cursor/rules/ 下的所有规范
+规范：请严格遵循 @.cursor/rules/rule.mdc 规范
 
 计划：@plan.md，按照计划推进，每次只完成两个组件以便更仔细的思考实现细节,别忘记添加对应的演示组件和在 pages/demo/components.vue 中添加演示代码。
 
@@ -6,7 +6,15 @@
 
 问题：
 
+1. Skeleton 骨架屏 动画 效果太low了 优化下动画效果，要有循序渐进的感觉
+2. Breadcrumb 面包屑 demo 代码中的 图标都不对
+
+---
+
+问题：
+
 1. messagebox
+
    - 我滚动的时候，滚动了后面的页面，而不是 messagebox 的实际内容
    - 高度有问题，应该按照内容的实际高度自动化，除非用户手动设置了高度
    - Icon 应该和标题一起 而不是和整个内容并列 太不合理了
