@@ -396,7 +396,7 @@ function setMinute(minute: number) {
   }
 }
 
-// 设置秒钟
+// 设置秒
 function setSecond(second: number) {
   if (seconds.value[currentEditingIndex.value] !== second) {
     seconds.value[currentEditingIndex.value] = second

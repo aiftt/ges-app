@@ -218,9 +218,9 @@ function parseColor(colorStr: string) {
   // 解析十六进制颜色
   if (colorStr.startsWith('#')) {
     const hex = colorStr.slice(1)
-    let r: number | undefined
-    let g: number | undefined
-    let b: number | undefined
+    let r = 0
+    let g = 0
+    let b = 0
     let a = 255
 
     // 处理不同格式的十六进制颜色
@@ -244,43 +244,182 @@ function parseColor(colorStr: string) {
       a = Number.parseInt(hex.substring(6, 8), 16)
     }
 
-    if (r !== undefined && g !== undefined && b !== undefined) {
-      rgbValues.value = { r, g, b }
-      alpha.value = Math.round((a / 255) * 100)
-
-      // 转换RGB到HSL
-      rgbToHsl(r, g, b)
+    // 检查r, g, b是否是有效数值
+    if (Number.isNaN(r) || Number.isNaN(g) || Number.isNaN(b)) {
+      r = 0
+      g = 0
+      b = 0
     }
-    return
-  }
-
-  // 解析RGB/RGBA颜色
-  const rgbMatch = colorStr.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/)
-  if (rgbMatch) {
-    const r = Number.parseInt(rgbMatch[1])
-    const g = Number.parseInt(rgbMatch[2])
-    const b = Number.parseInt(rgbMatch[3])
-    const a = rgbMatch[4] ? Number.parseFloat(rgbMatch[4]) : 1
 
     rgbValues.value = { r, g, b }
-    alpha.value = Math.round(a * 100)
+    alpha.value = Math.round((a / 255) * 100)
 
-    // 转换RGB到HSL
-    rgbToHsl(r, g, b)
-    return
+    // 转换为HSL
+    const rgbToHsl = (r: number, g: number, b: number) => {
+      r /= 255
+      g /= 255
+      b /= 255
+
+      const max = Math.max(r, g, b)
+      const min = Math.min(r, g, b)
+      let h = 0
+      let s = 0
+      const l = (max + min) / 2
+
+      if (max !== min) {
+        const d = max - min
+        s = l > 0.5 ? d / (2 - max - min) : d / (max + min)
+
+        switch (max) {
+          case r:
+            h = ((g - b) / d + (g < b ? 6 : 0))
+            break
+          case g:
+            h = ((b - r) / d + 2)
+            break
+          case b:
+            h = ((r - g) / d + 4)
+            break
+        }
+
+        h *= 60
+      }
+
+      return {
+        h: Math.round(h),
+        s: Math.round(s * 100),
+        l: Math.round(l * 100),
+      }
+    }
+
+    const hsl = rgbToHsl(r, g, b)
+    hue.value = hsl.h
+    saturation.value = hsl.s
+    lightness.value = hsl.l
   }
+  // 解析rgba颜色
+  else if (colorStr.startsWith('rgba')) {
+    const rgba = colorStr.match(/rgba\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*([\d.]+)\s*\)/)
+    if (rgba) {
+      const r = Number.parseInt(rgba[1], 10)
+      const g = Number.parseInt(rgba[2], 10)
+      const b = Number.parseInt(rgba[3], 10)
+      const a = Number.parseFloat(rgba[4])
 
-  // 解析HSL/HSLA颜色
-  const hslMatch = colorStr.match(/hsla?\((\d+),\s*(\d+)%,\s*(\d+)%(?:,\s*([\d.]+))?\)/)
-  if (hslMatch) {
-    hue.value = Number.parseInt(hslMatch[1])
-    saturation.value = Number.parseInt(hslMatch[2])
-    lightness.value = Number.parseInt(hslMatch[3])
-    alpha.value = hslMatch[4] ? Math.round(Number.parseFloat(hslMatch[4]) * 100) : 100
+      // 检查r, g, b是否是有效数值
+      if (Number.isNaN(r) || Number.isNaN(g) || Number.isNaN(b) || Number.isNaN(a)) {
+        rgbValues.value = { r: 0, g: 0, b: 0 }
+        alpha.value = 100
+      }
+      else {
+        rgbValues.value = { r, g, b }
+        alpha.value = Math.round(a * 100)
+      }
 
-    // 更新RGB值
-    const rgb = hslToRgbObj(hue.value, saturation.value, lightness.value)
-    rgbValues.value = rgb
+      // 转换为HSL
+      const rgbToHsl = (r: number, g: number, b: number) => {
+        r /= 255
+        g /= 255
+        b /= 255
+
+        const max = Math.max(r, g, b)
+        const min = Math.min(r, g, b)
+        let h = 0
+        let s = 0
+        const l = (max + min) / 2
+
+        if (max !== min) {
+          const d = max - min
+          s = l > 0.5 ? d / (2 - max - min) : d / (max + min)
+
+          switch (max) {
+            case r:
+              h = ((g - b) / d + (g < b ? 6 : 0))
+              break
+            case g:
+              h = ((b - r) / d + 2)
+              break
+            case b:
+              h = ((r - g) / d + 4)
+              break
+          }
+
+          h *= 60
+        }
+
+        return {
+          h: Math.round(h),
+          s: Math.round(s * 100),
+          l: Math.round(l * 100),
+        }
+      }
+
+      const hsl = rgbToHsl(rgbValues.value.r, rgbValues.value.g, rgbValues.value.b)
+      hue.value = hsl.h
+      saturation.value = hsl.s
+      lightness.value = hsl.l
+    }
+  }
+  // 解析rgb颜色
+  else if (colorStr.startsWith('rgb')) {
+    const rgb = colorStr.match(/rgb\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)/)
+    if (rgb) {
+      const r = Number.parseInt(rgb[1], 10)
+      const g = Number.parseInt(rgb[2], 10)
+      const b = Number.parseInt(rgb[3], 10)
+
+      // 检查r, g, b是否是有效数值
+      if (Number.isNaN(r) || Number.isNaN(g) || Number.isNaN(b)) {
+        rgbValues.value = { r: 0, g: 0, b: 0 }
+      }
+      else {
+        rgbValues.value = { r, g, b }
+      }
+      alpha.value = 100
+
+      // 转换为HSL
+      const rgbToHsl = (r: number, g: number, b: number) => {
+        r /= 255
+        g /= 255
+        b /= 255
+
+        const max = Math.max(r, g, b)
+        const min = Math.min(r, g, b)
+        let h = 0
+        let s = 0
+        const l = (max + min) / 2
+
+        if (max !== min) {
+          const d = max - min
+          s = l > 0.5 ? d / (2 - max - min) : d / (max + min)
+
+          switch (max) {
+            case r:
+              h = ((g - b) / d + (g < b ? 6 : 0))
+              break
+            case g:
+              h = ((b - r) / d + 2)
+              break
+            case b:
+              h = ((r - g) / d + 4)
+              break
+          }
+
+          h *= 60
+        }
+
+        return {
+          h: Math.round(h),
+          s: Math.round(s * 100),
+          l: Math.round(l * 100),
+        }
+      }
+
+      const hsl = rgbToHsl(rgbValues.value.r, rgbValues.value.g, rgbValues.value.b)
+      hue.value = hsl.h
+      saturation.value = hsl.s
+      lightness.value = hsl.l
+    }
   }
 }
 
@@ -317,47 +456,6 @@ function rgbToHsl(r: number, g: number, b: number) {
   hue.value = Math.round(h * 360)
   saturation.value = Math.round(s * 100)
   lightness.value = Math.round(l * 100)
-}
-
-// 添加 HSL 到 RGB 对象的转换函数
-function hslToRgbObj(h: number, s: number, l: number): { r: number, g: number, b: number } {
-  h /= 360
-  s /= 100
-  l /= 100
-
-  let r, g, b
-
-  if (s === 0) {
-    r = g = b = l
-  }
-  else {
-    const hue2rgb = (p: number, q: number, t: number) => {
-      if (t < 0)
-        t += 1
-      if (t > 1)
-        t -= 1
-      if (t < 1 / 6)
-        return p + (q - p) * 6 * t
-      if (t < 1 / 2)
-        return q
-      if (t < 2 / 3)
-        return p + (q - p) * (2 / 3 - t) * 6
-      return p
-    }
-
-    const q = l < 0.5 ? l * (1 + s) : l + s - l * s
-    const p = 2 * l - q
-
-    r = hue2rgb(p, q, h + 1 / 3)
-    g = hue2rgb(p, q, h)
-    b = hue2rgb(p, q, h - 1 / 3)
-  }
-
-  return {
-    r: Math.round(r * 255),
-    g: Math.round(g * 255),
-    b: Math.round(b * 255),
-  }
 }
 
 // 添加 RGB 输入处理

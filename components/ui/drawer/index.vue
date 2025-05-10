@@ -211,7 +211,7 @@ async function closeDrawer() {
     document.body.style.overflow = ''
     document.removeEventListener('keydown', handleKeyDown)
     emit('closed')
-  }, 150)
+  }, 300) // 增加延迟，确保动画完全结束
 }
 
 // 处理键盘事件
@@ -536,7 +536,7 @@ onBeforeUnmount(() => {
 /* 遮罩动画 */
 .ui-drawer-mask-enter-active,
 .ui-drawer-mask-leave-active {
-  transition: opacity 0.2s ease;
+  transition: opacity 0.3s ease;
 }
 
 .ui-drawer-mask-enter-from,
@@ -547,7 +547,7 @@ onBeforeUnmount(() => {
 /* 左侧弹出动画 */
 .ui-drawer-left-enter-active,
 .ui-drawer-left-leave-active {
-  transition: transform 0.2s cubic-bezier(0.3, 1.3, 0.3, 1);
+  transition: transform 0.3s cubic-bezier(0.17, 0.84, 0.44, 1);
 }
 
 .ui-drawer-left-enter-from,
@@ -558,7 +558,7 @@ onBeforeUnmount(() => {
 /* 右侧弹出动画 */
 .ui-drawer-right-enter-active,
 .ui-drawer-right-leave-active {
-  transition: transform 0.2s cubic-bezier(0.3, 1.3, 0.3, 1);
+  transition: transform 0.3s cubic-bezier(0.17, 0.84, 0.44, 1);
 }
 
 .ui-drawer-right-enter-from,
@@ -569,7 +569,7 @@ onBeforeUnmount(() => {
 /* 顶部弹出动画 */
 .ui-drawer-top-enter-active,
 .ui-drawer-top-leave-active {
-  transition: transform 0.2s cubic-bezier(0.3, 1.3, 0.3, 1);
+  transition: transform 0.3s cubic-bezier(0.17, 0.84, 0.44, 1);
 }
 
 .ui-drawer-top-enter-from,
@@ -580,7 +580,7 @@ onBeforeUnmount(() => {
 /* 底部弹出动画 */
 .ui-drawer-bottom-enter-active,
 .ui-drawer-bottom-leave-active {
-  transition: transform 0.2s cubic-bezier(0.3, 1.3, 0.3, 1);
+  transition: transform 0.3s cubic-bezier(0.17, 0.84, 0.44, 1);
 }
 
 .ui-drawer-bottom-enter-from,

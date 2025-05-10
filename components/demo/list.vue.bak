@@ -1,0 +1,694 @@
+<script setup lang="ts" name="DemoList">
+/**
+ * 列表组件示例页面
+ * 创建日期: 2024-07-29
+ * 作者: aiftt
+ */
+
+// 基础列表示例数据
+const basicListData = [
+  '项目 1',
+  '项目 2',
+  '项目 3',
+  '项目 4',
+  '项目 5',
+]
+
+// 对象列表示例数据
+const objectListData = [
+  { id: 1, title: '阿里云服务器', description: 'ECS云服务器 - 8核16G' },
+  { id: 2, title: '数据库服务', description: 'MySQL数据库 - 高可用版' },
+  { id: 3, title: '对象存储', description: 'OSS对象存储 - 标准存储类型' },
+  { id: 4, title: 'CDN加速', description: '内容分发网络 - 全球加速' },
+  { id: 5, title: '域名解析', description: 'DNS解析服务 - 企业版' },
+]
+
+// 复杂列表示例数据
+const complexListData = [
+  {
+    id: 1,
+    title: '新的产品需求讨论',
+    avatar: 'https://randomuser.me/api/portraits/men/32.jpg',
+    author: '张三',
+    datetime: '2024-07-29 10:15',
+    description: '关于新产品的需求分析和功能规划讨论',
+    content: '我们需要讨论一下新产品的需求和功能规划，请相关同事于下周一上午10点在会议室集合。',
+    tags: ['产品', '需求', '讨论'],
+    actions: [
+      { label: '编辑', icon: 'carbon:edit', onClick: () => console.warn('编辑项目1') },
+      { label: '删除', icon: 'carbon:trash-can', onClick: () => console.warn('删除项目1') },
+    ],
+  },
+  {
+    id: 2,
+    title: '用户体验优化计划',
+    avatar: 'https://randomuser.me/api/portraits/women/44.jpg',
+    author: '李四',
+    datetime: '2024-07-29 14:30',
+    description: '基于用户反馈的产品体验优化方案',
+    content: '根据最近收集到的用户反馈，我们需要对产品的以下几个方面进行优化：1. 登录流程简化；2. 首页布局调整；3. 操作响应速度提升。',
+    tags: ['用户体验', '优化'],
+    actions: [
+      { label: '编辑', icon: 'carbon:edit', onClick: () => console.warn('编辑项目2') },
+      { label: '删除', icon: 'carbon:trash-can', onClick: () => console.warn('删除项目2') },
+    ],
+  },
+  {
+    id: 3,
+    title: '系统性能监控报告',
+    avatar: 'https://randomuser.me/api/portraits/men/68.jpg',
+    author: '王五',
+    datetime: '2024-07-29 16:45',
+    description: '上周系统性能监控数据分析',
+    content: '上周系统整体运行稳定，平均响应时间为0.8秒，服务可用性达到99.9%，CPU使用率峰值为75%，内存使用率峰值为68%。',
+    tags: ['系统', '性能', '监控'],
+    actions: [
+      { label: '编辑', icon: 'carbon:edit', onClick: () => console.warn('编辑项目3') },
+      { label: '删除', icon: 'carbon:trash-can', onClick: () => console.warn('删除项目3') },
+    ],
+  },
+]
+
+// 悬停和选中演示
+const isSelected = ref(1)
+function selectItem(id: number) {
+  isSelected.value = id
+}
+
+// 分页数据示例
+const _paginationListData = Array.from({ length: 25 }, (_, i) => ({
+  id: i + 1,
+  title: `项目 ${i + 1}`,
+  description: `这是项目 ${i + 1} 的描述文本，用于演示列表分页功能。`,
+}))
+</script>
+
+<template>
+  <div class="p-6">
+    <h1 class="mb-6 text-2xl font-bold">
+      列表 (List)
+    </h1>
+
+    <div class="space-y-10">
+      <!-- 基础列表 -->
+      <section>
+        <h2 class="mb-4 text-xl font-semibold">
+          基础列表
+        </h2>
+        <div class="rounded-lg bg-white p-4 shadow dark:bg-gray-800">
+          <ui-list :data-source="basicListData" bordered />
+        </div>
+
+        <div class="mt-6 rounded bg-gray-100 p-4 dark:bg-gray-700">
+          <pre class="overflow-auto text-sm"><code>{{ `<ui-list :data-source="['项目 1', '项目 2', '项目 3', '项目 4', '项目 5']" bordered />` }}</code></pre>
+        </div>
+      </section>
+
+      <!-- 自定义列表项 -->
+      <section>
+        <h2 class="mb-4 text-xl font-semibold">
+          自定义列表项
+        </h2>
+        <div class="rounded-lg bg-white p-4 shadow dark:bg-gray-800">
+          <ui-list :data-source="objectListData" bordered>
+            <template #item="{ item }">
+              <ui-list-item
+                :title="item.title"
+                :description="item.description"
+              />
+            </template>
+          </ui-list>
+        </div>
+
+        <div class="mt-6 rounded bg-gray-100 p-4 dark:bg-gray-700">
+          <pre class="overflow-auto text-sm"><code>{{ `<ui-list :data-source="objectListData" bordered>
+  <template #item="{ item }">
+    <ui-list-item
+      :title="item.title"
+      :description="item.description"
+    />
+  </template>
+</ui-list>` }}</code></pre>
+        </div>
+      </section>
+
+      <!-- 复杂列表 -->
+      <section>
+        <h2 class="mb-4 text-xl font-semibold">
+          复杂列表
+        </h2>
+        <div class="rounded-lg bg-white p-4 shadow dark:bg-gray-800">
+          <ui-list
+            :data-source="complexListData"
+            header="通知列表"
+            footer="共 3 条通知"
+            bordered
+            :item-gap="16"
+          >
+            <template #item="{ item }">
+              <ui-list-item
+                :title="item.title"
+                :description="item.description"
+                :content="item.content"
+                :actions="item.actions"
+                clickable
+                :selected="isSelected === item.id"
+                @click="selectItem(item.id)"
+              >
+                <template #prefix>
+                  <ui-avatar :src="item.avatar" size="default" />
+                </template>
+                <template #suffix>
+                  <div class="text-sm text-gray-500 dark:text-gray-400">
+                    {{ item.datetime }}
+                  </div>
+                </template>
+                <template #title>
+                  <div class="flex items-center">
+                    <span>{{ item.title }}</span>
+                    <div class="ml-2 flex">
+                      <ui-tag v-for="tag in item.tags" :key="tag" size="small" class="mr-1">
+                        {{ tag }}
+                      </ui-tag>
+                    </div>
+                  </div>
+                </template>
+              </ui-list-item>
+            </template>
+          </ui-list>
+        </div>
+
+        <div class="mt-6 rounded bg-gray-100 p-4 dark:bg-gray-700">
+          <pre class="overflow-auto text-sm"><code>{{ `<ui-list
+  :data-source="complexListData"
+  header="通知列表"
+  footer="共 3 条通知"
+  bordered
+  :item-gap="16"
+>
+  <template #item="{ item }">
+    <ui-list-item
+      :title="item.title"
+      :description="item.description"
+      :content="item.content"
+      :actions="item.actions"
+      clickable
+      :selected="isSelected === item.id"
+      @click="selectItem(item.id)"
+    >
+      <template #prefix>
+        <ui-avatar :src="item.avatar" size="default" />
+      </template>
+      <template #suffix>
+        <div class="text-sm text-gray-500">
+          {{ item.datetime }}
+        </div>
+      </template>
+      <template #title>
+        <div class="flex items-center">
+          <span>{{ item.title }}</span>
+          <div class="ml-2 flex">
+            <ui-tag v-for="tag in item.tags" :key="tag" size="small" class="mr-1">
+              {{ tag }}
+            </ui-tag>
+          </div>
+        </div>
+      </template>
+    </ui-list-item>
+  </template>
+</ui-list>` }}</code></pre>
+        </div>
+      </section>
+
+      <!-- 列表布局 -->
+      <section>
+        <h2 class="text-xl font-semibold mb-4">水平列表布局</h2>
+        <div class="p-4 bg-white dark:bg-gray-800 rounded-lg shadow">
+          <ui-list
+            :data-source="objectListData.slice(0, 3)"
+            layout="horizontal"
+            :item-gap="16"
+            bordered
+          >
+            <template #item="{ item }">
+              <ui-list-item
+                :title="item.title"
+                :description="item.description"
+                style="width: 200px"
+              />
+            </template>
+          </ui-list>
+        </div>
+
+        <div class="mt-6 bg-gray-100 dark:bg-gray-700 p-4 rounded">
+          <pre class="text-sm overflow-auto"><code>{{ `<ui-list
+  :data-source="objectListData.slice(0, 3)"
+  layout="horizontal"
+  :item-gap="16"
+  bordered
+>
+  <template #item="{ item }">
+    <ui-list-item
+      :title="item.title"
+      :description="item.description"
+      style="width: 200px"
+    />
+  </template>
+</ui-list>` }}</code></pre>
+        </div>
+      </section>
+
+      <!-- 不同尺寸 -->
+      <section>
+        <h2 class="text-xl font-semibold mb-4">不同尺寸</h2>
+        <div class="p-4 bg-white dark:bg-gray-800 rounded-lg shadow space-y-8">
+          <div>
+            <h3 class="font-medium mb-2">小尺寸</h3>
+            <ui-list
+              :data-source="basicListData.slice(0, 3)"
+              bordered
+              size="small"
+            />
+          </div>
+
+          <div>
+            <h3 class="font-medium mb-2">默认尺寸</h3>
+            <ui-list
+              :data-source="basicListData.slice(0, 3)"
+              bordered
+              size="default"
+            />
+          </div>
+
+          <div>
+            <h3 class="font-medium mb-2">大尺寸</h3>
+            <ui-list
+              :data-source="basicListData.slice(0, 3)"
+              bordered
+              size="large"
+            />
+          </div>
+        </div>
+
+        <div class="mt-6 bg-gray-100 dark:bg-gray-700 p-4 rounded">
+          <pre class="text-sm overflow-auto"><code>{{ `<!-- 小尺寸 -->
+<ui-list :data-source="basicListData" bordered size="small" />
+
+<!-- 默认尺寸 -->
+<ui-list :data-source="basicListData" bordered size="default" />
+
+<!-- 大尺寸 -->
+<ui-list :data-source="basicListData" bordered size="large" />` }}</code></pre>
+        </div>
+      </section>
+
+      <!-- 分页列表 -->
+      <section>
+        <h2 class="text-xl font-semibold mb-4">分页列表</h2>
+        <div class="p-4 bg-white dark:bg-gray-800 rounded-lg shadow">
+          <ui-list
+            :data-source="_paginationListData"
+            header="分页列表示例"
+            bordered
+            :pagination="true"
+          >
+            <template #item="{ item }">
+              <ui-list-item
+                :title="item.title"
+                :description="item.description"
+              />
+            </template>
+          </ui-list>
+        </div>
+
+        <div class="mt-6 bg-gray-100 dark:bg-gray-700 p-4 rounded">
+          <pre class="text-sm overflow-auto"><code>{{ `<ui-list
+  :data-source="_paginationListData"
+  header="分页列表示例"
+  bordered
+  :pagination="true"
+>
+  <template #item="{ item }">
+    <ui-list-item
+      :title="item.title"
+      :description="item.description"
+    />
+  </template>
+</ui-list>` }}</code></pre>
+        </div>
+      </section>
+
+      <!-- 加载中状态 -->
+      <section>
+        <h2 class="text-xl font-semibold mb-4">加载中状态</h2>
+        <div class="p-4 bg-white dark:bg-gray-800 rounded-lg shadow">
+          <ui-list
+            :data-source="[]"
+            loading
+            loading-text="数据加载中..."
+            bordered
+          />
+        </div>
+
+        <div class="mt-6 bg-gray-100 dark:bg-gray-700 p-4 rounded">
+          <pre class="text-sm overflow-auto"><code>{{ `<ui-list
+  :data-source="[]"
+  loading
+  loading-text="数据加载中..."
+  bordered
+/>` }}</code></pre>
+        </div>
+      </section>
+
+      <!-- 自定义空状态 -->
+      <section>
+        <h2 class="text-xl font-semibold mb-4">自定义空状态</h2>
+        <div class="p-4 bg-white dark:bg-gray-800 rounded-lg shadow">
+          <ui-list
+            :data-source="[]"
+            bordered
+            empty-text="暂无列表数据"
+          >
+            <template #empty>
+              <ui-empty description="暂无列表数据">
+                <template #extra>
+                  <ui-button type="primary" size="small">创建新项目</ui-button>
+                </template>
+              </ui-empty>
+            </template>
+          </ui-list>
+        </div>
+
+        <div class="mt-6 bg-gray-100 dark:bg-gray-700 p-4 rounded">
+          <pre class="text-sm overflow-auto"><code>{{ `<ui-list
+  :data-source="[]"
+  bordered
+  empty-text="暂无列表数据"
+>
+  <template #empty>
+    <ui-empty description="暂无列表数据">
+      <template #extra>
+        <ui-button type="primary" size="small">创建新项目</ui-button>
+      </template>
+    </ui-empty>
+  </template>
+</ui-list>` }}</code></pre>
+        </div>
+      </section>
+
+      <!-- API文档 -->
+      <section>
+        <h2 class="text-xl font-semibold mb-4">API</h2>
+
+        <h3 class="text-lg font-medium mt-4 mb-2">List Props</h3>
+        <table class="min-w-full border border-gray-300 dark:border-gray-700">
+          <thead class="bg-gray-100 dark:bg-gray-700">
+            <tr>
+              <th class="py-2 px-4 border-b text-left">属性</th>
+              <th class="py-2 px-4 border-b text-left">类型</th>
+              <th class="py-2 px-4 border-b text-left">默认值</th>
+              <th class="py-2 px-4 border-b text-left">说明</th>
+            </tr>
+          </thead>
+          <tbody class="bg-white dark:bg-gray-800">
+            <tr>
+              <td class="py-2 px-4 border-b">dataSource</td>
+              <td class="py-2 px-4 border-b">any[]</td>
+              <td class="py-2 px-4 border-b">[]</td>
+              <td class="py-2 px-4 border-b">列表数据源</td>
+            </tr>
+            <tr>
+              <td class="py-2 px-4 border-b">layout</td>
+              <td class="py-2 px-4 border-b">'horizontal' | 'vertical'</td>
+              <td class="py-2 px-4 border-b">'vertical'</td>
+              <td class="py-2 px-4 border-b">列表布局方向</td>
+            </tr>
+            <tr>
+              <td class="py-2 px-4 border-b">size</td>
+              <td class="py-2 px-4 border-b">'small' | 'default' | 'large'</td>
+              <td class="py-2 px-4 border-b">'default'</td>
+              <td class="py-2 px-4 border-b">列表尺寸</td>
+            </tr>
+            <tr>
+              <td class="py-2 px-4 border-b">bordered</td>
+              <td class="py-2 px-4 border-b">boolean</td>
+              <td class="py-2 px-4 border-b">false</td>
+              <td class="py-2 px-4 border-b">是否显示边框</td>
+            </tr>
+            <tr>
+              <td class="py-2 px-4 border-b">split</td>
+              <td class="py-2 px-4 border-b">boolean</td>
+              <td class="py-2 px-4 border-b">true</td>
+              <td class="py-2 px-4 border-b">是否显示分割线</td>
+            </tr>
+            <tr>
+              <td class="py-2 px-4 border-b">header</td>
+              <td class="py-2 px-4 border-b">string</td>
+              <td class="py-2 px-4 border-b">-</td>
+              <td class="py-2 px-4 border-b">列表头部</td>
+            </tr>
+            <tr>
+              <td class="py-2 px-4 border-b">footer</td>
+              <td class="py-2 px-4 border-b">string</td>
+              <td class="py-2 px-4 border-b">-</td>
+              <td class="py-2 px-4 border-b">列表底部</td>
+            </tr>
+            <tr>
+              <td class="py-2 px-4 border-b">loading</td>
+              <td class="py-2 px-4 border-b">boolean</td>
+              <td class="py-2 px-4 border-b">false</td>
+              <td class="py-2 px-4 border-b">是否加载中</td>
+            </tr>
+            <tr>
+              <td class="py-2 px-4 border-b">loadingText</td>
+              <td class="py-2 px-4 border-b">string</td>
+              <td class="py-2 px-4 border-b">'加载中...'</td>
+              <td class="py-2 px-4 border-b">加载中的文本</td>
+            </tr>
+            <tr>
+              <td class="py-2 px-4 border-b">pagination</td>
+              <td class="py-2 px-4 border-b">boolean | object</td>
+              <td class="py-2 px-4 border-b">false</td>
+              <td class="py-2 px-4 border-b">分页配置，可以是布尔值或分页配置对象</td>
+            </tr>
+            <tr>
+              <td class="py-2 px-4 border-b">emptyText</td>
+              <td class="py-2 px-4 border-b">string</td>
+              <td class="py-2 px-4 border-b">'暂无数据'</td>
+              <td class="py-2 px-4 border-b">空状态文本</td>
+            </tr>
+            <tr>
+              <td class="py-2 px-4 border-b">itemGap</td>
+              <td class="py-2 px-4 border-b">number | string</td>
+              <td class="py-2 px-4 border-b">0</td>
+              <td class="py-2 px-4 border-b">列表项间距</td>
+            </tr>
+            <tr>
+              <td class="py-2 px-4 border-b">itemPadding</td>
+              <td class="py-2 px-4 border-b">number | string</td>
+              <td class="py-2 px-4 border-b">0</td>
+              <td class="py-2 px-4 border-b">列表项内边距</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3 class="text-lg font-medium mt-6 mb-2">List Events</h3>
+        <table class="min-w-full border border-gray-300 dark:border-gray-700">
+          <thead class="bg-gray-100 dark:bg-gray-700">
+            <tr>
+              <th class="py-2 px-4 border-b text-left">事件名</th>
+              <th class="py-2 px-4 border-b text-left">说明</th>
+              <th class="py-2 px-4 border-b text-left">参数</th>
+            </tr>
+          </thead>
+          <tbody class="bg-white dark:bg-gray-800">
+            <tr>
+              <td class="py-2 px-4 border-b">change</td>
+              <td class="py-2 px-4 border-b">分页变化事件</td>
+              <td class="py-2 px-4 border-b">(page: number)</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3 class="text-lg font-medium mt-6 mb-2">List Slots</h3>
+        <table class="min-w-full border border-gray-300 dark:border-gray-700">
+          <thead class="bg-gray-100 dark:bg-gray-700">
+            <tr>
+              <th class="py-2 px-4 border-b text-left">名称</th>
+              <th class="py-2 px-4 border-b text-left">说明</th>
+              <th class="py-2 px-4 border-b text-left">参数</th>
+            </tr>
+          </thead>
+          <tbody class="bg-white dark:bg-gray-800">
+            <tr>
+              <td class="py-2 px-4 border-b">default</td>
+              <td class="py-2 px-4 border-b">列表内容</td>
+              <td class="py-2 px-4 border-b">-</td>
+            </tr>
+            <tr>
+              <td class="py-2 px-4 border-b">header</td>
+              <td class="py-2 px-4 border-b">列表头部</td>
+              <td class="py-2 px-4 border-b">-</td>
+            </tr>
+            <tr>
+              <td class="py-2 px-4 border-b">footer</td>
+              <td class="py-2 px-4 border-b">列表底部</td>
+              <td class="py-2 px-4 border-b">-</td>
+            </tr>
+            <tr>
+              <td class="py-2 px-4 border-b">item</td>
+              <td class="py-2 px-4 border-b">列表项</td>
+              <td class="py-2 px-4 border-b">{ item: any, index: number }</td>
+            </tr>
+            <tr>
+              <td class="py-2 px-4 border-b">items</td>
+              <td class="py-2 px-4 border-b">列表项集合</td>
+              <td class="py-2 px-4 border-b">{ items: any[] }</td>
+            </tr>
+            <tr>
+              <td class="py-2 px-4 border-b">empty</td>
+              <td class="py-2 px-4 border-b">空状态</td>
+              <td class="py-2 px-4 border-b">-</td>
+            </tr>
+            <tr>
+              <td class="py-2 px-4 border-b">loading</td>
+              <td class="py-2 px-4 border-b">加载中状态</td>
+              <td class="py-2 px-4 border-b">-</td>
+            </tr>
+            <tr>
+              <td class="py-2 px-4 border-b">pagination</td>
+              <td class="py-2 px-4 border-b">分页</td>
+              <td class="py-2 px-4 border-b">-</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3 class="text-lg font-medium mt-6 mb-2">ListItem Props</h3>
+        <table class="min-w-full border border-gray-300 dark:border-gray-700">
+          <thead class="bg-gray-100 dark:bg-gray-700">
+            <tr>
+              <th class="py-2 px-4 border-b text-left">属性</th>
+              <th class="py-2 px-4 border-b text-left">类型</th>
+              <th class="py-2 px-4 border-b text-left">默认值</th>
+              <th class="py-2 px-4 border-b text-left">说明</th>
+            </tr>
+          </thead>
+          <tbody class="bg-white dark:bg-gray-800">
+            <tr>
+              <td class="py-2 px-4 border-b">content</td>
+              <td class="py-2 px-4 border-b">string</td>
+              <td class="py-2 px-4 border-b">-</td>
+              <td class="py-2 px-4 border-b">列表项内容</td>
+            </tr>
+            <tr>
+              <td class="py-2 px-4 border-b">title</td>
+              <td class="py-2 px-4 border-b">string</td>
+              <td class="py-2 px-4 border-b">-</td>
+              <td class="py-2 px-4 border-b">列表项标题</td>
+            </tr>
+            <tr>
+              <td class="py-2 px-4 border-b">description</td>
+              <td class="py-2 px-4 border-b">string</td>
+              <td class="py-2 px-4 border-b">-</td>
+              <td class="py-2 px-4 border-b">列表项描述</td>
+            </tr>
+            <tr>
+              <td class="py-2 px-4 border-b">prefix</td>
+              <td class="py-2 px-4 border-b">string</td>
+              <td class="py-2 px-4 border-b">-</td>
+              <td class="py-2 px-4 border-b">列表项前缀</td>
+            </tr>
+            <tr>
+              <td class="py-2 px-4 border-b">suffix</td>
+              <td class="py-2 px-4 border-b">string</td>
+              <td class="py-2 px-4 border-b">-</td>
+              <td class="py-2 px-4 border-b">列表项后缀</td>
+            </tr>
+            <tr>
+              <td class="py-2 px-4 border-b">icon</td>
+              <td class="py-2 px-4 border-b">string</td>
+              <td class="py-2 px-4 border-b">-</td>
+              <td class="py-2 px-4 border-b">列表项图标</td>
+            </tr>
+            <tr>
+              <td class="py-2 px-4 border-b">image</td>
+              <td class="py-2 px-4 border-b">string</td>
+              <td class="py-2 px-4 border-b">-</td>
+              <td class="py-2 px-4 border-b">列表项图片</td>
+            </tr>
+            <tr>
+              <td class="py-2 px-4 border-b">actions</td>
+              <td class="py-2 px-4 border-b">Array<{ label: string, icon?: string, onClick?: () => void }></td>
+              <td class="py-2 px-4 border-b">[]</td>
+              <td class="py-2 px-4 border-b">列表项操作列表</td>
+            </tr>
+            <tr>
+              <td class="py-2 px-4 border-b">onClick</td>
+              <td class="py-2 px-4 border-b">() => void</td>
+              <td class="py-2 px-4 border-b">-</td>
+              <td class="py-2 px-4 border-b">列表项点击事件</td>
+            </tr>
+            <tr>
+              <td class="py-2 px-4 border-b">clickable</td>
+              <td class="py-2 px-4 border-b">boolean</td>
+              <td class="py-2 px-4 border-b">false</td>
+              <td class="py-2 px-4 border-b">列表项是否可点击</td>
+            </tr>
+            <tr>
+              <td class="py-2 px-4 border-b">selected</td>
+              <td class="py-2 px-4 border-b">boolean</td>
+              <td class="py-2 px-4 border-b">false</td>
+              <td class="py-2 px-4 border-b">列表项是否选中</td>
+            </tr>
+            <tr>
+              <td class="py-2 px-4 border-b">disabled</td>
+              <td class="py-2 px-4 border-b">boolean</td>
+              <td class="py-2 px-4 border-b">false</td>
+              <td class="py-2 px-4 border-b">列表项是否禁用</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3 class="text-lg font-medium mt-6 mb-2">ListItem Slots</h3>
+        <table class="min-w-full border border-gray-300 dark:border-gray-700">
+          <thead class="bg-gray-100 dark:bg-gray-700">
+            <tr>
+              <th class="py-2 px-4 border-b text-left">名称</th>
+              <th class="py-2 px-4 border-b text-left">说明</th>
+            </tr>
+          </thead>
+          <tbody class="bg-white dark:bg-gray-800">
+            <tr>
+              <td class="py-2 px-4 border-b">default</td>
+              <td class="py-2 px-4 border-b">列表项内容</td>
+            </tr>
+            <tr>
+              <td class="py-2 px-4 border-b">prefix</td>
+              <td class="py-2 px-4 border-b">列表项前缀</td>
+            </tr>
+            <tr>
+              <td class="py-2 px-4 border-b">suffix</td>
+              <td class="py-2 px-4 border-b">列表项后缀</td>
+            </tr>
+            <tr>
+              <td class="py-2 px-4 border-b">title</td>
+              <td class="py-2 px-4 border-b">列表项标题</td>
+            </tr>
+            <tr>
+              <td class="py-2 px-4 border-b">description</td>
+              <td class="py-2 px-4 border-b">列表项描述</td>
+            </tr>
+            <tr>
+              <td class="py-2 px-4 border-b">content</td>
+              <td class="py-2 px-4 border-b">列表项内容</td>
+            </tr>
+            <tr>
+              <td class="py-2 px-4 border-b">actions</td>
+              <td class="py-2 px-4 border-b">列表项操作区域</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+    </div>
+  </div>
+</template>

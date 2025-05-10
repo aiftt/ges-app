@@ -28,6 +28,9 @@
  * 2024-07-16 - 添加 Table 和 Pagination 组件
  * 2024-07-22 - 添加 Carousel 组件
  * 2024-07-23 - 添加 Empty 组件
+ * 2024-07-20 - 添加日历组件
+ * 2024-07-30 - 添加 Tree 组件
+ * 2024-07-31 - 添加 Calendar 和 Tour 组件
  */
 import { computed, markRaw, ref } from 'vue'
 import DemoAlert from '~/components/demo/alert.vue'
@@ -37,6 +40,7 @@ import DemoAvatar from '~/components/demo/avatar.vue'
 import DemoBadge from '~/components/demo/badge.vue'
 import DemoBorder from '~/components/demo/border.vue'
 import DemoButton from '~/components/demo/button.vue'
+import DemoCalendar from '~/components/demo/calendar.vue'
 import DemoCard from '~/components/demo/card.vue'
 import DemoCarousel from '~/components/demo/carousel.vue'
 import DemoCascader from '~/components/demo/cascader.vue'
@@ -45,22 +49,21 @@ import DemoCode from '~/components/demo/code.vue'
 import DemoCollapse from '~/components/demo/collapse.vue'
 import DemoColorPicker from '~/components/demo/color-picker.vue'
 import DemoColor from '~/components/demo/color.vue'
+import DemoComment from '~/components/demo/comment.vue'
 import DemoComponents from '~/components/demo/components.vue'
 import DemoConfigProvider from '~/components/demo/config-provider.vue'
 import DemoContainer from '~/components/demo/container.vue'
-// import DemoDatePicker from '~/components/demo/date-picker.vue' // 暂未实现
+import DemoDescriptions from '~/components/demo/descriptions.vue'
 import DemoDivider from '~/components/demo/divider.vue'
 import DemoDrawer from '~/components/demo/drawer.vue'
 import DemoDynamicStyles from '~/components/demo/dynamic-styles.vue'
 import DemoEmpty from '~/components/demo/empty.vue'
-// import DemoGrid from '~/components/demo/grid.vue' // 暂未实现
 import DemoIcon from '~/components/demo/icon.vue'
 import DemoImage from '~/components/demo/image.vue'
 import DemoInputNumber from '~/components/demo/input-number.vue'
 import DemoInputTag from '~/components/demo/input-tag.vue'
 import DemoInput from '~/components/demo/input.vue'
-// import DemoLayout from '~/components/demo/layout.vue' // 暂未实现
-// import DemoLink from '~/components/demo/link.vue' // 暂未实现
+import DemoList from '~/components/demo/list.vue'
 import DemoLogger from '~/components/demo/logger.vue'
 import DemoMenu from '~/components/demo/menu.vue'
 import DemoModal from '~/components/demo/modal.vue'
@@ -89,6 +92,8 @@ import DemoTimePicker from '~/components/demo/time-picker.vue'
 import DemoTimeline from '~/components/demo/timeline.vue'
 import DemoTitle from '~/components/demo/title.vue'
 import DemoTooltip from '~/components/demo/tooltip.vue'
+import DemoTour from '~/components/demo/tour.vue'
+import DemoTree from '~/components/demo/tree.vue'
 import DemoTrigger from '~/components/demo/trigger.vue'
 import DemoTsx from '~/components/demo/tsx.vue'
 import DemoTypography from '~/components/demo/typography.vue'
@@ -117,12 +122,9 @@ const groups = ref<ComponentGroup[]>([
       { name: 'divider', label: 'Divider 分割线', component: markRaw(DemoDivider) },
       { name: 'space', label: 'Space 间距', component: markRaw(DemoSpace) },
       { name: 'container', label: 'Container 容器', component: markRaw(DemoContainer) },
-      // { name: 'layout', label: 'Layout 布局', component: DemoLayout }, // 暂未实现
-      // { name: 'grid', label: 'Grid 栅格', component: DemoGrid }, // 暂未实现
       { name: 'text', label: 'Text 文本', component: markRaw(DemoText) },
       { name: 'color', label: 'Color 色彩', component: markRaw(DemoColor) },
       { name: 'border', label: 'Border 边框', component: markRaw(DemoBorder) },
-      // { name: 'link', label: 'Link 链接', component: DemoLink }, // 暂未实现
       { name: 'tooltip', label: 'Tooltip 文字提示', component: markRaw(DemoTooltip) },
       { name: 'popover', label: 'Popover 气泡卡片', component: markRaw(DemoPopover) },
       { name: 'popconfirm', label: 'Popconfirm 气泡确认框', component: markRaw(DemoPopconfirm) },
@@ -151,6 +153,12 @@ const groups = ref<ComponentGroup[]>([
       { name: 'carousel', label: 'Carousel 轮播图', component: markRaw(DemoCarousel) },
       { name: 'empty', label: 'Empty 空状态', component: markRaw(DemoEmpty) },
       { name: 'timeline', label: 'Timeline 时间线', component: markRaw(DemoTimeline) },
+      { name: 'comment', label: 'Comment 评论', component: markRaw(DemoComment) },
+      { name: 'descriptions', label: 'Descriptions 描述列表', component: markRaw(DemoDescriptions) },
+      { name: 'list', label: 'List 列表', component: markRaw(DemoList) },
+      { name: 'tree', label: 'Tree 树形控件', component: markRaw(DemoTree) },
+      { name: 'calendar', label: 'Calendar 日历', component: markRaw(DemoCalendar) },
+      { name: 'tour', label: 'Tour 漫游式引导', component: markRaw(DemoTour) },
     ],
   },
   {
@@ -172,7 +180,6 @@ const groups = ref<ComponentGroup[]>([
       { name: 'ColorPicker', label: 'ColorPicker 颜色选择器', component: markRaw(DemoColorPicker) },
       { name: 'Rate', label: 'Rate 评分', component: markRaw(DemoRate) },
       { name: 'upload', label: 'Upload 上传', component: markRaw(DemoUpload) },
-      // { name: 'date-picker', label: 'DatePicker 日期选择器', component: DemoDatePicker }, // 暂未实现
     ],
   },
   {
@@ -210,7 +217,6 @@ const groups = ref<ComponentGroup[]>([
       { name: 'components', label: 'Components 组件集合', component: markRaw(DemoComponents) },
     ],
   },
-  // 移除重复的布局组件分组，因为其中引用了未实现的组件，且大部分组件与基础组件中重复
 ])
 
 // 当前选中的组件

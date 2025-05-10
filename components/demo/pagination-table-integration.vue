@@ -224,7 +224,7 @@ const smallTableData = computed(() => {
         :current-page="basicCurrentPage"
         :page-size="basicPageSize"
 
-        stripe pagination border
+        pagination stripe border
         @page-change="handlePageChange"
       >
         <template #status="{ row }">

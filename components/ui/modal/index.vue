@@ -183,6 +183,9 @@ const buttonColorVar = computed(() => props.buttonColor || null)
 // 模态框可见状态
 const visible = ref(props.modelValue)
 const animating = ref(false)
+// 用于异步关闭的倒计时
+const asyncCloseTimer = ref(0)
+const asyncClosing = ref(false)
 
 // 监听visible变化
 watch(() => props.modelValue, (newVal) => {
@@ -206,11 +209,11 @@ async function openModal() {
 
   animating.value = true
   await nextTick()
-  // 等待动画结束 - 缩短时间
+  // 等待动画结束
   setTimeout(() => {
     animating.value = false
     emit('opened')
-  }, 150) // 从300ms减少为150ms
+  }, 300) // 恢复为300ms以确保动画完成
 }
 
 // 关闭模态框
@@ -221,7 +224,7 @@ async function closeModal() {
   emit('close')
   animating.value = true
 
-  // 缩短延迟时间，减少停顿感
+  // 完整的动画时间
   setTimeout(() => {
     visible.value = false
     animating.value = false
@@ -229,7 +232,25 @@ async function closeModal() {
     document.body.style.overflow = ''
     document.removeEventListener('keydown', handleKeyDown)
     emit('closed')
-  }, 150) // 从300ms减少为150ms
+  }, 300) // 恢复为300ms以确保动画完成
+}
+
+// 异步关闭模态框，提供倒计时
+function asyncClose(timeout = 3) {
+  if (asyncClosing.value)
+    return
+
+  asyncClosing.value = true
+  asyncCloseTimer.value = timeout
+
+  const timer = setInterval(() => {
+    asyncCloseTimer.value--
+    if (asyncCloseTimer.value <= 0) {
+      clearInterval(timer)
+      asyncClosing.value = false
+      handleUpdateVisible(false)
+    }
+  }, 1000)
 }
 
 // 处理键盘事件
@@ -251,6 +272,10 @@ function handleOk() {
   emit('ok')
   if (!props.okLoading) {
     handleUpdateVisible(false)
+  }
+  else {
+    // 当okLoading为true时，启用异步关闭
+    asyncClose()
   }
 }
 
@@ -279,11 +304,8 @@ const modalStyle = computed(() => {
   // 设置位置
   if (props.centered) {
     style.top = '50%'
-    style.marginTop = props.fullscreen ? 0 : '-15vh'
-    // 改用margin代替transform，防止与动画冲突
-    style.transform = ''
-    style.margin = props.fullscreen ? 0 : '0 auto'
-    style.marginTop = '-15vh'
+    style.transform = 'translateY(-50%)'
+    style.margin = '0 auto'
   }
   else {
     style.top = typeof props.top === 'number' ? `${props.top}px` : props.top
@@ -408,13 +430,17 @@ const getContainer = computed(() => {
             <!-- 内容区域 -->
             <div v-auto-animate class="ui-modal__body" :style="contentStyle">
               <slot />
+              <!-- 异步关闭倒计时提示 -->
+              <div v-if="asyncClosing" class="ui-modal__async-close-tip">
+                {{ asyncCloseTimer }}秒后自动关闭
+              </div>
             </div>
 
             <!-- 底部区域 -->
             <div v-if="showFooter" class="ui-modal__footer">
               <slot name="footer">
                 <ui-button
-                  :disabled="cancelDisabled"
+                  :disabled="cancelDisabled || asyncClosing"
                   @click="handleCancel"
                 >
                   {{ cancelText }}
@@ -422,7 +448,7 @@ const getContainer = computed(() => {
                 <ui-button
                   :type="okType"
                   :loading="okLoading"
-                  :disabled="okDisabled"
+                  :disabled="okDisabled || asyncClosing"
                   @click="handleOk"
                 >
                   {{ okText }}
@@ -541,6 +567,18 @@ const getContainer = computed(() => {
   flex: 1;
   padding: var(--ui-modal-body-padding, 24px);
   overflow: auto;
+  position: relative;
+}
+
+.ui-modal__async-close-tip {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background-color: var(--ui-color-warning-bg, rgba(245, 158, 11, 0.1));
+  color: var(--ui-color-warning, #f59e0b);
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
 }
 
 .ui-modal__footer {
@@ -559,7 +597,7 @@ const getContainer = computed(() => {
 /* 淡入淡出 */
 .ui-modal-fade-enter-active,
 .ui-modal-fade-leave-active {
-  transition: opacity 0.2s ease;
+  transition: opacity 0.3s ease;
 }
 
 .ui-modal-fade-enter-from,
@@ -570,7 +608,7 @@ const getContainer = computed(() => {
 /* 缩放 */
 .ui-modal-zoom-enter-active,
 .ui-modal-zoom-leave-active {
-  transition: all 0.2s cubic-bezier(0.3, 1.3, 0.3, 1);
+  transition: all 0.3s cubic-bezier(0.3, 1.3, 0.3, 1);
 }
 
 .ui-modal-zoom-enter-from,
@@ -582,7 +620,7 @@ const getContainer = computed(() => {
 /* 从下往上 */
 .ui-modal-slide-up-enter-active,
 .ui-modal-slide-up-leave-active {
-  transition: all 0.2s cubic-bezier(0.3, 1.3, 0.3, 1);
+  transition: all 0.3s cubic-bezier(0.3, 1.3, 0.3, 1);
 }
 
 .ui-modal-slide-up-enter-from,
@@ -594,7 +632,7 @@ const getContainer = computed(() => {
 /* 从上往下 */
 .ui-modal-slide-down-enter-active,
 .ui-modal-slide-down-leave-active {
-  transition: all 0.2s cubic-bezier(0.3, 1.3, 0.3, 1);
+  transition: all 0.3s cubic-bezier(0.3, 1.3, 0.3, 1);
 }
 
 .ui-modal-slide-down-enter-from,
@@ -606,7 +644,7 @@ const getContainer = computed(() => {
 /* 从右往左 */
 .ui-modal-slide-left-enter-active,
 .ui-modal-slide-left-leave-active {
-  transition: all 0.2s cubic-bezier(0.3, 1.3, 0.3, 1);
+  transition: all 0.3s cubic-bezier(0.3, 1.3, 0.3, 1);
 }
 
 .ui-modal-slide-left-enter-from,
@@ -618,7 +656,7 @@ const getContainer = computed(() => {
 /* 从左往右 */
 .ui-modal-slide-right-enter-active,
 .ui-modal-slide-right-leave-active {
-  transition: all 0.2s cubic-bezier(0.3, 1.3, 0.3, 1);
+  transition: all 0.3s cubic-bezier(0.3, 1.3, 0.3, 1);
 }
 
 .ui-modal-slide-right-enter-from,
@@ -630,7 +668,7 @@ const getContainer = computed(() => {
 /* 蒙层动画 */
 .ui-modal-mask-enter-active,
 .ui-modal-mask-leave-active {
-  transition: opacity 0.2s ease;
+  transition: opacity 0.3s ease;
 }
 
 .ui-modal-mask-enter-from,

@@ -177,7 +177,7 @@ async function loadLanguage(lang: string) {
 
   try {
     // 按需加载语言模块
-    const langModule = await import(`highlight.js/lib/languages/${lang}`).catch(() => null)
+    const langModule = await import(/* @vite-ignore */ `highlight.js/lib/languages/${lang}`).catch(() => null)
     if (langModule) {
       hljs.registerLanguage(lang, langModule.default)
       codeLogger.info(`Language loaded: ${lang}`)

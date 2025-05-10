@@ -375,14 +375,14 @@ function handleIndicatorClick(index: number) {
           height="300px"
         />
       </div>
-      <p class="mt-2 text-sm text-gray-600">
+      <div class="mt-2 text-sm text-gray-600">
         演示不同的<code>imageMode</code>选项：
         <ul class="ml-5 mt-2 list-disc">
           <li><code>auto</code>: 自动检测字符串是否为图片URL</li>
           <li><code>always</code>: 始终将items中的字符串作为图片URL处理</li>
           <li><code>never</code>: 不将字符串自动处理为图片，直接显示内容或使用slot</li>
         </ul>
-      </p>
+      </div>
     </section>
   </div>
 </template>
