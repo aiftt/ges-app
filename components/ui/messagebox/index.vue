@@ -1,359 +1,140 @@
-<script setup lang="ts" name="UiMessageBox">
+<script setup lang="ts" name="UiMessagebox">
 /**
- * MessageBox 消息弹框组件
- * 创建日期: 2024-08-10
+ * 消息弹框组件
+ * 创建日期: 2025-05-14
  * 作者: aiftt
- * 更新日期: 2024-08-11 - 修复布局问题，改进图标位置和滚动逻辑
+ * 更新日期: 2025-05-14 - 初始实现
  */
 
-import type { MessageBoxType } from './types'
-import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
+import { onBeforeUnmount, onMounted } from 'vue'
+import { useMessageBox } from '~/composables/useMessageBox'
 
-// 定义props类型
-const props = withDefaults(defineProps<{
-  /**
-   * 是否可见
-   */
-  modelValue?: boolean
-  /**
-   * 消息内容
-   */
-  message: string
-  /**
-   * 标题
-   */
-  title?: string
-  /**
-   * 类型
-   */
-  type?: MessageBoxType
-  /**
-   * 是否显示关闭图标
-   */
-  showClose?: boolean
-  /**
-   * 是否显示取消按钮
-   */
-  showCancelButton?: boolean
-  /**
-   * 是否显示确认按钮
-   */
-  showConfirmButton?: boolean
-  /**
-   * 确认按钮文本
-   */
-  confirmButtonText?: string
-  /**
-   * 取消按钮文本
-   */
-  cancelButtonText?: string
-  /**
-   * 确认按钮类型
-   */
-  confirmButtonType?: 'primary' | 'success' | 'warning' | 'danger'
-  /**
-   * 取消按钮类型
-   */
-  cancelButtonType?: 'default' | 'primary' | 'danger'
-  /**
-   * 是否显示输入框
-   */
-  showInput?: boolean
-  /**
-   * 输入框类型
-   */
-  inputType?: string
-  /**
-   * 输入框占位文本
-   */
-  inputPlaceholder?: string
-  /**
-   * 输入框初始值
-   */
-  inputValue?: string
-  /**
-   * 是否以HTML方式渲染消息
-   */
-  dangerouslyUseHTMLString?: boolean
-  /**
-   * 是否显示图标
-   */
-  showIcon?: boolean
-  /**
-   * 自定义图标
-   */
-  icon?: string
-  /**
-   * 是否在点击遮罩层时关闭
-   */
-  closeOnClickMask?: boolean
-  /**
-   * 是否在按下ESC键时关闭
-   */
-  closeOnPressEscape?: boolean
-  /**
-   * 自定义z-index
-   */
-  zIndex?: number
-  /**
-   * 自定义class
-   */
-  customClass?: string
-  /**
-   * 自定义宽度
-   */
-  width?: string | number
-  /**
-   * 弹框顶部距离
-   */
-  top?: string | number
-  /**
-   * 确认按钮加载状态
-   */
-  confirmLoading?: boolean
-  /**
-   * 取消按钮加载状态
-   */
-  cancelLoading?: boolean
-  /**
-   * 自定义高度
-   */
-  height?: string | number
-}>(), {
-  modelValue: false,
-  type: 'info',
-  showClose: true,
-  showCancelButton: false,
-  showConfirmButton: true,
-  confirmButtonText: '确定',
-  cancelButtonText: '取消',
-  confirmButtonType: 'primary',
-  cancelButtonType: 'default',
-  showInput: false,
-  inputType: 'text',
-  inputPlaceholder: '请输入',
-  dangerouslyUseHTMLString: false,
-  showIcon: true,
-  closeOnClickMask: true,
-  closeOnPressEscape: true,
-  zIndex: 2000,
-  width: 420,
-  top: 100,
-  confirmLoading: false,
-  cancelLoading: false,
-})
+const { instances, close } = useMessageBox()
 
-// 定义事件
-const emit = defineEmits<{
-  (e: 'update:modelValue', value: boolean): void
-  (e: 'confirm', value?: string): void
-  (e: 'cancel'): void
-  (e: 'close'): void
-  (e: 'open'): void
-  (e: 'update:inputValue', value: string): void
-}>()
-
-// 图标映射
-const iconMap = {
-  info: 'heroicons:information-circle',
-  success: 'heroicons:check-circle',
-  warning: 'heroicons:exclamation-triangle',
-  error: 'heroicons:x-circle',
-  confirm: 'heroicons:question-mark-circle',
-}
-
-// 计算当前图标
-const currentIcon = computed(() => {
-  if (props.icon)
-    return props.icon
-  return iconMap[props.type]
-})
-
-// 输入框值
-const inputValue = ref(props.inputValue || '')
-
-// 更新输入值
-watch(() => props.inputValue, (newVal) => {
-  if (newVal !== undefined) {
-    inputValue.value = newVal
-  }
-})
-
-// 当输入值变化时，触发事件
-watch(inputValue, (newVal) => {
-  emit('update:inputValue', newVal)
-})
-
-// 弹框样式
-const dialogStyle = computed(() => {
-  const style: Record<string, string> = {
-    width: typeof props.width === 'number' ? `${props.width}px` : props.width,
-    marginTop: typeof props.top === 'number' ? `${props.top}px` : props.top,
-    zIndex: props.zIndex.toString(),
-  }
-
-  if (props.height) {
-    style.height = typeof props.height === 'number' ? `${props.height}px` : props.height
-  }
-
-  return style
-})
-
-// 处理确认
-function handleConfirm() {
-  if (props.confirmLoading)
-    return
-
-  emit('confirm', props.showInput ? inputValue.value : undefined)
-}
-
-// 处理取消
-function handleCancel() {
-  if (props.cancelLoading)
-    return
-
-  emit('cancel')
-  close()
-}
-
-// 处理关闭
-function handleClose() {
-  emit('close')
-  close()
-}
-
-// 点击遮罩层
-function handleMaskClick() {
-  if (props.closeOnClickMask) {
-    close()
-  }
-}
-
-// 处理键盘事件
-function handleKeydown(e: KeyboardEvent) {
-  // ESC键关闭
-  if (e.key === 'Escape' && props.closeOnPressEscape) {
-    close()
-  }
-  // Enter键确认 (当焦点不在输入框中时)
-  else if (e.key === 'Enter' && !props.showInput && document.activeElement?.tagName !== 'INPUT') {
-    handleConfirm()
-  }
-}
-
-// 关闭弹框
-function close() {
-  emit('update:modelValue', false)
-}
-
-// 打开弹框时聚焦输入框
-const inputRef = ref<HTMLInputElement | null>(null)
-watch(() => props.modelValue, async (newVal) => {
-  if (newVal) {
-    emit('open')
-    if (props.showInput) {
-      await nextTick()
-      inputRef.value?.focus()
+// 监听 ESC 按键
+function handleKeydown(event: KeyboardEvent) {
+  if (event.key === 'Escape') {
+    const visibleInstances = instances.value.filter(instance => instance.visible && instance.closeOnPressEscape)
+    if (visibleInstances.length > 0) {
+      // 关闭最后一个可见的实例
+      close(visibleInstances[visibleInstances.length - 1].id, 'cancel')
     }
   }
-})
+}
 
-// 添加键盘事件监听
+// 处理点击确认按钮
+function handleConfirm(id: string) {
+  const instance = instances.value.find(instance => instance.id === id)
+  if (instance) {
+    close(id, 'confirm')
+  }
+}
+
+// 处理点击取消按钮
+function handleCancel(id: string) {
+  close(id, 'cancel')
+}
+
+// 处理点击关闭按钮
+function handleClose(id: string) {
+  close(id, 'close')
+}
+
+// 处理点击蒙层
+function handleModalClick(id: string) {
+  const instance = instances.value.find(instance => instance.id === id)
+  if (instance && instance.closeOnClickModal) {
+    close(id, 'cancel')
+  }
+}
+
+// 防止点击内容时关闭
+function handleContentClick(event: Event) {
+  event.stopPropagation()
+}
+
+// 获取图标名称
+function getIconName(type: string): string {
+  switch (type) {
+    case 'success':
+      return 'carbon:checkmark-filled'
+    case 'warning':
+      return 'carbon:warning-filled'
+    case 'error':
+      return 'carbon:error-filled'
+    case 'info':
+    default:
+      return 'carbon:information-filled'
+  }
+}
+
+// 添加和移除事件监听器
 onMounted(() => {
   window.addEventListener('keydown', handleKeydown)
 })
 
-// 移除键盘事件监听
-onUnmounted(() => {
+onBeforeUnmount(() => {
   window.removeEventListener('keydown', handleKeydown)
 })
 </script>
 
 <template>
   <Teleport to="body">
-    <Transition name="ui-messagebox-fade">
-      <div
-        v-if="modelValue"
-        class="ui-messagebox-wrapper"
-        :style="{ zIndex }"
-      >
-        <!-- 遮罩层 -->
-        <div class="ui-messagebox-mask" @click="handleMaskClick" />
-
-        <!-- 弹框 -->
-        <div
-          class="ui-messagebox"
-          :class="[
-            customClass,
-            `ui-messagebox--${type}`,
-            { 'ui-messagebox--with-input': showInput },
-          ]"
-          :style="dialogStyle"
-        >
-          <!-- 关闭按钮 -->
-          <div v-if="showClose" class="ui-messagebox__close" @click="handleClose">
-            <ui-icon icon="heroicons:x-mark" />
-          </div>
-
-          <!-- 标题区域 -->
-          <div v-if="title" class="ui-messagebox__header">
-            <!-- 图标与标题放在一起 -->
-            <div v-if="showIcon" class="ui-messagebox__icon">
-              <ui-icon :icon="currentIcon" :class="`ui-messagebox__icon--${type}`" />
-            </div>
-            <div class="ui-messagebox__title">
-              {{ title }}
-            </div>
-          </div>
-
-          <!-- 内容区域 (可滚动) -->
-          <div class="ui-messagebox__body">
-            <!-- 消息内容 -->
-            <div class="ui-messagebox__message">
-              <template v-if="dangerouslyUseHTMLString">
-                <div v-html="message" />
-              </template>
-              <template v-else>
-                {{ message }}
-              </template>
+    <div v-for="instance in instances" :key="instance.id" class="ui-messagebox-wrapper">
+      <Transition name="messagebox-fade">
+        <div v-if="instance.visible" class="ui-messagebox-overlay" @click="handleModalClick(instance.id)">
+          <div class="ui-messagebox" @click="handleContentClick">
+            <!-- 标题栏 -->
+            <div class="ui-messagebox-header">
+              <div class="ui-messagebox-header-content">
+                <ClientOnly>
+                  <ui-icon
+                    v-if="instance.icon || instance.type"
+                    :icon="instance.icon || getIconName(instance.type || 'info')"
+                    class="ui-messagebox-icon"
+                    :class="`ui-messagebox-icon--${instance.type || 'info'}`"
+                  />
+                </ClientOnly>
+                <span class="ui-messagebox-title">{{ instance.title }}</span>
+              </div>
+              <ClientOnly v-if="instance.showClose">
+                <ui-button
+                  class="ui-messagebox-close-btn"
+                  @click="handleClose(instance.id)"
+                >
+                  <ui-icon icon="carbon:close" />
+                </ui-button>
+              </ClientOnly>
             </div>
 
-            <!-- 输入框 -->
-            <div v-if="showInput" class="ui-messagebox__input">
-              <ui-input
-                ref="inputRef"
-                v-model="inputValue"
-                :type="inputType"
-                :placeholder="inputPlaceholder"
-              />
+            <!-- 内容区 -->
+            <div class="ui-messagebox-body">
+              <div class="ui-messagebox-content">
+                {{ instance.content }}
+              </div>
             </div>
-          </div>
 
-          <!-- 底部按钮 -->
-          <div class="ui-messagebox__footer">
-            <ui-button
-              v-if="showCancelButton"
-              :type="cancelButtonType"
-              class="ui-messagebox__cancel"
-              :loading="cancelLoading"
-              @click="handleCancel"
-            >
-              {{ cancelButtonText }}
-            </ui-button>
-
-            <ui-button
-              v-if="showConfirmButton"
-              :type="confirmButtonType"
-              class="ui-messagebox__confirm"
-              :loading="confirmLoading"
-              @click="handleConfirm"
-            >
-              {{ confirmButtonText }}
-            </ui-button>
+            <!-- 按钮区 -->
+            <div class="ui-messagebox-footer">
+              <ui-button
+                v-if="instance.showCancelButton"
+                class="ui-messagebox-btn"
+                @click="handleCancel(instance.id)"
+              >
+                {{ instance.cancelButtonText }}
+              </ui-button>
+              <ui-button
+                class="ui-messagebox-btn ui-messagebox-btn--primary"
+                :loading="instance.confirmButtonLoading"
+                @click="handleConfirm(instance.id)"
+              >
+                {{ instance.confirmButtonText }}
+              </ui-button>
+            </div>
           </div>
         </div>
-      </div>
-    </Transition>
+      </Transition>
+    </div>
   </Teleport>
 </template>
 
@@ -361,171 +142,154 @@ onUnmounted(() => {
 .ui-messagebox-wrapper {
   position: fixed;
   top: 0;
-  bottom: 0;
   left: 0;
-  right: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  width: 100%;
+  height: 100%;
+  z-index: var(--ui-z-index-60, 10000);
+  pointer-events: none;
 }
 
-.ui-messagebox-mask {
+.ui-messagebox-overlay {
   position: absolute;
   top: 0;
-  bottom: 0;
   left: 0;
-  right: 0;
+  width: 100%;
+  height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: auto;
 }
 
 .ui-messagebox {
-  position: relative;
-  margin: 0 auto;
-  background-color: white;
-  border-radius: 4px;
-  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
-  padding: 20px;
-  box-sizing: border-box;
+  width: 420px;
+  max-width: 90vw;
+  background-color: var(--ui-color-bg, white);
+  border-radius: var(--ui-radius-lg, 0.5rem);
+  box-shadow: var(--ui-shadow-lg, 0 4px 16px rgba(0, 0, 0, 0.15));
   display: flex;
   flex-direction: column;
-  max-height: calc(100vh - 100px);
-  width: 100%;
-  overflow: hidden; /* 防止溢出 */
+  max-height: 90vh;
+  overflow: hidden;
 }
 
-.ui-messagebox__close {
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  font-size: 16px;
-  cursor: pointer;
-  color: rgba(0, 0, 0, 0.45);
-  transition: color 0.2s;
-  z-index: 1; /* 确保在顶层 */
-}
-
-.ui-messagebox__close:hover {
-  color: rgba(0, 0, 0, 0.75);
-}
-
-.ui-messagebox__header {
+.ui-messagebox-header {
   display: flex;
   align-items: center;
-  margin-bottom: 16px;
+  justify-content: space-between;
+  padding: var(--ui-spacing, 1rem);
+  border-bottom: 1px solid var(--ui-color-border, #edf2f7);
 }
 
-.ui-messagebox__icon {
-  font-size: 24px;
-  margin-right: 10px;
+.ui-messagebox-header-content {
+  display: flex;
+  align-items: center;
+}
+
+.ui-messagebox-title {
+  font-size: var(--ui-font-size-lg, 1.125rem);
+  font-weight: var(--ui-font-weight-medium, 500);
+  color: var(--ui-color-text, #1a202c);
+}
+
+.ui-messagebox-close-btn {
+  height: 1.5rem;
+  width: 1.5rem;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.ui-messagebox-close-btn:hover {
+  opacity: 1;
+}
+
+.ui-messagebox-body {
+  padding: var(--ui-spacing-lg, 1.5rem);
+  overflow-y: auto;
+}
+
+.ui-messagebox-icon {
+  margin-right: var(--ui-spacing, 1rem);
+  font-size: 1.5rem;
   flex-shrink: 0;
 }
 
-.ui-messagebox__icon--info {
-  color: var(--ui-color-info, #1890ff);
+.ui-messagebox-icon--info {
+  color: var(--ui-color-info, #3b82f6);
 }
 
-.ui-messagebox__icon--success {
-  color: var(--ui-color-success, #52c41a);
+.ui-messagebox-icon--success {
+  color: var(--ui-color-success, #10b981);
 }
 
-.ui-messagebox__icon--warning {
-  color: var(--ui-color-warning, #faad14);
+.ui-messagebox-icon--warning {
+  color: var(--ui-color-warning, #f59e0b);
 }
 
-.ui-messagebox__icon--error {
-  color: var(--ui-color-error, #f5222d);
+.ui-messagebox-icon--error {
+  color: var(--ui-color-error, #ef4444);
 }
 
-.ui-messagebox__icon--confirm {
-  color: var(--ui-color-warning, #faad14);
-}
-
-.ui-messagebox__title {
-  font-size: 18px;
-  font-weight: 500;
-  color: var(--ui-color-text, #333);
-  flex: 1;
-  word-break: break-word;
-}
-
-.ui-messagebox__body {
-  flex: 1;
-  overflow-y: auto; /* 只在内容区域滚动 */
-  padding-right: 5px; /* 为滚动条留出空间 */
-}
-
-.ui-messagebox__message {
-  font-size: 14px;
+.ui-messagebox-content {
+  color: var(--ui-color-text, #1a202c);
+  font-size: var(--ui-font-size-md, 1rem);
   line-height: 1.5;
-  margin-bottom: 16px;
-  color: var(--ui-color-text-secondary, #666);
-  word-break: break-word;
 }
 
-.ui-messagebox__input {
-  margin-bottom: 16px;
-}
-
-.ui-messagebox__footer {
+.ui-messagebox-footer {
+  padding: var(--ui-spacing, 1rem);
   display: flex;
   justify-content: flex-end;
-  gap: 8px;
-  margin-top: 8px;
-  padding-top: 8px;
-  border-top: 1px solid #f0f0f0;
+  gap: var(--ui-spacing-sm, 0.5rem);
+  border-top: 1px solid var(--ui-color-border, #edf2f7);
 }
 
-.ui-messagebox--with-input .ui-messagebox__message {
-  margin-bottom: 8px;
+.ui-messagebox-btn {
+  min-width: 80px;
 }
 
-/* 动画 */
-.ui-messagebox-fade-enter-active,
-.ui-messagebox-fade-leave-active {
-  transition: opacity 0.2s; /* 减少动画时间，提升体验 */
+.ui-messagebox-btn--primary {
+  background-color: var(--ui-color-primary, #10b981);
+  color: white;
 }
 
-.ui-messagebox-fade-enter-active .ui-messagebox,
-.ui-messagebox-fade-leave-active .ui-messagebox {
-  transition:
-    transform 0.2s,
-    opacity 0.2s;
-}
-
-.ui-messagebox-fade-enter-from,
-.ui-messagebox-fade-leave-to {
-  opacity: 0;
-}
-
-.ui-messagebox-fade-enter-from .ui-messagebox,
-.ui-messagebox-fade-leave-to .ui-messagebox {
-  transform: translateY(-20px);
-  opacity: 0;
-}
-
-/* 暗黑模式 */
+/* 深色模式 */
 :root.dark .ui-messagebox {
-  background-color: #1f1f1f;
-  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.3);
+  background-color: var(--ui-color-bg-dark, #1f2937);
+  border-color: var(--ui-color-border-dark, #374151);
 }
 
-:root.dark .ui-messagebox__close {
-  color: rgba(255, 255, 255, 0.45);
+:root.dark .ui-messagebox-header,
+:root.dark .ui-messagebox-footer {
+  border-color: var(--ui-color-border-dark, #374151);
 }
 
-:root.dark .ui-messagebox__close:hover {
-  color: rgba(255, 255, 255, 0.75);
+:root.dark .ui-messagebox-title,
+:root.dark .ui-messagebox-content {
+  color: var(--ui-color-text-dark, #f3f4f6);
 }
 
-:root.dark .ui-messagebox__title {
-  color: var(--ui-color-text, #e0e0e0);
+/* 动画效果 */
+.messagebox-fade-enter-active,
+.messagebox-fade-leave-active {
+  transition: all 0.3s;
 }
 
-:root.dark .ui-messagebox__message {
-  color: var(--ui-color-text-secondary, #a0a0a0);
+.messagebox-fade-enter-from,
+.messagebox-fade-leave-to {
+  opacity: 0;
 }
 
-:root.dark .ui-messagebox__footer {
-  border-top-color: #2c2c2c;
+.messagebox-fade-enter-from .ui-messagebox,
+.messagebox-fade-leave-to .ui-messagebox {
+  transform: scale(0.9);
 }
 </style>

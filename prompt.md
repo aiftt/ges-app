@@ -1,12 +1,14 @@
 规范：请遵循 @.cursor/rules/now.mdc 及 @.cursor/rules/ 下的所有规范
 
-计划：@plan.md，按照计划推进，每次只完成两个组件以便更仔细的思考实现细节,别忘记添加对应的演示组件和在 pages/demo/components.vue 中添加演示代码。组件实现总是参考学习 element-plus, ant design 等主流UI库的实现思路。
+计划：@plan.md，按照计划推进，每次只完成两个组件以便更仔细的思考实现细节,别忘记添加对应的演示组件和在 pages/demo/components.vue 中添加演示代码。
 
 记录：将所有问题记录到 docs/issues.md 下面记录下来，按照问题类型和相关组件划分章节，记录下问题修复时间，状态
 
 问题：
 
 1. messagebox
+
+
    - 我滚动的时候，滚动了后面的页面，而不是 messagebox 的实际内容
    - 高度有问题，应该按照内容的实际高度自动化，除非用户手动设置了高度
    - Icon 应该和标题一起 而不是和整个内容并列 太不合理了

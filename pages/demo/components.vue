@@ -72,6 +72,7 @@ import DemoMenu from '~/components/demo/menu.vue'
 import DemoMessage from '~/components/demo/message.vue'
 import DemoMessageBox from '~/components/demo/messagebox.vue'
 import DemoModal from '~/components/demo/modal.vue'
+import DemoNotification from '~/components/demo/notification.vue'
 import DemoOverflowlist from '~/components/demo/overflowlist-demo.vue'
 import DemoPagination from '~/components/demo/pagination-demo.vue'
 import DemoParagraph from '~/components/demo/paragraph.vue'
@@ -203,6 +204,7 @@ const groups = ref<ComponentGroup[]>([
       { name: 'progress', label: 'Progress 进度条', component: markRaw(DemoProgress) },
       { name: 'message', label: 'Message 消息', component: markRaw(DemoMessage) },
       { name: 'messagebox', label: 'MessageBox 消息弹框', component: markRaw(DemoMessageBox) },
+      { name: 'notification', label: 'Notification 通知', component: markRaw(DemoNotification) },
     ],
   },
   {
@@ -295,34 +297,40 @@ const navItemClass = computed(() => (item: string) => [
 </script>
 
 <template>
-  <div h-full flex>
-    <!-- 左侧导航 -->
-    <div :class="sideBarClass" fixed left-0 top-0 h-full overflow-y-auto>
-      <!-- 分组导航 -->
-      <div v-for="(group, i) in groups" :key="i" mb-6>
-        <div mb-3 text-sm text-gray-500 font-medium dark:text-gray-400>
-          {{ group.title }}
-        </div>
-        <div>
-          <div
-            v-for="item in group.components"
-            :key="item.name"
-            :class="navItemClass(item.name)"
-            text-sm
-            @click="setComponent(item.name)"
-          >
-            {{ item.label }}
+  <div class="mx-auto px-4 py-8 container">
+    <h1 class="mb-8 text-3xl font-bold">
+      UI 组件演示
+    </h1>
+
+    <div h-full flex>
+      <!-- 左侧导航 -->
+      <div :class="sideBarClass" fixed left-0 top-0 h-full overflow-y-auto>
+        <!-- 分组导航 -->
+        <div v-for="(group, i) in groups" :key="i" mb-6>
+          <div mb-3 text-sm text-gray-500 font-medium dark:text-gray-400>
+            {{ group.title }}
+          </div>
+          <div>
+            <div
+              v-for="item in group.components"
+              :key="item.name"
+              :class="navItemClass(item.name)"
+              text-sm
+              @click="setComponent(item.name)"
+            >
+              {{ item.label }}
+            </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- 用于占位的元素，确保内容区域不被菜单遮挡 -->
-    <div class="hidden md:block lg:w-72 md:w-60" />
+      <!-- 用于占位的元素，确保内容区域不被菜单遮挡 -->
+      <div class="hidden md:block lg:w-72 md:w-60" />
 
-    <!-- 右侧内容 -->
-    <div flex-1 overflow-auto p-6>
-      <component :is="activeComponent" />
+      <!-- 右侧内容 -->
+      <div flex-1 overflow-auto p-6>
+        <component :is="activeComponent" />
+      </div>
     </div>
   </div>
 </template>
