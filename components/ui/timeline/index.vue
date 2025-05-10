@@ -3,7 +3,7 @@
  * 时间线组件
  * 创建日期: 2024-07-23
  * 作者: aiftt
- * 更新日期: 2024-07-27 - 修复连接线显示问题，改进交替布局，添加结束节点支持
+ * 更新日期: 2024-07-27 - 参考Element Plus重新实现，优化交替布局和水平模式
  */
 import { computed, onMounted, provide, ref } from 'vue'
 
@@ -131,7 +131,6 @@ const timelineClass = computed(() => [
   flex-direction: row;
   padding-top: 14px;
   overflow-x: auto;
-  white-space: nowrap;
 }
 
 /* 反向排序 */

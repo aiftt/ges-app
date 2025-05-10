@@ -22,3 +22,4 @@ alwaysApply: false
 15. 我发现你用的时间都不对(2023?)，注意当前时间
 16. 尽可能使用现有的库，如：`@vueuse/core`
 17. 禁止 components/demo/ 下的组件名加什么 demo 文字，多此一举
+18. 组件样式必须使用 `<style lang="scss" scoped>` 必须使用 scss 充分利用嵌套、变量和混合器等特性。

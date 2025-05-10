@@ -192,12 +192,10 @@ function togglePending() {
             v-for="(item, index) in timelineItems.slice(0, 3)"
             :key="index"
           >
-            <template #label>
-              <div class="flex flex-col">
-                <span class="font-medium">{{ item.label }}</span>
-                <span class="mt-1 text-sm text-gray-500">{{ item.date }}</span>
-              </div>
-            </template>
+            <div class="flex flex-col">
+              <span class="font-medium">{{ item.label }}</span>
+              <span class="mt-1 text-sm text-gray-500">{{ item.date }}</span>
+            </div>
           </ui-timeline-item>
         </ui-timeline>
       </div>
@@ -237,7 +235,7 @@ function togglePending() {
         水平时间线
       </h3>
       <div class="overflow-x-auto border border-gray-200 rounded-lg p-6">
-        <ui-timeline direction="horizontal" item-gap="40px">
+        <ui-timeline direction="horizontal">
           <ui-timeline-item
             v-for="(item, index) in timelineItems.slice(0, 4)"
             :key="index"
