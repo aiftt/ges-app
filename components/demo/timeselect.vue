@@ -35,7 +35,7 @@ const suffixIcon = ref('carbon:chevron-down')
 
 // 弹出位置控制
 const placementTime = ref('')
-const placement = ref('bottom-start')
+const placement = ref<'bottom-start' | 'top' | 'top-start' | 'top-end' | 'bottom' | 'bottom-start' | 'bottom-end'>('bottom-start')
 
 // 值改变事件处理
 function handleChange(value: string) {
@@ -106,7 +106,7 @@ function handleClear() {
           v-model="workTime"
           start="09:00"
           end="18:00"
-          step="30"
+          :step="30"
           placeholder="工作时间 (9:00 - 18:00)"
         />
       </div>
@@ -123,7 +123,7 @@ function handleClear() {
       <div class="w-72">
         <ui-time-select
           v-model="stepTime"
-          step="60"
+          :step="60"
           placeholder="每小时间隔"
         />
       </div>
@@ -218,7 +218,7 @@ function handleClear() {
           :key="pos"
           size="small"
           :type="placement === pos ? 'primary' : 'default'"
-          @click="placement = pos"
+          @click="placement = pos as 'bottom-start' | 'top' | 'top-start' | 'top-end' | 'bottom' | 'bottom-start' | 'bottom-end'"
         >
           {{ pos }}
         </ui-button>

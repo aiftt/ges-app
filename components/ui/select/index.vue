@@ -9,7 +9,7 @@
  */
 
 import { debounce } from 'lodash'
-import { computed, nextTick, onMounted, onUnmounted, provide, ref, watch } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, provide, ref, watch } from 'vue'
 
 // 定义选项类型
 export interface ISelectOption {
@@ -676,9 +676,57 @@ function navigateOptions(direction: 'up' | 'down') {
   })
 }
 
+// 显示下拉菜单
+function showDropdown() {
+  if (props.disabled || visible.value)
+    return
+
+  visible.value = true
+  emit('visibleChange', true)
+
+  if (import.meta.client) {
+    // 计算下拉菜单位置
+    nextTick(() => {
+      updateDropdownPosition()
+      document.addEventListener('click', handleOutsideClick)
+      window.addEventListener('resize', handleWindowResize)
+      window.addEventListener('scroll', handleWindowScroll, true)
+
+      // 修复：打开下拉框后聚焦输入框，确保键盘导航正常工作
+      if (props.filterable && inputRef.value) {
+        inputRef.value.focus()
+      }
+
+      // 重置高亮索引
+      if (navigableOptions.value.length > 0) {
+        const selectedIndex = navigableOptions.value.findIndex(option =>
+          isSelected(option),
+        )
+
+        highlightedIndex.value = selectedIndex >= 0 ? selectedIndex : 0
+      }
+    })
+  }
+}
+
+// 隐藏下拉菜单
+function hideDropdown() {
+  visible.value = false
+  query.value = ''
+  isFocused.value = false
+  emit('blur')
+  emit('visibleChange', false)
+
+  if (import.meta.client) {
+    document.removeEventListener('click', handleOutsideClick)
+    window.removeEventListener('resize', handleWindowResize)
+    window.removeEventListener('scroll', handleWindowScroll, true)
+  }
+}
+
 // 计算下拉菜单位置
 function updateDropdownPosition() {
-  if (!selectRef.value)
+  if (!import.meta.client || !selectRef.value)
     return
 
   const selectRect = selectRef.value.getBoundingClientRect()
@@ -695,10 +743,11 @@ function updateDropdownPosition() {
 
   // 如果下方空间不足且上方空间足够，则显示在上方
   if ((spaceBelow < 200 && spaceAbove > 200) || props.placement === 'top') {
-    top = `${selectRect.top - scrollTop - 4}px`
+    top = `${selectRect.top + scrollTop - 4}px`
     transformOrigin = 'center bottom'
   }
 
+  // 更新下拉菜单位置
   dropdownPosition.value = {
     top,
     left: `${selectRect.left + scrollLeft}px`,
@@ -707,47 +756,11 @@ function updateDropdownPosition() {
   }
 }
 
-// 显示下拉菜单
-function showDropdown() {
-  if (props.disabled)
-    return
-
-  updateDropdownPosition()
-  visible.value = true
-  emit('focus')
-  emit('visibleChange', true)
-
-  // 修复：打开下拉框后聚焦输入框，确保键盘导航正常工作
-  nextTick(() => {
-    if (props.filterable && inputRef.value) {
-      inputRef.value.focus()
-    }
-
-    // 重置高亮索引
-    if (navigableOptions.value.length > 0) {
-      const selectedIndex = navigableOptions.value.findIndex(option =>
-        isSelected(option),
-      )
-
-      highlightedIndex.value = selectedIndex >= 0 ? selectedIndex : 0
-    }
-  })
-}
-
-// 隐藏下拉菜单
-function hideDropdown() {
-  visible.value = false
-  query.value = ''
-  isFocused.value = false
-  emit('blur')
-  emit('visibleChange', false)
-  document.removeEventListener('click', handleOutsideClick)
-  window.removeEventListener('resize', handleWindowResize)
-  window.removeEventListener('scroll', handleWindowScroll, true)
-}
-
 // 处理窗口大小变化
 function handleWindowResize() {
+  if (!import.meta.client)
+    return
+
   if (visible.value) {
     updateDropdownPosition()
   }
@@ -755,6 +768,9 @@ function handleWindowResize() {
 
 // 处理滚动事件
 function handleWindowScroll() {
+  if (!import.meta.client)
+    return
+
   if (visible.value) {
     updateDropdownPosition()
   }
@@ -762,7 +778,10 @@ function handleWindowScroll() {
 
 // 处理点击外部关闭下拉菜单
 function handleOutsideClick(event: MouseEvent) {
-  if (selectRef.value && !selectRef.value.contains(event.target as Node)) {
+  if (!import.meta.client || !selectRef.value)
+    return
+
+  if (!selectRef.value.contains(event.target as Node)) {
     hideDropdown()
   }
 }
@@ -807,16 +826,18 @@ function handleSelectClick() {
 
 // 在组件挂载时，如果设置了自动聚焦，则自动聚焦输入框
 onMounted(() => {
-  if (props.autofocus && inputRef.value) {
+  if (import.meta.client && props.autofocus && inputRef.value) {
     inputRef.value.focus()
   }
 })
 
 // 组件卸载时移除事件监听
-onUnmounted(() => {
-  document.removeEventListener('click', handleOutsideClick)
-  window.removeEventListener('resize', handleWindowResize)
-  window.removeEventListener('scroll', handleWindowScroll, true)
+onBeforeUnmount(() => {
+  if (import.meta.client) {
+    document.removeEventListener('click', handleOutsideClick)
+    window.removeEventListener('resize', handleWindowResize)
+    window.removeEventListener('scroll', handleWindowScroll, true)
+  }
 })
 
 // 监听modelValue变化

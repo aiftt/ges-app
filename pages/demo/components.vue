@@ -38,8 +38,9 @@
  * 2024-08-19 - 添加 Affix 和 Anchor 组件
  * 2024-08-25 - 添加 BackTop 组件
  * 2024-08-27 - 添加 PageHeader 和 TimeSelect 组件
+ * 2024-08-30 - 添加 DateTimePicker 和 TreeSelect 组件
  */
-import { computed, markRaw, ref } from 'vue'
+import { computed, markRaw, onMounted, ref } from 'vue'
 import DemoAffix from '~/components/demo/affix.vue'
 import DemoAlert from '~/components/demo/alert.vue'
 import DemoAnchor from '~/components/demo/anchor.vue'
@@ -64,6 +65,7 @@ import DemoComment from '~/components/demo/comment.vue'
 import DemoComponents from '~/components/demo/components.vue'
 import DemoConfigProvider from '~/components/demo/config-provider.vue'
 import DemoContainer from '~/components/demo/container.vue'
+import DemoDateTimePicker from '~/components/demo/datetime-picker.vue'
 import DemoDescriptions from '~/components/demo/descriptions.vue'
 import DemoDialog from '~/components/demo/dialog.vue'
 import DemoDivider from '~/components/demo/divider.vue'
@@ -73,6 +75,7 @@ import DemoDynamicStyles from '~/components/demo/dynamic-styles.vue'
 import DemoEmpty from '~/components/demo/empty.vue'
 import DemoIcon from '~/components/demo/icon.vue'
 import DemoImage from '~/components/demo/image.vue'
+import DemoInfiniteScroll from '~/components/demo/infinite-scroll.vue'
 import DemoInputNumber from '~/components/demo/input-number.vue'
 import DemoInputTag from '~/components/demo/input-tag.vue'
 import DemoInput from '~/components/demo/input.vue'
@@ -117,12 +120,14 @@ import DemoTimeSelect from '~/components/demo/timeselect.vue'
 import DemoTitle from '~/components/demo/title.vue'
 import DemoTooltip from '~/components/demo/tooltip.vue'
 import DemoTour from '~/components/demo/tour.vue'
+import DemoTreeSelect from '~/components/demo/tree-select.vue'
 import DemoTree from '~/components/demo/tree.vue'
 import DemoTrigger from '~/components/demo/trigger.vue'
 import DemoTsx from '~/components/demo/tsx.vue'
 import DemoTypography from '~/components/demo/typography.vue'
 import DemoUpload from '~/components/demo/upload.vue'
 import DemoVerificationCode from '~/components/demo/verification-code.vue'
+import DemoVirtualSelect from '~/components/demo/virtual-select.vue'
 import DemoWatermark from '~/components/demo/watermark.vue'
 
 // 组件列表
@@ -184,6 +189,7 @@ const groups = ref<ComponentGroup[]>([
       { name: 'descriptions', label: 'Descriptions 描述列表', component: markRaw(DemoDescriptions) },
       { name: 'list', label: 'List 列表', component: markRaw(DemoList) },
       { name: 'tree', label: 'Tree 树形控件', component: markRaw(DemoTree) },
+      { name: 'tree-select', label: 'TreeSelect 树形选择器', component: markRaw(DemoTreeSelect) },
       { name: 'calendar', label: 'Calendar 日历', component: markRaw(DemoCalendar) },
       { name: 'tour', label: 'Tour 漫游式引导', component: markRaw(DemoTour) },
     ],
@@ -200,6 +206,7 @@ const groups = ref<ComponentGroup[]>([
       { name: 'cascader', label: 'Cascader 级联选择器', component: markRaw(DemoCascader) },
       { name: 'time-picker', label: 'TimePicker 时间选择器', component: markRaw(DemoTimePicker) },
       { name: 'timeselect', label: 'TimeSelect 时间选择', component: markRaw(DemoTimeSelect) },
+      { name: 'date-time-picker', label: 'DateTimePicker 日期时间选择器', component: markRaw(DemoDateTimePicker) },
       { name: 'checkbox', label: 'Checkbox 复选框', component: markRaw(DemoCheckbox) },
       { name: 'radio', label: 'Radio 单选框', component: markRaw(DemoRadio) },
       { name: 'select', label: 'Select 选择器', component: markRaw(DemoSelect) },
@@ -251,61 +258,48 @@ const groups = ref<ComponentGroup[]>([
     components: [
       { name: 'theme', label: 'Theme 主题', component: markRaw(DemoTheme) },
       { name: 'dynamic-styles', label: 'DynamicStyles 动态样式', component: markRaw(DemoDynamicStyles) },
+      { name: 'components', label: 'Components 组件汇总', component: markRaw(DemoComponents) },
+      { name: 'config-provider', label: 'ConfigProvider 全局配置', component: markRaw(DemoConfigProvider) },
     ],
   },
   {
-    title: '其他',
+    title: '高级组件',
     components: [
-      { name: 'config-provider', label: 'ConfigProvider 全局配置', component: markRaw(DemoConfigProvider) },
-      { name: 'components', label: 'Components 组件集合', component: markRaw(DemoComponents) },
+      { name: 'virtual-select', label: 'VirtualSelect 虚拟化选择器', component: markRaw(DemoVirtualSelect) },
+      { name: 'infinite-scroll', label: 'InfiniteScroll 无限滚动', component: markRaw(DemoInfiniteScroll) },
     ],
   },
 ])
 
-// 当前选中的组件
+// 当前选择的组件
 const currentComponent = ref(groups.value[0].components[0].name)
 
-// 查询参数
+// 路由参数里的组件
 const route = useRoute()
-const name = computed(() => route.query.name as string || '')
+const initComponent = computed(() => {
+  return route.query.component as string || currentComponent.value
+})
 
-if (name.value) {
-  // 查找是否有与查询参数匹配的组件
-  for (const group of groups.value) {
-    const found = group.components.find(item => item.name === name.value)
-    if (found) {
-      currentComponent.value = name.value
-      break
-    }
-  }
-}
-
-// 根据当前组件名查找组件实例
+// 当前激活的组件
 const activeComponent = computed(() => {
   for (const group of groups.value) {
-    const found = group.components.find(item => item.name === currentComponent.value)
-    if (found)
-      return found.component
+    const component = group.components.find(item => item.name === currentComponent.value)
+    if (component) {
+      return component.component
+    }
   }
   return null
 })
 
-// 更改当前组件
-function setComponent(componentName: string) {
-  currentComponent.value = componentName
-  navigateTo({
-    query: { name: componentName },
-  }, { replace: true })
+// 设置当前组件
+function setComponent(name: string) {
+  currentComponent.value = name
 }
 
 // 侧边栏样式
 const sideBarClass = computed(() => [
+  'w-60 lg:w-72 p-4 bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800',
   'hidden md:block',
-  'md:w-60 lg:w-72',
-  'p-4',
-  'border-r border-gray-200 dark:border-gray-700',
-  'bg-white dark:bg-gray-900',
-  'h-full',
 ])
 
 // 导航项样式
@@ -319,6 +313,13 @@ const navItemClass = computed(() => (item: string) => [
     ? 'bg-primary-50 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400 font-medium'
     : 'hover:bg-gray-100 dark:hover:bg-gray-800',
 ])
+
+// 根据路由参数里的组件设置初始组件
+onMounted(() => {
+  if (initComponent.value && initComponent.value !== currentComponent.value) {
+    setComponent(initComponent.value)
+  }
+})
 </script>
 
 <template>

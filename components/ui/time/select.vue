@@ -274,7 +274,7 @@ onMounted(() => {
       :disabled="disabled || readonly"
       trigger="click"
       :placement="placement"
-      :offset="[0, 10]"
+      :offset="10"
     >
       <!-- 输入框触发器 -->
       <div

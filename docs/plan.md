@@ -82,7 +82,7 @@
 - [x] ColorPicker - 完成颜色选择器组件，支持RGB、HSL和HEX格式、透明度控制、预设颜色及历史记录，2024-07-10
 - [x] Rate - 完成评分组件，支持自定义图标、颜色、半星、辅助文字等功能，2024-07-16
 - [x] Upload - 完成上传组件，支持多文件上传、拖拽上传、文件预览、进度显示、自动上传和手动上传等功能，2024-07-16
-- [ ] Select - 完成下拉选择器组件，支持单选和多选，2024-05-26
+- [x] Select - 完成下拉选择器组件，支持单选和多选，2024-05-26
 
 ### 阶段五：反馈组件 (第36-42天)
 
@@ -113,15 +113,15 @@
 
 ### 阶段七：高级组件 (第49-55天)
 
-- [ ] Virtualized Select
+- [/] Virtualized Select - 虚拟化选择器组件，适用于处理大数据量的选择场景，支持高性能渲染和筛选，2024-09-01，优化提升：2024-09-02
 - [ ] Virtualized Table
 - [ ] Virtualized Tree
-- [ ] TreeSelect
-- [ ] Infinite Scroll
+- [x] TreeSelect - 树形选择器组件，支持单选和多选，可过滤搜索、自定义渲染、复选框等功能，2024-08-30
+- [/] Infinite Scroll - 无限滚动组件，支持各种滚动方向、自定义容器和加载状态，适用于大数据分页加载场景，2024-09-01，优化提升：2024-09-02
 - [ ] Tour
 - [ ] Segmented
 - [ ] Mention
-- [ ] DateTimePicker
+- [x] DateTimePicker - 日期时间选择器组件，结合日期选择和时间选择功能，支持多种格式、快捷选项和各种配置，2024-08-30
 - [x] TimeSelect - 时间选择组件，支持时间范围、步长设置、12/24小时制、自定义前缀和后缀图标，2024-08-27
 - [ ] Surely Form
 - [ ] Surely Table
@@ -204,5 +204,8 @@
 2024-08-19: 添加 Affix 和 Anchor 组件到导航组件
 2024-08-25: 添加 BackTop 组件到导航组件
 2024-08-27: 添加 PageHeader 组件到导航组件和 TimeSelect 组件到表单组件
+2024-08-30: 添加 DateTimePicker 和 TreeSelect 组件到高级组件
 2025-05-10: 更新 Input 组件，增强SSR兼容性和添加更多表单功能
 2025-05-14: 添加 Notification 和 MessageBox 组件到反馈组件
+2024-09-01: 添加 VirtualSelect 和 InfiniteScroll 组件到高级组件
+2024-09-02: 优化 VirtualSelect 和 InfiniteScroll 组件，实现真正的虚拟滚动，解决大数据量DOM元素过多问题

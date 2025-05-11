@@ -84,8 +84,8 @@ const triggerRef = ref<HTMLElement | null>(null)
 const contentRef = ref<HTMLElement | null>(null)
 const arrowRef = ref<HTMLElement | null>(null)
 const isVisible = defineModel<boolean>('visible', { default: false })
-const showTimer = ref<number | null>(null)
-const hideTimer = ref<number | null>(null)
+const showTimer = ref<ReturnType<typeof setTimeout> | null>(null)
+const hideTimer = ref<ReturnType<typeof setTimeout> | null>(null)
 
 // 位置变量
 const contentTop = ref('0px')
@@ -138,14 +138,31 @@ function show() {
   if (props.disabled || (props.trigger === 'manual' && !props.visible))
     return
 
-  clearTimeout(hideTimer.value as number)
+  if (hideTimer.value !== null) {
+    clearTimeout(hideTimer.value)
+    hideTimer.value = null
+  }
 
-  showTimer.value = window.setTimeout(() => {
+  if (props.showDelay > 0) {
+    showTimer.value = setTimeout(() => {
+      isVisible.value = true
+      if (import.meta.client) {
+        nextTick(() => {
+          updatePosition()
+          emit('show')
+        })
+      }
+    }, props.showDelay)
+  }
+  else {
     isVisible.value = true
-    nextTick(() => {
-      updatePosition()
-    })
-  }, props.showDelay)
+    if (import.meta.client) {
+      nextTick(() => {
+        updatePosition()
+        emit('show')
+      })
+    }
+  }
 }
 
 // 隐藏内容
@@ -153,11 +170,21 @@ function hide() {
   if (props.trigger === 'manual' && props.visible)
     return
 
-  clearTimeout(showTimer.value as number)
+  if (showTimer.value !== null) {
+    clearTimeout(showTimer.value)
+    showTimer.value = null
+  }
 
-  hideTimer.value = window.setTimeout(() => {
+  if (props.hideDelay > 0) {
+    hideTimer.value = setTimeout(() => {
+      isVisible.value = false
+      emit('hide')
+    }, props.hideDelay)
+  }
+  else {
     isVisible.value = false
-  }, props.hideDelay)
+    emit('hide')
+  }
 }
 
 // 切换内容显示状态
@@ -168,17 +195,22 @@ function toggle() {
     show()
 }
 
-// 处理外部点击
-function handleOutsideClick(event: MouseEvent) {
-  if (!props.clickOutsideToClose)
+// 处理点击外部元素
+function handleOutsideClick(e: MouseEvent) {
+  if (!import.meta.client || !props.clickOutsideToClose)
+    return
+
+  const target = e.target as Node
+
+  if (!triggerRef.value || !contentRef.value)
     return
 
   if (
     isVisible.value
-    && triggerRef.value
-    && !triggerRef.value.contains(event.target as Node)
-    && contentRef.value
-    && !contentRef.value.contains(event.target as Node)
+    && target !== triggerRef.value
+    && !triggerRef.value.contains(target)
+    && target !== contentRef.value
+    && !contentRef.value.contains(target)
   ) {
     hide()
   }
@@ -394,7 +426,7 @@ function updatePosition() {
 
 // 添加事件监听
 function addEvents() {
-  if (!triggerRef.value)
+  if (!import.meta.client || !triggerRef.value)
     return
 
   if (props.trigger === 'hover') {
@@ -425,7 +457,7 @@ function addEvents() {
 
 // 移除事件监听
 function removeEvents() {
-  if (!triggerRef.value)
+  if (!import.meta.client || !triggerRef.value)
     return
 
   if (props.trigger === 'hover') {
@@ -456,18 +488,28 @@ function removeEvents() {
 
 // 生命周期钩子
 onMounted(() => {
-  nextTick(() => {
-    addEvents()
-    if (props.visible && props.trigger === 'manual') {
-      show()
-    }
-  })
+  if (import.meta.client) {
+    nextTick(() => {
+      addEvents()
+      if (props.visible && props.trigger === 'manual') {
+        show()
+      }
+    })
+  }
 })
 
 onBeforeUnmount(() => {
-  removeEvents()
-  clearTimeout(showTimer.value as number)
-  clearTimeout(hideTimer.value as number)
+  if (import.meta.client) {
+    removeEvents()
+    if (showTimer.value !== null) {
+      clearTimeout(showTimer.value)
+      showTimer.value = null
+    }
+    if (hideTimer.value !== null) {
+      clearTimeout(hideTimer.value)
+      hideTimer.value = null
+    }
+  }
 })
 
 // 暴露给父组件的方法

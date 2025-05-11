@@ -1,9 +1,9 @@
 <script setup lang="ts" name="UiTimelineItem">
 /**
  * 时间线项组件
- * 创建日期: 2024-07-23
+ * 创建日期: 2024-08-30
  * 作者: aiftt
- * 更新日期: 2024-07-27 - 修复连接线显示问题，改进交替布局，添加结束节点支持
+ * 更新日期: 2024-08-30 - 从time/item.vue移动到timeline/item.vue，规范文件结构
  */
 import { computed, inject, onMounted, ref } from 'vue'
 
@@ -52,6 +52,10 @@ const props = withDefaults(defineProps<{
    * 是否为结束节点
    */
   isPending?: boolean
+  /**
+   * 标签内容
+   */
+  label?: string
 }>(), {
   type: '',
   hideTimestamp: false,
@@ -219,6 +223,11 @@ const classNames = computed(() => [
     <!-- 内容容器 -->
     <div class="ui-timeline-item__content">
       <div class="ui-timeline-item__wrapper">
+        <!-- 标签内容，如果提供了，则优先显示 -->
+        <div v-if="label" class="ui-timeline-item__label">
+          {{ label }}
+        </div>
+        <!-- 默认插槽 -->
         <slot />
       </div>
 
@@ -249,124 +258,108 @@ const classNames = computed(() => [
 
 /* 水平模式 */
 .ui-timeline-item--horizontal {
+  flex-direction: column;
   padding-left: 0;
-  padding-top: 0;
-  margin-right: 40px;
-  min-height: auto;
+  padding-top: 28px;
+  min-width: 120px;
+  flex: 0 0 auto;
 }
 
-/* 节点容器 */
 .ui-timeline-item__node-container {
   position: absolute;
-  left: 0;
-  top: 0;
-  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--ui-bg-color, #fff);
+  z-index: 1;
 }
 
-/* 连接线 */
 .ui-timeline-item__tail {
   position: absolute;
-  left: 50%;
-  height: calc(100% - v-bind(nodeSizeStr));
+  content: '';
+  height: 100%;
   width: 2px;
-  top: v-bind(nodeSizeStr); /* 从节点底部开始 */
-  bottom: 0;
-  transform: translateX(-50%);
-  background-color: v-bind(tailColor);
+  background-color: var(--ui-border-color, #dcdfe6);
+  z-index: 0;
 }
 
-/* 节点 */
 .ui-timeline-item__node {
-  position: absolute;
+  width: 12px;
+  height: 12px;
   background-color: var(--ui-color-primary, #409eff);
+  border: 2px solid var(--ui-color-primary, #409eff);
   border-radius: 50%;
   display: flex;
-  justify-content: center;
   align-items: center;
-  border: 2px solid transparent;
-  box-sizing: border-box;
+  justify-content: center;
   z-index: 1;
-  left: 0;
-  top: 0;
-  transform: translate(-50%, 0);
 }
 
 .ui-timeline-item--large .ui-timeline-item__node {
-  width: 14px;
-  height: 14px;
+  width: 16px;
+  height: 16px;
 }
 
-/* 图标样式 */
 .ui-timeline-item__icon {
-  font-size: 10px;
-  line-height: 1;
   color: #fff;
+  font-size: 12px;
 }
 
 .ui-timeline-item--large .ui-timeline-item__icon {
-  font-size: 14px;
+  font-size: 16px;
 }
 
-/* 内容容器 */
 .ui-timeline-item__content {
   flex: 1;
-  padding-top: 1px;
-  min-width: 0;
+  padding-left: 20px;
 }
 
 .ui-timeline-item__wrapper {
   position: relative;
+  padding-bottom: 10px;
 }
 
-/* 时间戳样式 */
 .ui-timeline-item__timestamp {
   color: var(--ui-color-text-secondary, #909399);
   font-size: 13px;
-  line-height: 1.5;
+  margin-top: 8px;
 }
 
 .ui-timeline-item__timestamp--top {
   margin-bottom: 8px;
+  margin-top: 0;
 }
 
 .ui-timeline-item__timestamp--bottom {
   margin-top: 8px;
 }
 
-/* 右侧模式 */
+/* 右侧时间线样式 */
 .ui-timeline-item--right {
-  padding-left: 0;
   padding-right: 28px;
-  text-align: right;
+  padding-left: 0;
+  flex-direction: row-reverse;
 }
 
 .ui-timeline-item--right .ui-timeline-item__node-container {
-  left: auto;
   right: 0;
-  height: 100%;
 }
 
 .ui-timeline-item--right .ui-timeline-item__tail {
-  left: auto;
-  right: -2px;
+  right: 7px;
 }
 
 .ui-timeline-item--right .ui-timeline-item__node {
-  left: auto;
   right: 0;
-  transform: translate(50%, 0);
 }
 
-/* 居中模式 */
+/* 居中时间线样式 */
 .ui-timeline-item--center {
-  padding-left: 14px;
-  padding-right: 14px;
+  position: relative;
 }
 
 .ui-timeline-item--center .ui-timeline-item__node-container {
-  left: 50%;
-  transform: translateX(-50%);
-  height: 100%;
+  left: calc(50% - 7px);
 }
 
 .ui-timeline-item--center .ui-timeline-item__tail {
@@ -376,87 +369,71 @@ const classNames = computed(() => [
 
 .ui-timeline-item--center .ui-timeline-item__content {
   text-align: center;
+  padding-left: 0;
 }
 
-/* 水平模式 */
+/* 水平时间线样式 */
 .ui-timeline-item--horizontal .ui-timeline-item__tail {
-  left: 0;
-  top: 6px;
-  width: calc(100% - 10px);
   height: 2px;
+  width: 100%;
+  left: 0;
+  top: 7px;
 }
 
 .ui-timeline-item--horizontal .ui-timeline-item__node-container {
   top: 0;
-  height: auto;
+  left: calc(50% - 7px);
 }
 
 .ui-timeline-item--horizontal .ui-timeline-item__content {
-  padding-top: 20px;
+  padding-top: 15px;
+  padding-left: 0;
 }
 
-/* 结束项目 */
+/* 最后一个项目样式 */
 .ui-timeline-item--last .ui-timeline-item__tail {
   display: none;
 }
 
+/* 结束节点样式 */
 .ui-timeline-item--pending {
-  padding-bottom: 0;
-  min-height: 40px;
+  color: var(--ui-color-text-secondary, #909399);
 }
 
-/* 顶部时间戳 */
+/* 时间戳位置样式 */
 .ui-timeline-item--top .ui-timeline-item__timestamp {
-  position: relative;
-  padding-top: 4px;
+  margin-bottom: 8px;
+  margin-top: 0;
 }
 
-/* 交替时间线模式 */
+/* 交替时间线项样式 */
 .ui-timeline-item--alternate {
-  position: relative;
-  display: flex;
-  min-height: 70px;
+  padding-left: calc(50% + 14px);
+}
+
+.ui-timeline-item--alternate.ui-timeline-item--right {
+  padding-right: calc(50% + 14px);
   padding-left: 0;
-  padding-right: 0;
 }
 
 .ui-timeline-item--alternate .ui-timeline-item__node-container {
-  position: absolute;
   left: 50%;
-  width: 0;
-  height: 100%;
   transform: translateX(-50%);
-  z-index: 1;
 }
 
 .ui-timeline-item--alternate .ui-timeline-item__node {
-  position: absolute;
-  left: 0;
-  transform: translate(-50%, 0);
-}
-
-.ui-timeline-item--alternate .ui-timeline-item__tail {
-  position: absolute;
-  left: 0;
-  height: calc(100% - 10px);
+  left: 50%;
   transform: translateX(-50%);
 }
 
-/* 左侧内容 */
-.ui-timeline-item--alternate.ui-timeline-item--left .ui-timeline-item__content {
-  flex: 0 0 calc(50% - 20px);
-  max-width: calc(50% - 20px);
-  margin-right: auto;
-  text-align: right;
-  padding-right: 20px;
+.ui-timeline-item--alternate .ui-timeline-item__tail {
+  left: 50%;
+  transform: translateX(-50%);
 }
 
-/* 右侧内容 */
-.ui-timeline-item--alternate.ui-timeline-item--right .ui-timeline-item__content {
-  flex: 0 0 calc(50% - 20px);
-  max-width: calc(50% - 20px);
-  margin-left: auto;
-  text-align: left;
-  padding-left: 20px;
+/* 添加的标签样式 */
+.ui-timeline-item__label {
+  font-weight: 500;
+  margin-bottom: 4px;
 }
 </style>
