@@ -36,6 +36,7 @@
  * 2024-08-16 - 添加 Spin 和 Steps 组件
  * 2024-08-18 - 添加 Result 和 Dropdown 组件
  * 2024-08-19 - 添加 Affix 和 Anchor 组件
+ * 2024-08-25 - 添加 BackTop 组件
  */
 import { computed, markRaw, ref } from 'vue'
 import DemoAffix from '~/components/demo/affix.vue'
@@ -44,6 +45,7 @@ import DemoAnchor from '~/components/demo/anchor.vue'
 import DemoAutoAnimate from '~/components/demo/auto-animate.vue'
 import DemoAutocomplete from '~/components/demo/autocomplete.vue'
 import DemoAvatar from '~/components/demo/avatar.vue'
+import DemoBackTop from '~/components/demo/back-top.vue'
 import DemoBadge from '~/components/demo/badge.vue'
 import DemoBorder from '~/components/demo/border.vue'
 import DemoBreadcrumb from '~/components/demo/breadcrumb.vue'
@@ -222,6 +224,7 @@ const groups = ref<ComponentGroup[]>([
     components: [
       { name: 'affix', label: 'Affix 固钉', component: markRaw(DemoAffix) },
       { name: 'anchor', label: 'Anchor 锚点', component: markRaw(DemoAnchor) },
+      { name: 'back-top', label: 'BackTop 回到顶部', component: markRaw(DemoBackTop) },
       { name: 'breadcrumb', label: 'Breadcrumb 面包屑', component: markRaw(DemoBreadcrumb) },
       { name: 'dropdown', label: 'Dropdown 下拉菜单', component: markRaw(DemoDropdown) },
       { name: 'menu', label: 'Menu 菜单', component: markRaw(DemoMenu) },

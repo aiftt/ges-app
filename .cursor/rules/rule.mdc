@@ -289,3 +289,291 @@ async function readConfig() {
 - 使用 `v-if` 替代 `v-show` 处理条件渲染复杂组件
 - 大型列表使用虚拟滚动
 - 按需加载大型依赖
+
+## Nuxt 3 最佳实践
+
+### Auto Imports 使用规范
+- 总是优先使用 Nuxt 自动导入的 API，避免手动导入 Vue 和 Nuxt 的核心功能
+- 禁止在同一文件中混用自动导入和显式导入同一 API
+- 使用 `~/` 别名引用项目根目录下的文件
+
+### 组合式函数（Composables）开发规范
+- 总是在文件名前添加 `use` 前缀，如 `useCounter.ts`
+- 导出的函数也必须以 `use` 开头，保持命名一致性
+- 组合式函数必须具备良好的类型定义和返回值类型
+- 依赖注入的 key 统一在 `types/injectionKeys.ts` 中定义
+
+```typescript
+// composables/useCounter.ts
+export function useCounter(initialValue = 0) {
+  const count = ref(initialValue)
+
+  function increment() {
+    count.value++
+  }
+
+  return {
+    count: readonly(count),
+    increment
+  }
+}
+```
+
+## SSR 特有规范
+
+### 水合处理
+- 总是使用 `onBeforeMount` 或 `onMounted` 处理仅客户端代码
+- 使用 `useHead` 管理页面元数据，不直接操作 document
+- 使用 `<ClientOnly>` 组件包裹仅客户端渲染的内容
+- 数据状态变更需处理好 SSR 和 CSR 差异，避免水合不匹配错误
+
+### 环境检测
+- 使用 `import.meta.client` 和 `import.meta.server` 代替 `process.client` 等旧 API
+- 服务端独有代码应放在 `server/` 目录下
+- 当需要条件性执行客户端代码时，使用以下模式：
+
+```typescript
+function safeClientOperation() {
+  if (import.meta.client) {
+    // 客户端操作
+  }
+}
+```
+
+## 性能优化规范
+
+### 延迟加载
+- 总是对大型组件和路由使用动态导入
+- 合理使用 `<LazyNuxtImg>` 实现图片延迟加载
+- 避免首屏加载不必要的大型依赖
+
+```vue
+<script setup>
+// 动态导入组件示例
+const HeavyComponent = defineAsyncComponent(() =>
+  import('~/components/heavy-component.vue')
+)
+</script>
+```
+
+### 资源优化
+- 总是为图片设置合适的尺寸和格式，避免尺寸过大
+- 总是使用 `<NuxtImg>` 或 `<NuxtPicture>` 组件处理图片
+- 图标优先使用 `<ui-icon>` 组件，不引入额外图标库
+- 使用 `useAsyncData` 缓存数据请求结果
+
+### 代码分割
+- 总是为路由组件使用 `definePageMeta` 配置预加载策略
+- 使用 `<Suspense>` 管理异步组件加载状态
+- 按功能模块拆分和组织组件，避免过大的单文件组件
+
+## Vue 3 进阶规范
+
+### 组件通信
+- 优先使用 props 和 emits 进行父子组件通信
+- 对于深层组件通信，使用 `provide`/`inject` 代替全局状态
+- 总是为 provide/inject 定义明确的类型和默认值
+- 复杂状态管理使用 Pinia，避免滥用 provide/inject
+
+```typescript
+// 定义通用类型
+// types/theme.ts
+export interface IThemeContext {
+  theme: Ref<string>
+  toggleTheme: () => void
+}
+
+// 提供状态
+// composables/useThemeProvider.ts
+export function useThemeProvider() {
+  const theme = ref('light')
+
+  function toggleTheme() {
+    theme.value = theme.value === 'light' ? 'dark' : 'light'
+  }
+
+  provide('theme', {
+    theme: readonly(theme),
+    toggleTheme
+  })
+}
+
+// 使用状态
+// components/ThemedButton.vue
+const theme = inject<IThemeContext>('theme')
+```
+
+### 响应式进阶
+- 总是使用 `shallowRef` 处理大型对象以提升性能
+- 对于只读数据，使用 `readonly` 包装后再传递给子组件
+- 使用 `effectScope` 管理相关副作用，确保及时清理
+- 避免在模板中过度使用计算属性嵌套
+
+## 可访问性规范
+
+### 基础可访问性
+- 总是为图片添加恰当的 `alt` 属性
+- 总是为表单字段添加关联的 label
+- 使用语义化 HTML 元素而非纯 div + class
+- 保持适当的色彩对比度以符合 WCAG 标准
+- 确保键盘可访问性，支持 Tab 导航和焦点状态
+
+### ARIA 属性
+- 总是为非标准交互元素添加适当的 aria 属性
+- 使用 `aria-label` 为无文本内容的交互元素提供描述
+- 对于动态内容区域，使用 `aria-live` 通知屏幕阅读器
+- 组件开发时考虑可访问性状态反馈
+
+```vue
+<template>
+  <button
+    :aria-pressed="isActive"
+    :aria-label="buttonLabel"
+    @click="toggle"
+  >
+    <ui-icon icon="carbon:close" />
+  </button>
+</template>
+
+<script setup>
+const isActive = ref(false)
+const buttonLabel = computed(() => isActive.value ? '关闭面板' : '打开面板')
+
+function toggle() {
+  isActive.value = !isActive.value
+}
+</script>
+```
+
+## 国际化规范
+
+### 文本国际化
+- 总是使用 `useI18n` 提供的 `t` 函数翻译文本内容
+- 避免在模板和代码中硬编码文本字符串
+- 翻译文件按功能模块组织，避免单个巨大的翻译文件
+- 为所有用户可见文本提供翻译键
+
+```vue
+<template>
+  <div>{{ t('welcome.title') }}</div>
+</template>
+
+<script setup>
+const { t } = useI18n()
+</script>
+```
+
+### 数据国际化
+- 使用 `useNuxtApp().$i18n` 访问 i18n 实例配置当前语言环境
+- 总是使用符合 i18n 规范的日期、数字格式化方法
+- 考虑不同语言的文本长度差异设计 UI 布局
+- 对于多语言路由，使用 `useLocalePath` 生成路径
+
+## 状态管理规范
+
+### Pinia 使用规范
+- Store 定义文件统一放置在 `stores/` 目录下
+- Store ID 必须与文件名保持一致
+- 总是优先使用 `defineStore` 的选项式 API 定义 store
+- 总是在 Store 中定义明确的状态重置方法
+
+```typescript
+// stores/counter.ts
+export const useCounterStore = defineStore('counter', {
+  state: () => ({
+    count: 0
+  }),
+  getters: {
+    doubleCount: (state) => state.count * 2
+  },
+  actions: {
+    increment() {
+      this.count++
+    },
+    reset() {
+      this.$patch({ count: 0 })
+    }
+  }
+})
+```
+
+### 持久化状态
+- 总是使用 `useCookie` 管理需要在服务端和客户端共享的状态
+- 封装 `useStorage` 组合式函数操作本地存储，不直接使用原生 API
+- 敏感数据不存储在客户端存储中
+- 考虑数据同步和过期策略
+
+## 安全规范
+
+### XSS 防护
+- 总是使用 Vue 的安全绑定语法，避免使用 `v-html` 显示用户输入
+- API 数据总是经过过滤和验证后再使用
+- 对用户输入进行适当的转义处理
+
+### CSRF 防护
+- 总是为 POST/PUT/DELETE 请求添加 CSRF Token
+- 遵循同源策略，谨慎处理跨域请求
+
+### 敏感信息处理
+- 禁止在前端硬编码 API 密钥和密码
+- 使用环境变量或后端接口安全传递认证信息
+- 总是使用 HTTPS 加密传输数据
+
+## 测试规范
+
+### 单元测试
+- 总是为组合式函数编写单元测试
+- 使用 Vitest 处理异步测试，匹配测试文件命名为 `*.test.ts`
+- 编写测试代码时考虑测试隔离原则
+
+### 组件测试
+- 使用 Vue Test Utils 和 @testing-library/vue 测试组件
+- 优先测试组件公共 API 而非实现细节
+- 模拟外部依赖，如 API 请求和 store
+
+```typescript
+// 组件测试示例
+import { mount } from '@vue/test-utils'
+import MyComponent from './MyComponent.vue'
+
+test('组件渲染正确的内容', () => {
+  const wrapper = mount(MyComponent, {
+    props: {
+      message: '测试消息'
+    }
+  })
+
+  expect(wrapper.text()).toContain('测试消息')
+})
+```
+
+### E2E 测试
+- 使用 Cypress 或 Playwright 进行端到端测试
+- 重点测试关键用户流程和业务逻辑
+- 遵循页面对象模式组织测试代码
+
+## 调试和日志规范
+
+### 调试工具
+- 总是使用 Vue Devtools 调试组件树和状态
+- 配置环境变量控制不同环境下的调试信息
+- 开发环境启用源码映射以便调试
+
+### 日志输出
+- 总是使用日志级别（debug、info、warn、error）区分不同重要性的日志
+- 生产环境中移除或禁用 debug 级别日志
+- 错误日志包含足够的上下文信息便于排查
+
+```typescript
+// 日志使用示例
+const logger = useLogger('component-name')
+
+function handleAction() {
+  try {
+    // 执行操作
+    logger.info('操作成功完成', { id: 123 })
+  } catch (err) {
+    logger.error('操作失败', { error: err, context: { id: 123 } })
+  }
+}
+```
