@@ -25,6 +25,8 @@ alwaysApply: true
 - 总是在组件demo代码时提供示例代码
 - 总是使用 scss 新语法 `@use 'style.scss';` 引入样式文件
 - 总是充分利用 scss 的特性，避免添加重复无意义的样式
+- 总是开发vue组件的时候要注意并解决水合问题
+- 总是通过 ref 来获取元素对象，禁止使用 id + getElementById 方式(会导致水合问题)
 
 ### 绝对禁止的行为
 

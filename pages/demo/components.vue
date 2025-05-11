@@ -34,6 +34,7 @@
  * 2024-08-01 - 添加 Watermark 和 Segmented 组件
  * 2024-08-10 - 添加 Message 组件
  * 2024-08-16 - 添加 Spin 和 Steps 组件
+ * 2024-08-18 - 添加 Result 和 Dropdown 组件
  */
 import { computed, markRaw, ref } from 'vue'
 import DemoAlert from '~/components/demo/alert.vue'
@@ -61,6 +62,7 @@ import DemoDescriptions from '~/components/demo/descriptions.vue'
 import DemoDialog from '~/components/demo/dialog.vue'
 import DemoDivider from '~/components/demo/divider.vue'
 import DemoDrawer from '~/components/demo/drawer.vue'
+import DemoDropdown from '~/components/demo/dropdown.vue'
 import DemoDynamicStyles from '~/components/demo/dynamic-styles.vue'
 import DemoEmpty from '~/components/demo/empty.vue'
 import DemoIcon from '~/components/demo/icon.vue'
@@ -83,6 +85,7 @@ import DemoQrcode from '~/components/demo/qrcode.vue'
 import DemoRadio from '~/components/demo/radio.vue'
 import DemoRate from '~/components/demo/rate.vue'
 import DemoResizeBox from '~/components/demo/resizebox.vue'
+import DemoResult from '~/components/demo/result.vue'
 import DemoScrollbar from '~/components/demo/scrollbar.vue'
 import DemoSegmented from '~/components/demo/segmented.vue'
 import DemoSelect from '~/components/demo/select.vue'
@@ -206,6 +209,7 @@ const groups = ref<ComponentGroup[]>([
       { name: 'message', label: 'Message 消息提示', component: markRaw(DemoMessage) },
       { name: 'modal', label: 'Modal 模态框', component: markRaw(DemoModal) },
       { name: 'progress', label: 'Progress 进度条', component: markRaw(DemoProgress) },
+      { name: 'result', label: 'Result 结果', component: markRaw(DemoResult) },
       { name: 'skeleton', label: 'Skeleton 骨架屏', component: markRaw(DemoSkeleton) },
       { name: 'spin', label: 'Spin 加载中', component: markRaw(DemoSpin) },
     ],
@@ -214,6 +218,7 @@ const groups = ref<ComponentGroup[]>([
     title: '导航组件',
     components: [
       { name: 'breadcrumb', label: 'Breadcrumb 面包屑', component: markRaw(DemoBreadcrumb) },
+      { name: 'dropdown', label: 'Dropdown 下拉菜单', component: markRaw(DemoDropdown) },
       { name: 'menu', label: 'Menu 菜单', component: markRaw(DemoMenu) },
       { name: 'tabs', label: 'Tabs 标签页', component: markRaw(DemoTabs) },
       { name: 'steps', label: 'Steps 步骤条', component: markRaw(DemoSteps) },

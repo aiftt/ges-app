@@ -1,5 +1,5 @@
 <script setup lang="ts" name="UiInputColorPicker">
-import { onClickOutside, useVModel } from '@vueuse/core'
+import { onClickOutside } from '@vueuse/core'
 /**
  * 颜色选择器组件
  * 创建日期: 2024-07-09
@@ -110,6 +110,9 @@ const emit = defineEmits<{
 // 内部状态
 const containerRef = ref<HTMLElement | null>(null)
 const popoverRef = ref<HTMLElement | null>(null)
+const saturationRef = ref<HTMLElement | null>(null)
+const hueSliderRef = ref<HTMLElement | null>(null)
+const alphaSliderRef = ref<HTMLElement | null>(null)
 const visible = ref(false)
 const currentColor = ref(props.modelValue || '')
 const hue = ref(0)
@@ -127,8 +130,8 @@ const isDraggingAlpha = ref(false)
 // 添加RGB值状态
 const rgbValues = ref({ r: 0, g: 0, b: 0 })
 
-// 使用useVModel简化v-model绑定
-const color = useVModel(props, 'modelValue', emit)
+// 使用defineModel简化v-model绑定
+const color = defineModel<string>('modelValue', { default: '' })
 
 // 计算样式类
 const colorPickerClass = computed(() => [
@@ -614,11 +617,10 @@ function handleAlphaMouseUp() {
 }
 
 function updateAlphaFromEvent(e: MouseEvent) {
-  const container = document.querySelector('.ui-color-picker-alpha-slider') as HTMLElement
-  if (!container)
+  if (!alphaSliderRef.value)
     return
 
-  const rect = container.getBoundingClientRect()
+  const rect = alphaSliderRef.value.getBoundingClientRect()
   const { width } = rect
 
   // 限制位置在滑块范围内
@@ -726,11 +728,10 @@ function handleSaturationMouseUp() {
 }
 
 function updateSaturationFromEvent(e: MouseEvent) {
-  const container = document.querySelector('.ui-color-picker-saturation-inner') as HTMLElement
-  if (!container)
+  if (!saturationRef.value)
     return
 
-  const rect = container.getBoundingClientRect()
+  const rect = saturationRef.value.getBoundingClientRect()
   const { width, height } = rect
 
   // 修复指针位置计算
@@ -776,11 +777,10 @@ function handleHueMouseUp() {
 }
 
 function updateHueFromEvent(e: MouseEvent) {
-  const container = document.querySelector('.ui-color-picker-hue-slider') as HTMLElement
-  if (!container)
+  if (!hueSliderRef.value)
     return
 
-  const rect = container.getBoundingClientRect()
+  const rect = hueSliderRef.value.getBoundingClientRect()
   const { width } = rect
   const { clientX } = e
 
@@ -838,7 +838,7 @@ onUnmounted(() => {
 
     <!-- 颜色选择面板 -->
     <div
-      v-show="visible"
+      v-if="visible"
       ref="popoverRef"
       :class="panelClass"
       :style="{ width: typeof popoverWidth === 'number' ? `${popoverWidth}px` : popoverWidth }"
@@ -849,6 +849,7 @@ onUnmounted(() => {
         <!-- 饱和度/亮度面板 -->
         <div class="ui-color-picker-saturation" @mousedown="handleSaturationMouseDown">
           <div
+            ref="saturationRef"
             class="ui-color-picker-saturation-inner"
             :style="{ backgroundColor: `hsl(${hue}, 100%, 50%)` }"
           >
@@ -863,7 +864,11 @@ onUnmounted(() => {
         </div>
 
         <!-- 色相条 -->
-        <div class="ui-color-picker-hue-slider" @mousedown="handleHueMouseDown">
+        <div
+          ref="hueSliderRef"
+          class="ui-color-picker-hue-slider"
+          @mousedown="handleHueMouseDown"
+        >
           <div class="ui-color-picker-hue-track" />
           <div
             class="ui-color-picker-hue-thumb"
@@ -874,6 +879,7 @@ onUnmounted(() => {
         <!-- 透明度条 -->
         <div
           v-if="showAlpha"
+          ref="alphaSliderRef"
           class="ui-color-picker-alpha-slider"
           @mousedown="handleAlphaMouseDown"
         >

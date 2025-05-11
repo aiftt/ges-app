@@ -5,6 +5,7 @@
  * 作者: aiftt
  * 更新日期: 2024-05-27 - 扩展功能，增加Element Plus的全部功能
  * 更新日期: 2024-07-05 - 优化代码，增强键盘导航
+ * 更新日期: 2024-08-22 - 修复水合问题，将querySelector替换为ref
  */
 
 import { debounce } from 'lodash'
@@ -404,6 +405,24 @@ const groupedOptions = computed(() => {
   return { groups, ungrouped }
 })
 
+// 在父组件找到当前高亮的元素
+// 使用一个Map来保存选项元素引用
+const optionRefs = ref<Map<number, HTMLElement>>(new Map())
+
+// 方便设置和获取选项元素引用的方法
+function setOptionRef(index: number, el: HTMLElement | null) {
+  if (el) {
+    optionRefs.value.set(index, el)
+  }
+  else {
+    optionRefs.value.delete(index)
+  }
+}
+
+function getOptionRef(index: number): HTMLElement | undefined {
+  return optionRefs.value.get(index)
+}
+
 // 处理选项点击
 function handleOptionClick(option: ISelectOption) {
   if (option.disabled)
@@ -594,13 +613,13 @@ function handleKeydown(event: KeyboardEvent) {
     case 'ArrowDown':
       // 向下移动高亮
       event.preventDefault()
-      navigateOption('next')
+      navigateOptions('down')
       break
 
     case 'ArrowUp':
       // 向上移动高亮
       event.preventDefault()
-      navigateOption('prev')
+      navigateOptions('up')
       break
 
     case 'Tab':
@@ -610,8 +629,8 @@ function handleKeydown(event: KeyboardEvent) {
   }
 }
 
-// 导航选项
-function navigateOption(direction: 'prev' | 'next') {
+// 处理方向键导航和选择
+function navigateOptions(direction: 'up' | 'down') {
   const options = navigableOptions.value
   if (options.length === 0)
     return
@@ -622,7 +641,7 @@ function navigateOption(direction: 'prev' | 'next') {
   }
 
   const optionsLength = options.length
-  let nextIndex = direction === 'next'
+  let nextIndex = direction === 'down'
     ? (highlightedIndex.value + 1) % optionsLength
     : (highlightedIndex.value - 1 + optionsLength) % optionsLength
 
@@ -632,7 +651,7 @@ function navigateOption(direction: 'prev' | 'next') {
     options[nextIndex].disabled
     && nextIndex !== startIndex
   ) {
-    nextIndex = direction === 'next'
+    nextIndex = direction === 'down'
       ? (nextIndex + 1) % optionsLength
       : (nextIndex - 1 + optionsLength) % optionsLength
   }
@@ -641,12 +660,11 @@ function navigateOption(direction: 'prev' | 'next') {
 
   // 确保高亮的选项可见
   nextTick(() => {
-    const highlightedOption = document.querySelector('.ui-select-option--highlighted')
+    const highlightedOption = getOptionRef(highlightedIndex.value)
     if (highlightedOption && dropdownRef.value) {
       const container = dropdownRef.value
-      const htmlElement = highlightedOption as HTMLElement
-      const itemTop = htmlElement.offsetTop
-      const itemBottom = itemTop + htmlElement.clientHeight
+      const itemTop = highlightedOption.offsetTop
+      const itemBottom = itemTop + highlightedOption.clientHeight
 
       if (itemBottom > container.scrollTop + container.clientHeight) {
         container.scrollTop = itemBottom - container.clientHeight
@@ -755,11 +773,6 @@ function isSelected(option: ISelectOption) {
     return Array.isArray(props.modelValue) && props.modelValue.includes(option.value)
   }
   return props.modelValue === option.value
-}
-
-// 获取选项在可导航选项中的索引
-function getOptionIndex(option: ISelectOption): number {
-  return navigableOptions.value.findIndex(opt => opt.value === option.value)
 }
 
 // 监听焦点变化
@@ -934,129 +947,107 @@ provide('select', {
       />
     </div>
 
-    <!-- 下拉菜单，使用teleport传送到body -->
-    <teleport :to="teleportTo" :disabled="!useTeleport">
-      <transition name="ui-select-dropdown-fade">
-        <div
-          v-show="visible"
-          ref="dropdownRef"
-          :class="dropdownClass"
-          :style="useTeleport ? {
-            ...dropdownPosition,
-            position: 'absolute',
-            zIndex: 1050,
-          } : {
-            maxHeight,
-            transformOrigin: placement === 'top' ? 'center bottom' : 'center top',
-          }"
-        >
-          <!-- 下拉菜单小箭头 -->
-          <div v-if="useTeleport" class="ui-select-dropdown-arrow" />
-
-          <!-- 头部插槽 -->
-          <div v-if="$slots.header" class="ui-select-dropdown-header">
-            <slot name="header" />
-          </div>
-
-          <!-- 加载状态 -->
-          <div v-if="loading" class="ui-select-loading">
-            <ui-icon icon="carbon:renew" class="ui-select-loading-spinner" />
-            <span>{{ loadingText }}</span>
-          </div>
-
-          <!-- 没有选项时的空状态 -->
-          <div v-else-if="filteredOptions.length === 0" class="ui-select-empty">
-            <slot name="empty">
-              {{ query ? noMatchText : noDataText }}
-            </slot>
-          </div>
-
-          <!-- 创建新选项提示 -->
+    <client-only>
+      <!-- 下拉菜单，使用teleport传送到body -->
+      <teleport :to="teleportTo" :disabled="!useTeleport">
+        <transition name="ui-select-dropdown-fade">
           <div
-            v-else-if="allowCreate && filterable && query && !filteredOptions.some(option => option.label === query)"
-            class="ui-select-create-option"
-            @click.stop="createNewOption"
+            v-show="visible"
+            ref="dropdownRef"
+            :class="dropdownClass"
+            :style="useTeleport ? {
+              ...dropdownPosition,
+              position: 'absolute',
+              zIndex: 1050,
+            } : {
+              maxHeight,
+              transformOrigin: placement === 'top' ? 'center bottom' : 'center top',
+            }"
           >
-            <slot name="create-option" :query="query">
-              <span>{{ '创建' }}<strong>{{ query }}</strong></span>
-            </slot>
-          </div>
+            <!-- 下拉菜单小箭头 -->
+            <div v-if="useTeleport" class="ui-select-dropdown-arrow" />
 
-          <!-- 选项列表 -->
-          <ul v-else v-auto-animate class="ui-select-options">
-            <!-- 未分组选项 -->
-            <template v-if="Object.keys(groupedOptions.groups).length === 0">
-              <li
-                v-for="option in filteredOptions"
-                :key="option.value"
-                class="ui-select-option"
-                :class="{
-                  'ui-select-option--selected': isSelected(option),
-                  'ui-select-option--disabled': option.disabled,
-                  'ui-select-option--highlighted': highlightedIndex === getOptionIndex(option),
-                }"
-                :style="option.style"
-                @click.stop="handleOptionClick(option)"
-              >
-                <!-- 自定义选项模板 -->
-                <slot name="option" :option="option" :selected="isSelected(option)">
-                  <!-- 多选模式下的勾选图标 -->
-                  <ui-icon
-                    v-if="multiple && isSelected(option)"
-                    icon="carbon:checkmark"
-                    class="ui-select-option-icon"
-                  />
+            <!-- 头部插槽 -->
+            <div v-if="$slots.header" class="ui-select-dropdown-header">
+              <slot name="header" />
+            </div>
 
-                  <!-- 选项文本 -->
-                  <span class="ui-select-option-label">{{ option.label }}</span>
-                </slot>
-              </li>
-            </template>
+            <!-- 加载状态 -->
+            <div v-if="loading" class="ui-select-loading">
+              <ui-icon icon="carbon:renew" class="ui-select-loading-spinner" />
+              <span>{{ loadingText }}</span>
+            </div>
 
-            <!-- 分组选项 -->
-            <template v-else>
-              <!-- 未分组的选项放在最前面 -->
-              <template v-if="groupedOptions.ungrouped.length > 0">
+            <!-- 没有选项时的空状态 -->
+            <div v-else-if="filteredOptions.length === 0" class="ui-select-empty">
+              <slot name="empty">
+                {{ query ? noMatchText : noDataText }}
+              </slot>
+            </div>
+
+            <!-- 创建新选项提示 -->
+            <div
+              v-else-if="allowCreate && filterable && query && !filteredOptions.some(option => option.label === query)"
+              class="ui-select-create-option"
+              @click.stop="createNewOption"
+            >
+              <slot name="create-option" :query="query">
+                <span>{{ '创建' }}<strong>{{ query }}</strong></span>
+              </slot>
+            </div>
+
+            <!-- 选项列表 -->
+            <ul v-else v-auto-animate class="ui-select-options">
+              <!-- 未分组选项 -->
+              <template v-if="Object.keys(groupedOptions.groups).length === 0">
                 <li
-                  v-for="option in groupedOptions.ungrouped"
+                  v-for="(option, index) in filteredOptions"
                   :key="option.value"
-                  class="ui-select-option"
-                  :class="{
-                    'ui-select-option--selected': isSelected(option),
-                    'ui-select-option--disabled': option.disabled,
-                    'ui-select-option--highlighted': highlightedIndex === getOptionIndex(option),
-                  }"
+                  :ref="el => setOptionRef(index, el as HTMLElement | null)"
+                  class="ui-select-option" :class="[
+                    {
+                      'ui-select-option--selected': isSelected(option),
+                      'ui-select-option--disabled': option.disabled,
+                      'ui-select-option--highlighted': highlightedIndex === index,
+                    },
+                  ]"
                   :style="option.style"
-                  @click.stop="handleOptionClick(option)"
+                  @click="() => !option.disabled && handleOptionClick(option)"
+                  @mouseover="() => !option.disabled && (highlightedIndex = index)"
                 >
+                  <!-- 自定义选项模板 -->
                   <slot name="option" :option="option" :selected="isSelected(option)">
+                    <!-- 多选模式下的勾选图标 -->
                     <ui-icon
                       v-if="multiple && isSelected(option)"
                       icon="carbon:checkmark"
                       class="ui-select-option-icon"
                     />
+
+                    <!-- 选项文本 -->
                     <span class="ui-select-option-label">{{ option.label }}</span>
                   </slot>
                 </li>
               </template>
 
               <!-- 分组选项 -->
-              <li v-for="(groupOptions, groupLabel) in groupedOptions.groups" :key="groupLabel" class="ui-select-group">
-                <div class="ui-select-group-label">
-                  {{ groupLabel }}
-                </div>
-                <ul class="ui-select-group-options">
+              <template v-else>
+                <!-- 未分组的选项放在最前面 -->
+                <template v-if="groupedOptions.ungrouped.length > 0">
                   <li
-                    v-for="option in groupOptions"
+                    v-for="(option, index) in groupedOptions.ungrouped"
                     :key="option.value"
-                    class="ui-select-option"
-                    :class="{
-                      'ui-select-option--selected': isSelected(option),
-                      'ui-select-option--disabled': option.disabled,
-                      'ui-select-option--highlighted': highlightedIndex === getOptionIndex(option),
-                    }"
+                    :ref="el => setOptionRef(index, el as HTMLElement | null)"
+                    class="ui-select-option" :class="[
+                      {
+                        'ui-select-option--selected': isSelected(option),
+                        'ui-select-option--disabled': option.disabled,
+                        'ui-select-option--highlighted': highlightedIndex === index,
+                      },
+                    ]"
                     :style="option.style"
-                    @click.stop="handleOptionClick(option)"
+                    @click="() => !option.disabled && handleOptionClick(option)"
+                    @mouseover="() => !option.disabled && (highlightedIndex = index)"
                   >
                     <slot name="option" :option="option" :selected="isSelected(option)">
                       <ui-icon
@@ -1067,18 +1058,51 @@ provide('select', {
                       <span class="ui-select-option-label">{{ option.label }}</span>
                     </slot>
                   </li>
-                </ul>
-              </li>
-            </template>
-          </ul>
+                </template>
 
-          <!-- 底部插槽 -->
-          <div v-if="$slots.footer" class="ui-select-dropdown-footer">
-            <slot name="footer" />
+                <!-- 分组选项 -->
+                <li v-for="(groupOptions, groupLabel) in groupedOptions.groups" :key="groupLabel" class="ui-select-group">
+                  <div class="ui-select-group-label">
+                    {{ groupLabel }}
+                  </div>
+                  <ul class="ui-select-group-options">
+                    <li
+                      v-for="(option, index) in groupOptions"
+                      :key="option.value"
+                      :ref="el => setOptionRef(index, el as HTMLElement | null)"
+                      class="ui-select-option" :class="[
+                        {
+                          'ui-select-option--selected': isSelected(option),
+                          'ui-select-option--disabled': option.disabled,
+                          'ui-select-option--highlighted': highlightedIndex === index,
+                        },
+                      ]"
+                      :style="option.style"
+                      @click="() => !option.disabled && handleOptionClick(option)"
+                      @mouseover="() => !option.disabled && (highlightedIndex = index)"
+                    >
+                      <slot name="option" :option="option" :selected="isSelected(option)">
+                        <ui-icon
+                          v-if="multiple && isSelected(option)"
+                          icon="carbon:checkmark"
+                          class="ui-select-option-icon"
+                        />
+                        <span class="ui-select-option-label">{{ option.label }}</span>
+                      </slot>
+                    </li>
+                  </ul>
+                </li>
+              </template>
+            </ul>
+
+            <!-- 底部插槽 -->
+            <div v-if="$slots.footer" class="ui-select-dropdown-footer">
+              <slot name="footer" />
+            </div>
           </div>
-        </div>
-      </transition>
-    </teleport>
+        </transition>
+      </teleport>
+    </client-only>
   </div>
 </template>
 

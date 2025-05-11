@@ -83,7 +83,7 @@ const emit = defineEmits<{
 const triggerRef = ref<HTMLElement | null>(null)
 const contentRef = ref<HTMLElement | null>(null)
 const arrowRef = ref<HTMLElement | null>(null)
-const isVisible = ref(props.visible)
+const isVisible = defineModel<boolean>('visible', { default: false })
 const showTimer = ref<number | null>(null)
 const hideTimer = ref<number | null>(null)
 

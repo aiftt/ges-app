@@ -141,6 +141,7 @@ const emit = defineEmits<{
 // 状态
 const visible = ref(props.modelValue)
 const current = ref(props.currentStep)
+const popoverRef = ref<HTMLElement | null>(null)
 const targetRect = reactive({
   left: 0,
   top: 0,
@@ -243,12 +244,11 @@ function updatePosition() {
 
   // 计算弹窗位置
   nextTick(() => {
-    const popover = document.querySelector('.ui-tour-popover') as HTMLElement
-    if (!popover)
+    if (!popoverRef.value)
       return
 
-    const popoverWidth = popover.offsetWidth
-    const popoverHeight = popover.offsetHeight
+    const popoverWidth = popoverRef.value.offsetWidth
+    const popoverHeight = popoverRef.value.offsetHeight
 
     // 根据位置计算弹窗坐标
     const placement = step.placement || 'bottom'
@@ -427,6 +427,7 @@ defineExpose({
 
     <!-- 提示弹窗 -->
     <div
+      ref="popoverRef"
       class="ui-tour-popover"
       :class="steps[current]?.className"
       :style="{

@@ -1,5 +1,4 @@
 <script setup lang="ts" name="UiRate">
-import { useVModel } from '@vueuse/core'
 /**
  * 评分组件
  * 创建日期: 2024-07-09
@@ -106,7 +105,7 @@ const emit = defineEmits<{
 }>()
 
 // 内部状态
-const rate = useVModel(props, 'modelValue', emit)
+const rate = defineModel<number>('modelValue', { default: 0 })
 const hoverValue = ref(-1)
 const focused = ref(false)
 

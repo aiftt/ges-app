@@ -4,6 +4,7 @@
  * 创建日期: 2024-06-22
  * 作者: aiftt
  * 更新日期: 2024-06-22 - 初始版本
+ * 更新日期: 2024-08-20 - 添加对active-panels的支持
  */
 
 import { computed, provide, ref, watch } from 'vue'
@@ -14,6 +15,10 @@ const props = withDefaults(defineProps<{
    * 当前激活的面板，手风琴模式下为string，非手风琴模式下为string[]
    */
   modelValue?: string | string[]
+  /**
+   * 当前激活的面板，支持对象数组形式
+   */
+  activePanels?: Array<{ id: string | number, active?: boolean, title?: string }>
   /**
    * 是否开启手风琴模式（只允许单个面板展开）
    */
@@ -52,6 +57,7 @@ const props = withDefaults(defineProps<{
   borderColor?: string
 }>(), {
   modelValue: () => [],
+  activePanels: () => [],
   accordion: false,
   bordered: true,
   iconPosition: 'left',
@@ -62,6 +68,7 @@ const props = withDefaults(defineProps<{
 // 定义事件
 const emit = defineEmits<{
   (e: 'update:modelValue', value: string | string[]): void
+  (e: 'update:activePanels', value: Array<{ id: string | number, active?: boolean, title?: string }>): void
   (e: 'change', value: string | string[]): void
 }>()
 
@@ -75,7 +82,7 @@ const activeItems = ref<string[]>(Array.isArray(props.modelValue)
   ? [...props.modelValue]
   : props.modelValue ? [props.modelValue] : [])
 
-// 更新激活状态
+// 更新激活状态 - 传统方式
 function updateActiveItems(name: string) {
   if (props.accordion) {
     // 手风琴模式，只保留一个激活项
@@ -100,6 +107,29 @@ function updateActiveItems(name: string) {
   }
 }
 
+// 更新面板状态 - 对象数组方式
+function updateActivePanel(id: string | number, active: boolean) {
+  if (!props.activePanels)
+    return
+
+  const newPanels = [...props.activePanels]
+  const index = newPanels.findIndex(panel => panel.id === id)
+
+  if (index > -1) {
+    if (props.accordion && active) {
+      // 手风琴模式，关闭其他面板
+      newPanels.forEach((panel, i) => {
+        if (i !== index) {
+          panel.active = false
+        }
+      })
+    }
+    newPanels[index].active = active
+  }
+
+  emit('update:activePanels', newPanels)
+}
+
 // 监听props变化
 watch(() => props.modelValue, (newVal) => {
   activeItems.value = Array.isArray(newVal) ? [...newVal] : newVal ? [newVal] : []
@@ -109,6 +139,7 @@ watch(() => props.modelValue, (newVal) => {
 provide('collapseContext', {
   activeItems,
   updateActiveItems,
+  updateActivePanel,
   accordion: computed(() => props.accordion),
   expandIcon: computed(() => props.expandIcon),
   iconPosition: computed(() => props.iconPosition),

@@ -5,6 +5,7 @@
  * 作者: aiftt
  * 更新日期: 2023-12-06 - 更新logger接口
  * 更新日期: 2023-12-06 - 更新为v-bind + CSS变量实现方式
+ * 更新日期: 2024-08-22 - 修复水合问题，使用ref替代document.getElementById
  */
 
 import logger from '~/utils/logger'
@@ -118,11 +119,8 @@ const paragraphClass = computed(() => {
 // 自定义颜色CSS变量
 const colorVar = computed(() => props.color || null)
 
-// 生成唯一ID避免冲突 - 确保在SSR中稳定
-const paragraphId = import.meta.client
-  ? Math.random().toString(36).substring(2, 10)
-  : 'ssr-placeholder'
-
+// 生成唯一ID避免冲突 - 使用SSR兼容的ID生成器
+const paragraphRef = ref<HTMLParagraphElement | null>(null)
 const copied = ref(false)
 
 // 复制按钮样式
@@ -138,7 +136,7 @@ function copyText() {
   if (!props.copyable || !import.meta.client)
     return
 
-  const text = document.getElementById(`ui-paragraph-${paragraphId}`)?.textContent || ''
+  const text = paragraphRef.value?.textContent || ''
   paragraphLogger.info('复制段落文本', { length: text.length })
 
   navigator.clipboard.writeText(text)
@@ -158,7 +156,7 @@ function copyText() {
 
 <template>
   <p
-    :id="`ui-paragraph-${paragraphId}`"
+    ref="paragraphRef"
     class="group"
     :class="[paragraphClass]"
   >

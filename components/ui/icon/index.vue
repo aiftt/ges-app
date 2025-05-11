@@ -5,6 +5,7 @@
  * 作者: aiftt
  * 更新日期: 2023-12-03 - 使用 Nuxt Icon 替代 iconify-icon
  * 更新日期: 2023-12-05 - 修复内联样式问题，改用CSS变量方式实现
+ * 更新日期: 2024-08-19 - 修复服务端渲染水合问题
  */
 
 // 定义props
@@ -92,7 +93,7 @@ const iconClass = computed(() => {
     classes.push(props.class)
   }
 
-  return classes.join(' ')
+  return classes
 })
 </script>
 

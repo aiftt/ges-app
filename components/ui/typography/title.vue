@@ -4,6 +4,7 @@
  * 创建日期: 2023-11-14
  * 作者: aiftt
  * 更新日期: 2023-12-05 - 更新为v-bind + CSS变量实现方式，添加自定义颜色支持
+ * 更新日期: 2024-08-22 - 修复水合问题，使用ref替代document.getElementById
  */
 
 import logger from '~/utils/logger'
@@ -80,6 +81,7 @@ const titleClasses = computed(() => [
 ])
 
 // 生成唯一ID避免冲突
+const titleRef = ref<HTMLHeadingElement | null>(null)
 const titleId = Math.random().toString(36).substring(2, 10)
 const copied = ref(false)
 
@@ -89,7 +91,7 @@ const colorVar = computed(() => props.color || null)
 // 复制功能
 function copyText() {
   if (props.copyable && import.meta.client) {
-    const text = document.getElementById(`ui-title-${titleId}`)?.textContent || ''
+    const text = titleRef.value?.textContent || ''
     titleLogger.info('复制标题文本', { level: props.level, length: text.length })
 
     navigator.clipboard.writeText(text)
@@ -113,6 +115,7 @@ function copyText() {
     <component
       :is="`h${level}`"
       :id="`ui-title-${titleId}`"
+      ref="titleRef"
       :class="titleClasses"
       @click="copyable && copyText()"
     >

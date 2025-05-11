@@ -6,6 +6,7 @@
  * 更新日期: 2024-07-19 - 初始实现
  * 2024-07-20 - 添加展开/收起动画效果
  * 2024-07-22 - 优化展开/收起动画，改进垂直模式下按钮样式
+ * 2024-08-22 - 修复水合问题，将querySelector替换为ref
  */
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 
@@ -100,6 +101,7 @@ const emit = defineEmits<{
 
 // 内部状态
 const containerRef = ref<HTMLElement | null>(null)
+const itemsContainerRef = ref<HTMLElement | null>(null)
 const visibleItems = ref<any[]>([])
 const hiddenItems = ref<any[]>([])
 const isOverflowing = ref(false)
@@ -196,12 +198,11 @@ function handleHorizontalOverflow(container: HTMLElement) {
   const moreButtonWidth = getMoreButtonWidth(container)
 
   // 获取列表项容器
-  const itemsContainer = container.querySelector('.ui-overflowlist-items')
-  if (!itemsContainer)
+  if (!itemsContainerRef.value)
     return
 
   // 获取所有项目元素
-  const itemElements = Array.from(itemsContainer.children)
+  const itemElements = Array.from(itemsContainerRef.value.children)
 
   if (itemElements.length > 0) {
     let totalWidth = 0
@@ -302,12 +303,11 @@ function handleVerticalOverflow(container: HTMLElement) {
   const moreButtonHeight = getMoreButtonHeight(container)
 
   // 获取列表项容器
-  const itemsContainer = container.querySelector('.ui-overflowlist-items')
-  if (!itemsContainer)
+  if (!itemsContainerRef.value)
     return
 
   // 获取所有项目元素
-  const itemElements = Array.from(itemsContainer.children)
+  const itemElements = Array.from(itemsContainerRef.value.children)
 
   if (itemElements.length > 0) {
     let totalHeight = 0
@@ -527,6 +527,7 @@ defineExpose({
 
     <!-- 可见项容器 -->
     <div
+      ref="itemsContainerRef"
       class="ui-overflowlist-items"
       :style="itemsContainerStyle"
     >

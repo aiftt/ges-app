@@ -5,6 +5,7 @@
  * 作者: aiftt
  * 更新日期: 2023-12-03 - 修复内联样式问题，改用CSS变量和类名实现
  * 更新日期: 2023-12-05 - 更新为v-bind + CSS变量实现方式
+ * 更新日期: 2024-08-22 - 修复水合问题，使用ref替代document.getElementById
  */
 
 import logger from '~/utils/logger'
@@ -145,7 +146,8 @@ const textClass = computed(() => {
   return classes.join(' ')
 })
 
-// 生成唯一ID避免冲突 - 确保在SSR中稳定
+// 生成唯一ID避免冲突 - 使用SSR兼容的ID生成器
+const textRef = ref<HTMLSpanElement | null>(null)
 const textId = import.meta.client
   ? Math.random().toString(36).substring(2, 10)
   : 'ssr-placeholder'
@@ -165,7 +167,7 @@ function copyText() {
   if (!props.copyable || !import.meta.client)
     return
 
-  const text = document.getElementById(`ui-text-${textId}`)?.textContent || ''
+  const text = textRef.value?.textContent || ''
   textLogger.info('复制文本', { length: text.length })
 
   navigator.clipboard.writeText(text)
@@ -189,6 +191,7 @@ const colorVar = computed(() => props.color || null)
 <template>
   <span
     :id="`ui-text-${textId}`"
+    ref="textRef"
     class="group ui-typography-text"
     :class="[textClass]"
   >

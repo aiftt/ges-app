@@ -258,6 +258,24 @@ const ignoreBlurEvent = ref(false)
 // 过滤后的选项 - 使用ref而不是computed避免只读属性错误
 const filteredOptions = ref<Option[]>([])
 
+// 跟踪选项元素的引用
+const optionRefs = ref<Map<number, HTMLElement>>(new Map())
+
+// 设置选项元素引用
+function setOptionRef(index: number, el: HTMLElement | null) {
+  if (el) {
+    optionRefs.value.set(index, el)
+  }
+  else {
+    optionRefs.value.delete(index)
+  }
+}
+
+// 获取选项元素引用
+function getOptionRef(index: number): HTMLElement | undefined {
+  return optionRefs.value.get(index)
+}
+
 // 计算最终展示的选项（处理分组）
 const finalOptions = computed(() => {
   // 如果选项为空，直接返回空数组
@@ -716,7 +734,7 @@ function handleKeydown(event: KeyboardEvent) {
 // 滚动到活动选项
 function scrollToActiveOption() {
   nextTick(() => {
-    const activeElement = document.querySelector('.ui-input-autocomplete-option--active')
+    const activeElement = getOptionRef(activeOptionIndex.value)
     if (activeElement && dropdownRef.value) {
       const containerRect = dropdownRef.value.getBoundingClientRect()
       const optionRect = activeElement.getBoundingClientRect()
@@ -972,6 +990,7 @@ defineExpose({
                       : String(opt[labelKey]).toLowerCase().includes(inputValue.toLowerCase())),
                   )"
                   :key="`group-${groupIndex}-option-${getOptionValue(option, valueKey)}-${optionIndex}`"
+                  :ref="el => setOptionRef(getGroupOptionIndex(groupIndex, optionIndex), el as HTMLElement | null)"
                   :class="getOptionClass(option, optionIndex, groupIndex)"
                   @click="handleOptionClick(option)"
                   @mouseenter="handleOptionHover(option, optionIndex, groupIndex)"
@@ -992,6 +1011,7 @@ defineExpose({
             <div
               v-for="(option, index) in finalOptions"
               :key="`option-${getOptionValue(option, valueKey)}-${index}`"
+              :ref="el => setOptionRef(index, el as HTMLElement | null)"
               :class="getOptionClass(option, index)"
               @click="handleOptionClick(option)"
               @mouseenter="handleOptionHover(option, index)"

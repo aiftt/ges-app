@@ -948,15 +948,66 @@ Message 组件存在两个 ESLint 错误：
 
   - **描述**: 服务端渲染和客户端渲染ID不匹配，特别是在`ui-title`组件上
   - **详细错误**: Hydration attribute mismatch on `<h3>` - rendered on server: id="ui-title-ssr-placeholder" - expected on client: id="ui-title-xxxxx"
-  - **状态**: 待修复
+  - **状态**: 已修复
   - **报告日期**: 2025-05-10
-  - **修复日期**:
+  - **修复日期**: 2024-08-22
+  - **修复方案**: 将使用 document.getElementById 的方式改为使用 Vue ref 获取元素，避免服务端和客户端ID不匹配导致的水合问题。
+
+- **问题**: 组件中使用 querySelector 导致水合问题
+
+  - **描述**: 多个组件中使用 document.querySelector 获取DOM元素，导致服务端渲染和客户端渲染不一致
+  - **状态**: 已修复
+  - **报告日期**: 2024-08-22
+  - **修复日期**: 2024-08-22
+  - **修复方案**: 将所有使用 querySelector 和 getElementById 的组件改为使用 Vue ref 方式获取元素，包括 typography/paragraph、typography/text、typography/title、overflowlist、select、tour 和 input/color-picker 等组件。
 
 - **问题**: 日志输出格式问题
   - **描述**: 控制台包含很多与"应用初始化"相关的日志，服务端和客户端格式不一致
   - **状态**: 待修复
   - **报告日期**: 2025-05-10
   - **修复日期**:
+
+## 水合问题修复总结 (2024-08-22)
+
+### 问题描述
+
+在 Nuxt 应用中，多个组件使用 document.getElementById 和 document.querySelector 等 DOM API 直接获取元素，导致服务端渲染和客户端渲染不一致，引发水合警告和功能异常。
+
+### 修复组件列表
+
+1. **Typography 排版组件**:
+
+   - typography/paragraph.vue: 替换 document.getElementById 为 ref
+   - typography/text.vue: 替换 document.getElementById 为 ref
+   - typography/title.vue: 替换 document.getElementById 为 ref
+
+2. **UI 功能组件**:
+   - overflowlist/index.vue: 替换 container.querySelector 为 ref
+   - select/index.vue: 替换 document.querySelector 为 optionRefs 映射
+   - tour/index.vue: 添加 popoverRef 替代 querySelector
+   - input/color-picker.vue: 添加多个 ref 替代 querySelector
+   - input/autocomplete.vue: 使用 optionRefs 映射替代 querySelector
+
+### 修复方法
+
+1. 添加组件级别的 ref 引用
+2. 对于列表类组件，使用 Map 存储元素引用
+3. 使用 setOptionRef 和 getOptionRef 方法管理元素引用
+4. 在组件模板中添加 :ref 绑定
+5. 更新依赖这些元素的方法，使用 ref 而非 DOM 查询
+
+### 效果
+
+1. 消除了水合不匹配警告
+2. 提高了组件在 SSR 环境下的兼容性
+3. 改进了代码质量，符合 Vue 最佳实践
+4. 消除了潜在的服务端渲染问题
+
+### 后续优化方向
+
+1. 继续检查其他组件中可能存在的类似问题
+2. 考虑编写自动化测试检测水合问题
+3. 制定更严格的组件开发规范，避免直接使用 DOM API
 
 ## 下一步修复计划
 
@@ -1025,5 +1076,44 @@ Message 组件存在两个 ESLint 错误：
 3. 保持图标语义不变，只修改图标名称格式
 
 **修复时间**：2024-08-21
+
+**状态**：已修复
+
+## 导航组件
+
+### Dropdown 下拉菜单
+
+#### 1. 下拉菜单始终显示问题
+
+**问题描述**：在 dropdown demo 中，无论如何操作，下拉菜单一直处于显示状态
+
+**问题原因**：
+
+1. Demo 组件中使用 `v-model:visible="dropdownVisible"` 来控制显示状态，但未正确设置 `trigger="click"`，导致组件既响应 hover 又响应 visible 属性
+2. `v-model:visible` 使用时未明确指定 trigger 属性，导致默认使用 hover 触发方式与手动控制冲突
+
+**修复方案**：
+
+1. 在使用 `v-model:visible` 控制显示状态的同时，明确设置 `trigger="click"`，确保组件只通过点击和手动控制来改变显示状态
+2. 优化 dropdown 组件内部实现，更好地处理 hover 和 manual 触发方式的冲突
+
+**修复时间**：2024-08-19
+
+**状态**：已修复
+
+#### 2. Demo 展示方式不直观
+
+**问题描述**：dropdown demo 使用 collapse 组件包装所有示例，不符合其他组件 demo 直观展示的方式
+
+**问题原因**：
+使用 collapse 组件会将演示代码隐藏在折叠面板中，用户需要额外点击才能查看示例，降低了使用体验
+
+**修复方案**：
+
+1. 重写 dropdown demo，移除 collapse 组件，直接展示所有示例
+2. 使用 ui-typography-title 和 ui-divider 组织内容，保持与其他组件 demo 一致的展示风格
+3. 将代码示例合并到最后展示，减少重复内容
+
+**修复时间**：2024-08-19
 
 **状态**：已修复
