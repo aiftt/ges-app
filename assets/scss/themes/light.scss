@@ -17,6 +17,11 @@
  * 更新日期: 2024-06-24 - 添加 Alert 组件主题变量
  * 更新日期: 2024-06-24 - 添加 Drawer 组件主题变量
  * 更新日期: 2024-07-05 - 添加 Input Number 组件主题变量
+ * 更新日期: 2024-09-08 - 添加 Mention 组件主题变量
+ * 更新日期: 2024-09-08 - 添加 Form 组件主题变量
+ * 更新日期: 2024-09-08 - 添加 Tabs 组件主题变量
+ * 更新日期: 2024-09-08 - 添加 Dropdown 组件主题变量
+ * 更新日期: 2024-09-08 - 添加 Button 组件主题变量
  */
 
 :root {
@@ -344,4 +349,84 @@
 
   // 其他变量
   --shadow-color: rgba(0, 0, 0, 0.1);
+
+  // Mention组件变量
+  --ui-mention-border-color: var(--ui-color-border);
+  --ui-mention-bg-color: var(--ui-color-bg);
+  --ui-mention-text-color: var(--ui-color-text);
+  --ui-mention-placeholder-color: var(--ui-color-text-lighter);
+  --ui-mention-focus-border-color: var(--ui-color-primary);
+  --ui-mention-focus-shadow-color: rgba(59, 130, 246, 0.25);
+  --ui-mention-popup-bg-color: var(--ui-color-bg);
+  --ui-mention-popup-shadow: var(--ui-shadow-md);
+  --ui-mention-option-hover-bg: var(--ui-color-bg-hover);
+  --ui-mention-option-selected-bg: #eff6ff;
+  --ui-mention-option-selected-text: var(--ui-color-primary);
+  --ui-mention-avatar-size: 24px;
+  --ui-mention-popup-z-index: 1000;
+  --ui-mention-font-size: var(--ui-font-size-sm);
+
+  // Form组件变量
+  --ui-form-font-size: var(--ui-font-size-sm);
+  --ui-form-line-height: var(--ui-line-height);
+  --ui-form-label-color: var(--ui-color-text-secondary);
+  --ui-form-text-color: var(--ui-color-text);
+  --ui-form-border-color: var(--ui-color-border);
+  --ui-form-bg-color: var(--ui-color-bg);
+  --ui-form-disabled-bg: var(--ui-color-disabled-bg);
+  --ui-form-disabled-color: var(--ui-color-disabled-text);
+  --ui-form-error-color: var(--ui-color-danger);
+  --ui-form-tip-color: var(--ui-color-text-secondary);
+  --ui-form-input-height: 36px;
+  --ui-form-input-radius: 4px;
+  --ui-form-input-padding: 0 12px;
+  --ui-form-gap: 16px;
+  --ui-form-focus-border: var(--ui-color-primary);
+  --ui-form-focus-shadow: rgba(59, 130, 246, 0.25);
+  --ui-form-required-color: var(--ui-color-danger);
+
+  // Split组件变量
+  --ui-split-border-color: var(--ui-color-border);
+  --ui-split-bg-color: var(--ui-color-bg);
+  --ui-split-splitter-color: var(--ui-color-border);
+  --ui-split-splitter-hover-color: var(--ui-color-primary);
+
+  // Tabs组件变量
+  --ui-tabs-active-color: var(--ui-color-primary);
+  --ui-tabs-text-color: var(--ui-color-text);
+  --ui-tabs-disabled-color: var(--ui-color-disabled-text);
+  --ui-tabs-border-color: var(--ui-color-border);
+  --ui-tabs-hover-color: var(--ui-color-bg-hover);
+  --ui-tabs-active-bg: var(--ui-color-bg);
+
+  // Dropdown组件变量
+  --ui-color-bg-elevation: var(--ui-color-bg);
+  --ui-dropdown-item-padding: 8px 16px;
+  --ui-dropdown-submenu-padding: 8px 16px;
+  --ui-dropdown-item-hover-bg: var(--ui-color-bg-hover);
+  --ui-dropdown-item-active-bg: var(--ui-color-primary-light);
+  --ui-dropdown-item-active-color: #fff;
+  --ui-dropdown-divider-color: var(--ui-color-border);
+  --ui-dropdown-item-disabled-color: var(--ui-color-disabled-text);
+  --ui-dropdown-item-disabled-bg: var(--ui-color-disabled-bg);
+
+  // Button组件变量
+  --ui-button-radius: var(--ui-radius-md);
+  --ui-button-default-bg: var(--ui-color-secondary-light);
+  --ui-button-default-text: var(--ui-color-text);
+  --ui-button-default-border: transparent;
+  --ui-button-default-hover-bg: var(--ui-color-secondary);
+  --ui-button-primary-bg: var(--ui-color-primary);
+  --ui-button-primary-text: white;
+  --ui-button-success-bg: var(--ui-color-success);
+  --ui-button-success-text: white;
+  --ui-button-warning-bg: var(--ui-color-warning);
+  --ui-button-warning-text: white;
+  --ui-button-danger-bg: var(--ui-color-danger);
+  --ui-button-danger-text: white;
+  --ui-button-info-bg: var(--ui-color-info);
+  --ui-button-info-text: white;
+  --ui-button-disabled-bg: var(--ui-color-disabled-bg);
+  --ui-button-disabled-text: var(--ui-color-disabled-text);
+  --ui-button-disabled-border: transparent;
 }

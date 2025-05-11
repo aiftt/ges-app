@@ -82,6 +82,7 @@ import DemoInputTag from '~/components/demo/input-tag.vue'
 import DemoInput from '~/components/demo/input.vue'
 import DemoList from '~/components/demo/list.vue'
 import DemoLogger from '~/components/demo/logger.vue'
+import DemoMention from '~/components/demo/mention.vue'
 import DemoMenu from '~/components/demo/menu.vue'
 import DemoMessage from '~/components/demo/message.vue'
 import DemoModal from '~/components/demo/modal.vue'
@@ -107,6 +108,7 @@ import DemoSpace from '~/components/demo/space.vue'
 import DemoSpin from '~/components/demo/spin.vue'
 import DemoSplit from '~/components/demo/split.vue'
 import DemoSteps from '~/components/demo/steps.vue'
+import DemoSurelyForm from '~/components/demo/surely-form.vue'
 import DemoSwitch from '~/components/demo/switch.vue'
 import DemoTable from '~/components/demo/table-demo.vue'
 import DemoTablePagination from '~/components/demo/table-pagination-demo.vue'
@@ -272,6 +274,8 @@ const groups = ref<ComponentGroup[]>([
     components: [
       { name: 'virtual-select', label: 'VirtualSelect 虚拟化选择器', component: markRaw(DemoVirtualSelect) },
       { name: 'infinite-scroll', label: 'InfiniteScroll 无限滚动', component: markRaw(DemoInfiniteScroll) },
+      { name: 'mention', label: 'Mention 提及组件', component: markRaw(DemoMention) },
+      { name: 'surely-form', label: 'SurelyForm 高级表单', component: markRaw(DemoSurelyForm) },
     ],
   },
 ])

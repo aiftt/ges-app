@@ -9,6 +9,7 @@
  * 更新日期: 2023-12-07 - 添加点击动画效果，优化暗色主题，去掉黑色边框
  * 更新日期: 2023-12-10 - 使用全局主题变量，优化颜色定义
  * 更新日期: 2023-12-11 - 优化暗色主题适配，使用新的主题变量
+ * 更新日期: 2024-09-09 - 提取CSS变量到主题文件中
  */
 import { useSlots } from 'vue'
 
@@ -144,12 +145,12 @@ const buttonClass = computed(() => {
 })
 
 // CSS变量计算
-const bgColorVar = computed(() => props.bgColor || null)
-const textColorVar = computed(() => props.textColor || null)
-const radiusVar = computed(() => props.radius || null)
-const shadowVar = computed(() => props.shadow || null)
-const borderColorVar = computed(() => props.borderColor || null)
-const hoverBgColorVar = computed(() => props.hoverBgColor || null)
+const bgColorVar = computed(() => props.bgColor || undefined)
+const textColorVar = computed(() => props.textColor || undefined)
+const radiusVar = computed(() => props.radius || undefined)
+const shadowVar = computed(() => props.shadow || undefined)
+const borderColorVar = computed(() => props.borderColor || undefined)
+const hoverBgColorVar = computed(() => props.hoverBgColor || undefined)
 
 // 图标尺寸转换
 const iconSize = computed(() => {
@@ -192,6 +193,7 @@ const iconSize = computed(() => {
 
 <style scoped>
 .ui-button {
+  /* CSS变量已迁移到主题文件: assets/scss/themes/light.scss 和 dark.scss 中 */
   /* 使用v-bind绑定CSS变量 */
   --ui-button-bg-color: v-bind(bgColorVar);
   --ui-button-text-color: v-bind(textColorVar);
@@ -260,67 +262,67 @@ const iconSize = computed(() => {
 
 /* 按钮类型 */
 .ui-button--default {
-  background-color: var(--ui-color-secondary-light);
-  color: var(--ui-color-text);
-  border: none;
+  background-color: var(--ui-button-default-bg);
+  color: var(--ui-button-default-text);
+  border: 1px solid var(--ui-button-default-border);
 }
 
 .ui-button--default:hover:not(.ui-button--disabled) {
-  background-color: var(--ui-color-secondary);
+  background-color: var(--ui-button-default-hover-bg);
 }
 
 .ui-button--primary {
-  background-color: var(--ui-color-primary);
-  color: white;
+  background-color: var(--ui-button-primary-bg);
+  color: var(--ui-button-primary-text);
   border: none;
 }
 
 .ui-button--primary:hover:not(.ui-button--disabled) {
-  background-color: var(--ui-color-primary);
+  background-color: var(--ui-button-primary-bg);
   filter: brightness(0.9);
 }
 
 .ui-button--success {
-  background-color: var(--ui-color-success);
-  color: white;
+  background-color: var(--ui-button-success-bg);
+  color: var(--ui-button-success-text);
   border: none;
 }
 
 .ui-button--success:hover:not(.ui-button--disabled) {
-  background-color: var(--ui-color-success);
+  background-color: var(--ui-button-success-bg);
   filter: brightness(0.9);
 }
 
 .ui-button--warning {
-  background-color: var(--ui-color-warning);
-  color: white;
+  background-color: var(--ui-button-warning-bg);
+  color: var(--ui-button-warning-text);
   border: none;
 }
 
 .ui-button--warning:hover:not(.ui-button--disabled) {
-  background-color: var(--ui-color-warning);
+  background-color: var(--ui-button-warning-bg);
   filter: brightness(0.9);
 }
 
 .ui-button--danger {
-  background-color: var(--ui-color-danger);
-  color: white;
+  background-color: var(--ui-button-danger-bg);
+  color: var(--ui-button-danger-text);
   border: none;
 }
 
 .ui-button--danger:hover:not(.ui-button--disabled) {
-  background-color: var(--ui-color-danger);
+  background-color: var(--ui-button-danger-bg);
   filter: brightness(0.9);
 }
 
 .ui-button--info {
-  background-color: var(--ui-color-info);
-  color: white;
+  background-color: var(--ui-button-info-bg);
+  color: var(--ui-button-info-text);
   border: none;
 }
 
 .ui-button--info:hover:not(.ui-button--disabled) {
-  background-color: var(--ui-color-info);
+  background-color: var(--ui-button-info-bg);
   filter: brightness(0.9);
 }
 
@@ -372,9 +374,9 @@ const iconSize = computed(() => {
   opacity: 0.5;
   cursor: not-allowed;
   pointer-events: none;
-  background-color: var(--ui-color-disabled-bg, var(--ui-color-secondary-light)) !important;
-  color: var(--ui-color-disabled-text, var(--ui-color-text-light)) !important;
-  border-color: var(--ui-color-disabled-border, transparent) !important;
+  background-color: var(--ui-button-disabled-bg) !important;
+  color: var(--ui-button-disabled-text) !important;
+  border-color: var(--ui-button-disabled-border) !important;
 }
 
 /* 加载状态 */
@@ -382,6 +384,4 @@ const iconSize = computed(() => {
   opacity: 0.8;
   cursor: wait;
 }
-
-/* CSS变量已移至主题文件中 */
 </style>

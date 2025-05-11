@@ -6,6 +6,7 @@ import type { MenuItem } from './type'
  * 作者: aiftt
  * 更新日期: 2024-08-23 - 修复显隐控制问题
  * 更新日期: 2024-08-24 - 参考Element Plus改进实现，添加递归子菜单、键盘导航
+ * 更新日期: 2024-09-09 - 提取CSS变量到主题文件中
  */
 import { nextTick, onMounted, onUnmounted, provide, reactive } from 'vue'
 
@@ -524,10 +525,11 @@ provide('dropdown-context', {
   }
 
   &-content {
+    /* CSS变量已迁移到主题文件: assets/scss/themes/light.scss 和 dark.scss 中 */
     min-width: 100px;
-    background-color: var(--ui-color-bg-elevation, #fff);
+    background-color: var(--ui-color-bg-elevation);
     border-radius: 4px;
-    box-shadow: var(--ui-shadow-lg, 0 10px 15px -3px rgba(0, 0, 0, 0.1));
+    box-shadow: var(--ui-shadow-lg);
     padding: 4px 0;
     outline: none;
   }

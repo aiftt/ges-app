@@ -4,6 +4,7 @@
  * 创建日期: 2024-07-09
  * 作者: aiftt
  * 更新日期: 2024-07-09 - 初始实现
+ * 更新日期: 2024-09-09 - 提取CSS变量到主题文件中
  */
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 
@@ -112,10 +113,10 @@ function parsePosition(pos: string | number): number {
 }
 
 // 计算CSS变量
-const borderColorVar = computed(() => props.borderColor || null)
-const bgColorVar = computed(() => props.bgColor || null)
-const splitterColorVar = computed(() => props.splitterColor || null)
-const splitterHoverColorVar = computed(() => props.splitterHoverColor || null)
+const borderColorVar = computed(() => props.borderColor || undefined)
+const bgColorVar = computed(() => props.bgColor || undefined)
+const splitterColorVar = computed(() => props.splitterColor || undefined)
+const splitterHoverColorVar = computed(() => props.splitterHoverColor || undefined)
 
 // 计算定位样式
 const containerClass = computed(() => {
@@ -340,10 +341,12 @@ onUnmounted(() => {
   position: relative;
   overflow: hidden;
   box-sizing: border-box;
+  /* 使用v-bind绑定自定义CSS变量，覆盖主题变量 */
   --ui-split-border-color: v-bind(borderColorVar);
   --ui-split-bg-color: v-bind(bgColorVar);
   --ui-split-splitter-color: v-bind(splitterColorVar);
   --ui-split-splitter-hover-color: v-bind(splitterHoverColorVar);
+  /* CSS变量已迁移到主题文件: assets/scss/themes/light.scss 和 dark.scss 中 */
 }
 
 .ui-split-horizontal {

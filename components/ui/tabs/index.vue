@@ -3,6 +3,7 @@
  * 标签页组件
  * 创建日期: 2024-08-03
  * 作者: aiftt
+ * 更新日期: 2024-09-09 - 提取CSS变量到主题文件中
  */
 
 // 定义props
@@ -257,13 +258,7 @@ provide('tabs', {
 
 <style scoped>
 .ui-tabs {
-  --ui-tabs-active-color: var(--ui-color-primary, #10b981);
-  --ui-tabs-text-color: var(--ui-color-text, #374151);
-  --ui-tabs-disabled-color: var(--ui-color-disabled, #9ca3af);
-  --ui-tabs-border-color: var(--ui-color-border, #e5e7eb);
-  --ui-tabs-hover-color: var(--ui-color-hover, #f3f4f6);
-  --ui-tabs-active-bg: var(--ui-color-bg-light, #ffffff);
-
+  /* CSS变量已迁移到主题文件: assets/scss/themes/light.scss 和 dark.scss 中 */
   display: flex;
   width: 100%;
 }
