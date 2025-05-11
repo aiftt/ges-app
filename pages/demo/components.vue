@@ -39,6 +39,7 @@
  * 2024-08-25 - 添加 BackTop 组件
  * 2024-08-27 - 添加 PageHeader 和 TimeSelect 组件
  * 2024-08-30 - 添加 DateTimePicker 和 TreeSelect 组件
+ * 2024-08-30 - 添加 VirtualTable 和 VirtualTree 组件
  */
 import { computed, markRaw, onMounted, ref } from 'vue'
 import DemoAffix from '~/components/demo/affix.vue'
@@ -128,6 +129,8 @@ import DemoTypography from '~/components/demo/typography.vue'
 import DemoUpload from '~/components/demo/upload.vue'
 import DemoVerificationCode from '~/components/demo/verification-code.vue'
 import DemoVirtualSelect from '~/components/demo/virtual-select.vue'
+import DemoVirtualTable from '~/components/demo/virtual-table.vue'
+import DemoVirtualTree from '~/components/demo/virtual-tree.vue'
 import DemoWatermark from '~/components/demo/watermark.vue'
 
 // 组件列表
@@ -173,6 +176,7 @@ const groups = ref<ComponentGroup[]>([
     components: [
       { name: 'table', label: 'Table 表格', component: markRaw(DemoTable) },
       { name: 'table-pagination', label: 'Table+Pagination 表格分页', component: markRaw(DemoTablePagination) },
+      { name: 'virtual-table', label: 'VirtualTable 虚拟表格', component: markRaw(DemoVirtualTable) },
       { name: 'qrcode', label: 'QRCode 二维码', component: markRaw(DemoQrcode) },
       { name: 'code', label: 'Code 代码', component: markRaw(DemoCode) },
       { name: 'image', label: 'Image 图片', component: markRaw(DemoImage) },
@@ -189,6 +193,7 @@ const groups = ref<ComponentGroup[]>([
       { name: 'descriptions', label: 'Descriptions 描述列表', component: markRaw(DemoDescriptions) },
       { name: 'list', label: 'List 列表', component: markRaw(DemoList) },
       { name: 'tree', label: 'Tree 树形控件', component: markRaw(DemoTree) },
+      { name: 'virtual-tree', label: 'VirtualTree 虚拟树', component: markRaw(DemoVirtualTree) },
       { name: 'tree-select', label: 'TreeSelect 树形选择器', component: markRaw(DemoTreeSelect) },
       { name: 'calendar', label: 'Calendar 日历', component: markRaw(DemoCalendar) },
       { name: 'tour', label: 'Tour 漫游式引导', component: markRaw(DemoTour) },
@@ -271,14 +276,17 @@ const groups = ref<ComponentGroup[]>([
   },
 ])
 
-// 当前选择的组件
-const currentComponent = ref(groups.value[0].components[0].name)
-
 // 路由参数里的组件
 const route = useRoute()
+const router = useRouter()
+
+// 直接从URL查询参数初始化当前组件
 const initComponent = computed(() => {
-  return route.query.component as string || currentComponent.value
+  return route.query.component as string || groups.value[0].components[0].name
 })
+
+// 当前选择的组件，初始化时直接使用URL参数
+const currentComponent = ref(initComponent.value)
 
 // 当前激活的组件
 const activeComponent = computed(() => {
@@ -294,6 +302,10 @@ const activeComponent = computed(() => {
 // 设置当前组件
 function setComponent(name: string) {
   currentComponent.value = name
+  // 更新 URL 查询参数，保持在同一路由但更新 query
+  router.push({
+    query: { ...route.query, component: name },
+  })
 }
 
 // 侧边栏样式
@@ -316,7 +328,7 @@ const navItemClass = computed(() => (item: string) => [
 
 // 根据路由参数里的组件设置初始组件
 onMounted(() => {
-  if (initComponent.value && initComponent.value !== currentComponent.value) {
+  if (initComponent.value !== currentComponent.value) {
     setComponent(initComponent.value)
   }
 })

@@ -114,8 +114,8 @@
 ### 阶段七：高级组件 (第49-55天)
 
 - [/] Virtualized Select - 虚拟化选择器组件，适用于处理大数据量的选择场景，支持高性能渲染和筛选，2024-09-01，优化提升：2024-09-02
-- [ ] Virtualized Table
-- [ ] Virtualized Tree
+- [x] Virtualized Table - 虚拟化表格组件，用于高效渲染大数据量表格，支持排序、固定列、自定义单元格渲染等功能，2024-09-03
+- [x] Virtualized Tree - 虚拟化树组件，处理大数据量层级结构数据，支持展开/折叠、选择、复选框功能，2024-09-03
 - [x] TreeSelect - 树形选择器组件，支持单选和多选，可过滤搜索、自定义渲染、复选框等功能，2024-08-30
 - [/] Infinite Scroll - 无限滚动组件，支持各种滚动方向、自定义容器和加载状态，适用于大数据分页加载场景，2024-09-01，优化提升：2024-09-02
 - [ ] Tour
@@ -209,3 +209,4 @@
 2025-05-14: 添加 Notification 和 MessageBox 组件到反馈组件
 2024-09-01: 添加 VirtualSelect 和 InfiniteScroll 组件到高级组件
 2024-09-02: 优化 VirtualSelect 和 InfiniteScroll 组件，实现真正的虚拟滚动，解决大数据量DOM元素过多问题
+2024-09-03: 添加 VirtualTable 和 VirtualTree 组件到高级组件，实现高性能大数据渲染
