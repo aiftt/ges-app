@@ -7,6 +7,7 @@
  * 更新日期: 2024-11-22 - 更新类名前缀为magic-anim-
  * 更新日期: 2024-11-22 - 优化下拉框和预览功能
  * 更新日期: 2024-11-26 - 修改为配置变化自动播放动画
+ * 更新日期: 2024-11-27 - 更新所有动画分组和动画列表
  */
 
 // 导入日志工具
@@ -14,6 +15,20 @@ const logger = useLogger('magic-animation')
 
 // 动画分类和对应的动画效果
 const animationGroups = [
+  {
+    name: '注意力效果',
+    animations: [
+      'bounce',
+      'flash',
+      'pulse',
+      'rubberBand',
+      'shake',
+      'swing',
+      'tada',
+      'wobble',
+      'jello',
+    ],
+  },
   {
     name: '入场动画',
     animations: [
@@ -24,6 +39,12 @@ const animationGroups = [
       'swap',
       'twisterInDown',
       'twisterInUp',
+      'foolishIn',
+      'swashIn',
+      'spaceInDown',
+      'spaceInLeft',
+      'spaceInRight',
+      'spaceInUp',
     ],
   },
   {
@@ -34,18 +55,78 @@ const animationGroups = [
       'boingOutDown',
       'bombLeftOut',
       'bombRightOut',
+      'foolishOut',
+      'holeOut',
+      'swashOut',
+      'spaceOutDown',
+      'spaceOutLeft',
+      'spaceOutRight',
+      'spaceOutUp',
     ],
   },
   {
-    name: '特效动画',
+    name: '透视效果',
     animations: [
-      'magic',
-      'swap',
-      'foolishIn',
-      'foolishOut',
-      'holeOut',
-      'swashIn',
-      'swashOut',
+      'perspectiveDown',
+      'perspectiveLeft',
+      'perspectiveRight',
+      'perspectiveUp',
+      'perspectiveDownReturn',
+      'perspectiveLeftReturn',
+      'perspectiveRightReturn',
+      'perspectiveUpReturn',
+    ],
+  },
+  {
+    name: '旋转动画',
+    animations: [
+      'rotateDown',
+      'rotateLeft',
+      'rotateRight',
+      'rotateUp',
+    ],
+  },
+  {
+    name: '滑动动画',
+    animations: [
+      'slideDown',
+      'slideLeft',
+      'slideRight',
+      'slideUp',
+      'slideDownReturn',
+      'slideLeftReturn',
+      'slideRightReturn',
+      'slideUpReturn',
+    ],
+  },
+  {
+    name: '开合动画',
+    animations: [
+      'openDownLeft',
+      'openDownRight',
+      'openUpLeft',
+      'openUpRight',
+      'openDownLeftReturn',
+      'openDownRightReturn',
+      'openUpLeftReturn',
+      'openUpRightReturn',
+      'openDownLeftOut',
+      'openDownRightOut',
+      'openUpLeftOut',
+      'openUpRightOut',
+    ],
+  },
+  {
+    name: 'Tin系列动画',
+    animations: [
+      'tinDownIn',
+      'tinLeftIn',
+      'tinRightIn',
+      'tinUpIn',
+      'tinDownOut',
+      'tinLeftOut',
+      'tinRightOut',
+      'tinUpOut',
     ],
   },
 ]
@@ -290,7 +371,7 @@ function getRandomColor() {
                     </div>
                   </ui-magic-animation>
                 </div>
-                <div class="text-center text-sm">
+                <div class="overflow-hidden break-words px-1 text-center text-sm hyphens-auto">
                   {{ animation }}
                 </div>
               </div>

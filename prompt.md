@@ -308,13 +308,18 @@ components/ui/icon/index.vue:
 
 ## css
 
-1. [magic](https://github.com/miniMAC/magic)
-2. [css shake](https://github.com/elrumordelaluz/csshake)
-3. [css loaders](https://css-loaders.com/)
-4. [css generators](https://css-generators.com/)
-5. [css shapes](https://css-shape.com/)
-6. [css tip](https://css-tip.com/)
-7. [hover](https://ianlunn.github.io/Hover/)
+- [x] [magic](https://github.com/miniMAC/magic)
+
+- [ ] [css shake](https://github.com/elrumordelaluz/csshake)
+
+- [ ] [css loaders](https://css-loaders.com/)
+- [ ] [css generators](https://css-generators.com/)
+
+- [ ] [css shapes](https://css-shape.com/)
+
+- [ ] [css tip](https://css-tip.com/)
+
+- [ ] [hover](https://ianlunn.github.io/Hover/)
 
 ## 插件
 
