@@ -88,12 +88,12 @@ function copyIconName(collection: string, name: string) {
       </p>
       <div class="border rounded bg-white p-4 dark:bg-gray-800">
         <div class="flex flex-wrap items-center gap-4">
-          <ui-icon name="mdi:home" />
-          <ui-icon name="carbon:user" />
-          <ui-icon name="ant-design:setting-outlined" />
-          <ui-icon name="feather:mail" />
-          <ui-icon name="mdi:github" />
-          <ui-icon name="carbon:logo-vue" />
+          <ui-icon icon="mdi:home" />
+          <ui-icon icon="carbon:user" />
+          <ui-icon icon="ant-design:setting-outlined" />
+          <ui-icon icon="feather:mail" />
+          <ui-icon icon="mdi:github" />
+          <ui-icon icon="carbon:logo-vue" />
         </div>
       </div>
     </section>
@@ -109,11 +109,11 @@ function copyIconName(collection: string, name: string) {
       <div class="border rounded bg-white p-4 dark:bg-gray-800">
         <div class="flex flex-wrap items-end gap-6">
           <div v-for="size in iconSizes" :key="size.value" class="flex flex-col items-center">
-            <ui-icon name="mdi:star" :size="size.value" />
+            <ui-icon icon="mdi:star" :size="size.size" />
             <span class="mt-2 text-xs text-gray-600 dark:text-gray-400">{{ size.name }} ({{ size.size }})</span>
           </div>
           <div class="flex flex-col items-center">
-            <ui-icon name="mdi:star" size="56px" />
+            <ui-icon icon="mdi:star" size="56px" />
             <span class="mt-2 text-xs text-gray-600 dark:text-gray-400">自定义 (56px)</span>
           </div>
         </div>
@@ -131,7 +131,7 @@ function copyIconName(collection: string, name: string) {
       <div class="border rounded bg-white p-4 dark:bg-gray-800">
         <div class="flex flex-wrap gap-6">
           <div v-for="color in iconColors" :key="color.value" class="flex flex-col items-center">
-            <ui-icon name="mdi:heart" :color="color.value" size="lg" />
+            <ui-icon icon="mdi:heart" :color="color.color" size="large" />
             <span class="mt-2 text-xs text-gray-600 dark:text-gray-400">{{ color.name }}</span>
           </div>
         </div>
@@ -149,7 +149,7 @@ function copyIconName(collection: string, name: string) {
       <div class="border rounded bg-white p-4 dark:bg-gray-800">
         <div class="flex flex-wrap gap-6">
           <div v-for="animation in animations" :key="animation.value" class="flex flex-col items-center">
-            <ui-icon name="mdi:refresh" :animation="animation.value" size="lg" color="primary" />
+            <ui-icon icon="mdi:refresh" :animation="animation.value" size="large" color="primary" />
             <span class="mt-2 text-xs text-gray-600 dark:text-gray-400">{{ animation.name }}</span>
           </div>
         </div>
@@ -177,7 +177,7 @@ function copyIconName(collection: string, name: string) {
               class="flex flex-col cursor-pointer items-center rounded p-3 transition hover:bg-gray-100 dark:hover:bg-gray-700"
               @click="copyIconName(collection.prefix, icon)"
             >
-              <ui-icon :name="`${collection.prefix}:${icon}`" size="md" />
+              <ui-icon :icon="`${collection.prefix}:${icon}`" />
               <span class="mt-2 w-full truncate text-center text-xs text-gray-600 dark:text-gray-400">{{ icon }}</span>
             </div>
           </div>
