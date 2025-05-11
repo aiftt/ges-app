@@ -37,6 +37,7 @@
  * 2024-08-18 - 添加 Result 和 Dropdown 组件
  * 2024-08-19 - 添加 Affix 和 Anchor 组件
  * 2024-08-25 - 添加 BackTop 组件
+ * 2024-08-27 - 添加 PageHeader 和 TimeSelect 组件
  */
 import { computed, markRaw, ref } from 'vue'
 import DemoAffix from '~/components/demo/affix.vue'
@@ -81,6 +82,7 @@ import DemoMenu from '~/components/demo/menu.vue'
 import DemoMessage from '~/components/demo/message.vue'
 import DemoModal from '~/components/demo/modal.vue'
 import DemoOverflowlist from '~/components/demo/overflowlist-demo.vue'
+import DemoPageHeader from '~/components/demo/pageheader.vue'
 import DemoPagination from '~/components/demo/pagination-demo.vue'
 import DemoParagraph from '~/components/demo/paragraph.vue'
 import DemoPopconfirm from '~/components/demo/popconfirm.vue'
@@ -111,6 +113,7 @@ import DemoTextarea from '~/components/demo/textarea.vue'
 import DemoTheme from '~/components/demo/theme.vue'
 import DemoTimePicker from '~/components/demo/time-picker.vue'
 import DemoTimeline from '~/components/demo/timeline.vue'
+import DemoTimeSelect from '~/components/demo/timeselect.vue'
 import DemoTitle from '~/components/demo/title.vue'
 import DemoTooltip from '~/components/demo/tooltip.vue'
 import DemoTour from '~/components/demo/tour.vue'
@@ -196,6 +199,7 @@ const groups = ref<ComponentGroup[]>([
       { name: 'verification-code', label: 'VerificationCode 验证码输入', component: markRaw(DemoVerificationCode) },
       { name: 'cascader', label: 'Cascader 级联选择器', component: markRaw(DemoCascader) },
       { name: 'time-picker', label: 'TimePicker 时间选择器', component: markRaw(DemoTimePicker) },
+      { name: 'timeselect', label: 'TimeSelect 时间选择', component: markRaw(DemoTimeSelect) },
       { name: 'checkbox', label: 'Checkbox 复选框', component: markRaw(DemoCheckbox) },
       { name: 'radio', label: 'Radio 单选框', component: markRaw(DemoRadio) },
       { name: 'select', label: 'Select 选择器', component: markRaw(DemoSelect) },
@@ -229,6 +233,7 @@ const groups = ref<ComponentGroup[]>([
       { name: 'breadcrumb', label: 'Breadcrumb 面包屑', component: markRaw(DemoBreadcrumb) },
       { name: 'dropdown', label: 'Dropdown 下拉菜单', component: markRaw(DemoDropdown) },
       { name: 'menu', label: 'Menu 菜单', component: markRaw(DemoMenu) },
+      { name: 'pageheader', label: 'PageHeader 页头', component: markRaw(DemoPageHeader) },
       { name: 'route-menu', label: 'Menu 增强菜单', component: markRaw(DemoRouteMenu) },
       { name: 'tabs', label: 'Tabs 标签页', component: markRaw(DemoTabs) },
       { name: 'steps', label: 'Steps 步骤条', component: markRaw(DemoSteps) },
