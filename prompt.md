@@ -2,6 +2,10 @@
 
 计划：@plan.md，按照计划推进，每次只完成两个组件以便更仔细的思考实现细节,别忘记添加对应的演示组件和在 pages/demo/components.vue 中添加演示代码，记得更新计划文档。
 
+优化：
+
+1. 将项目中这种类型 统一到一个 d.ts 什么文件中去添加到 tsconfig.json 中去，'base' | 'slow' | 'little' | 'hard' | 'horizontal' | 'vertical' | 'rotate' | 'opacity' | 'crazy' | 'chunk'，方便直接使用，而不是每个地方都要写一遍
+
 重要迭代：注意本次迭代都是跟 css 样式或动画有关的，我的目的是将一些很好用的 css 动画集成到我们的项目中来
 
 这是一个动画库的样式/Users/lizhicheng/Downloads/magic-master/dist/magic.css
@@ -308,18 +312,13 @@ components/ui/icon/index.vue:
 
 ## css
 
-- [x] [magic](https://github.com/miniMAC/magic)
-
-- [ ] [css shake](https://github.com/elrumordelaluz/csshake)
-
-- [ ] [css loaders](https://css-loaders.com/)
-- [ ] [css generators](https://css-generators.com/)
-
-- [ ] [css shapes](https://css-shape.com/)
-
-- [ ] [css tip](https://css-tip.com/)
-
-- [ ] [hover](https://ianlunn.github.io/Hover/)
+1. [magic](https://github.com/miniMAC/magic)
+2. [css shake](https://github.com/elrumordelaluz/csshake)
+3. [css loaders](https://css-loaders.com/)
+4. [css generators](https://css-generators.com/)
+5. [css shapes](https://css-shape.com/)
+6. [css tip](https://css-tip.com/)
+7. [hover](https://ianlunn.github.io/Hover/)
 
 ## 插件
 

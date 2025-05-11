@@ -1,0 +1,164 @@
+/**
+ * CSShake Animations - 基于csshake的动画库
+ * 创建日期: 2024-11-27
+ * 作者: aiftt
+ * 源自: https://elrumordelaluz.github.io/csshake/
+ * 许可: MIT license - https://opensource.org/licenses/MIT
+ * 更新日期: 2024-11-27 - 初始创建，添加前缀css-shake-，区分不同动画库
+ */
+
+// 配置变量
+$shake-prefix: 'css-shake' !default; // 统一前缀变量
+$shake-animation-duration: 100ms !default;
+$shake-animation-iteration-count: infinite !default;
+$shake-animation-timing-function: ease-in-out !default;
+$shake-animation-delay: 0s !default;
+
+// 基础摇晃mixin
+@mixin shake-generator(
+  $name,
+  $h: 5px,
+  $v: 5px,
+  $r: 3deg,
+  $dur: $shake-animation-duration,
+  $precision: 0.02,
+  $opacity: false,
+  $q: $shake-animation-iteration-count,
+  $t: $shake-animation-timing-function,
+  $delay: $shake-animation-delay,
+  $chunk: 100%
+) {
+  $steps: 100 * $precision;
+  $key: 0%;
+
+  @keyframes #{$shake-prefix}-#{$name} {
+    $key: 0%;
+    #{$key} {
+      transform: translate(0, 0) rotate(0);
+      @if $opacity {
+        opacity: 1;
+      }
+    }
+
+    @for $i from 1 through $steps {
+      @if $i < $chunk * $precision {
+        $key: $i * 100% / $steps;
+        $hVal: if(random(100) > 50, $h * -1, $h) * random($i) / $steps;
+        $vVal: if(random(100) > 50, $v * -1, $v) * random($i) / $steps;
+        $rVal: if(random(100) > 50, $r * -1, $r) * random($i) / $steps;
+
+        #{$key} {
+          transform: translate(#{$hVal}, #{$vVal}) rotate(#{$rVal});
+          @if $opacity {
+            opacity: random(100) / 100;
+          }
+        }
+      }
+    }
+
+    $key: 100%;
+    #{$key} {
+      transform: translate(0, 0) rotate(0);
+      @if $opacity {
+        opacity: 1;
+      }
+    }
+  }
+
+  // 定义动画类
+  .#{$shake-prefix}-#{$name} {
+    animation-name: #{$shake-prefix}-#{$name};
+    animation-duration: $dur;
+    animation-timing-function: $t;
+    animation-iteration-count: $q;
+    animation-delay: $delay;
+
+    // 当出现在触发器内部时，只在父元素悬停时播放
+    .#{$shake-prefix}-trigger:hover &:not(.#{$shake-prefix}-constant),
+    &:hover {
+      animation-play-state: running;
+    }
+  }
+}
+
+// 定义常量动画类
+@mixin shake-constant {
+  .#{$shake-prefix}-constant {
+    animation-iteration-count: infinite;
+    animation-play-state: running;
+
+    &--hover:hover {
+      animation-play-state: paused;
+    }
+  }
+}
+
+// 定义冻结类
+@mixin shake-freeze {
+  .#{$shake-prefix}-freeze,
+  .#{$shake-prefix}-trigger:hover .#{$shake-prefix}-freeze {
+    animation-play-state: paused;
+  }
+}
+
+// 基础样式保持居中
+.#{$shake-prefix} {
+  display: inline-block;
+  transform-origin: center center;
+}
+
+// 各种摇晃类型的实现
+// 基础摇晃
+@include shake-generator('base', 5px, 5px, 3deg);
+
+// 慢速摇晃
+@include shake-generator('slow', 5px, 5px, 3deg, 500ms);
+
+// 小幅摇晃
+@include shake-generator('little', 2px, 2px, 1deg);
+
+// 大幅摇晃
+@include shake-generator('hard', 10px, 10px, 5deg);
+
+// 水平摇晃
+@include shake-generator('horizontal', 10px, 0, 0);
+
+// 垂直摇晃
+@include shake-generator('vertical', 0, 10px, 0);
+
+// 旋转摇晃
+@include shake-generator('rotate', 0, 0, 15deg);
+
+// 透明度摇晃
+@include shake-generator('opacity', 0, 0, 0, 100ms, 0.1, true);
+
+// 疯狂摇晃
+@include shake-generator('crazy', 10px, 10px, 10deg, 100ms, 0.1);
+
+// 块状摇晃
+@include shake-generator('chunk', 15px, 15px, 6deg, 100ms, 0.1, false, infinite, ease-in-out, 0s, 40%);
+
+// 常量摇晃和冻结类
+@include shake-constant;
+@include shake-freeze;
+
+// 基本类 - 同时也作为默认摇晃效果
+.#{$shake-prefix} {
+  @extend .#{$shake-prefix}-base;
+}
+
+// 触发器类
+.#{$shake-prefix}-trigger {
+  .#{$shake-prefix},
+  .#{$shake-prefix}-slow,
+  .#{$shake-prefix}-little,
+  .#{$shake-prefix}-hard,
+  .#{$shake-prefix}-horizontal,
+  .#{$shake-prefix}-vertical,
+  .#{$shake-prefix}-rotate,
+  .#{$shake-prefix}-opacity,
+  .#{$shake-prefix}-crazy,
+  .#{$shake-prefix}-chunk {
+    animation-play-state: paused;
+  }
+}

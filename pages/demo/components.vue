@@ -40,6 +40,7 @@
  * 2024-08-27 - 添加 PageHeader 和 TimeSelect 组件
  * 2024-08-30 - 添加 DateTimePicker 和 TreeSelect 组件
  * 2024-08-30 - 添加 VirtualTable 和 VirtualTree 组件
+ * 2024-11-27 - 添加 CSS Shake 动画组件
  */
 import { computed, markRaw, onMounted, ref } from 'vue'
 import DemoAffix from '~/components/demo/affix.vue'
@@ -66,6 +67,7 @@ import DemoComment from '~/components/demo/comment.vue'
 import DemoComponents from '~/components/demo/components.vue'
 import DemoConfigProvider from '~/components/demo/config-provider.vue'
 import DemoContainer from '~/components/demo/container.vue'
+import DemoCssShakeAnimation from '~/components/demo/css-shake-animation.vue'
 import DemoDateTimePicker from '~/components/demo/datetime-picker.vue'
 import DemoDescriptions from '~/components/demo/descriptions.vue'
 import DemoDialog from '~/components/demo/dialog.vue'
@@ -168,6 +170,7 @@ const groups = ref<ComponentGroup[]>([
       { name: 'scrollbar', label: 'Scrollbar 滚动条', component: markRaw(DemoScrollbar) },
       { name: 'auto-animate', label: 'AutoAnimate 自动动画', component: markRaw(DemoAutoAnimate) },
       { name: 'magic-animation', label: 'Magic 动画效果', component: markRaw(DemoMagicAnimation) },
+      { name: 'css-shake-animation', label: 'CSS Shake 摇晃动画', component: markRaw(DemoCssShakeAnimation) },
       { name: 'resize-box', label: 'ResizeBox 可调整大小的盒子', component: markRaw(DemoResizeBox) },
       { name: 'split', label: 'Split 面板分割', component: markRaw(DemoSplit) },
       { name: 'pagination', label: 'Pagination 分页', component: markRaw(DemoPagination) },
