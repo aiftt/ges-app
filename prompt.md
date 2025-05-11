@@ -2,6 +2,12 @@
 
 计划：@plan.md，按照计划推进，每次只完成两个组件以便更仔细的思考实现细节,别忘记添加对应的演示组件和在 pages/demo/components.vue 中添加演示代码，记得更新计划文档。
 
+重要迭代：注意本次迭代都是跟 css 样式或动画有关的，我的目的是将一些很好用的 css 动画集成到我们的项目中来
+
+这是一个动画库的样式/Users/lizhicheng/Downloads/magic-master/dist/magic.css
+
+思考下如何集成到项目中 ，记得充分利用 scss 的特性来简化样式代码，不然按照magic 源码 css 样式文件会很大
+
 记录：将所有问题记录到 docs/issues.md 下面记录下来，按照问题类型和相关组件划分章节，记录下问题修复时间，状态
 
 问题：
@@ -9,10 +15,12 @@
 1. Mention 提及组件
 
    - 输入@之后并没有弹出列表
+
 2. code 组件
 
    - Html, vue 代码被识别成了 xml
    - 高亮行不生效
+
 3. icon 组件
 
    - animation 属性没生效

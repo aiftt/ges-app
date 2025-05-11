@@ -4,10 +4,14 @@
  * 作者: aiftt
  * 更新日期: 2023-12-05 - 初始化主题文件
  * 更新日期: 2023-12-06 - 将@import替换为@use以解决弃用警告
+ * 更新日期: 2024-11-22 - 添加Magic动画库
  */
 
 // 导入变量
 @use './themes/index.scss' as vars;
+
+// 导入动画
+@use './animations/magic.scss';
 
 // 辅助样式类
 // 文本颜色类

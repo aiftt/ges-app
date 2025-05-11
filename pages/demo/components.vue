@@ -82,6 +82,7 @@ import DemoInputTag from '~/components/demo/input-tag.vue'
 import DemoInput from '~/components/demo/input.vue'
 import DemoList from '~/components/demo/list.vue'
 import DemoLogger from '~/components/demo/logger.vue'
+import DemoMagicAnimation from '~/components/demo/magic-animation.vue'
 import DemoMention from '~/components/demo/mention.vue'
 import DemoMenu from '~/components/demo/menu.vue'
 import DemoMessage from '~/components/demo/message.vue'
@@ -166,6 +167,7 @@ const groups = ref<ComponentGroup[]>([
       { name: 'trigger', label: 'Trigger 触发器', component: markRaw(DemoTrigger) },
       { name: 'scrollbar', label: 'Scrollbar 滚动条', component: markRaw(DemoScrollbar) },
       { name: 'auto-animate', label: 'AutoAnimate 自动动画', component: markRaw(DemoAutoAnimate) },
+      { name: 'magic-animation', label: 'Magic 动画效果', component: markRaw(DemoMagicAnimation) },
       { name: 'resize-box', label: 'ResizeBox 可调整大小的盒子', component: markRaw(DemoResizeBox) },
       { name: 'split', label: 'Split 面板分割', component: markRaw(DemoSplit) },
       { name: 'pagination', label: 'Pagination 分页', component: markRaw(DemoPagination) },
