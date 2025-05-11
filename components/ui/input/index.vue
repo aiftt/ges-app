@@ -1,9 +1,12 @@
 <script setup lang="ts" name="UiInput">
+import type { AutoCapitalize, AutoCorrect, InputMode } from '~/types/interaction'
+import type { ComponentSize } from '~/types/ui'
 /**
  * 输入框组件
  * 创建日期: 2023-06-10
  * 作者: aiftt
  * 更新日期: 2025-05-10 - 增强SSR兼容性和添加更多表单功能
+ * 更新日期: 2024-09-15 - 使用集中管理的类型定义
  */
 import { computed, nextTick, onMounted, ref, watch } from 'vue'
 
@@ -40,7 +43,7 @@ const props = withDefaults(defineProps<{
   /**
    * 输入框大小
    */
-  size?: 'small' | 'default' | 'large'
+  size?: ComponentSize
   /**
    * 前缀图标
    */
@@ -92,11 +95,11 @@ const props = withDefaults(defineProps<{
   /**
    * 自动纠正
    */
-  autocorrect?: 'on' | 'off'
+  autocorrect?: AutoCorrect
   /**
    * 自动大小写
    */
-  autocapitalize?: 'on' | 'off' | 'words' | 'characters'
+  autocapitalize?: AutoCapitalize
   /**
    * 拼写检查
    */
@@ -104,7 +107,7 @@ const props = withDefaults(defineProps<{
   /**
    * 输入模式
    */
-  inputmode?: 'none' | 'text' | 'decimal' | 'numeric' | 'tel' | 'search' | 'email' | 'url'
+  inputmode?: InputMode
 }>(), {
   type: 'text',
   placeholder: '',

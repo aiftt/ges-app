@@ -4,8 +4,10 @@
  * 创建日期: 2024-08-25
  * 作者: aiftt
  * 更新日期: 2024-08-25 - 初始实现
+ * 更新日期: 2024-09-15 - 使用集中管理的类型定义
  */
 
+import type { ComponentSize } from '~/types/ui'
 import { useScroll } from '@vueuse/core'
 import { computed, onMounted, ref, watch } from 'vue'
 
@@ -43,7 +45,7 @@ const props = withDefaults(defineProps<{
   /**
    * 组件大小
    */
-  size?: 'small' | 'default' | 'large'
+  size?: ComponentSize
 }>(), {
   visibilityHeight: 200,
   right: 40,

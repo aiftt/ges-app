@@ -5,9 +5,12 @@
  * 作者: Claude
  * 更新日期: 2024-09-01 - 首次创建
  * 更新日期: 2024-09-11 - 使用集中管理的类型定义
+ * 更新日期: 2024-09-16 - 更新使用FormSize和ErrorMessagePosition类型
  */
 
+import type { FormLayout, LabelPosition } from '~/types/config'
 import type { IFormInstance, IFormItem, IFormRule, IFormValidateResult } from '~/types/form'
+import type { ErrorMessagePosition, FormSize } from '~/types/ui'
 import { useVModel } from '@vueuse/core'
 import { debounce } from 'lodash'
 import { computed, provide, reactive, ref, watch } from 'vue'
@@ -25,7 +28,7 @@ const props = withDefaults(defineProps<{
   /**
    * 表单布局，可选 horizontal、vertical、inline
    */
-  layout?: 'horizontal' | 'vertical' | 'inline'
+  layout?: FormLayout
   /**
    * 标签宽度
    */
@@ -33,7 +36,7 @@ const props = withDefaults(defineProps<{
   /**
    * 标签位置
    */
-  labelPosition?: 'left' | 'top' | 'right'
+  labelPosition?: LabelPosition
   /**
    * 是否禁用整个表单
    */
@@ -49,11 +52,11 @@ const props = withDefaults(defineProps<{
   /**
    * 表单尺寸
    */
-  size?: 'small' | 'medium' | 'large'
+  size?: FormSize
   /**
    * 错误消息显示位置
    */
-  errorMessagePosition?: 'inline' | 'bottom'
+  errorMessagePosition?: ErrorMessagePosition
   /**
    * 提交失败是否滚动到错误位置
    */

@@ -4,6 +4,7 @@
  * 作者: aiftt
  * 包含所有与用户交互相关的类型
  * 更新日期: 2024-09-14 - 添加气泡确认、菜单、轮播相关类型
+ * 更新日期: 2024-09-15 - 添加输入相关类型
  */
 
 /**
@@ -70,3 +71,23 @@ export type InfiniteScrollDirection = 'top' | 'bottom'
  * 导航器类型
  */
 export type NavigatorType = 'dot' | 'number' | 'text'
+
+/**
+ * 自动更正方式
+ */
+export type AutoCorrect = 'on' | 'off'
+
+/**
+ * 自动大写方式
+ */
+export type AutoCapitalize = 'on' | 'off' | 'words' | 'characters'
+
+/**
+ * 输入模式
+ */
+export type InputMode = 'none' | 'text' | 'decimal' | 'numeric' | 'tel' | 'search' | 'email' | 'url'
+
+/**
+ * 溢出位置
+ */
+export type OverflowPosition = 'start' | 'end'

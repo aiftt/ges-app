@@ -1,23 +1,26 @@
 <script setup lang="ts" name="UiSplit">
+import type { Direction } from '~/types/ui'
 /**
  * 面板分割组件
  * 创建日期: 2024-07-09
  * 作者: aiftt
  * 更新日期: 2024-07-09 - 初始实现
  * 更新日期: 2024-09-09 - 提取CSS变量到主题文件中
+ * 更新日期: 2024-08-20 - 添加拖拽功能
+ * 更新日期: 2024-09-15 - 使用集中管理的类型定义
  */
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 
 // 定义props
 const props = withDefaults(defineProps<{
   /**
-   * 分割方向
+   * 分割方向，水平或垂直
    */
-  direction?: 'horizontal' | 'vertical'
+  direction?: Direction
   /**
-   * 分割条位置，可以是百分比或具体像素值
+   * 分割条位置，可以是百分比（0-1）或具体像素值
    */
-  modelValue?: number
+  modelValue?: number | number[]
   /**
    * 默认分割位置
    */
@@ -27,13 +30,21 @@ const props = withDefaults(defineProps<{
    */
   disabled?: boolean
   /**
-   * 分割条大小（宽度或高度）
+   * 分割条大小（像素）
    */
-  splitterSize?: number | string
+  splitterSize?: number
   /**
-   * 最小尺寸限制（百分比，0-100）
+   * 分隔条可调整的最小限制（像素或百分比）
    */
-  min?: number
+  min?: number | string
+  /**
+   * 分隔条可调整的最大限制（像素或百分比）
+   */
+  max?: number | string
+  /**
+   * 分隔条两侧的最小宽度/高度（像素）
+   */
+  minSizes?: number[]
   /**
    * 是否显示拖拽手柄
    */
@@ -66,12 +77,38 @@ const props = withDefaults(defineProps<{
    * 自定义分隔条类名
    */
   splitterClass?: string
+  /**
+   * 自定义样式
+   */
+  customStyle?: Record<string, string>
+  /**
+   * 自定义类名
+   */
+  customClass?: string
+  /**
+   * 是否显示拖拽条
+   */
+  showSplitter?: boolean
+  /**
+   * 是否保持比例在resize窗口时
+   */
+  keepRatio?: boolean
+  /**
+   * 分隔条拖拽后自动吸附灵敏度（像素）
+   */
+  snapThreshold?: number
+  /**
+   * 分隔条拖拽后自动吸附位置列表（像素或百分比）
+   */
+  snapSizes?: (number | string)[]
 }>(), {
   direction: 'horizontal',
   defaultPosition: 50,
   disabled: false,
   splitterSize: 4,
   min: 10,
+  max: 100,
+  minSizes: () => [100, 100],
   showHandle: true,
 })
 

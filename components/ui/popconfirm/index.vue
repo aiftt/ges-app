@@ -1,13 +1,15 @@
 <script setup lang="tsx" name="UiPopconfirm">
-import type { TagType } from '~/types/ui'
+import type { PopconfirmIconType, Trigger } from '~/types/interaction'
 /**
  * 气泡确认框组件
  * 创建日期: 2025-05-03
  * 作者: aiftt
  * 更新日期: 2025-05-10 - 规范化CSS变量，移除内联样式
  * 更新日期: 2024-09-11 - 使用集中管理的类型定义
+ * 更新日期: 2024-09-15 - 使用更多集中管理的类型定义
  * 点击元素弹出的气泡确认框，常用于需要用户确认的操作
  */
+import type { Placement, TagType } from '~/types/ui'
 import { computed, ref } from 'vue'
 
 const props = withDefaults(defineProps<{
@@ -42,11 +44,11 @@ const props = withDefaults(defineProps<{
   /**
    * 触发方式
    */
-  trigger?: 'click' | 'hover' | 'focus'
+  trigger?: Trigger
   /**
    * 弹出内容位置
    */
-  placement?: 'top' | 'top-start' | 'top-end' | 'right' | 'right-start' | 'right-end' | 'bottom' | 'bottom-start' | 'bottom-end' | 'left' | 'left-start' | 'left-end'
+  placement?: Placement
   /**
    * 是否显示图标
    */
@@ -54,7 +56,7 @@ const props = withDefaults(defineProps<{
   /**
    * 图标类型
    */
-  iconType?: 'warning' | 'info' | 'success' | 'question' | 'error'
+  iconType?: PopconfirmIconType
   /**
    * 是否禁用
    */

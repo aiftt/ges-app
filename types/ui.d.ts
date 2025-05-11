@@ -4,6 +4,7 @@
  * 更新日期: 2024-09-13 - 添加更多基础类型
  * 更新日期: 2024-09-14 - 添加边框、列表、步骤条相关类型和菜单相关类型
  * 更新日期: 2024-09-15 - 添加Grid组件相关类型和TsxDemo组件类型、Watermark组件类型
+ * 更新日期: 2024-09-16 - 添加表单组件相关类型
  */
 
 /**
@@ -250,6 +251,16 @@ export type PositionMode = 'top' | 'bottom'
  * 字体样式
  */
 export type FontStyle = 'none' | 'normal' | 'italic' | 'oblique'
+
+/**
+ * 表单尺寸
+ */
+export type FormSize = 'small' | 'medium' | 'large'
+
+/**
+ * 错误消息显示位置
+ */
+export type ErrorMessagePosition = 'inline' | 'bottom'
 
 /**
  * 字体粗细

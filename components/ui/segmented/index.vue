@@ -4,7 +4,9 @@
  * 创建日期: 2024-08-01
  * 作者: aiftt
  * 更新日期: 2024-08-01
+ * 更新日期: 2024-09-15 - 使用集中管理的类型定义
  */
+import type { ComponentSize } from '~/types/ui'
 
 interface ISegmentOption {
   label: string
@@ -29,7 +31,7 @@ const props = withDefaults(defineProps<{
   /**
    * 尺寸大小
    */
-  size?: 'small' | 'default' | 'large'
+  size?: ComponentSize
   /**
    * 是否使用圆角样式
    */

@@ -8,8 +8,11 @@
  * 2024-07-22 - 优化展开/收起动画，改进垂直模式下按钮样式
  * 2024-08-22 - 修复水合问题，将querySelector替换为ref
  * 2024-09-12 - 使用集中管理的类型定义
+ * 2024-09-15 - 使用更多集中管理的类型定义
  */
 import type { IOverflowItem } from '~/types/common'
+import type { OverflowPosition } from '~/types/interaction'
+import type { Direction } from '~/types/ui'
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 
 // 定义 props
@@ -33,7 +36,7 @@ const props = withDefaults(defineProps<{
   /**
    * 折叠项的位置，默认为末尾
    */
-  overflowPosition?: 'start' | 'end'
+  overflowPosition?: OverflowPosition
   /**
    * 是否禁用折叠功能
    */
@@ -61,7 +64,7 @@ const props = withDefaults(defineProps<{
   /**
    * 排列方向，水平或垂直
    */
-  direction?: 'horizontal' | 'vertical'
+  direction?: Direction
   /**
    * 最大高度，当direction为vertical时生效
    */
