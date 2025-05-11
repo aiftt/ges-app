@@ -35,9 +35,12 @@
  * 2024-08-10 - 添加 Message 组件
  * 2024-08-16 - 添加 Spin 和 Steps 组件
  * 2024-08-18 - 添加 Result 和 Dropdown 组件
+ * 2024-08-19 - 添加 Affix 和 Anchor 组件
  */
 import { computed, markRaw, ref } from 'vue'
+import DemoAffix from '~/components/demo/affix.vue'
 import DemoAlert from '~/components/demo/alert.vue'
+import DemoAnchor from '~/components/demo/anchor.vue'
 import DemoAutoAnimate from '~/components/demo/auto-animate.vue'
 import DemoAutocomplete from '~/components/demo/autocomplete.vue'
 import DemoAvatar from '~/components/demo/avatar.vue'
@@ -217,6 +220,8 @@ const groups = ref<ComponentGroup[]>([
   {
     title: '导航组件',
     components: [
+      { name: 'affix', label: 'Affix 固钉', component: markRaw(DemoAffix) },
+      { name: 'anchor', label: 'Anchor 锚点', component: markRaw(DemoAnchor) },
       { name: 'breadcrumb', label: 'Breadcrumb 面包屑', component: markRaw(DemoBreadcrumb) },
       { name: 'dropdown', label: 'Dropdown 下拉菜单', component: markRaw(DemoDropdown) },
       { name: 'menu', label: 'Menu 菜单', component: markRaw(DemoMenu) },
