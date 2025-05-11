@@ -1,11 +1,16 @@
 <script setup lang="ts" name="UiMenuItem">
+import type { IMenuContext } from '~/utils/inject-keys'
 /**
  * 菜单项组件
  * 创建日期: 2023-12-01
  * 作者: aiftt
  * 更新日期: 2023-12-01 - 修复样式方式，符合项目规范
  * 更新日期: 2023-12-05 - 修复保留关键字prop问题
+ * 更新日期: 2024-08-27 - 使用inject-keys，优化组件实现，增强SSR兼容性
+ * 更新日期: 2024-08-29 - 修复TypeScript类型错误，优化内容显示逻辑
+ * 更新日期: 2024-08-30 - 添加路由模式支持、改进间距样式
  */
+import { MENU_INJECTION_KEY } from '~/utils/inject-keys'
 
 // 定义props
 const props = withDefaults(defineProps<{
@@ -33,6 +38,10 @@ const props = withDefaults(defineProps<{
    * 自定义类名
    */
   className?: string
+  /**
+   * 路由地址，用于路由模式
+   */
+  to?: string
 }>(), {
   itemKey: '',
   title: '',
@@ -40,20 +49,31 @@ const props = withDefaults(defineProps<{
   disabled: false,
   danger: false,
   className: '',
+  to: '',
 })
 
-// 注入菜单状态和方法
-const menuState = inject('menuState', reactive({
-  selectedKey: '',
-  openKeys: [] as string[],
-}))
+// 获取菜单上下文
+const menuContext = inject<IMenuContext>(MENU_INJECTION_KEY, {
+  state: {
+    selectedKey: '',
+    openKeys: [],
+  },
+  props: {
+    mode: ref('vertical'),
+    theme: ref('light'),
+    collapsed: ref(false),
+    inlineIndent: ref(24),
+    trigger: ref('hover'),
+    itemSpacing: ref(8),
+    popupPlacement: ref('right'),
+  },
+  router: false,
+  handleSelect: () => {},
+  handleToggleOpen: () => {},
+})
 
-const menuProps = inject('menuProps', reactive({
-  mode: 'vertical',
-  theme: 'light',
-  collapsed: false,
-  inlineIndent: 24,
-}))
+// 解构菜单状态和方法
+const { state: menuState, props: menuProps, handleSelect, router: isRouterMode } = menuContext
 
 // 获取父级SubMenu的层级
 const parentLevel = inject('subMenuLevel', 1)
@@ -63,8 +83,10 @@ const isSelected = computed(() => {
   return menuState.selectedKey === props.itemKey
 })
 
-// 处理选中事件
-const handleSelect = inject('handleSelect', (_: string) => {}) as (itemKey: string) => void
+// 判断当前菜单是否处于折叠状态
+const isCollapsed = computed(() => {
+  return menuProps.collapsed.value && menuProps.mode.value === 'vertical'
+})
 
 function handleClick(event: MouseEvent) {
   if (props.disabled) {
@@ -72,7 +94,8 @@ function handleClick(event: MouseEvent) {
     return
   }
 
-  handleSelect(props.itemKey)
+  // 路由模式下传递to参数
+  handleSelect(props.itemKey, props.to)
 }
 
 // 计算菜单项类名
@@ -83,29 +106,42 @@ const itemClass = computed(() => {
       'ui-menu-item-selected': isSelected.value,
       'ui-menu-item-disabled': props.disabled,
       'ui-menu-item-danger': props.danger,
+      'ui-menu-item-route': isRouterMode && props.to,
     },
     props.className,
   ]
 })
 
-// 计算缩进类名
-const paddingClass = computed(() => {
-  if (menuProps.mode === 'vertical' && !menuProps.collapsed) {
-    return `pl-${parentLevel * menuProps.inlineIndent / 4}`
+// 计算菜单项样式
+const itemStyle = computed(() => {
+  const styles: Record<string, string> = {}
+
+  if (menuProps.mode.value === 'vertical' && !isCollapsed.value) {
+    // 使用CSS变量计算缩进大小，每级缩进固定大小
+    styles.paddingLeft = `calc(${parentLevel} * var(--ui-menu-indent, 24px) / 4 * 1px)`
   }
-  return ''
+
+  return styles
+})
+
+// 判断是否显示内容
+const shouldShowContent = computed(() => {
+  return !isCollapsed.value || menuProps.mode.value !== 'vertical'
 })
 </script>
 
 <template>
   <li
     class="ui-menu-item relative m-0 h-40px flex cursor-pointer items-center whitespace-nowrap leading-40px transition-all"
-    :class="[itemClass, paddingClass]"
+    :class="itemClass"
+    :style="itemStyle"
+    role="menuitem"
+    :aria-disabled="disabled"
     @click="handleClick"
   >
     <div class="ui-menu-item-content flex items-center">
       <ui-icon v-if="icon" :icon="icon" class="ui-menu-item-icon mr-10px h-14px w-14px" />
-      <span v-if="!menuProps.collapsed || menuProps.mode !== 'vertical'" class="ui-menu-item-title transition-opacity">
+      <span v-if="shouldShowContent" class="ui-menu-item-title transition-opacity">
         <slot>{{ title }}</slot>
       </span>
     </div>

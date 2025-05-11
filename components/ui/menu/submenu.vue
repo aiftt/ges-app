@@ -1,4 +1,5 @@
 <script setup lang="ts" name="UiMenuSubmenu">
+import type { IMenuContext } from '~/utils/inject-keys'
 /**
  * 子菜单组件
  * 创建日期: 2023-12-01
@@ -6,7 +7,11 @@
  * 更新日期: 2023-12-01 - 修复样式方式，符合项目规范
  * 更新日期: 2023-12-05 - 修复保留关键字prop问题
  * 更新日期: 2025-05-05 - 改用 CSS 变量 + v-bind 方式实现动态样式
+ * 更新日期: 2024-08-27 - 使用inject-keys，优化组件实现，增强SSR兼容性
+ * 更新日期: 2024-08-29 - 修复TypeScript类型错误，优化内容显示逻辑
+ * 更新日期: 2024-08-30 - 添加折叠状态下的悬浮子菜单和路由支持
  */
+import { MENU_INJECTION_KEY } from '~/utils/inject-keys'
 
 // 定义props
 const props = withDefaults(defineProps<{
@@ -34,6 +39,10 @@ const props = withDefaults(defineProps<{
    * 自定义类名
    */
   className?: string
+  /**
+   * 路由地址（当子菜单也可以点击跳转时使用）
+   */
+  to?: string
 }>(), {
   itemKey: '',
   title: '',
@@ -41,21 +50,31 @@ const props = withDefaults(defineProps<{
   disabled: false,
   popupPlacement: 'bottomLeft',
   className: '',
+  to: '',
 })
 
-// 注入菜单状态和方法
-const menuState = inject('menuState', reactive({
-  selectedKey: '',
-  openKeys: [] as string[],
-}))
+// 获取菜单上下文
+const menuContext = inject<IMenuContext>(MENU_INJECTION_KEY, {
+  state: {
+    selectedKey: '',
+    openKeys: [],
+  },
+  props: {
+    mode: ref('vertical'),
+    theme: ref('light'),
+    collapsed: ref(false),
+    inlineIndent: ref(24),
+    trigger: ref('hover'),
+    itemSpacing: ref(8),
+    popupPlacement: ref('right'),
+  },
+  router: false,
+  handleSelect: () => {},
+  handleToggleOpen: () => {},
+})
 
-const menuProps = inject('menuProps', reactive({
-  mode: 'vertical',
-  theme: 'light',
-  collapsed: false,
-  inlineIndent: 24,
-  triggerSubMenuAction: 'hover',
-}))
+// 解构菜单状态和方法
+const { state: menuState, props: menuProps, handleToggleOpen, handleSelect, router: isRouterMode } = menuContext
 
 // 获取父级SubMenu的层级并提供给子组件
 const parentLevel = inject('subMenuLevel', 1)
@@ -66,22 +85,35 @@ const isOpen = computed(() => {
   return menuState.openKeys.includes(props.itemKey)
 })
 
-// 子菜单触发方式
-const isHoverMode = computed(() => {
-  return menuProps.triggerSubMenuAction === 'hover'
+// 判断当前菜单是否处于折叠状态
+const isCollapsed = computed(() => {
+  return menuProps.collapsed.value && menuProps.mode.value === 'vertical'
 })
 
-// 处理切换子菜单展开/收起状态
-const handleToggleOpen = inject('handleToggleOpen', (_: string) => {}) as (itemKey: string) => void
+// 判断是否处于悬浮菜单模式
+const isPopupMode = computed(() => {
+  // 水平模式或折叠状态下的垂直模式
+  return menuProps.mode.value === 'horizontal' || isCollapsed.value
+})
 
-// 点击标题触发展开/收起
+// 子菜单触发方式
+const isHoverMode = computed(() => {
+  return menuProps.trigger.value === 'hover'
+})
+
+// 点击标题触发展开/收起或路由跳转
 function handleTitleClick(event: MouseEvent) {
   if (props.disabled) {
     event.preventDefault()
     return
   }
 
-  if (menuProps.mode === 'inline' || !isHoverMode.value) {
+  // 如果有to属性并且启用了路由模式，则进行路由跳转
+  if (props.to && isRouterMode) {
+    handleSelect(props.itemKey, props.to)
+  }
+  else if (menuProps.mode.value === 'inline' || !isHoverMode.value) {
+    // 内联模式或点击触发模式下，点击展开/收起子菜单
     handleToggleOpen(props.itemKey)
   }
 
@@ -91,9 +123,10 @@ function handleTitleClick(event: MouseEvent) {
 
 // 悬停交互
 const hoverTimer = ref<number | null>(null)
+const popoverVisible = ref(false)
 
 function handleMouseEnter() {
-  if (props.disabled || !isHoverMode.value)
+  if (props.disabled)
     return
 
   if (hoverTimer.value) {
@@ -102,14 +135,22 @@ function handleMouseEnter() {
   }
 
   hoverTimer.value = setTimeout(() => {
-    if (!isOpen.value) {
-      handleToggleOpen(props.itemKey)
+    // 对于悬浮模式或折叠状态
+    if (isHoverMode.value || isCollapsed.value) {
+      if (isCollapsed.value) {
+        // 折叠状态下展示弹出菜单
+        popoverVisible.value = true
+      }
+      else if (!isOpen.value) {
+        // 悬浮展开子菜单
+        handleToggleOpen(props.itemKey)
+      }
     }
   }, 100) as unknown as number
 }
 
 function handleMouseLeave() {
-  if (props.disabled || !isHoverMode.value)
+  if (props.disabled)
     return
 
   if (hoverTimer.value) {
@@ -118,8 +159,16 @@ function handleMouseLeave() {
   }
 
   hoverTimer.value = setTimeout(() => {
-    if (isOpen.value) {
-      handleToggleOpen(props.itemKey)
+    // 对于悬浮模式或折叠状态
+    if (isHoverMode.value || isCollapsed.value) {
+      if (isCollapsed.value) {
+        // 折叠状态下隐藏弹出菜单
+        popoverVisible.value = false
+      }
+      else if (isOpen.value) {
+        // 悬浮关闭子菜单
+        handleToggleOpen(props.itemKey)
+      }
     }
   }, 100) as unknown as number
 }
@@ -131,17 +180,75 @@ const submenuClass = computed(() => {
     {
       'ui-submenu-open': isOpen.value,
       'ui-submenu-disabled': props.disabled,
+      'ui-submenu-popup': isPopupMode.value,
+      'ui-submenu-route': isRouterMode && props.to,
     },
     props.className,
   ]
 })
 
-// 计算缩进类名
-const paddingClass = computed(() => {
-  if (menuProps.mode === 'vertical' && !menuProps.collapsed) {
-    return `pl-${parentLevel * menuProps.inlineIndent / 4}`
+// 计算标题样式
+const titleStyle = computed(() => {
+  const styles: Record<string, string> = {}
+
+  if (menuProps.mode.value === 'vertical' && !isCollapsed.value) {
+    // 使用CSS变量计算缩进大小
+    styles.paddingLeft = `calc(${parentLevel} * var(--ui-menu-indent, 24px) / 4 * 1px)`
   }
-  return ''
+
+  return styles
+})
+
+// 计算弹出菜单样式
+const popupMenuStyle = computed(() => {
+  const styles: Record<string, string> = {}
+
+  // 设置弹出位置
+  if (isCollapsed.value) {
+    const placement = menuProps.popupPlacement.value
+    styles.position = 'fixed'
+    styles.zIndex = '1050'
+    styles.backgroundColor = 'var(--ui-menu-bg-color, #fff)'
+    styles.boxShadow = '0 3px 6px -4px rgba(0, 0, 0, 0.12), 0 6px 16px 0 rgba(0, 0, 0, 0.08), 0 9px 28px 8px rgba(0, 0, 0, 0.05)'
+    styles.borderRadius = '4px'
+    styles.padding = '4px 0'
+    styles.minWidth = '200px'
+
+    if (placement === 'right') {
+      styles.left = 'calc(100% + 4px)'
+      styles.top = '0'
+    }
+    else {
+      styles.right = 'calc(100% + 4px)'
+      styles.top = '0'
+    }
+  }
+
+  return styles
+})
+
+// 判断是否显示内容
+const shouldShowContent = computed(() => {
+  return !isCollapsed.value || menuProps.mode.value !== 'vertical'
+})
+
+// 判断是否显示箭头
+const shouldShowArrow = computed(() => {
+  return !isCollapsed.value || menuProps.mode.value !== 'vertical'
+})
+
+// 计算箭头图标
+const arrowIcon = computed(() => {
+  if (menuProps.mode.value === 'horizontal') {
+    return 'carbon:chevron-down'
+  }
+
+  // 折叠模式下，根据弹出位置决定箭头方向
+  if (isCollapsed.value) {
+    return menuProps.popupPlacement.value === 'right' ? 'carbon:chevron-right' : 'carbon:chevron-left'
+  }
+
+  return 'carbon:chevron-right'
 })
 
 // 内容高度变量
@@ -171,6 +278,8 @@ function enter(el: HTMLElement, done: () => void) {
 function afterEnter(el: HTMLElement) {
   // 移除所有过渡相关类名
   el.classList.remove('ui-submenu-enter-active', 'ui-submenu-enter-to')
+  // 重置高度
+  contentHeight.value = 'auto'
 }
 
 function beforeLeave(el: HTMLElement) {
@@ -182,8 +291,9 @@ function beforeLeave(el: HTMLElement) {
 function leave(el: HTMLElement, done: () => void) {
   el.classList.add('ui-submenu-leave-active')
 
-  // 添加结束类名（下一帧）
+  // 设置为0高度触发动画
   requestAnimationFrame(() => {
+    contentHeight.value = '0px'
     el.classList.remove('ui-submenu-leave')
     el.classList.add('ui-submenu-leave-to')
     done()
@@ -193,36 +303,101 @@ function leave(el: HTMLElement, done: () => void) {
 function afterLeave(el: HTMLElement) {
   // 移除所有过渡相关类名
   el.classList.remove('ui-submenu-leave-active', 'ui-submenu-leave-to')
+  contentHeight.value = '0px'
 }
+
+// 获取子菜单的DOM元素（用于折叠状态下的定位）
+const submenuEl = ref<HTMLElement | null>(null)
+const popupMenuEl = ref<HTMLElement | null>(null)
+
+// 更新弹出菜单位置
+function updatePopupPosition() {
+  if (import.meta.client && isCollapsed.value && popoverVisible.value && submenuEl.value && popupMenuEl.value) {
+    const rect = submenuEl.value.getBoundingClientRect()
+    popupMenuEl.value.style.top = `${rect.top}px`
+
+    if (menuProps.popupPlacement.value === 'right') {
+      popupMenuEl.value.style.left = `${rect.right + 4}px`
+    }
+    else {
+      popupMenuEl.value.style.right = `${window.innerWidth - rect.left + 4}px`
+    }
+  }
+}
+
+// 在组件挂载时添加窗口大小变化监听
+onMounted(() => {
+  if (import.meta.client) {
+    window.addEventListener('resize', updatePopupPosition)
+  }
+})
+
+// 监听折叠状态或弹出状态变化时更新位置
+watch([isCollapsed, popoverVisible], () => {
+  if (isCollapsed.value && popoverVisible.value) {
+    // 使用nextTick确保DOM更新后再获取位置
+    nextTick(updatePopupPosition)
+  }
+})
+
+// 在组件卸载时清除定时器和事件监听器
+onBeforeUnmount(() => {
+  if (hoverTimer.value) {
+    clearTimeout(hoverTimer.value)
+    hoverTimer.value = null
+  }
+
+  if (import.meta.client) {
+    window.removeEventListener('resize', updatePopupPosition)
+  }
+})
 </script>
 
 <template>
   <li
+    ref="submenuEl"
     class="ui-submenu relative list-none"
     :class="submenuClass"
+    role="menuitem"
+    :aria-expanded="isOpen"
+    :aria-disabled="disabled"
     @mouseenter="handleMouseEnter"
     @mouseleave="handleMouseLeave"
   >
     <!-- 子菜单标题 -->
     <div
-      class="ui-submenu-title relative h-40px flex cursor-pointer items-center justify-between px-20px leading-40px transition-all"
-      :class="paddingClass"
+      class="ui-submenu-title relative h-40px flex cursor-pointer items-center justify-between leading-40px transition-all"
+      :style="titleStyle"
       @click="handleTitleClick"
     >
       <div class="ui-submenu-title-content flex items-center">
         <ui-icon v-if="icon" :icon="icon" class="ui-submenu-icon mr-10px h-14px w-14px" />
-        <span v-if="!menuProps.collapsed || menuProps.mode !== 'vertical'" class="ui-submenu-label transition-opacity">{{ title }}</span>
+        <span v-if="shouldShowContent" class="ui-submenu-label transition-opacity">{{ title }}</span>
       </div>
       <ui-icon
-        v-if="!menuProps.collapsed || menuProps.mode !== 'vertical'"
-        :icon="menuProps.mode === 'horizontal' ? 'carbon:chevron-down' : 'carbon:chevron-right'"
+        v-if="shouldShowArrow"
+        :icon="arrowIcon"
         class="ui-submenu-arrow absolute right-16px text-10px transition-transform"
         :class="isOpen ? 'ui-submenu-arrow-active' : ''"
       />
     </div>
 
-    <!-- 子菜单内容 -->
+    <!-- 折叠状态下的弹出子菜单 -->
+    <teleport v-if="isCollapsed" to="body">
+      <ul
+        v-if="popoverVisible"
+        ref="popupMenuEl"
+        class="ui-submenu-popup m-0 list-none overflow-hidden p-0 transition-all"
+        :style="popupMenuStyle"
+        role="group"
+      >
+        <slot />
+      </ul>
+    </teleport>
+
+    <!-- 非折叠状态下的普通子菜单 -->
     <transition
+      v-if="!isCollapsed"
       @before-enter="(el: Element) => beforeEnter(el as HTMLElement)"
       @enter="(el: Element, done: () => void) => enter(el as HTMLElement, done)"
       @after-enter="(el: Element) => afterEnter(el as HTMLElement)"
@@ -230,7 +405,12 @@ function afterLeave(el: HTMLElement) {
       @leave="(el: Element, done: () => void) => leave(el as HTMLElement, done)"
       @after-leave="(el: Element) => afterLeave(el as HTMLElement)"
     >
-      <ul v-show="isOpen" class="ui-submenu-content m-0 list-none p-0 transition-all">
+      <ul
+        v-show="isOpen"
+        class="ui-submenu-content m-0 list-none overflow-hidden p-0 transition-all"
+        :style="{ height: contentHeight }"
+        role="group"
+      >
         <slot />
       </ul>
     </transition>
@@ -249,13 +429,48 @@ function afterLeave(el: HTMLElement) {
   background-color: var(--ui-menu-dark-hover-color, rgba(255, 255, 255, 0.08));
 }
 
-/* 展开状态 */
-.ui-submenu-open > .ui-submenu-title {
-  color: var(--ui-menu-active-color, #1890ff);
+/* 展开状态下的箭头 */
+.ui-submenu-arrow-active {
+  transform: rotate(90deg);
 }
 
-:deep(.ui-menu-dark) .ui-submenu-open > .ui-submenu-title {
-  color: var(--ui-menu-dark-active-color, #fff);
+:deep(.ui-menu-horizontal) .ui-submenu-arrow-active {
+  transform: rotate(180deg);
+}
+
+/* 折叠状态下的样式 */
+:deep(.ui-menu-collapsed) .ui-submenu-icon {
+  margin-right: 0;
+}
+
+:deep(.ui-menu-collapsed) .ui-submenu-title {
+  justify-content: center;
+  padding: 0 8px;
+}
+
+/* 弹出菜单样式 */
+.ui-submenu-popup {
+  min-width: 160px;
+  background-color: #fff;
+  box-shadow:
+    0 3px 6px -4px rgba(0, 0, 0, 0.12),
+    0 6px 16px 0 rgba(0, 0, 0, 0.08),
+    0 9px 28px 8px rgba(0, 0, 0, 0.05);
+  border-radius: 4px;
+  z-index: 1050;
+}
+
+:deep(.ui-menu-dark) + .ui-submenu-popup {
+  background-color: var(--ui-menu-bg-color, rgb(43, 48, 58));
+  box-shadow:
+    0 3px 6px -4px rgba(0, 0, 0, 0.48),
+    0 6px 16px 0 rgba(0, 0, 0, 0.32),
+    0 9px 28px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* 内联菜单子菜单样式 */
+:deep(.ui-menu-inline) .ui-submenu-content {
+  padding-left: calc(var(--ui-menu-indent, 24px) / 4 * 1px);
 }
 
 /* 禁用状态 */
@@ -269,20 +484,17 @@ function afterLeave(el: HTMLElement) {
   color: var(--ui-disabled-dark-color, rgba(255, 255, 255, 0.35)) !important;
 }
 
-/* 箭头旋转状态 */
-.ui-submenu-arrow-active {
-  transform: rotate(90deg);
+/* 过渡动画样式 */
+.ui-submenu-enter-active,
+.ui-submenu-leave-active {
+  transition: height 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+  overflow: hidden;
 }
 
-:deep(.ui-menu-horizontal) .ui-submenu-arrow-active {
-  transform: rotate(180deg);
-}
-
-/* 水平模式 */
+/* 水平模式的特殊处理 */
 :deep(.ui-menu-horizontal) .ui-submenu {
   position: relative;
-  display: inline-block;
-  margin-right: 8px;
+  display: inline-flex;
   vertical-align: bottom;
 }
 
@@ -292,85 +504,32 @@ function afterLeave(el: HTMLElement) {
   left: 0;
   min-width: 160px;
   margin-top: 4px;
-  padding: 5px 0;
+  padding: 4px 0;
+  background-color: #fff;
+  box-shadow:
+    0 3px 6px -4px rgba(0, 0, 0, 0.12),
+    0 6px 16px 0 rgba(0, 0, 0, 0.08),
+    0 9px 28px 8px rgba(0, 0, 0, 0.05);
   border-radius: 4px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
-  background: var(--ui-menu-bg-color, #fff);
-  z-index: 1000;
+  z-index: 1050;
 }
 
 :deep(.ui-menu-horizontal.ui-menu-dark) .ui-submenu-content {
-  background: var(--ui-menu-dark-bg-color, #001529);
+  background-color: var(--ui-menu-bg-color, rgb(43, 48, 58));
+  box-shadow:
+    0 3px 6px -4px rgba(0, 0, 0, 0.48),
+    0 6px 16px 0 rgba(0, 0, 0, 0.32),
+    0 9px 28px 8px rgba(0, 0, 0, 0.2);
 }
 
-/* 垂直模式折叠状态 */
-:deep(.ui-menu-vertical.ui-menu-collapsed) .ui-submenu {
-  position: relative;
-}
-
-:deep(.ui-menu-vertical.ui-menu-collapsed) .ui-submenu > .ui-submenu-title {
-  padding: 0 calc((46px - 14px) / 2);
-  text-align: center;
-}
-
-:deep(.ui-menu-vertical.ui-menu-collapsed) .ui-submenu-content {
-  position: absolute;
-  left: 100%;
-  top: 0;
-  min-width: 160px;
-  margin-left: 4px;
-  padding: 5px 0;
-  border-radius: 4px;
-  background: var(--ui-menu-bg-color, #fff);
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
-  z-index: 1000;
-}
-
-:deep(.ui-menu-vertical.ui-menu-collapsed.ui-menu-dark) .ui-submenu-content {
-  background: var(--ui-menu-dark-bg-color, #001529);
-}
-
-/* 过渡动画样式 */
-.ui-submenu-enter {
-  height: 0;
-  opacity: 0;
-  overflow: hidden;
-}
-
-.ui-submenu-enter-active {
-  transition:
-    height 0.3s ease,
-    opacity 0.3s ease;
-  --ui-submenu-content-height: v-bind(contentHeight);
-  height: var(--ui-submenu-content-height);
-  opacity: 1;
-  overflow: hidden;
-}
-
-.ui-submenu-enter-to {
-  --ui-submenu-content-height: v-bind(contentHeight);
-  height: var(--ui-submenu-content-height);
-  opacity: 1;
-}
-
-.ui-submenu-leave {
-  --ui-submenu-content-height: v-bind(contentHeight);
-  height: var(--ui-submenu-content-height);
-  opacity: 1;
-  overflow: hidden;
-}
-
-.ui-submenu-leave-active {
-  transition:
-    height 0.3s ease,
-    opacity 0.3s ease;
-  height: 0;
-  opacity: 0;
-  overflow: hidden;
-}
-
-.ui-submenu-leave-to {
-  height: 0;
-  opacity: 0;
+@media (prefers-color-scheme: dark) {
+  :root:not(.light) :deep(.ui-menu:not(.ui-menu-light)) .ui-submenu-content,
+  :root:not(.light) :deep(.ui-menu:not(.ui-menu-light)) + .ui-submenu-popup {
+    background-color: var(--ui-menu-bg-color, rgb(43, 48, 58));
+    box-shadow:
+      0 3px 6px -4px rgba(0, 0, 0, 0.48),
+      0 6px 16px 0 rgba(0, 0, 0, 0.32),
+      0 9px 28px 8px rgba(0, 0, 0, 0.2);
+  }
 }
 </style>

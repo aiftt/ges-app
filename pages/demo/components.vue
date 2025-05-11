@@ -91,6 +91,7 @@ import DemoRadio from '~/components/demo/radio.vue'
 import DemoRate from '~/components/demo/rate.vue'
 import DemoResizeBox from '~/components/demo/resizebox.vue'
 import DemoResult from '~/components/demo/result.vue'
+import DemoRouteMenu from '~/components/demo/route-menu.vue'
 import DemoScrollbar from '~/components/demo/scrollbar.vue'
 import DemoSegmented from '~/components/demo/segmented.vue'
 import DemoSelect from '~/components/demo/select.vue'
@@ -228,6 +229,7 @@ const groups = ref<ComponentGroup[]>([
       { name: 'breadcrumb', label: 'Breadcrumb 面包屑', component: markRaw(DemoBreadcrumb) },
       { name: 'dropdown', label: 'Dropdown 下拉菜单', component: markRaw(DemoDropdown) },
       { name: 'menu', label: 'Menu 菜单', component: markRaw(DemoMenu) },
+      { name: 'route-menu', label: 'Menu 增强菜单', component: markRaw(DemoRouteMenu) },
       { name: 'tabs', label: 'Tabs 标签页', component: markRaw(DemoTabs) },
       { name: 'steps', label: 'Steps 步骤条', component: markRaw(DemoSteps) },
     ],
