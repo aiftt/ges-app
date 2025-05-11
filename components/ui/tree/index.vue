@@ -4,45 +4,11 @@
  * 创建日期: 2024-07-30
  * 作者: aiftt
  * 更新日期: 2024-07-30 - 初始实现
+ * 更新日期: 2024-09-11 - 使用集中管理的类型定义
  */
 
+import type { ITreeNode } from '~/types/tree'
 import { h } from 'vue'
-
-// 定义树节点类型
-export interface ITreeNode {
-  /**
-   * 节点唯一标识
-   */
-  id: string | number
-  /**
-   * 节点标签内容
-   */
-  label: string
-  /**
-   * 子节点
-   */
-  children?: ITreeNode[]
-  /**
-   * 是否禁用
-   */
-  disabled?: boolean
-  /**
-   * 是否默认展开
-   */
-  expanded?: boolean
-  /**
-   * 是否默认选中
-   */
-  selected?: boolean
-  /**
-   * 节点图标
-   */
-  icon?: string
-  /**
-   * 自定义数据
-   */
-  [key: string]: any
-}
 
 // 定义Props
 const props = withDefaults(defineProps<{

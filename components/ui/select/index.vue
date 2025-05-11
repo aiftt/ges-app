@@ -6,29 +6,13 @@
  * 更新日期: 2024-05-27 - 扩展功能，增加Element Plus的全部功能
  * 更新日期: 2024-07-05 - 优化代码，增强键盘导航
  * 更新日期: 2024-08-22 - 修复水合问题，将querySelector替换为ref
+ * 更新日期: 2024-09-11 - 使用集中管理的类型定义
  */
 
+import type { FilterMethod, ISelectOption, RemoteMethod } from '~/types/select'
+import type { ComponentSize, SimplePosition, TagType } from '~/types/ui'
 import { debounce } from 'lodash'
 import { computed, nextTick, onBeforeUnmount, onMounted, provide, ref, watch } from 'vue'
-
-// 定义选项类型
-export interface ISelectOption {
-  value: string | number
-  label: string
-  disabled?: boolean
-  class?: string
-  style?: Record<string, string>
-  // 为分组功能添加
-  children?: ISelectOption[]
-  // 为自定义标签添加
-  tagType?: 'default' | 'primary' | 'success' | 'warning' | 'danger'
-  tagClass?: string
-}
-
-// 定义过滤方法类型
-export type FilterMethod = (value: string, option: ISelectOption) => boolean
-// 定义远程搜索方法类型
-export type RemoteMethod = (query: string) => void
 
 // 定义Props
 const props = withDefaults(defineProps<{
@@ -59,7 +43,7 @@ const props = withDefaults(defineProps<{
   /**
    * 选择器尺寸
    */
-  size?: 'small' | 'default' | 'large'
+  size?: ComponentSize
   /**
    * 是否显示错误状态
    */
@@ -119,7 +103,7 @@ const props = withDefaults(defineProps<{
   /**
    * 多选时标签的类型
    */
-  tagType?: 'default' | 'primary' | 'success' | 'warning' | 'danger'
+  tagType?: TagType
   /**
    * 是否只能选中叶子节点（分组选项）
    */
@@ -147,7 +131,7 @@ const props = withDefaults(defineProps<{
   /**
    * 下拉框的弹出位置
    */
-  placement?: 'top' | 'bottom'
+  placement?: SimplePosition
   /**
    * 空值对应的值
    */

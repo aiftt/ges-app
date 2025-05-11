@@ -1,11 +1,13 @@
 <script setup lang="ts" name="UiDialog">
+import type { AnimationType } from '~/types/interaction'
 /**
  * Dialog 对话框组件
  * 创建日期: 2024-08-04
  * 作者: aiftt
  * 更新日期: 2024-08-04 - 初始版本
+ * 更新日期: 2024-09-13 - 使用集中管理的类型定义
  */
-
+import type { AlertType, Alignment, ButtonType } from '~/types/ui'
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 
 // 定义props类型
@@ -49,7 +51,7 @@ const props = withDefaults(defineProps<{
   /**
    * 内容水平对齐方式
    */
-  align?: 'left' | 'center' | 'right'
+  align?: Alignment
   /**
    * 是否显示底部按钮
    */
@@ -65,7 +67,7 @@ const props = withDefaults(defineProps<{
   /**
    * 确认按钮类型
    */
-  okType?: 'primary' | 'danger'
+  okType?: ButtonType
   /**
    * 确认按钮加载状态
    */
@@ -93,7 +95,7 @@ const props = withDefaults(defineProps<{
   /**
    * 动画效果
    */
-  animation?: 'fade' | 'zoom' | 'slide-up'
+  animation?: AnimationType
   /**
    * 是否支持ESC键关闭
    */
@@ -105,7 +107,7 @@ const props = withDefaults(defineProps<{
   /**
    * 对话框类型
    */
-  type?: 'info' | 'success' | 'warning' | 'error' | 'confirm'
+  type?: AlertType | 'confirm'
   /**
    * 是否为简单模式（没有标题栏，只有内容和按钮）
    */

@@ -4,7 +4,11 @@
  * 创建日期: 2024-08-03
  * 作者: aiftt
  * 更新日期: 2024-09-09 - 提取CSS变量到主题文件中
+ * 更新日期: 2024-09-11 - 使用集中管理的类型定义
+ * 更新日期: 2024-09-14 - 使用TabType类型定义
  */
+
+import type { ComponentSize, ElementPosition, TabType } from '~/types/ui'
 
 // 定义props
 const props = withDefaults(defineProps<{
@@ -15,15 +19,15 @@ const props = withDefaults(defineProps<{
   /**
    * 标签类型
    */
-  type?: 'line' | 'card' | 'segment'
+  type?: TabType
   /**
    * 标签大小
    */
-  size?: 'small' | 'default' | 'large'
+  size?: ComponentSize
   /**
    * 标签位置
    */
-  tabPosition?: 'top' | 'right' | 'bottom' | 'left'
+  tabPosition?: ElementPosition
   /**
    * 是否可关闭
    */

@@ -5,10 +5,13 @@
  * 作者: aiftt
  * 更新日期: 2024-02-27 - 将内联样式改为CSS变量
  * 更新日期: 2024-03-01 - 优化为v-bind+CSS变量实现动态样式
+ * 更新日期: 2024-09-11 - 使用集中管理的类型定义
+ * 更新日期: 2024-09-13 - 使用统一管理的方向和对齐方式类型
  *
  * 用于控制元素间距的布局组件
  */
 
+import type { Align, Direction, SpaceGap } from '~/types/ui'
 import { Comment, Text, useSlots } from 'vue'
 
 // 定义props
@@ -16,15 +19,15 @@ const props = withDefaults(defineProps<{
   /**
    * 间距大小
    */
-  gap?: 'small' | 'default' | 'large' | string
+  gap?: SpaceGap
   /**
    * 排列方向
    */
-  direction?: 'horizontal' | 'vertical'
+  direction?: Direction
   /**
    * 对齐方式
    */
-  align?: 'start' | 'end' | 'center' | 'baseline' | 'stretch'
+  align?: Align
   /**
    * 主轴对齐方式
    */

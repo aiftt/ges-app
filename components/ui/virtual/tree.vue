@@ -4,77 +4,10 @@
  * 创建日期: 2024-09-03
  * 作者: aiftt
  * 更新日期: 2024-09-03 - 首次实现
+ * 更新日期: 2024-09-12 - 使用集中管理的类型定义
  */
 
-// 类型定义
-export interface IVirtualTreeNode {
-  /**
-   * 节点ID
-   */
-  id: string | number
-  /**
-   * 节点标签
-   */
-  label: string
-  /**
-   * 节点数据
-   */
-  data?: any
-  /**
-   * 子节点
-   */
-  children?: IVirtualTreeNode[]
-  /**
-   * 是否禁用
-   */
-  disabled?: boolean
-  /**
-   * 是否懒加载
-   */
-  isLeaf?: boolean
-  /**
-   * 图标
-   */
-  icon?: string
-  /**
-   * 自定义样式
-   */
-  class?: string
-}
-
-export interface IVirtualTreeConfig {
-  /**
-   * 节点高度(px)
-   */
-  nodeHeight: number
-  /**
-   * 缓冲区域节点数量
-   */
-  buffer?: number
-  /**
-   * 是否启用虚拟滚动
-   */
-  enabled?: boolean
-  /**
-   * 虚拟滚动激活的最小节点数量
-   */
-  threshold?: number
-}
-
-// 展平的树节点类型
-interface IFlatTreeNode {
-  node: IVirtualTreeNode
-  level: number
-  index: number
-  path: (string | number)[]
-  parent: IFlatTreeNode | null
-  isExpanded: boolean
-  isVisible: boolean
-  isSelected: boolean
-  isChecked: boolean
-  isIndeterminate: boolean
-  isLoading: boolean
-}
+import type { IFlatTreeNode, IVirtualTreeConfig, IVirtualTreeNode } from '~/types/tree'
 
 // 定义Props
 const props = withDefaults(defineProps<{

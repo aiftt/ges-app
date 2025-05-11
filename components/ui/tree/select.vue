@@ -3,12 +3,14 @@
  * 树形选择器组件
  * 创建日期: 2024-08-30
  * 作者: aiftt
+ * 更新日期: 2024-09-12 - 使用集中管理的类型定义
  *
  * 提供从树形结构数据中选择一个或多个节点的功能
  */
 
 import type { VNode } from 'vue'
-import type { ITreeNode } from '../tree/index.vue'
+import type { ITreeNode } from '~/types/tree'
+import type { TagType } from '~/types/ui'
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 
 // 定义props
@@ -100,7 +102,7 @@ const props = withDefaults(defineProps<{
   /**
    * 多选时标签的类型
    */
-  tagType?: 'default' | 'primary' | 'success' | 'warning' | 'danger'
+  tagType?: TagType
   /**
    * 节点缩进距离
    */

@@ -213,3 +213,219 @@
 2024-09-02: 优化 VirtualSelect 和 InfiniteScroll 组件，实现真正的虚拟滚动，解决大数据量DOM元素过多问题
 2024-09-03: 添加 VirtualTable 和 VirtualTree 组件到高级组件，实现高性能大数据渲染
 2024-11-22: 添加 Magic 动画库，提供丰富的CSS动画效果
+
+# UI组件类型集中管理整改计划
+
+### 目标
+
+为了提高代码质量和可维护性，需要将当前分散在各个UI组件内部定义的接口类型统一迁移到types目录下，集中管理。
+
+### 观察
+
+当前很多UI组件都在组件内部定义了自己的接口和类型，这导致：
+
+1. 类型定义重复，不同组件可能定义了相似但不完全一致的类型
+2. 难以复用类型定义
+3. 代码组织不清晰，维护成本高
+
+### 整改方案
+
+1. 创建专门的类型定义文件
+2. 按照组件类别组织类型
+3. 将组件内部定义的类型移动到集中的类型文件中
+4. 更新组件，从类型文件中导入所需类型
+
+### 类型文件组织
+
+创建以下类型定义文件:
+
+- types/ui.d.ts - UI基础类型（ButtonType, TagType, AlertType等）
+- types/form.d.ts - 表单相关类型（IFormSchema, IFormValidateResult等）
+- types/table.d.ts - 表格相关类型（TableColumn, IVirtualTableColumn等）
+- types/tree.d.ts - 树组件相关类型（ITreeNode, IVirtualTreeNode等）
+- types/select.d.ts - 选择器相关类型（ISelectOption, ICascaderOption等）
+- types/config.d.ts - 配置相关类型（Theme, ThemeConfig等）
+- types/common.d.ts - 通用类型（IUploadFile, IMenuItem等）
+
+### 整改优先级
+
+按组件使用频率和重要性，设置以下优先级：
+
+#### 高优先级
+
+- SurelyForm
+- Table
+- Tree
+- Select
+
+#### 中优先级
+
+- TreeSelect
+- VirtualTable
+- Config Provider
+- TreeNode
+- VirtualTree
+
+#### 低优先级
+
+- Mention
+- OverflowList
+- Tag
+
+### 执行计划
+
+1. 分析现有组件内部类型定义
+2. 创建集中管理的类型定义文件
+3. 将类型定义移动到相应文件
+4. 更新组件，从类型文件导入所需类型
+5. 运行lint和类型检查确保无错误
+6. 验证类型修改不影响组件功能
+
+### 执行结果
+
+1. **✅ 已创建所有类型定义文件：**
+
+   - types/ui.d.ts
+   - types/form.d.ts
+   - types/table.d.ts
+   - types/tree.d.ts
+   - types/select.d.ts
+   - types/config.d.ts
+   - types/common.d.ts
+
+2. **✅ 高优先级组件修改完成：**
+
+   - SurelyForm：移除内部类型定义，使用types/form.d.ts
+   - Table：移除内部类型定义，使用types/table.d.ts中的TableColumn接口
+   - Tree：移除内部类型定义，使用types/tree.d.ts中的ITreeNode接口
+   - Select：移除内部类型定义，使用types/select.d.ts中的ISelectOption接口
+
+3. **✅ 中优先级组件修改完成：**
+
+   - TreeSelect：使用types/tree.d.ts中的ITreeNode接口
+   - VirtualTable：使用types/table.d.ts中的IVirtualTableColumn和IVirtualTableConfig接口
+   - Config Provider：使用types/config.d.ts中的Theme和ThemeConfig接口
+   - TreeNode：使用types/tree.d.ts中的ITreeNode接口
+   - VirtualTree：使用types/tree.d.ts中的IVirtualTreeNode和IVirtualTreeConfig接口
+
+4. **✅ 低优先级组件修改完成：**
+
+   - Mention：使用types/select.d.ts中的IMentionOption接口
+   - OverflowList：使用types/common.d.ts中的IOverflowItem接口
+   - Tag：使用types/ui.d.ts中的TagType类型
+
+5. **✅ 完善类型定义：**
+
+   - TableColumn添加所有需要的属性
+   - ITreeNode添加selected属性
+   - types/ui.d.ts添加所有基础类型
+   - 添加评论和更新日期
+
+6. **✅ 额外修改完成：**
+
+   - Dropdown组件：将MenuItem接口移到types/common.d.ts中，更名为IMenuItem
+   - Upload组件：使用types/common.d.ts中的IUploadFile接口替换内部的UploadFile接口，
+     并将percentage字段替换为percent字段以匹配接口定义
+
+7. **✅ 验证：**
+   - 运行pnpm lint，确认无错误
+   - 组件demo页面加载正常，组件功能不受影响
+
+# 字符串联合类型集中管理整改计划
+
+### 目标
+
+将项目中散布在各个组件内的字符串联合类型（如'a'|'b'|'c'）统一提取到types目录下集中管理，提高类型一致性和可维护性。
+
+### 观察
+
+目前项目中存在大量组件在props定义中直接使用字符串联合类型的情况，包括但不限于：
+
+1. 按钮类型、尺寸、位置等基础属性
+2. 布局方向、对齐方式等布局属性
+3. 触发方式、主题等交互属性
+4. 状态、模式等功能属性
+
+这导致相同概念的类型在不同组件中可能有不同的定义，增加了维护难度。
+
+### 整改方案
+
+1. 梳理项目中的字符串联合类型
+2. 按照类型的用途进行分类
+3. 将字符串联合类型添加到合适的类型定义文件中
+4. 更新组件，导入并使用统一的类型
+
+### 需要处理的字符串联合类型
+
+#### UI基础类型 (types/ui.d.ts)
+
+- ✅ ButtonType: 'default' | 'primary' | 'success' | 'warning' | 'danger' | 'info'
+- ✅ TagType: 'default' | 'primary' | 'success' | 'warning' | 'danger'
+- ✅ AlertType: 'info' | 'success' | 'warning' | 'error'
+- ✅ ComponentSize: 'small' | 'default' | 'large'
+- ✅ Placement: 'top' | 'top-start' | 'top-end' | ... | 'left-end'
+- ✅ Direction: 'horizontal' | 'vertical'
+- ✅ FlexDirection: 'row' | 'row-reverse' | 'column' | 'column-reverse'
+- ✅ Justify: 'start' | 'end' | 'center' | 'between' | 'around' | 'evenly'
+- ✅ Align: 'start' | 'end' | 'center' | 'stretch' | 'baseline'
+- ✅ Wrap: 'nowrap' | 'wrap' | 'wrap-reverse'
+- ✅ Position: 'left' | 'right' | 'alternate'
+- ✅ Shadow: 'none' | 'sm' | 'md' | 'lg' | 'xl' | 'custom'
+- ✅ Overflow: 'visible' | 'hidden' | 'scroll' | 'auto'
+- ✅ ResultStatus: 'success' | 'error' | 'info' | 'warning'
+- ✅ Theme: 'light' | 'dark'
+
+#### 交互类型 (types/interaction.d.ts - 新建)
+
+- ✅ Trigger: 'hover' | 'click' | 'focus' | 'contextmenu' | 'manual'
+- ✅ EventType: 'click' | 'change' | 'input' | 'focus' | 'blur'
+- ✅ LoadingType: 'spinner' | 'dots' | 'bars' | 'circle'
+- ✅ AnimationType: 'fade' | 'zoom' | 'slide-up' | 'slide-down' | 'slide-left' | 'slide-right'
+- ✅ NavigationKey: 'ArrowUp' | 'ArrowDown' | 'ArrowLeft' | 'ArrowRight' | 'Enter' | 'Escape' | 'Tab'
+- ✅ DragDirection: 'x' | 'y' | 'both'
+- ✅ GestureType: 'tap' | 'press' | 'pan' | 'swipe' | 'pinch' | 'rotate'
+
+### 执行计划
+
+1. 分析现有组件中的字符串联合类型
+2. 整理类型并按用途分类
+3. 添加到相应的类型定义文件
+4. 逐步更新组件使用新的类型
+5. 运行lint检查确保无错误
+
+### 优先处理组件
+
+1. 布局组件: Layout, Container, Space
+2. 弹出组件: Tooltip, Popover, Trigger
+3. 反馈组件: Alert, Result, Dialog
+4. 列表组件: List, Timeline
+5. 其他常用组件
+
+### 执行进度
+
+- ✅ 第一阶段: UI基础类型添加与更新
+
+  - 已添加所有基础布局、样式和状态相关的类型到types/ui.d.ts
+  - 确保所有类型都有合适的JSDoc注释
+
+- ✅ 第二阶段: 交互类型添加与更新
+
+  - 创建了新的types/interaction.d.ts文件
+  - 添加了所有交互相关的类型定义
+  - 确保所有类型都有合适的JSDoc注释
+
+- ✅ 第三阶段: 组件更新
+
+  - 更新了Container组件使用Direction、Shadow和Overflow类型
+  - 更新了Space组件使用Direction和Align类型
+  - 更新了Layout组件使用FlexDirection、Justify、Align和Wrap类型
+  - 更新了Trigger组件使用Trigger、Placement和Theme类型
+  - 更新了Tooltip组件使用ElementPosition、Theme和Trigger类型
+  - 更新了Result组件使用ResultStatus类型
+  - 更新了Dialog组件使用Alignment、ButtonType、AlertType和AnimationType类型
+  - 更新了Timeline组件使用Direction和Position类型
+
+- ✅ 第四阶段: 验证与修复
+  - 运行pnpm lint确认修改符合代码规范
+  - 确认所有组件功能正常运行
+  - 所有类型导入路径正确

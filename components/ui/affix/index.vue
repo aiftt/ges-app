@@ -4,8 +4,10 @@
  * 创建日期: 2024-08-19
  * 作者: Claude
  * 更新日期: 2024-08-19
+ * 更新日期: 2024-09-15 - 使用集中管理的类型定义
  */
 
+import type { PositionMode } from '~/types/ui'
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 
 // 定义属性
@@ -68,7 +70,7 @@ const affixed = ref(false)
 const wrapperRef = ref<HTMLElement | null>(null)
 const fixedEl = ref<HTMLElement | null>(null)
 const placeholderEl = ref<HTMLElement | null>(null)
-const position = ref<'top' | 'bottom'>(props.offsetBottom === undefined ? 'top' : 'bottom')
+const position = ref<PositionMode>(props.offsetBottom === undefined ? 'top' : 'bottom')
 
 // 样式计算
 const fixedStyle = computed(() => {

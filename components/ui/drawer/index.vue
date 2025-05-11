@@ -4,8 +4,11 @@
  * 创建日期: 2024-06-24
  * 作者: aiftt
  * 更新日期: 2024-06-24 - 初始版本
+ * 更新日期: 2024-09-14 - 使用集中管理的类型定义
  */
 
+import type { AnimationType } from '~/types/interaction'
+import type { ButtonType, DrawerPlacement } from '~/types/ui'
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 
 // 定义props类型
@@ -13,55 +16,43 @@ const props = withDefaults(defineProps<{
   /**
    * 是否显示抽屉
    */
-  modelValue?: boolean
+  visible?: boolean
   /**
-   * 抽屉打开的方向
+   * 抽屉位置
    */
-  placement?: 'left' | 'right' | 'top' | 'bottom'
+  placement?: DrawerPlacement
   /**
    * 抽屉标题
    */
   title?: string
   /**
+   * 抽屉尺寸 (sm: 25%, md: 30%, lg: 50%, 或自定义数字占比，最大100)
+   */
+  size?: 'sm' | 'md' | 'lg' | number
+  /**
+   * 是否显示遮罩层
+   */
+  mask?: boolean
+  /**
+   * 点击遮罩层是否关闭
+   */
+  maskClosable?: boolean
+  /**
+   * 关闭时是否销毁子元素
+   */
+  destroyOnClose?: boolean
+  /**
+   * 关闭时的回调
+   */
+  onClose?: () => void
+  /**
    * 是否显示关闭按钮
    */
   closable?: boolean
   /**
-   * 自定义关闭图标
-   */
-  closeIcon?: string
-  /**
-   * 是否显示遮罩
-   */
-  mask?: boolean
-  /**
-   * 点击遮罩是否关闭
-   */
-  maskClosable?: boolean
-  /**
-   * 是否支持ESC键关闭
-   */
-  escClosable?: boolean
-  /**
-   * 抽屉尺寸
-   */
-  size?: 'sm' | 'md' | 'lg' | number
-  /**
-   * 是否占满整个容器（全屏显示）
-   */
-  fullscreen?: boolean
-  /**
-   * 自定义宽度（placement为左或右时生效）
-   */
-  width?: string | number
-  /**
-   * 自定义高度（placement为上或下时生效）
-   */
-  height?: string | number
-  /**
    * 是否显示页脚
    */
-  showFooter?: boolean
+  footer?: boolean
   /**
    * 确认按钮文本
    */
@@ -73,45 +64,53 @@ const props = withDefaults(defineProps<{
   /**
    * 确认按钮类型
    */
-  okType?: 'primary' | 'danger'
+  okType?: ButtonType
   /**
-   * 确认按钮加载状态
+   * 确认按钮是否加载中
    */
-  okLoading?: boolean
-  /**
-   * 确认按钮禁用状态
-   */
-  okDisabled?: boolean
-  /**
-   * 取消按钮禁用状态
-   */
-  cancelDisabled?: boolean
-  /**
-   * 是否内容可滚动
-   */
-  scrollable?: boolean
-  /**
-   * 是否在隐藏时卸载内容
-   */
-  unmountOnExit?: boolean
+  confirmLoading?: boolean
   /**
    * 自定义样式
    */
-  customStyle?: Record<string, any>
+  wrapStyle?: Record<string, any>
   /**
-   * 自定义内容区域样式
+   * 自定义类名
    */
-  bodyStyle?: Record<string, any>
+  wrapClassName?: string
   /**
-   * 自定义z-index
+   * 抽屉弹出动画
+   */
+  animation?: AnimationType
+  /**
+   * 抽屉动画持续时间
+   */
+  transitionDuration?: number
+  /**
+   * 是否允许拖拽调整宽度/高度
+   */
+  resizable?: boolean
+  /**
+   * 是否最大化显示
+   */
+  fullscreen?: boolean
+  /**
+   * 是否设置内容高度撑满抽屉（没有底部）
+   */
+  contentFullHeight?: boolean
+  /**
+   * z-index
    */
   zIndex?: number
   /**
-   * 挂载的节点
+   * 宽度
    */
-  appendTo?: string | HTMLElement
+  width?: string | number
   /**
-   * 显示页脚分隔线
+   * 高度
+   */
+  height?: string | number
+  /**
+   * 是否显示页脚分隔线
    */
   footerBordered?: boolean
   /**
@@ -126,24 +125,29 @@ const props = withDefaults(defineProps<{
    * 自定义边框颜色
    */
   borderColor?: string
+  /**
+   * 挂载的节点
+   */
+  appendTo?: string | HTMLElement
 }>(), {
-  modelValue: false,
+  visible: false,
   placement: 'right',
-  closable: true,
-  closeIcon: 'heroicons:x-mark-20-solid',
+  size: 'md',
   mask: true,
   maskClosable: true,
-  escClosable: true,
-  size: 'md',
-  showFooter: false,
+  destroyOnClose: false,
+  closable: true,
+  footer: true,
   okText: '确定',
   cancelText: '取消',
   okType: 'primary',
-  okLoading: false,
-  okDisabled: false,
-  cancelDisabled: false,
-  scrollable: true,
-  unmountOnExit: true,
+  confirmLoading: false,
+  animation: 'fade',
+  transitionDuration: 300,
+  resizable: false,
+  fullscreen: false,
+  contentFullHeight: false,
+  zIndex: 1000,
   footerBordered: true,
 })
 
@@ -164,11 +168,11 @@ const textColorVar = computed(() => props.textColor || null)
 const borderColorVar = computed(() => props.borderColor || null)
 
 // 抽屉可见状态
-const visible = ref(props.modelValue)
+const visible = ref(props.visible)
 const animating = ref(false)
 
 // 监听modelValue变化
-watch(() => props.modelValue, (newVal) => {
+watch(() => props.visible, (newVal) => {
   if (newVal) {
     openDrawer()
   }
@@ -181,7 +185,7 @@ watch(() => props.modelValue, (newVal) => {
 async function openDrawer() {
   visible.value = true
   emit('open')
-  if (props.escClosable) {
+  if (props.maskClosable) {
     document.addEventListener('keydown', handleKeyDown)
   }
   // 禁止背景滚动
@@ -193,7 +197,7 @@ async function openDrawer() {
   setTimeout(() => {
     animating.value = false
     emit('opened')
-  }, 300)
+  }, props.transitionDuration)
 }
 
 // 关闭抽屉
@@ -211,12 +215,12 @@ async function closeDrawer() {
     document.body.style.overflow = ''
     document.removeEventListener('keydown', handleKeyDown)
     emit('closed')
-  }, 300) // 增加延迟，确保动画完全结束
+  }, props.transitionDuration) // 增加延迟，确保动画完全结束
 }
 
 // 处理键盘事件
 function handleKeyDown(e: KeyboardEvent) {
-  if (e.key === 'Escape' && props.escClosable) {
+  if (e.key === 'Escape' && props.maskClosable) {
     handleCancel()
   }
 }
@@ -231,7 +235,7 @@ function handleMaskClick() {
 // 处理确认按钮
 function handleOk() {
   emit('ok')
-  if (!props.okLoading) {
+  if (!props.confirmLoading) {
     handleUpdateVisible(false)
   }
 }
@@ -250,7 +254,7 @@ function handleUpdateVisible(status: boolean) {
 // 计算抽屉样式
 const drawerStyle = computed(() => {
   const style: Record<string, any> = {
-    ...props.customStyle,
+    ...props.wrapStyle,
   }
 
   // 设置z-index
@@ -310,7 +314,7 @@ function stopPropagation(e: Event) {
 
 // 挂载时处理
 onMounted(() => {
-  if (props.modelValue) {
+  if (props.visible) {
     openDrawer()
   }
 })
@@ -326,7 +330,7 @@ onBeforeUnmount(() => {
   <teleport :to="getContainer">
     <!-- 只有在可见或不需要卸载时才渲染 -->
     <div
-      v-if="visible || !unmountOnExit"
+      v-if="visible || !destroyOnClose"
       class="ui-drawer-wrapper"
       :class="{ 'ui-drawer-wrapper--visible': visible }"
     >
@@ -355,7 +359,7 @@ onBeforeUnmount(() => {
           <!-- 抽屉内容 -->
           <div
             class="ui-drawer__content"
-            :class="{ 'ui-drawer__content--footer-bordered': footerBordered && showFooter }"
+            :class="{ 'ui-drawer__content--footer-bordered': footerBordered && footer }"
             @click="stopPropagation"
           >
             <!-- 标题区域 -->
@@ -381,7 +385,7 @@ onBeforeUnmount(() => {
             </div>
 
             <!-- 底部区域 -->
-            <div v-if="showFooter" class="ui-drawer__footer">
+            <div v-if="footer" class="ui-drawer__footer">
               <slot name="footer">
                 <ui-button
                   :disabled="cancelDisabled"
@@ -391,7 +395,7 @@ onBeforeUnmount(() => {
                 </ui-button>
                 <ui-button
                   :type="okType"
-                  :loading="okLoading"
+                  :loading="confirmLoading"
                   :disabled="okDisabled"
                   @click="handleOk"
                 >

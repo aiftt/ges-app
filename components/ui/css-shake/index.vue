@@ -4,8 +4,10 @@
  * 创建日期: 2024-11-27
  * 作者: aiftt
  * 说明: 为元素添加摇晃动画效果，基于CSShake库
+ * 更新日期: 2024-09-11 - 使用集中管理的类型定义
  */
 
+import type { ShakeType } from '~/types/ui'
 import { computed, onBeforeUnmount, ref, useAttrs, watch } from 'vue'
 
 interface Props {
@@ -13,7 +15,7 @@ interface Props {
    * 摇晃类型
    * @default 'base'
    */
-  type?: 'base' | 'slow' | 'little' | 'hard' | 'horizontal' | 'vertical' | 'rotate' | 'opacity' | 'crazy' | 'chunk'
+  type?: ShakeType
   /**
    * 是否自动播放
    * @default true

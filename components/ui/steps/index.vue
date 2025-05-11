@@ -5,7 +5,9 @@
  * 作者: aiftt
  * 更新日期: 2024-08-16 - 初始实现
  * 更新日期: 2024-08-17 - 修复注入键共享问题
+ * 更新日期: 2024-09-14 - 使用集中管理的类型定义
  */
+import type { Direction, StepSize, StepStatus, StepType } from '~/types/ui'
 import { provide } from 'vue'
 import { STEPS_INJECTION_KEY } from '~/utils/inject-keys'
 
@@ -18,7 +20,7 @@ const props = withDefaults(defineProps<{
   /**
    * 显示方向
    */
-  direction?: 'horizontal' | 'vertical'
+  direction?: Direction
   /**
    * 是否启用点状步骤条
    */
@@ -26,7 +28,7 @@ const props = withDefaults(defineProps<{
   /**
    * 步骤条类型，可选值: 'default', 'navigation'
    */
-  type?: 'default' | 'navigation'
+  type?: StepType
   /**
    * 是否为简洁风格
    */
@@ -34,11 +36,11 @@ const props = withDefaults(defineProps<{
   /**
    * 步骤的状态，会覆盖子步骤的状态
    */
-  status?: 'wait' | 'process' | 'finish' | 'error' | 'success'
+  status?: StepStatus
   /**
    * 步骤条尺寸
    */
-  size?: 'small' | 'medium' | 'large'
+  size?: StepSize
   /**
    * 进度条背景色
    */

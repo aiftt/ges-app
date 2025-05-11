@@ -4,9 +4,11 @@
  * 创建日期: 2023-11-15
  * 作者: aiftt
  * 更新日期: 2023-12-02 - 改为使用CSS变量实现样式
+ * 更新日期: 2024-09-13 - 使用集中管理的类型定义
  *
  * 用于构建页面的基本布局结构，提供灵活的布局控制
  */
+import type { Align, FlexDirection, Justify, Wrap } from '~/types/ui'
 
 // 定义props
 const props = withDefaults(defineProps<{
@@ -17,19 +19,19 @@ const props = withDefaults(defineProps<{
   /**
    * 方向 (对flex类型有效)
    */
-  direction?: 'row' | 'row-reverse' | 'column' | 'column-reverse'
+  direction?: FlexDirection
   /**
    * 水平对齐方式 (对flex类型有效)
    */
-  justify?: 'start' | 'end' | 'center' | 'between' | 'around' | 'evenly'
+  justify?: Justify
   /**
    * 垂直对齐方式 (对flex类型有效)
    */
-  align?: 'start' | 'end' | 'center' | 'stretch' | 'baseline'
+  align?: Align
   /**
    * flex元素包裹方式 (对flex类型有效)
    */
-  wrap?: 'nowrap' | 'wrap' | 'wrap-reverse'
+  wrap?: Wrap
   /**
    * 元素间距 (支持x和y方向)
    */

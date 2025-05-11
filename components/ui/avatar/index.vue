@@ -6,8 +6,10 @@
  * 更新日期: 2024-06-21 - 初始版本
  * 更新日期: 2024-06-21 - 修复TypeScript类型错误
  * 更新日期: 2024-06-21 - 将内联样式改为CSS变量
+ * 更新日期: 2024-09-11 - 使用集中管理的类型定义
  */
 
+import type { AvatarSize } from '~/types/ui'
 import { computed, ref } from 'vue'
 
 // 定义props类型
@@ -19,7 +21,7 @@ interface AvatarProps {
   /**
    * 头像尺寸
    */
-  size?: 'small' | 'default' | 'large' | number
+  size?: AvatarSize
   /**
    * 形状，圆形或方形
    */

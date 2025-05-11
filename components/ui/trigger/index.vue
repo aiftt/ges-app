@@ -1,4 +1,5 @@
 <script setup lang="ts" name="UiTrigger">
+import type { Trigger } from '~/types/interaction'
 /**
  * 通用触发器组件
  * 创建日期: 2025-05-03
@@ -6,18 +7,20 @@
  * 提供多种触发方式的弹出内容容器
  * 更新日期: 2025-05-05 - 改用 CSS 变量 + v-bind 方式实现动态样式
  * 更新日期: 2025-05-06 - 移除内联样式，统一使用CSS变量
+ * 更新日期: 2024-09-13 - 使用集中管理的类型定义
  */
+import type { Placement, Theme } from '~/types/ui'
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 
 const props = withDefaults(defineProps<{
   /**
    * 触发方式
    */
-  trigger?: 'hover' | 'click' | 'focus' | 'contextmenu' | 'manual'
+  trigger?: Trigger
   /**
    * 弹出内容位置
    */
-  placement?: 'top' | 'top-start' | 'top-end' | 'right' | 'right-start' | 'right-end' | 'bottom' | 'bottom-start' | 'bottom-end' | 'left' | 'left-start' | 'left-end'
+  placement?: Placement
   /**
    * 显示延迟(毫秒)
    */
@@ -57,7 +60,7 @@ const props = withDefaults(defineProps<{
   /**
    * 主题
    */
-  theme?: 'light' | 'dark'
+  theme?: Theme
 }>(), {
   trigger: 'hover',
   placement: 'bottom',

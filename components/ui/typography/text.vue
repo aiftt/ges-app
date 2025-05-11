@@ -6,8 +6,10 @@
  * 更新日期: 2023-12-03 - 修复内联样式问题，改用CSS变量和类名实现
  * 更新日期: 2023-12-05 - 更新为v-bind + CSS变量实现方式
  * 更新日期: 2024-08-22 - 修复水合问题，使用ref替代document.getElementById
+ * 更新日期: 2024-09-11 - 使用集中管理的类型定义
  */
 
+import type { ComponentSize, TextType } from '~/types/ui'
 import logger from '~/utils/logger'
 
 // 定义props
@@ -15,11 +17,11 @@ const props = withDefaults(defineProps<{
   /**
    * 文本类型
    */
-  type?: 'default' | 'primary' | 'success' | 'warning' | 'danger' | 'secondary'
+  type?: TextType
   /**
    * 文本大小
    */
-  size?: 'small' | 'default' | 'large'
+  size?: ComponentSize
   /**
    * 是否加粗
    */

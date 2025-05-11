@@ -3,7 +3,9 @@
  * TSX演示组件
  * 创建日期: 2024-01-08
  * 作者: aiftt
+ * 更新日期: 2024-09-15 - 使用集中管理的类型定义
  */
+import type { ThemeType } from '~/types/ui'
 
 // 定义props
 const props = withDefaults(defineProps<{
@@ -22,7 +24,7 @@ const props = withDefaults(defineProps<{
   /**
    * 主题
    */
-  theme?: 'primary' | 'success' | 'warning' | 'danger'
+  theme?: ThemeType
 }>(), {
   title: 'TSX演示组件',
   content: '这是一个使用TSX编写的组件',

@@ -5,16 +5,18 @@
  * 作者: aiftt
  * 更新日期: 2025-02-27 - 将内联样式改为CSS变量
  * 更新日期: 2025-03-02 - 改进CSS变量实现，移除内联style
+ * 更新日期: 2024-09-13 - 使用集中管理的类型定义
  *
  * 用于创建页面的布局容器
  */
+import type { Direction, Overflow, Shadow } from '~/types/ui'
 
 // 定义props
 const props = withDefaults(defineProps<{
   /**
    * 容器方向，默认为垂直排列
    */
-  direction?: 'horizontal' | 'vertical'
+  direction?: Direction
   /**
    * 容器宽度
    */
@@ -42,7 +44,7 @@ const props = withDefaults(defineProps<{
   /**
    * 阴影样式
    */
-  shadow?: 'none' | 'sm' | 'md' | 'lg' | 'xl' | 'custom'
+  shadow?: Shadow
   /**
    * 自定义阴影值（仅在shadow为custom时有效）
    */
@@ -54,7 +56,7 @@ const props = withDefaults(defineProps<{
   /**
    * 溢出处理方式
    */
-  overflow?: 'visible' | 'hidden' | 'scroll' | 'auto'
+  overflow?: Overflow
   /**
    * 自定义类名
    */

@@ -1,11 +1,14 @@
 <script setup lang="ts" name="UiTooltip">
+import type { Trigger } from '~/types/interaction'
 /**
  * 文字提示组件
  * 创建日期: 2025-04-30
  * 作者: aiftt
  * 更新日期: 2025-04-30 - 初始版本
  * 更新日期: 2025-05-05 - 改用 CSS 变量 + v-bind 方式实现动态样式
+ * 更新日期: 2024-09-13 - 使用集中管理的类型定义
  */
+import type { ElementPosition, Theme } from '~/types/ui'
 import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
 
 const props = withDefaults(defineProps<{
@@ -16,15 +19,15 @@ const props = withDefaults(defineProps<{
   /**
    * 提示框位置
    */
-  placement?: 'top' | 'right' | 'bottom' | 'left'
+  placement?: ElementPosition
   /**
    * 提示框主题
    */
-  theme?: 'light' | 'dark'
+  theme?: Theme
   /**
    * 触发方式
    */
-  trigger?: 'hover' | 'click' | 'focus'
+  trigger?: Trigger
   /**
    * 显示延迟(毫秒)
    */

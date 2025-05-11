@@ -4,7 +4,9 @@
  * 创建日期: 2024-08-16
  * 作者: aiftt
  * 更新日期: 2024-08-16 - 初始实现
+ * 更新日期: 2024-09-14 - 使用集中管理的类型定义
  */
+import type { SpinType, StepSize } from '~/types/ui'
 
 // Props 定义
 const props = withDefaults(defineProps<{
@@ -15,11 +17,11 @@ const props = withDefaults(defineProps<{
   /**
    * 尺寸，可选值 small, medium, large
    */
-  size?: 'small' | 'medium' | 'large'
+  size?: StepSize
   /**
    * 加载指示器类型，可选值 circle, dot, pulse
    */
-  type?: 'circle' | 'dot' | 'pulse'
+  type?: SpinType
   /**
    * 自定义加载指示器
    */

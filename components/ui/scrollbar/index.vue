@@ -1,8 +1,10 @@
 <script setup lang="ts" name="UiScrollbar">
+import type { ShadowMode } from '~/types/ui'
 /**
  * 滚动条组件
  * 创建日期: 2025-05-06
  * 作者: aiftt
+ * 更新日期: 2024-09-15 - 使用集中管理的类型定义
  * 提供美化的自定义滚动条
  */
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
@@ -47,7 +49,7 @@ const props = withDefaults(defineProps<{
   /**
    * 是否显示内容阴影
    */
-  shadow?: boolean | 'hover'
+  shadow?: ShadowMode
 }>(), {
   horizontal: true,
   vertical: true,

@@ -4,14 +4,16 @@
  * 创建日期: 2024-08-18
  * 作者: aiftt
  * 更新日期: 2024-08-18 - 初始实现
+ * 更新日期: 2024-09-13 - 使用集中管理的类型定义
  */
+import type { ResultStatus } from '~/types/ui'
 
 // Props定义
 const props = withDefaults(defineProps<{
   /**
    * 结果状态，可选值：success、error、info、warning
    */
-  status?: 'success' | 'error' | 'info' | 'warning'
+  status?: ResultStatus
   /**
    * 标题
    */

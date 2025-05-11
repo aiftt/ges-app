@@ -3,9 +3,11 @@
  * 进度条组件
  * 创建日期: 2024-08-03
  * 作者: aiftt
+ * 更新日期: 2024-09-14 - 使用集中管理的类型定义
  */
 
 import type { CSSProperties } from 'vue'
+import type { ComponentSize, ProgressType, StepStatus } from '~/types/ui'
 
 // 定义props
 const props = withDefaults(defineProps<{
@@ -16,11 +18,11 @@ const props = withDefaults(defineProps<{
   /**
    * 进度条类型
    */
-  type?: 'default' | 'success' | 'warning' | 'danger' | 'info'
+  type?: ProgressType
   /**
    * 进度条尺寸
    */
-  size?: 'small' | 'default' | 'large'
+  size?: ComponentSize
   /**
    * 是否显示进度文字
    */
@@ -40,7 +42,7 @@ const props = withDefaults(defineProps<{
   /**
    * 进度条的状态
    */
-  status?: 'success' | 'warning' | 'danger' | 'info' | ''
+  status?: StepStatus | ''
   /**
    * 是否为环形进度条
    */

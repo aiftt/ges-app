@@ -5,8 +5,9 @@
  * 作者: aiftt
  * 更新日期: 2024-06-20 - 初始版本
  * 更新日期: 2024-06-21 - 修复TypeScript类型错误
+ * 更新日期: 2024-09-14 - 使用集中管理的类型定义
  */
-
+import type { BadgePosition, BadgeType } from '~/types/ui'
 import { computed } from 'vue'
 
 // 定义props类型
@@ -30,11 +31,11 @@ interface BadgeProps {
   /**
    * 徽标类型
    */
-  type?: 'primary' | 'success' | 'warning' | 'danger' | 'info'
+  type?: BadgeType
   /**
    * 徽标位置
    */
-  position?: 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left'
+  position?: BadgePosition
   /**
    * 徽标偏移
    */

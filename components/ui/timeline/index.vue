@@ -4,14 +4,16 @@
  * 创建日期: 2024-07-23
  * 作者: aiftt
  * 更新日期: 2024-07-27 - 参考Element Plus重新实现，优化交替布局和水平模式
+ * 更新日期: 2024-09-13 - 使用集中管理的类型定义
  */
+import type { Direction, Position } from '~/types/ui'
 import { computed, onMounted, provide, ref } from 'vue'
 
 const props = withDefaults(defineProps<{
   /**
    * 时间线方向
    */
-  direction?: 'vertical' | 'horizontal'
+  direction?: Direction
   /**
    * 时间线节点间距
    */
@@ -26,7 +28,7 @@ const props = withDefaults(defineProps<{
    * right: 节点在右侧
    * alternate: 节点交替出现在两侧
    */
-  position?: 'left' | 'right' | 'alternate'
+  position?: Position
   /**
    * 是否反转显示顺序
    */

@@ -4,39 +4,19 @@
  * 创建日期: 2024-07-16
  * 作者: aiftt
  * 更新日期: 2024-07-16 - 初始实现
+ * 更新日期: 2024-09-13 - 使用集中管理的类型定义
+ * 更新日期: 2024-09-14 - 使用更多集中管理的类型
  */
+import type { IUploadFile } from '~/types/common'
+import type { ButtonType, ComponentSize, UploadListType } from '~/types/ui'
 import { computed, ref, watch } from 'vue'
-
-// 定义文件类型
-interface UploadFile {
-  // 唯一标识
-  uid: string
-  // 文件名
-  name: string
-  // 文件大小
-  size: number
-  // 文件类型
-  type: string
-  // 上传状态：ready, uploading, success, error
-  status: 'ready' | 'uploading' | 'success' | 'error'
-  // 上传进度
-  percentage: number
-  // 上传响应数据
-  response?: any
-  // 原始文件对象
-  raw?: File
-  // 错误信息
-  error?: string
-  // 预览URL
-  url?: string
-}
 
 // 定义props
 const props = withDefaults(defineProps<{
   /**
    * 绑定值，已上传的文件列表
    */
-  modelValue?: UploadFile[]
+  modelValue?: IUploadFile[]
   /**
    * 上传地址
    */
@@ -120,11 +100,11 @@ const props = withDefaults(defineProps<{
   /**
    * 按钮类型
    */
-  buttonType?: 'primary' | 'default' | 'danger' | 'warning' | 'info' | 'success'
+  buttonType?: ButtonType
   /**
    * 按钮尺寸
    */
-  buttonSize?: 'small' | 'default' | 'large'
+  buttonSize?: ComponentSize
   /**
    * 按钮图标
    */
@@ -140,7 +120,7 @@ const props = withDefaults(defineProps<{
   /**
    * 列表类型
    */
-  listType?: 'text' | 'picture' | 'picture-card'
+  listType?: UploadListType
 }>(), {
   modelValue: () => [],
   method: 'post',
@@ -169,21 +149,21 @@ const props = withDefaults(defineProps<{
 
 // 定义emit
 const emit = defineEmits<{
-  (e: 'update:modelValue', value: UploadFile[]): void
-  (e: 'change', file: UploadFile, fileList: UploadFile[]): void
-  (e: 'remove', file: UploadFile, fileList: UploadFile[]): void
-  (e: 'success', response: any, file: UploadFile, fileList: UploadFile[]): void
-  (e: 'error', error: any, file: UploadFile, fileList: UploadFile[]): void
-  (e: 'progress', event: ProgressEvent, file: UploadFile, fileList: UploadFile[]): void
-  (e: 'exceed', files: File[], fileList: UploadFile[]): void
-  (e: 'preview', file: UploadFile): void
+  (e: 'update:modelValue', value: IUploadFile[]): void
+  (e: 'change', file: IUploadFile, fileList: IUploadFile[]): void
+  (e: 'remove', file: IUploadFile, fileList: IUploadFile[]): void
+  (e: 'success', response: any, file: IUploadFile, fileList: IUploadFile[]): void
+  (e: 'error', error: any, file: IUploadFile, fileList: IUploadFile[]): void
+  (e: 'progress', event: ProgressEvent, file: IUploadFile, fileList: IUploadFile[]): void
+  (e: 'exceed', files: File[], fileList: IUploadFile[]): void
+  (e: 'preview', file: IUploadFile): void
 }>()
 
 // 内部状态
 const uploadInput = ref<HTMLInputElement | null>(null)
 const dragover = ref(false)
-const fileList = ref<UploadFile[]>([...props.modelValue])
-const uploadingFiles = ref<UploadFile[]>([])
+const fileList = ref<IUploadFile[]>([...props.modelValue])
+const uploadingFiles = ref<IUploadFile[]>([])
 
 // 计算上传组件类名
 const uploadClass = computed(() => [
@@ -207,7 +187,7 @@ function generateUid(): string {
 }
 
 // 创建上传文件对象
-function createUploadFile(file: File): UploadFile {
+function createUploadFile(file: File): IUploadFile {
   const url = URL.createObjectURL(file)
   return {
     uid: generateUid(),
@@ -215,7 +195,7 @@ function createUploadFile(file: File): UploadFile {
     size: file.size,
     type: file.type,
     status: 'ready',
-    percentage: 0,
+    percent: 0,
     raw: file,
     url,
   }
@@ -265,7 +245,7 @@ async function handleFileChange(event: Event) {
       // 自动上传
       if (props.autoUpload && props.action) {
         uploadFile.status = 'uploading'
-        uploadFile.percentage = 0
+        uploadFile.percent = 0
         uploadFile.raw = file
         uploadFile.error = undefined
         uploadFile.response = undefined
@@ -289,7 +269,7 @@ async function handleFileChange(event: Event) {
 }
 
 // 上传文件
-function doUpload(file: UploadFile) {
+function doUpload(file: IUploadFile) {
   if (!props.action || !file.raw)
     return
 
@@ -307,7 +287,8 @@ function doUpload(file: UploadFile) {
   // 上传进度事件
   xhr.upload.addEventListener('progress', (event) => {
     if (event.lengthComputable) {
-      file.percentage = Math.round((event.loaded * 100) / event.total)
+      const percent = Math.round((event.loaded * 100) / event.total)
+      file.percent = percent
       emit('progress', event, file, fileList.value)
     }
   })
@@ -376,7 +357,7 @@ function submit() {
 
   for (const file of readyFiles) {
     file.status = 'uploading'
-    file.percentage = 0
+    file.percent = 0
     file.error = undefined
     file.response = undefined
 
@@ -392,7 +373,7 @@ function submit() {
 }
 
 // 移除文件
-function handleRemove(file: UploadFile) {
+function handleRemove(file: IUploadFile) {
   if (props.disabled || props.readonly)
     return
 
@@ -405,7 +386,7 @@ function handleRemove(file: UploadFile) {
 }
 
 // 预览文件
-function handlePreview(file: UploadFile) {
+function handlePreview(file: IUploadFile) {
   if (!props.previewable)
     return
 
@@ -540,10 +521,10 @@ defineExpose({
           <div class="ui-upload-list-item-progress">
             <div
               class="ui-upload-list-item-progress-bar"
-              :style="{ width: `${file.percentage}%` }"
+              :style="{ width: `${file.percent}%` }"
             />
           </div>
-          <span class="ui-upload-list-item-percentage">{{ file.percentage }}%</span>
+          <span class="ui-upload-list-item-percentage">{{ file.percent }}%</span>
         </div>
 
         <!-- 操作按钮 -->
@@ -593,10 +574,10 @@ defineExpose({
           <div class="ui-upload-list-item-progress">
             <div
               class="ui-upload-list-item-progress-bar"
-              :style="{ width: `${file.percentage}%` }"
+              :style="{ width: `${file.percent}%` }"
             />
           </div>
-          <span class="ui-upload-list-item-percentage">{{ file.percentage }}%</span>
+          <span class="ui-upload-list-item-percentage">{{ file.percent }}%</span>
         </div>
 
         <!-- 操作按钮 -->
@@ -647,10 +628,10 @@ defineExpose({
           <div class="ui-upload-list-item-progress">
             <div
               class="ui-upload-list-item-progress-bar"
-              :style="{ width: `${file.percentage}%` }"
+              :style="{ width: `${file.percent}%` }"
             />
           </div>
-          <span class="ui-upload-list-item-percentage">{{ file.percentage }}%</span>
+          <span class="ui-upload-list-item-percentage">{{ file.percent }}%</span>
         </div>
 
         <!-- 操作按钮 - 悬停显示 -->

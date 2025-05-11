@@ -6,13 +6,10 @@
  * 更新日期: 2025-05-01 - 调整为符合规范的文件结构
  * 更新日期: 2025-05-02 - 修复主题应用问题，移除硬编码的主题变量
  * 更新日期: 2025-05-03 - 改进主题应用方式，读取并使用已定义的CSS变量作为基础
+ * 更新日期: 2024-09-12 - 使用集中管理的类型定义
  */
+import type { Size, Theme, ThemeConfig } from '~/types/config'
 import { computed, onBeforeUnmount, onMounted, provide, ref, watch } from 'vue'
-
-// 定义主题类型
-type Theme = 'light' | 'dark' | 'auto'
-type Size = 'small' | 'default' | 'large'
-type ThemeConfig = Record<string, any>
 
 // 定义props
 const props = withDefaults(defineProps<{

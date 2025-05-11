@@ -1,4 +1,5 @@
 <script setup lang="ts" name="UiButton">
+import type { ButtonType, ComponentSize } from '~/types/ui'
 /**
  * 按钮组件
  * 创建日期: 2023-11-14
@@ -10,6 +11,7 @@
  * 更新日期: 2023-12-10 - 使用全局主题变量，优化颜色定义
  * 更新日期: 2023-12-11 - 优化暗色主题适配，使用新的主题变量
  * 更新日期: 2024-09-09 - 提取CSS变量到主题文件中
+ * 更新日期: 2024-09-11 - 使用集中管理的类型定义
  */
 import { useSlots } from 'vue'
 
@@ -18,11 +20,11 @@ const props = withDefaults(defineProps<{
   /**
    * 按钮类型
    */
-  type?: 'default' | 'primary' | 'success' | 'warning' | 'danger' | 'info'
+  type?: ButtonType
   /**
    * 按钮尺寸
    */
-  size?: 'small' | 'default' | 'large'
+  size?: ComponentSize
   /**
    * 是否禁用
    */

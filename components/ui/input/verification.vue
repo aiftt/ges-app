@@ -4,7 +4,9 @@
  * 创建日期: 2024-07-08
  * 作者: aiftt
  * 更新日期: 2024-07-08 - 初始实现
+ * 更新日期: 2024-09-11 - 使用集中管理的类型定义
  */
+import type { ComponentSize, VerificationType } from '~/types/ui'
 import { computed, nextTick, onMounted, ref, watch } from 'vue'
 
 // 定义props
@@ -20,7 +22,7 @@ const props = withDefaults(defineProps<{
   /**
    * 输入类型
    */
-  type?: 'text' | 'number' | 'alphanumeric'
+  type?: VerificationType
   /**
    * 是否自动聚焦
    */
@@ -60,7 +62,7 @@ const props = withDefaults(defineProps<{
   /**
    * 输入框大小
    */
-  size?: 'small' | 'default' | 'large'
+  size?: ComponentSize
   /**
    * 自定义类名
    */

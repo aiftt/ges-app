@@ -1,11 +1,12 @@
 <script setup lang="ts" name="UiCarousel">
+import type { AnimationType, CarouselTrigger } from '~/types/interaction'
+import type { Direction } from '~/types/ui'
 /**
  * 轮播图组件
  * 创建日期: 2024-07-22
  * 作者: aiftt
- * 更新日期: 2024-07-22 - 初始实现
- * 更新日期: 2024-07-23 - 修复TypeScript类型错误
- * 更新日期: 2024-07-23 - 优化图片判断逻辑，添加imageMode属性
+ * 更新日期: 2024-07-22 - 初始版本
+ * 更新日期: 2024-09-14 - 使用集中管理的类型定义
  */
 import { computed, defineComponent, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 
@@ -25,7 +26,7 @@ const props = withDefaults(defineProps<{
   /**
    * 是否显示箭头
    */
-  arrow?: 'always' | 'hover' | 'never'
+  arrow?: boolean | 'always' | 'hover' | 'never'
   /**
    * 指示器位置
    */
@@ -37,7 +38,7 @@ const props = withDefaults(defineProps<{
   /**
    * 轮播方向
    */
-  direction?: 'horizontal' | 'vertical'
+  direction?: Direction
   /**
    * 是否循环播放
    */
@@ -69,7 +70,7 @@ const props = withDefaults(defineProps<{
   /**
    * 指示器触发方式
    */
-  indicatorTrigger?: 'click' | 'hover'
+  indicatorTrigger?: CarouselTrigger
   /**
    * 图片模式
    * - auto: 自动检测字符串是否为图片URL
@@ -89,6 +90,10 @@ const props = withDefaults(defineProps<{
    * 图片懒加载，用于nuxt-img组件
    */
   imgLazy?: boolean
+  /**
+   * 动画类型
+   */
+  transition?: AnimationType
 }>(), {
   items: () => [],
   autoplay: true,
@@ -109,6 +114,7 @@ const props = withDefaults(defineProps<{
   imgQuality: 80,
   imgFormat: 'webp',
   imgLazy: true,
+  transition: 'slide-left',
 })
 
 // 定义事件
@@ -126,7 +132,7 @@ defineComponent({
     items: Array,
     autoplay: Boolean,
     interval: Number,
-    arrow: String,
+    arrow: [Boolean, String],
     indicatorPosition: String,
     initialIndex: Number,
     direction: String,
@@ -142,6 +148,7 @@ defineComponent({
     imgQuality: Number,
     imgFormat: String,
     imgLazy: Boolean,
+    transition: String,
   },
 })
 

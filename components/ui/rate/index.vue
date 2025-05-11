@@ -1,9 +1,11 @@
 <script setup lang="ts" name="UiRate">
+import type { RateSize } from '~/types/ui'
 /**
  * 评分组件
  * 创建日期: 2024-07-09
  * 作者: aiftt
  * 更新日期: 2024-07-09 - 初始实现
+ * 更新日期: 2024-09-11 - 使用集中管理的类型定义
  */
 import { computed, ref } from 'vue'
 
@@ -56,7 +58,7 @@ const props = withDefaults(defineProps<{
   /**
    * 图标大小
    */
-  size?: 'small' | 'default' | 'large' | number
+  size?: RateSize
   /**
    * 是否显示辅助文字
    */

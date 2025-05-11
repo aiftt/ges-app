@@ -1,9 +1,11 @@
 <script setup lang="ts" name="UiSwitch">
+import type { ComponentSize } from '~/types/ui'
 /**
  * 开关组件
  * 创建日期: 2024-06-12
  * 作者: aiftt
  * 更新日期: 2024-06-12 - 初始实现
+ * 更新日期: 2024-09-11 - 使用集中管理的类型定义
  */
 import { computed } from 'vue'
 
@@ -20,7 +22,7 @@ const props = withDefaults(defineProps<{
   /**
    * 开关尺寸
    */
-  size?: 'small' | 'default' | 'large'
+  size?: ComponentSize
   /**
    * 开启状态的文本
    */

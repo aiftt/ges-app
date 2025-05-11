@@ -7,7 +7,9 @@
  * 2024-07-20 - 添加展开/收起动画效果
  * 2024-07-22 - 优化展开/收起动画，改进垂直模式下按钮样式
  * 2024-08-22 - 修复水合问题，将querySelector替换为ref
+ * 2024-09-12 - 使用集中管理的类型定义
  */
+import type { IOverflowItem } from '~/types/common'
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 
 // 定义 props
@@ -15,7 +17,7 @@ const props = withDefaults(defineProps<{
   /**
    * 列表项数据
    */
-  items: any[]
+  items: IOverflowItem[]
   /**
    * 最小可见项数量
    */

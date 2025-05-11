@@ -41,7 +41,9 @@
  * 2024-08-30 - 添加 DateTimePicker 和 TreeSelect 组件
  * 2024-08-30 - 添加 VirtualTable 和 VirtualTree 组件
  * 2024-11-27 - 添加 CSS Shake 动画组件
+ * 2024-09-12 - 使用集中管理的类型定义
  */
+import type { Component } from 'vue'
 import { computed, markRaw, onMounted, ref } from 'vue'
 import DemoAffix from '~/components/demo/affix.vue'
 import DemoAlert from '~/components/demo/alert.vue'
@@ -139,16 +141,16 @@ import DemoVirtualTree from '~/components/demo/virtual-tree.vue'
 import DemoWatermark from '~/components/demo/watermark.vue'
 
 // 组件列表
-interface ComponentGroup {
+interface IComponentGroup {
   title: string
   components: {
     name: string
     label: string
-    component: any
+    component: Component
   }[]
 }
 
-const groups = ref<ComponentGroup[]>([
+const groups = ref<IComponentGroup[]>([
   {
     title: '基础组件',
     components: [

@@ -5,9 +5,10 @@
  * 作者: aiftt
  * 更新日期: 2024-07-30 - 初始实现
  * 更新日期: 2024-08-01 - 修复JSX语法支持
+ * 更新日期: 2024-09-12 - 使用集中管理的类型定义
  */
 
-import type { ITreeNode } from './index.vue'
+import type { ITreeNode } from '~/types/tree'
 import { h } from 'vue'
 
 // 定义节点Props

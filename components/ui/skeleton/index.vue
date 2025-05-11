@@ -5,8 +5,10 @@
  * 作者: aiftt
  *
  * 用于在页面数据加载过程中显示一个占位图形，提高用户体验
+ * 更新日期: 2024-09-11 - 使用集中管理的类型定义
  */
 
+import type { SkeletonType } from '~/types/ui'
 import { computed, h } from 'vue'
 
 // 定义props
@@ -22,7 +24,7 @@ const props = withDefaults(defineProps<{
   /**
    * 骨架屏类型
    */
-  type?: 'text' | 'button' | 'avatar' | 'image' | 'paragraph' | 'card' | 'list' | 'custom'
+  type?: SkeletonType
   /**
    * 骨架屏形状
    */

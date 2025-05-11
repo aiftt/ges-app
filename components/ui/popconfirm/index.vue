@@ -1,9 +1,11 @@
 <script setup lang="tsx" name="UiPopconfirm">
+import type { TagType } from '~/types/ui'
 /**
  * 气泡确认框组件
  * 创建日期: 2025-05-03
  * 作者: aiftt
  * 更新日期: 2025-05-10 - 规范化CSS变量，移除内联样式
+ * 更新日期: 2024-09-11 - 使用集中管理的类型定义
  * 点击元素弹出的气泡确认框，常用于需要用户确认的操作
  */
 import { computed, ref } from 'vue'
@@ -28,11 +30,11 @@ const props = withDefaults(defineProps<{
   /**
    * 确认按钮类型
    */
-  okType?: 'default' | 'primary' | 'success' | 'warning' | 'danger'
+  okType?: TagType
   /**
    * 取消按钮类型
    */
-  cancelType?: 'default' | 'primary' | 'success' | 'warning' | 'danger'
+  cancelType?: TagType
   /**
    * 确认按钮加载状态
    */

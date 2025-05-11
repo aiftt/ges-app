@@ -5,7 +5,10 @@
  * 作者: aiftt
  *
  * 用于文本链接和导航链接，支持内部路由和外部链接
+ * 更新日期: 2024-09-11 - 使用集中管理的类型定义
  */
+
+import type { ComponentSize, TagType } from '~/types/ui'
 
 // 定义props
 const props = withDefaults(defineProps<{
@@ -16,11 +19,11 @@ const props = withDefaults(defineProps<{
   /**
    * 链接类型
    */
-  type?: 'default' | 'primary' | 'success' | 'warning' | 'danger'
+  type?: TagType
   /**
    * 链接大小
    */
-  size?: 'small' | 'default' | 'large'
+  size?: ComponentSize
   /**
    * 是否下划线
    */

@@ -5,60 +5,10 @@ import type { CSSProperties } from 'vue'
  * 创建日期: 2024-07-16
  * 作者: aiftt
  * 更新日期: 2024-07-16 - 初始实现
+ * 更新日期: 2024-09-11 - 使用集中管理的类型定义
  */
+import type { TableColumn } from '~/types/table'
 import { computed, onMounted, ref, toRef, watch } from 'vue'
-
-// 列配置类型
-export interface TableColumn {
-  // 列字段名
-  prop: string
-  // 列标题
-  label: string
-  // 列宽度
-  width?: number | string
-  // 最小宽度
-  minWidth?: number | string
-  // 对齐方式
-  align?: 'left' | 'center' | 'right'
-  // 表头对齐方式
-  headerAlign?: 'left' | 'center' | 'right'
-  // 列是否固定
-  fixed?: boolean | 'left' | 'right'
-  // 是否可排序
-  sortable?: boolean
-  // 是否可筛选
-  filterable?: boolean
-  // 筛选选项
-  filters?: { text: string, value: any }[]
-  // 自定义类名
-  className?: string
-  // 表头自定义类名
-  headerClassName?: string
-  // 格式化函数
-  formatter?: (row: any, column: TableColumn, cellValue: any, index: number) => string | number | boolean | undefined | null
-  // 插槽名称
-  slot?: string
-  // 表头插槽名称
-  headerSlot?: string
-  // 是否可见
-  visible?: boolean
-  // 是否可调整宽度
-  resizable?: boolean
-  // 是否显示溢出提示
-  showOverflowTooltip?: boolean
-  // 索引计算函数
-  index?: (index: number) => number | string
-  // 复选框列是否可选中
-  selectable?: (row: any, index: number) => boolean
-  // 是否是默认展开所有子行
-  defaultExpandAll?: boolean
-  // 行的 key
-  rowKey?: string
-  // 展开行的渲染方式
-  expandColumnKey?: string
-  // 子节点属性
-  childrenKey?: string
-}
 
 // 定义props
 const props = withDefaults(defineProps<{

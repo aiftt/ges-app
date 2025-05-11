@@ -4,8 +4,10 @@
  * 创建日期: 2024-05-30
  * 作者: aiftt
  * 更新日期: 2024-05-30 - 初始版本
+ * 更新日期: 2024-09-11 - 使用集中管理的类型定义
  */
 
+import type { ComponentSize, TagType } from '~/types/ui'
 import { computed, ref } from 'vue'
 
 // 定义props
@@ -13,11 +15,11 @@ const props = withDefaults(defineProps<{
   /**
    * 标签类型
    */
-  type?: 'default' | 'primary' | 'success' | 'warning' | 'danger'
+  type?: TagType
   /**
    * 标签尺寸
    */
-  size?: 'small' | 'default' | 'large'
+  size?: ComponentSize
   /**
    * 是否可关闭
    */

@@ -1,5 +1,7 @@
 <script setup lang="ts" name="UiDropdown">
-import type { MenuItem } from './type'
+import type { IMenuItem } from '~/types/common'
+import type { Trigger } from '~/types/interaction'
+import type { Placement } from '~/types/ui'
 /**
  * 下拉菜单组件
  * 创建日期: 2024-08-18
@@ -7,24 +9,25 @@ import type { MenuItem } from './type'
  * 更新日期: 2024-08-23 - 修复显隐控制问题
  * 更新日期: 2024-08-24 - 参考Element Plus改进实现，添加递归子菜单、键盘导航
  * 更新日期: 2024-09-09 - 提取CSS变量到主题文件中
+ * 更新日期: 2024-09-14 - 使用集中管理的类型定义
  */
 import { nextTick, onMounted, onUnmounted, provide, reactive } from 'vue'
 
-export type { MenuItem } from './type'
+export type { IMenuItem } from '~/types/common'
 
 const props = withDefaults(defineProps<{
   /**
    * 菜单项配置
    */
-  items?: MenuItem[]
+  items?: IMenuItem[]
   /**
    * 菜单的定位方式
    */
-  placement?: 'top' | 'top-start' | 'top-end' | 'bottom' | 'bottom-start' | 'bottom-end'
+  placement?: Placement
   /**
    * 触发方式
    */
-  trigger?: 'hover' | 'click' | 'contextmenu'
+  trigger?: Trigger
   /**
    * 是否禁用
    */
@@ -88,7 +91,7 @@ const props = withDefaults(defineProps<{
 
 // 事件
 const emit = defineEmits<{
-  (e: 'select', key: string | number, item: MenuItem): void
+  (e: 'select', key: string | number, item: IMenuItem): void
   (e: 'update:visible', visible: boolean): void
   (e: 'opened'): void
   (e: 'closed'): void
@@ -116,7 +119,7 @@ const state = reactive({
   mouseInTrigger: false,
   activeSubmenu: null as string | number | null,
   activeIndex: -1,
-  flattenedItems: [] as MenuItem[],
+  flattenedItems: [] as IMenuItem[],
 })
 
 // 处理v-model和props.visible的同步
@@ -143,7 +146,7 @@ onMounted(() => {
 })
 
 // 扁平化菜单项，方便键盘导航
-function flattenItems(items: MenuItem[], result: MenuItem[] = []): MenuItem[] {
+function flattenItems(items: IMenuItem[], result: IMenuItem[] = []): IMenuItem[] {
   items.forEach((item) => {
     if (item.type !== 'divider') {
       result.push(item)
@@ -160,7 +163,7 @@ watch(() => props.items, (items) => {
 }, { immediate: true, deep: true })
 
 // 处理菜单点击事件
-function handleMenuItemClick(item: MenuItem) {
+function handleMenuItemClick(item: IMenuItem) {
   if (item.disabled)
     return
 

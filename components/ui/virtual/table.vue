@@ -4,78 +4,10 @@
  * 创建日期: 2024-09-03
  * 作者: aiftt
  * 更新日期: 2024-09-03 - 首次实现
+ * 更新日期: 2024-09-12 - 使用集中管理的类型定义
  */
 
-// 类型定义
-export interface IVirtualTableColumn {
-  /**
-   * 列标识
-   */
-  key: string
-  /**
-   * 列标题
-   */
-  title: string
-  /**
-   * 列宽度
-   */
-  width?: number | string
-  /**
-   * 最小列宽
-   */
-  minWidth?: number
-  /**
-   * 是否固定在左侧
-   */
-  fixed?: 'left' | 'right' | boolean
-  /**
-   * 对齐方式
-   */
-  align?: 'left' | 'center' | 'right'
-  /**
-   * 自定义单元格样式
-   */
-  cellClass?: string | ((row: any, column: IVirtualTableColumn, rowIndex: number) => string)
-  /**
-   * 自定义表头样式
-   */
-  headerClass?: string
-  /**
-   * 是否可排序
-   */
-  sortable?: boolean
-  /**
-   * 是否可筛选
-   */
-  filterable?: boolean
-  /**
-   * 自定义渲染函数
-   */
-  render?: (row: any, column: IVirtualTableColumn, rowIndex: number) => any
-}
-
-export interface IVirtualTableConfig {
-  /**
-   * 行高(px)
-   */
-  rowHeight: number
-  /**
-   * 表头高度(px)
-   */
-  headerHeight?: number
-  /**
-   * 缓冲区域行数
-   */
-  buffer?: number
-  /**
-   * 是否启用虚拟滚动
-   */
-  enabled?: boolean
-  /**
-   * 虚拟滚动激活的最小行数
-   */
-  threshold?: number
-}
+import type { IVirtualTableColumn, IVirtualTableConfig } from '~/types/table'
 
 // 定义Props
 const props = withDefaults(defineProps<{

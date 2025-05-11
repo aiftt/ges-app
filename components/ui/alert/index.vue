@@ -4,8 +4,10 @@
  * 创建日期: 2024-06-24
  * 作者: aiftt
  * 更新日期: 2024-06-24 - 初始版本
+ * 更新日期: 2024-09-11 - 使用集中管理的类型定义
  */
 
+import type { AlertType } from '~/types/ui'
 import { computed, ref } from 'vue'
 
 // 定义props类型
@@ -13,7 +15,7 @@ const props = withDefaults(defineProps<{
   /**
    * 警告提示的类型
    */
-  type?: 'info' | 'success' | 'warning' | 'error'
+  type?: AlertType
   /**
    * 是否显示图标
    */

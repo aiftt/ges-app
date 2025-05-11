@@ -1,4 +1,6 @@
 <script setup lang="ts" name="UiMenu">
+import type { MenuTrigger } from '~/types/interaction'
+import type { MenuMode, MenuTheme, PopupPlacement } from '~/types/ui'
 import type { IMenuContext } from '~/utils/inject-keys'
 /**
  * 菜单组件
@@ -9,6 +11,7 @@ import type { IMenuContext } from '~/utils/inject-keys'
  * 更新日期: 2024-08-28 - 使用IMenuContext接口类型
  * 更新日期: 2024-08-29 - 修复菜单样式和折叠状态问题
  * 更新日期: 2024-08-30 - 添加路由模式支持、优化折叠交互、调整默认点击展开
+ * 更新日期: 2024-09-14 - 使用集中管理的类型定义
  */
 import { provide } from 'vue'
 import { MENU_INJECTION_KEY } from '~/utils/inject-keys'
@@ -21,11 +24,11 @@ const props = withDefaults(defineProps<{
    * - horizontal: 水平菜单
    * - inline: 内嵌菜单
    */
-  mode?: 'vertical' | 'horizontal' | 'inline'
+  mode?: MenuMode
   /**
    * 菜单主题
    */
-  theme?: 'light' | 'dark'
+  theme?: MenuTheme
   /**
    * 当前选中的菜单项key
    */
@@ -47,7 +50,7 @@ const props = withDefaults(defineProps<{
    * - hover: 鼠标移入时触发
    * - click: 点击时触发
    */
-  trigger?: 'hover' | 'click'
+  trigger?: MenuTrigger
   /**
    * 自定义类名
    */
@@ -64,7 +67,7 @@ const props = withDefaults(defineProps<{
   /**
    * 弹出子菜单的位置（仅在折叠模式有效）
    */
-  popupPlacement?: 'right' | 'left'
+  popupPlacement?: PopupPlacement
 }>(), {
   mode: 'vertical',
   theme: 'light',

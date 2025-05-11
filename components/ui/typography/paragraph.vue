@@ -6,8 +6,10 @@
  * 更新日期: 2023-12-06 - 更新logger接口
  * 更新日期: 2023-12-06 - 更新为v-bind + CSS变量实现方式
  * 更新日期: 2024-08-22 - 修复水合问题，使用ref替代document.getElementById
+ * 更新日期: 2024-09-11 - 使用集中管理的类型定义
  */
 
+import type { Alignment, ComponentSize, TextType } from '~/types/ui'
 import logger from '~/utils/logger'
 
 // 定义props
@@ -15,11 +17,11 @@ const props = withDefaults(defineProps<{
   /**
    * 段落类型
    */
-  type?: 'default' | 'primary' | 'success' | 'warning' | 'danger' | 'secondary'
+  type?: TextType
   /**
    * 字体大小
    */
-  size?: 'small' | 'default' | 'large'
+  size?: ComponentSize
   /**
    * 是否加粗
    */
@@ -35,7 +37,7 @@ const props = withDefaults(defineProps<{
   /**
    * 文本对齐方式
    */
-  align?: 'left' | 'center' | 'right' | 'justify'
+  align?: Alignment
   /**
    * 文本省略
    */
@@ -51,7 +53,7 @@ const props = withDefaults(defineProps<{
   /**
    * 段落间距
    */
-  spacing?: 'small' | 'default' | 'large'
+  spacing?: ComponentSize
 }>(), {
   type: 'default',
   size: 'default',

@@ -1,10 +1,12 @@
 <script setup lang="ts" name="UiPopover">
+import type { Trigger } from '~/types/interaction'
+import type { Placement, Theme } from '~/types/ui'
 /**
  * 气泡卡片组件
- * 创建日期: 2023-12-01
+ * 创建日期: 2024-04-30
  * 作者: aiftt
- * 更新日期: 2023-12-02 - 初始版本
- * 更新日期: 2024-05-10 - 使用CSS变量替代内联样式
+ * 更新日期: 2024-04-30 - 初始版本
+ * 更新日期: 2024-09-14 - 使用集中管理的类型定义
  */
 import { computed, ref } from 'vue'
 
@@ -18,19 +20,19 @@ const props = withDefaults(defineProps<{
    */
   content?: string
   /**
-   * 触发方式：hover|click|manual
+   * 触发方式
    */
-  trigger?: 'hover' | 'click' | 'manual'
+  trigger?: Trigger
   /**
    * 弹出位置
    */
-  placement?: 'top' | 'right' | 'bottom' | 'left' | 'top-start' | 'top-end' | 'right-start' | 'right-end' | 'bottom-start' | 'bottom-end' | 'left-start' | 'left-end'
+  placement?: Placement
   /**
-   * 显示延迟(毫秒)
+   * 延迟显示毫秒
    */
   showDelay?: number
   /**
-   * 隐藏延迟(毫秒)
+   * 延迟隐藏毫秒
    */
   hideDelay?: number
   /**
@@ -38,53 +40,56 @@ const props = withDefaults(defineProps<{
    */
   disabled?: boolean
   /**
-   * 偏移量(像素)
+   * 气泡窗口偏移
    */
   offset?: number
   /**
-   * 是否可见(用于manual模式)
+   * 是否可见（仅当trigger为manual时有效）
    */
   visible?: boolean
   /**
-   * 是否使用arrow箭头
+   * 是否显示箭头
    */
   arrow?: boolean
   /**
-   * 是否在点击外部时自动关闭
+   * 点击外部是否关闭
    */
   clickOutsideToClose?: boolean
   /**
-   * 主题
-   */
-  theme?: 'light' | 'dark'
-  /**
-   * 是否显示关闭按钮
-   */
-  showClose?: boolean
-  /**
-   * 宽度
-   */
-  width?: string | number
-  /**
-   * 弹出层的z-index
+   * z-index值
    */
   zIndex?: number
+  /**
+   * 主题
+   */
+  theme?: Theme
+  /**
+   * 卡片宽度
+   */
+  width?: string
+  /**
+   * 弹出窗口最大宽度
+   */
+  maxWidth?: string
+  /**
+   * 卡片类名
+   */
+  popperClass?: string
 }>(), {
   title: '',
   content: '',
-  trigger: 'click',
+  trigger: 'hover',
   placement: 'bottom',
-  showDelay: 100,
-  hideDelay: 100,
+  showDelay: 200,
+  hideDelay: 200,
   disabled: false,
-  offset: 8,
+  offset: 12,
   visible: false,
   arrow: true,
   clickOutsideToClose: true,
-  theme: 'light',
-  showClose: false,
-  width: 'auto',
   zIndex: 1000,
+  theme: 'light',
+  maxWidth: '300px',
 })
 
 const emit = defineEmits<{

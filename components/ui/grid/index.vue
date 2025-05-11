@@ -3,9 +3,11 @@
  * 栅格布局组件
  * 创建日期: 2023-11-15
  * 作者: aiftt
+ * 更新日期: 2024-09-15 - 使用集中管理的类型定义
  *
  * 提供响应式栅格布局系统，基于 CSS Grid 实现
  */
+import type { ContentAlign, ItemsAlign } from '~/types/ui'
 
 // 定义props
 const props = withDefaults(defineProps<{
@@ -35,19 +37,19 @@ const props = withDefaults(defineProps<{
   /**
    * 栅格内容水平对齐方式
    */
-  justifyItems?: 'start' | 'end' | 'center' | 'stretch'
+  justifyItems?: ItemsAlign
   /**
    * 栅格内容垂直对齐方式
    */
-  alignItems?: 'start' | 'end' | 'center' | 'stretch' | 'baseline'
+  alignItems?: ItemsAlign
   /**
    * 整个栅格在容器中的水平对齐方式
    */
-  justifyContent?: 'start' | 'end' | 'center' | 'stretch' | 'between' | 'around' | 'evenly'
+  justifyContent?: ContentAlign
   /**
    * 整个栅格在容器中的垂直对齐方式
    */
-  alignContent?: 'start' | 'end' | 'center' | 'stretch' | 'between' | 'around' | 'evenly'
+  alignContent?: ContentAlign
   /**
    * 是否自动填充行
    */

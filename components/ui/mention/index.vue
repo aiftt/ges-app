@@ -5,17 +5,12 @@
  * 作者: Claude
  * 更新日期: 2024-09-08 - 修复样式和功能问题
  * 更新日期: 2024-09-09 - 提取CSS变量到主题文件中
+ * 更新日期: 2024-09-12 - 使用集中管理的类型定义
  */
 
+import type { IMentionOption } from '~/types/select'
 import { useElementBounding, useVModel } from '@vueuse/core'
 import { computed, nextTick, onMounted, onUnmounted, reactive, ref, watch } from 'vue'
-
-// 提及项目的类型定义
-interface IMentionOption {
-  value: string
-  label: string
-  avatar?: string
-}
 
 // 定义组件的属性
 const props = withDefaults(defineProps<{

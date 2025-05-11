@@ -1,14 +1,15 @@
 <script setup lang="ts" name="UiDivider">
 /**
  * 分割线组件
- * 创建日期: 2025-01-14
+ * 创建日期: 2023-11-16
  * 作者: aiftt
- * 更新日期: 2025-02-27 - 将内联样式改为CSS变量实现
- * 更新日期: 2025-03-01 - 优化为v-bind+CSS变量实现动态样式
+ * 更新日期: 2024-01-05 - 修复垂直分割线渲染问题
+ * 更新日期: 2024-09-14 - 使用集中管理的类型定义
  *
  * 用于分隔内容的水平或垂直分割线
  */
 
+import type { Alignment, BorderType, Direction } from '~/types/ui'
 import { computed } from 'vue'
 
 // 定义props
@@ -16,49 +17,37 @@ const props = withDefaults(defineProps<{
   /**
    * 分割线方向
    */
-  direction?: 'horizontal' | 'vertical'
+  direction?: Direction
   /**
-   * 是否带有文字
+   * 分割线样式类型
    */
-  withText?: boolean
-  /**
-   * 文字位置
-   */
-  textPosition?: 'left' | 'center' | 'right'
-  /**
-   * 分割线类型
-   */
-  type?: 'solid' | 'dashed' | 'dotted'
+  type?: BorderType
   /**
    * 分割线颜色
    */
   color?: string
   /**
-   * 分割线宽度
+   * 文字位置
    */
-  width?: string
+  position?: Alignment
   /**
-   * 分割线上下margin
+   * 是否虚线
+   * @deprecated 使用 type='dashed' 代替
    */
-  margin?: string
+  dashed?: boolean
   /**
    * 自定义类名
    */
   class?: string
   /**
-   * 分割线文本
+   * 自定义样式
    */
-  text?: string
+  style?: string
 }>(), {
   direction: 'horizontal',
-  withText: false,
-  textPosition: 'center',
   type: 'solid',
-  color: '',
-  width: '',
-  margin: '1rem',
-  class: '',
-  text: '',
+  position: 'center',
+  dashed: false,
 })
 
 // 计算分割线的类名
@@ -69,9 +58,8 @@ const dividerClass = computed(() => {
     `ui-divider--${props.type}`,
   ]
 
-  if (props.withText) {
-    classes.push('ui-divider--with-text')
-    classes.push(`ui-divider--text-${props.textPosition}`)
+  if (props.position) {
+    classes.push(`ui-divider--text-${props.position}`)
   }
 
   // 添加自定义类名
@@ -84,23 +72,33 @@ const dividerClass = computed(() => {
 
 // 计算CSS变量值 - 使用计算属性和v-bind
 const dividerColor = computed(() => props.color || null)
-const dividerWidth = computed(() => props.width ? `${props.width}` : null)
+const dividerWidth = computed(() => props.style ? props.style.split(';')[0].split(':')[1] : null)
 const dividerMargin = computed(() => {
-  if (!props.margin)
+  if (!props.style)
     return null
-  return props.direction === 'horizontal' ? props.margin : '0'
+  const margin = props.style.split(';').find(item => item.startsWith('margin'))
+  if (margin) {
+    const [, value] = margin.split(':')
+    return value
+  }
+  return null
 })
 const dividerMarginX = computed(() => {
-  if (!props.margin)
+  if (!props.style)
     return null
-  return props.direction === 'vertical' ? props.margin : '0'
+  const marginX = props.style.split(';').find(item => item.startsWith('margin-left') || item.startsWith('margin-right'))
+  if (marginX) {
+    const [, value] = marginX.split(':')
+    return value
+  }
+  return null
 })
 </script>
 
 <template>
   <!-- 有文本的分割线 -->
   <div
-    v-if="withText"
+    v-if="position"
     :class="dividerClass"
   >
     <span class="ui-divider__before" />

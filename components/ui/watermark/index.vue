@@ -4,9 +4,11 @@
  * 创建日期: 2024-08-01
  * 作者: aiftt
  * 更新日期: 2024-08-01
+ * 更新日期: 2024-09-15 - 使用集中管理的类型定义
  */
 
 import type { CSSProperties } from 'vue'
+import type { FontStyle, FontWeight } from '~/types/ui'
 
 const props = withDefaults(defineProps<{
   /**
@@ -28,11 +30,11 @@ const props = withDefaults(defineProps<{
   /**
    * 水印字体样式
    */
-  fontStyle?: 'none' | 'normal' | 'italic' | 'oblique'
+  fontStyle?: FontStyle
   /**
    * 水印字体粗细
    */
-  fontWeight?: 'normal' | 'light' | 'bold' | number
+  fontWeight?: FontWeight
   /**
    * 水印图片地址
    */

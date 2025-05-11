@@ -5,8 +5,10 @@
  * 作者: aiftt
  * 更新日期: 2023-12-05 - 更新为v-bind + CSS变量实现方式，添加自定义颜色支持
  * 更新日期: 2024-08-22 - 修复水合问题，使用ref替代document.getElementById
+ * 更新日期: 2024-09-11 - 使用集中管理的类型定义
  */
 
+import type { Alignment, TagType } from '~/types/ui'
 import logger from '~/utils/logger'
 
 // 定义props
@@ -18,7 +20,7 @@ const props = withDefaults(defineProps<{
   /**
    * 标题类型
    */
-  type?: 'default' | 'primary' | 'success' | 'warning' | 'danger'
+  type?: TagType
   /**
    * 字体粗细
    */
@@ -30,7 +32,7 @@ const props = withDefaults(defineProps<{
   /**
    * 文本对齐方式
    */
-  align?: 'left' | 'center' | 'right'
+  align?: Alignment
   /**
    * 是否为可交互的标题(添加悬停样式)
    */

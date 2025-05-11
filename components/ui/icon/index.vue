@@ -6,7 +6,10 @@
  * 更新日期: 2023-12-03 - 使用 Nuxt Icon 替代 iconify-icon
  * 更新日期: 2023-12-05 - 修复内联样式问题，改用CSS变量方式实现
  * 更新日期: 2024-08-19 - 修复服务端渲染水合问题
+ * 更新日期: 2024-09-11 - 使用集中管理的类型定义
  */
+
+import type { IconColor, IconSize } from '~/types/ui'
 
 // 定义props
 const props = withDefaults(defineProps<{
@@ -17,11 +20,11 @@ const props = withDefaults(defineProps<{
   /**
    * 图标尺寸
    */
-  size?: 'small' | 'default' | 'large' | string
+  size?: IconSize
   /**
    * 图标颜色，可以是任何有效的CSS颜色值
    */
-  color?: string
+  color?: IconColor
   /**
    * 是否旋转图标
    */

@@ -6,8 +6,10 @@
  *
  * 用于展示颜色样本，支持不同格式的颜色值
  * 更新日期: 2025-05-05 - 改用 CSS 变量 + v-bind 方式实现动态样式
+ * 更新日期: 2024-09-11 - 使用集中管理的类型定义
  */
 
+import type { ColorPickerSize } from '~/types/ui'
 import { computed } from 'vue'
 import logger from '~/utils/logger'
 
@@ -32,7 +34,7 @@ const props = withDefaults(defineProps<{
   /**
    * 组件大小，可以是预设值或具体像素
    */
-  size?: 'small' | 'default' | 'large' | string
+  size?: ColorPickerSize
   /**
    * 自定义类名
    */
