@@ -7,6 +7,7 @@ const antfuConfig = antfu({
   unocss: true,
   vue: true,
   nuxt: true,
+  typescript: true,
   rules: {
     'no-console': 'error', // 将console用法标记为错误
   },
