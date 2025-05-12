@@ -1,12 +1,23 @@
 规范：请严格遵循 @.cursor/rules/rule.mdc 规范
 
-计划：@admin.md
+计划：@admin.md 开发后台管理系统
 
-迭代：
+迭代：使用 pinia + @vueuse/core 里的存储 api 设计一套持久化功能，需要支持：
+
+1. 带过期时间，到期自动清理缓存退回到登录页重新登录
+2. 存储统一管理，存储字段增加前缀
+3. 登录的时候自动请求菜单，字典进行缓存
+4. 在用户下拉列表里添加刷新缓存(菜单，字典)，用来更新菜单和字典数据
+5. 其他的你作为专业管理系统设计师，可自行发挥
 
 问题：
 
-1.  check-if-layout-used.js:12 [nuxt] Your project has layouts but the `<NuxtLayout />` component has not been used.
+1.  /api/auth/login 404
+
+迭代：
+
+1.  登录加上验证码机制
+1.  登录页里加入注册用户功能
 
 迭代：
 

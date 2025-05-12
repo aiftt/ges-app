@@ -1,49 +1,41 @@
-import { useAuth } from '~/composables/useAuth'
 /**
- * 全局认证中间件
+ * 认证中间件
  * 创建日期: 2024-06-19
+ * 更新日期: 2024-09-03 - 使用Pinia持久化存储
  * 作者: aiftt
  * 邮箱: ftt.loves@gmail.com
  */
 import { useLogger } from '~/composables/useLogger'
+import { useAuthStore } from '~/stores/auth'
+import { cleanExpiredStorage } from '~/utils/storage'
 
 const logger = useLogger('auth-middleware')
 
-// 不需要认证的路由路径
-const publicRoutes = [
-  '/admin/login',
-]
+// 无需认证的路径
+const PUBLIC_PATHS = ['/login', '/register']
 
-export default defineNuxtRouteMiddleware(async (to, _from) => {
-  // 检查是否是公开路由
-  const isPublicRoute = publicRoutes.includes(to.path)
-  if (isPublicRoute) {
+export default defineNuxtRouteMiddleware((to, _from) => {
+  // 清理过期的存储
+  if (import.meta.client) {
+    cleanExpiredStorage()
+  }
+
+  // 检查是否是公开路径
+  if (PUBLIC_PATHS.includes(to.path)) {
     return
   }
 
-  // 检查是否是管理后台路由
-  if (!to.path.startsWith('/admin')) {
-    return
-  }
+  // 在客户端检查认证状态
+  if (import.meta.client) {
+    const authStore = useAuthStore()
 
-  // 获取认证工具
-  const { isLoggedIn, loadUserInfo } = useAuth()
-
-  // 未登录状态，尝试自动登录
-  if (!isLoggedIn()) {
-    try {
-      // 尝试加载用户信息
-      const success = await loadUserInfo()
-
-      // 加载失败，跳转到登录页
-      if (!success) {
-        logger.info('未登录或会话已过期，重定向到登录页')
-        return navigateTo('/admin/login')
-      }
+    // 如果当前用户未登录
+    if (!authStore.isLoggedIn) {
+      logger.warn('未登录用户访问受保护路径，重定向到登录页')
+      return navigateTo('/login')
     }
-    catch (error) {
-      logger.error('自动登录失败', error)
-      return navigateTo('/admin/login')
-    }
+
+    // 刷新登录有效期
+    authStore.refreshLoginExpires()
   }
 })

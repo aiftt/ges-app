@@ -16,6 +16,8 @@ export default defineNuxtConfig({
     '@nuxt/scripts',
     '@unocss/nuxt',
     '@formkit/auto-animate/nuxt',
+    '@pinia/nuxt',
+    '@vueuse/nuxt',
   ],
 
   css: [
@@ -62,6 +64,19 @@ export default defineNuxtConfig({
     config: {
       // 设置standalone为false，避免与antfu/eslint-config冲突
       standalone: false,
+    },
+  },
+
+  // 添加nitro配置，确保服务器API路由正确
+  nitro: {
+    routeRules: {
+      '/api/**': {
+        cors: true,
+        headers: {
+          'Access-Control-Allow-Methods': 'GET,HEAD,PUT,PATCH,POST,DELETE',
+          'Access-Control-Allow-Headers': 'Content-Type,Authorization',
+        },
+      },
     },
   },
 })

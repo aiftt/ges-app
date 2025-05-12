@@ -1,7 +1,8 @@
-import { createError, defineEventHandler, readBody } from 'h3'
+import { createError, defineEventHandler, getCookie, readBody } from 'h3'
 /**
  * 用户登录API
  * 创建日期: 2024-06-19
+ * 更新日期: 2024-09-03 - 添加验证码验证功能
  * 作者: aiftt
  * 邮箱: ftt.loves@gmail.com
  */
@@ -15,6 +16,7 @@ const logger = useLogger('auth-login-api')
 interface LoginRequest {
   username: string
   password: string
+  captcha: string
 }
 
 export default defineEventHandler(async (event) => {
@@ -27,6 +29,22 @@ export default defineEventHandler(async (event) => {
       return createError({
         statusCode: 400,
         statusMessage: '请提供用户名和密码',
+      })
+    }
+
+    // 验证码验证
+    if (!body.captcha) {
+      return createError({
+        statusCode: 400,
+        statusMessage: '请提供验证码',
+      })
+    }
+
+    const storedCaptcha = getCookie(event, 'captchaCode')
+    if (!storedCaptcha || storedCaptcha.toLowerCase() !== body.captcha.toLowerCase()) {
+      return createError({
+        statusCode: 400,
+        statusMessage: '验证码错误',
       })
     }
 
