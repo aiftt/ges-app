@@ -1,0 +1,300 @@
+/**
+ * 多边形加载器样式
+ * 创建日期: 2024-12-06
+ * 作者: Claude
+ */
+
+// 基础样式
+.ges-loader {
+  display: inline-block;
+  width: var(--ges-loader-size, 48px);
+  height: var(--ges-loader-size, 48px);
+  position: relative;
+  box-sizing: border-box;
+}
+
+// 带内容的加载器样式
+.ges-loader-with-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+// 多边形加载器类型 1
+.ges-loader-type-1 {
+  background-color: var(--ges-loader-color, #1890ff);
+  animation: ges-loader-rotateTriangle 1s linear infinite;
+  clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+}
+
+@keyframes ges-loader-rotateTriangle {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+// 多边形加载器类型 2
+.ges-loader-type-2 {
+  background-color: var(--ges-loader-color, #1890ff);
+  animation: ges-loader-rotateSquare 2s linear infinite;
+  clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+}
+
+@keyframes ges-loader-rotateSquare {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+// 多边形加载器类型 3
+.ges-loader-type-3 {
+  background-color: var(--ges-loader-color, #1890ff);
+  animation: ges-loader-rotatePentagon 1.5s linear infinite;
+  clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
+}
+
+@keyframes ges-loader-rotatePentagon {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+// 多边形加载器类型 4
+.ges-loader-type-4 {
+  background-color: var(--ges-loader-color, #1890ff);
+  animation: ges-loader-rotateHexagon 2.5s linear infinite;
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+}
+
+@keyframes ges-loader-rotateHexagon {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+// 多边形加载器类型 5
+.ges-loader-type-5 {
+  background-color: var(--ges-loader-color, #1890ff);
+  animation: ges-loader-rotateOctagon 2s ease infinite;
+  clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
+}
+
+@keyframes ges-loader-rotateOctagon {
+  0% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(180deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+// 多边形加载器类型 6
+.ges-loader-type-6 {
+  animation: ges-loader-rotateAndScale 1.5s ease-in-out infinite;
+  clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+}
+
+@keyframes ges-loader-rotateAndScale {
+  0%,
+  100% {
+    transform: scale(1) rotate(0deg);
+    background-color: var(--ges-loader-color, #1890ff);
+  }
+  50% {
+    transform: scale(0.8) rotate(180deg);
+    background-color: rgba(var(--ges-loader-color-rgb, 24, 144, 255), 0.6);
+  }
+}
+
+// 多边形加载器类型 7
+.ges-loader-type-7 {
+  animation: ges-loader-pulse 1.5s ease-in-out infinite;
+  clip-path: polygon(50% 0%, 90% 20%, 100% 60%, 75% 100%, 25% 100%, 0% 60%, 10% 20%);
+}
+
+@keyframes ges-loader-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    background-color: var(--ges-loader-color, #1890ff);
+  }
+  50% {
+    transform: scale(0.8);
+    background-color: rgba(var(--ges-loader-color-rgb, 24, 144, 255), 0.7);
+  }
+}
+
+// 多边形加载器类型 8
+.ges-loader-type-8 {
+  position: relative;
+  border-radius: 50%;
+  background-color: transparent;
+
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-color: var(--ges-loader-color, #1890ff);
+    clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
+    animation: ges-loader-spin 2s linear infinite;
+  }
+
+  &::after {
+    animation-delay: -1s;
+    opacity: 0.7;
+  }
+}
+
+@keyframes ges-loader-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+// 多边形加载器类型 9
+.ges-loader-type-9 {
+  background-color: transparent;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-color: var(--ges-loader-color, #1890ff);
+    clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+    animation: ges-loader-morph 3s ease-in-out infinite;
+  }
+}
+
+@keyframes ges-loader-morph {
+  0%,
+  100% {
+    clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+  }
+  50% {
+    clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
+  }
+}
+
+// 多边形加载器类型 10
+.ges-loader-type-10 {
+  background-color: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    width: 80%;
+    height: 80%;
+    background-color: var(--ges-loader-color, #1890ff);
+    clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+    animation: ges-loader-rotate-opposite 2s linear infinite;
+  }
+
+  &::after {
+    width: 40%;
+    height: 40%;
+    animation-direction: reverse;
+  }
+}
+
+@keyframes ges-loader-rotate-opposite {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+// 多边形加载器类型 11
+.ges-loader-type-11 {
+  background-color: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &::before {
+    content: '';
+    position: absolute;
+    width: 90%;
+    height: 90%;
+    background-color: var(--ges-loader-color, #1890ff);
+    clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
+    animation: ges-loader-flip 2s ease infinite;
+  }
+}
+
+@keyframes ges-loader-flip {
+  0%,
+  100% {
+    transform: rotateY(0deg);
+  }
+  50% {
+    transform: rotateY(180deg);
+  }
+}
+
+// 多边形加载器类型 12
+.ges-loader-type-12 {
+  background-color: transparent;
+
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-color: var(--ges-loader-color, #1890ff);
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  }
+
+  &::before {
+    animation: ges-loader-rotate1 2s ease-in-out infinite;
+  }
+
+  &::after {
+    animation: ges-loader-rotate2 2s ease-in-out infinite;
+    opacity: 0.7;
+  }
+}
+
+@keyframes ges-loader-rotate1 {
+  0%,
+  100% {
+    transform: scale(0.5) rotate(0deg);
+  }
+  50% {
+    transform: scale(1) rotate(180deg);
+  }
+}
+
+@keyframes ges-loader-rotate2 {
+  0%,
+  100% {
+    transform: scale(1) rotate(0deg);
+  }
+  50% {
+    transform: scale(0.5) rotate(180deg);
+  }
+}

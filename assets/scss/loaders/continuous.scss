@@ -1,0 +1,206 @@
+/**
+ * 连续加载器样式
+ * 创建日期: 2024-12-08
+ * 作者: aiftt
+ * 更新日期: 2024-12-11 - 实现5种连续效果加载器
+ */
+
+@use 'sass:math';
+
+// 连续加载器 - 类型1 (循环点)
+.ges-loader-continuous-1 {
+  width: var(--ges-loader-size, 48px);
+  height: var(--ges-loader-size, 48px);
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    width: calc(var(--ges-loader-size, 48px) * 0.15);
+    height: calc(var(--ges-loader-size, 48px) * 0.15);
+    border-radius: 50%;
+    background-color: var(--ges-loader-color, #1890ff);
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    animation: ges-loader-continuous-1 1.5s linear infinite;
+  }
+}
+
+@keyframes ges-loader-continuous-1 {
+  0% {
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  25% {
+    top: 50%;
+    left: 100%;
+    transform: translate(-50%, -50%);
+  }
+  50% {
+    top: 100%;
+    left: 50%;
+    transform: translate(-50%, -100%);
+  }
+  75% {
+    top: 50%;
+    left: 0;
+    transform: translate(0, -50%);
+  }
+  100% {
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}
+
+// 连续加载器 - 类型2 (连续波纹)
+.ges-loader-continuous-2 {
+  width: var(--ges-loader-size, 48px);
+  height: var(--ges-loader-size, 48px);
+  position: relative;
+
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: calc(var(--ges-loader-size, 48px) * 0.15);
+    height: calc(var(--ges-loader-size, 48px) * 0.15);
+    border-radius: 50%;
+    background-color: var(--ges-loader-color, #1890ff);
+    animation: ges-loader-continuous-2 1.5s linear infinite;
+  }
+
+  &::after {
+    animation-delay: 0.5s;
+  }
+}
+
+@keyframes ges-loader-continuous-2 {
+  0% {
+    width: calc(var(--ges-loader-size, 48px) * 0.15);
+    height: calc(var(--ges-loader-size, 48px) * 0.15);
+    opacity: 1;
+  }
+  100% {
+    width: calc(var(--ges-loader-size, 48px) * 0.8);
+    height: calc(var(--ges-loader-size, 48px) * 0.8);
+    opacity: 0;
+  }
+}
+
+// 连续加载器 - 类型3 (连续轨迹)
+.ges-loader-continuous-3 {
+  width: var(--ges-loader-size, 48px);
+  height: var(--ges-loader-size, 48px);
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    width: calc(var(--ges-loader-size, 48px) * 0.15);
+    height: calc(var(--ges-loader-size, 48px) * 0.15);
+    border-radius: 50%;
+    background-color: var(--ges-loader-color, #1890ff);
+    animation: ges-loader-continuous-3 2s linear infinite;
+    box-shadow:
+      calc(var(--ges-loader-size, 48px) * -0.4) 0 rgba(var(--ges-loader-color-rgb, 24, 144, 255), 0.2),
+      calc(var(--ges-loader-size, 48px) * -0.2) 0 rgba(var(--ges-loader-color-rgb, 24, 144, 255), 0.4),
+      calc(var(--ges-loader-size, 48px) * 0.2) 0 rgba(var(--ges-loader-color-rgb, 24, 144, 255), 0.6),
+      calc(var(--ges-loader-size, 48px) * 0.4) 0 rgba(var(--ges-loader-color-rgb, 24, 144, 255), 0.8);
+  }
+}
+
+@keyframes ges-loader-continuous-3 {
+  0% {
+    top: 0;
+    left: 0;
+  }
+  25% {
+    top: 0;
+    left: calc(var(--ges-loader-size, 48px) * 0.85);
+  }
+  50% {
+    top: calc(var(--ges-loader-size, 48px) * 0.85);
+    left: calc(var(--ges-loader-size, 48px) * 0.85);
+  }
+  75% {
+    top: calc(var(--ges-loader-size, 48px) * 0.85);
+    left: 0;
+  }
+  100% {
+    top: 0;
+    left: 0;
+  }
+}
+
+// 连续加载器 - 类型4 (连续流动线)
+.ges-loader-continuous-4 {
+  width: var(--ges-loader-size, 48px);
+  height: var(--ges-loader-size, 48px);
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    width: 200%;
+    height: calc(var(--ges-loader-size, 48px) * 0.1);
+    background: linear-gradient(90deg, transparent, var(--ges-loader-color, #1890ff), transparent);
+    top: 45%;
+    left: -50%;
+    animation: ges-loader-continuous-4 1.5s linear infinite;
+  }
+}
+
+@keyframes ges-loader-continuous-4 {
+  0% {
+    transform: translateX(-30%);
+  }
+  100% {
+    transform: translateX(30%);
+  }
+}
+
+// 连续加载器 - 类型5 (连续填充)
+.ges-loader-continuous-5 {
+  width: var(--ges-loader-size, 48px);
+  height: var(--ges-loader-size, 48px);
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    width: calc(var(--ges-loader-size, 48px) * 0.8);
+    height: calc(var(--ges-loader-size, 48px) * 0.2);
+    border: calc(var(--ges-loader-size, 48px) * 0.05) solid var(--ges-loader-color, #1890ff);
+    top: 40%;
+    left: 10%;
+    box-sizing: border-box;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 40%;
+    left: 10%;
+    width: 0;
+    height: calc(var(--ges-loader-size, 48px) * 0.2);
+    background-color: var(--ges-loader-color, #1890ff);
+    animation: ges-loader-continuous-5 1.5s ease-in-out infinite;
+  }
+}
+
+@keyframes ges-loader-continuous-5 {
+  0%,
+  100% {
+    width: 0;
+  }
+  50% {
+    width: calc(var(--ges-loader-size, 48px) * 0.8);
+  }
+}

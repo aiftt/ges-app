@@ -1,0 +1,303 @@
+/**
+ * 机械加载器样式
+ * 创建日期: 2024-12-08
+ * 作者: Claude
+ * 更新日期: 2024-12-09 - 实现5种机械效果加载器
+ */
+
+@use 'sass:math';
+
+// 机械加载器 - 类型1 (齿轮转动)
+.ges-loader-mechanic-1 {
+  width: var(--ges-loader-size, 48px);
+  height: var(--ges-loader-size, 48px);
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    width: calc(var(--ges-loader-size, 48px) * 0.8);
+    height: calc(var(--ges-loader-size, 48px) * 0.8);
+    top: 10%;
+    left: 10%;
+    background-color: var(--ges-loader-color, #1890ff);
+    border-radius: 50%;
+    mask-image: radial-gradient(
+      circle at center,
+      transparent calc(var(--ges-loader-size, 48px) * 0.2),
+      #000 calc(var(--ges-loader-size, 48px) * 0.2),
+      #000 calc(var(--ges-loader-size, 48px) * 0.3),
+      transparent calc(var(--ges-loader-size, 48px) * 0.3)
+    );
+    mask-repeat: no-repeat;
+    mask-position: center;
+    mask-size: calc(var(--ges-loader-size, 48px) * 0.8) calc(var(--ges-loader-size, 48px) * 0.8);
+    mask-composite: add;
+    mask-image:
+      radial-gradient(
+        circle at center,
+        transparent calc(var(--ges-loader-size, 48px) * 0.2),
+        #000 calc(var(--ges-loader-size, 48px) * 0.2)
+      ),
+      conic-gradient(
+        #000 0deg,
+        transparent 30deg,
+        #000 60deg,
+        transparent 90deg,
+        #000 120deg,
+        transparent 150deg,
+        #000 180deg,
+        transparent 210deg,
+        #000 240deg,
+        transparent 270deg,
+        #000 300deg,
+        transparent 330deg,
+        #000 360deg
+      );
+    animation: ges-loader-mechanic-1 2s linear infinite;
+  }
+}
+
+@keyframes ges-loader-mechanic-1 {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+// 机械加载器 - 类型2 (活塞运动)
+.ges-loader-mechanic-2 {
+  width: var(--ges-loader-size, 48px);
+  height: var(--ges-loader-size, 48px);
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    width: calc(var(--ges-loader-size, 48px) * 0.2);
+    height: 100%;
+    left: 40%;
+    background-color: var(--ges-loader-color, #1890ff);
+    animation: ges-loader-mechanic-2-piston 1.3s cubic-bezier(0.42, 0, 0.58, 1) infinite alternate;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    height: calc(var(--ges-loader-size, 48px) * 0.4);
+    width: calc(var(--ges-loader-size, 48px) * 0.6);
+    top: 30%;
+    left: 20%;
+    background-color: rgba(var(--ges-loader-color-rgb, 24, 144, 255), 0.7);
+    animation: ges-loader-mechanic-2-block 1.3s cubic-bezier(0.42, 0, 0.58, 1) infinite alternate;
+  }
+}
+
+@keyframes ges-loader-mechanic-2-piston {
+  0%,
+  100% {
+    transform: translateY(calc(var(--ges-loader-size, 48px) * -0.2));
+    height: calc(var(--ges-loader-size, 48px) * 0.7);
+  }
+  50% {
+    transform: translateY(calc(var(--ges-loader-size, 48px) * 0.2));
+    height: calc(var(--ges-loader-size, 48px) * 0.3);
+  }
+}
+
+@keyframes ges-loader-mechanic-2-block {
+  0%,
+  100% {
+    transform: translateY(calc(var(--ges-loader-size, 48px) * -0.2));
+  }
+  50% {
+    transform: translateY(calc(var(--ges-loader-size, 48px) * 0.2));
+  }
+}
+
+// 机械加载器 - 类型3 (杠杆旋转)
+.ges-loader-mechanic-3 {
+  width: var(--ges-loader-size, 48px);
+  height: var(--ges-loader-size, 48px);
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    width: calc(var(--ges-loader-size, 48px) * 0.8);
+    height: calc(var(--ges-loader-size, 48px) * 0.1);
+    background-color: var(--ges-loader-color, #1890ff);
+    top: 45%;
+    left: 10%;
+    transform-origin: 10% 50%;
+    animation: ges-loader-mechanic-3-lever 2s linear infinite;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    width: calc(var(--ges-loader-size, 48px) * 0.2);
+    height: calc(var(--ges-loader-size, 48px) * 0.2);
+    border-radius: 50%;
+    background-color: var(--ges-loader-color, #1890ff);
+    top: 40%;
+    left: 10%;
+  }
+}
+
+@keyframes ges-loader-mechanic-3-lever {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(360deg);
+  }
+}
+
+// 机械加载器 - 类型4 (齿轮组)
+.ges-loader-mechanic-4 {
+  width: var(--ges-loader-size, 48px);
+  height: var(--ges-loader-size, 48px);
+  position: relative;
+
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    background-color: var(--ges-loader-color, #1890ff);
+    border-radius: 50%;
+  }
+
+  &::before {
+    width: calc(var(--ges-loader-size, 48px) * 0.4);
+    height: calc(var(--ges-loader-size, 48px) * 0.4);
+    top: 10%;
+    left: 10%;
+    mask-image: conic-gradient(
+      #000 0deg,
+      transparent 15deg,
+      #000 30deg,
+      transparent 45deg,
+      #000 60deg,
+      transparent 75deg,
+      #000 90deg,
+      transparent 105deg,
+      #000 120deg,
+      transparent 135deg,
+      #000 150deg,
+      transparent 165deg,
+      #000 180deg,
+      transparent 195deg,
+      #000 210deg,
+      transparent 225deg,
+      #000 240deg,
+      transparent 255deg,
+      #000 270deg,
+      transparent 285deg,
+      #000 300deg,
+      transparent 315deg,
+      #000 330deg,
+      transparent 345deg,
+      #000 360deg
+    );
+    animation: ges-loader-mechanic-4-gear1 2s linear infinite;
+  }
+
+  &::after {
+    width: calc(var(--ges-loader-size, 48px) * 0.3);
+    height: calc(var(--ges-loader-size, 48px) * 0.3);
+    bottom: 15%;
+    right: 15%;
+    mask-image: conic-gradient(
+      #000 0deg,
+      transparent 20deg,
+      #000 40deg,
+      transparent 60deg,
+      #000 80deg,
+      transparent 100deg,
+      #000 120deg,
+      transparent 140deg,
+      #000 160deg,
+      transparent 180deg,
+      #000 200deg,
+      transparent 220deg,
+      #000 240deg,
+      transparent 260deg,
+      #000 280deg,
+      transparent 300deg,
+      #000 320deg,
+      transparent 340deg,
+      #000 360deg
+    );
+    animation: ges-loader-mechanic-4-gear2 2s linear infinite reverse;
+  }
+}
+
+@keyframes ges-loader-mechanic-4-gear1 {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes ges-loader-mechanic-4-gear2 {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+// 机械加载器 - 类型5 (液压系统)
+.ges-loader-mechanic-5 {
+  width: var(--ges-loader-size, 48px);
+  height: var(--ges-loader-size, 48px);
+  position: relative;
+
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    background-color: var(--ges-loader-color, #1890ff);
+  }
+
+  &::before {
+    width: calc(var(--ges-loader-size, 48px) * 0.7);
+    height: calc(var(--ges-loader-size, 48px) * 0.15);
+    left: 15%;
+    top: 20%;
+    animation: ges-loader-mechanic-5-press1 1.5s ease-in-out infinite alternate;
+  }
+
+  &::after {
+    width: calc(var(--ges-loader-size, 48px) * 0.7);
+    height: calc(var(--ges-loader-size, 48px) * 0.15);
+    left: 15%;
+    bottom: 20%;
+    animation: ges-loader-mechanic-5-press2 1.5s ease-in-out infinite alternate-reverse;
+  }
+}
+
+@keyframes ges-loader-mechanic-5-press1 {
+  0% {
+    transform: scaleX(1);
+  }
+  100% {
+    transform: scaleX(0.6);
+  }
+}
+
+@keyframes ges-loader-mechanic-5-press2 {
+  0% {
+    transform: scaleX(0.6);
+  }
+  100% {
+    transform: scaleX(1);
+  }
+}

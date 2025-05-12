@@ -1,0 +1,367 @@
+/**
+ * 文本加载器样式
+ * 创建日期: 2024-12-07
+ * 作者: Claude
+ */
+
+@use 'sass:math';
+
+// 文本加载器 - 类型1 (点状加载)
+.ges-loader-text-1 {
+  width: var(--ges-loader-size, 48px);
+  height: calc(var(--ges-loader-size, 48px) * 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  font-family: sans-serif;
+  font-size: calc(var(--ges-loader-size, 48px) * 0.2);
+  color: var(--ges-loader-color, #1890ff);
+  overflow: hidden;
+
+  &::after {
+    content: '...';
+    position: absolute;
+    right: 0;
+    width: calc(var(--ges-loader-size, 48px) * 0.15);
+    text-align: left;
+    animation: ges-loader-text-1-dots 1.5s steps(4, jump-none) infinite;
+    overflow: hidden;
+  }
+}
+
+@keyframes ges-loader-text-1-dots {
+  0%,
+  20% {
+    width: 0;
+  }
+  80%,
+  100% {
+    width: calc(var(--ges-loader-size, 48px) * 0.15);
+  }
+}
+
+// 文本加载器 - 类型2 (打字效果)
+.ges-loader-text-2 {
+  width: var(--ges-loader-size, 48px);
+  height: calc(var(--ges-loader-size, 48px) * 0.4);
+  display: flex;
+  align-items: center;
+  position: relative;
+  font-family: monospace;
+  font-size: calc(var(--ges-loader-size, 48px) * 0.18);
+  font-weight: bold;
+  color: var(--ges-loader-color, #1890ff);
+  overflow: hidden;
+
+  &::before {
+    content: 'Loading';
+    animation: ges-loader-text-2-typing 1.5s steps(7, jump-none) infinite;
+    white-space: nowrap;
+    overflow: hidden;
+    border-right: calc(var(--ges-loader-size, 48px) * 0.04) solid var(--ges-loader-color, #1890ff);
+  }
+}
+
+@keyframes ges-loader-text-2-typing {
+  0%,
+  50% {
+    width: 0;
+  }
+  90%,
+  100% {
+    width: calc(var(--ges-loader-size, 48px) * 0.85);
+  }
+}
+
+// 文本加载器 - 类型3 (渐变文本)
+.ges-loader-text-3 {
+  width: var(--ges-loader-size, 48px);
+  height: calc(var(--ges-loader-size, 48px) * 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  font-size: calc(var(--ges-loader-size, 48px) * 0.18);
+  font-weight: bold;
+
+  &::before {
+    content: 'LOADING';
+    position: absolute;
+    background: linear-gradient(
+      90deg,
+      rgba(var(--ges-loader-color-rgb, 24, 144, 255), 0.2) 0%,
+      var(--ges-loader-color, #1890ff) 50%,
+      rgba(var(--ges-loader-color-rgb, 24, 144, 255), 0.2) 100%
+    );
+    background-size: 200%;
+    animation: ges-loader-text-3-gradient 2s linear infinite;
+    -webkit-background-clip: text;
+    color: transparent;
+  }
+}
+
+@keyframes ges-loader-text-3-gradient {
+  0% {
+    background-position: 200% center;
+  }
+  100% {
+    background-position: -200% center;
+  }
+}
+
+// 文本加载器 - 类型4 (弹跳字母)
+.ges-loader-text-4 {
+  width: var(--ges-loader-size, 48px);
+  height: calc(var(--ges-loader-size, 48px) * 0.5);
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-image:
+      radial-gradient(
+        circle,
+        var(--ges-loader-color, #1890ff) calc(var(--ges-loader-size, 48px) * 0.06),
+        transparent 0
+      ),
+      radial-gradient(
+        circle,
+        var(--ges-loader-color, #1890ff) calc(var(--ges-loader-size, 48px) * 0.06),
+        transparent 0
+      ),
+      radial-gradient(
+        circle,
+        var(--ges-loader-color, #1890ff) calc(var(--ges-loader-size, 48px) * 0.06),
+        transparent 0
+      ),
+      radial-gradient(
+        circle,
+        var(--ges-loader-color, #1890ff) calc(var(--ges-loader-size, 48px) * 0.06),
+        transparent 0
+      ),
+      radial-gradient(
+        circle,
+        var(--ges-loader-color, #1890ff) calc(var(--ges-loader-size, 48px) * 0.06),
+        transparent 0
+      ),
+      radial-gradient(
+        circle,
+        var(--ges-loader-color, #1890ff) calc(var(--ges-loader-size, 48px) * 0.06),
+        transparent 0
+      ),
+      radial-gradient(circle, var(--ges-loader-color, #1890ff) calc(var(--ges-loader-size, 48px) * 0.06), transparent 0);
+
+    background-position:
+      calc(var(--ges-loader-size, 48px) * 0.07) 50%,
+      calc(var(--ges-loader-size, 48px) * 0.21) 50%,
+      calc(var(--ges-loader-size, 48px) * 0.35) 50%,
+      calc(var(--ges-loader-size, 48px) * 0.49) 50%,
+      calc(var(--ges-loader-size, 48px) * 0.63) 50%,
+      calc(var(--ges-loader-size, 48px) * 0.77) 50%,
+      calc(var(--ges-loader-size, 48px) * 0.91) 50%;
+
+    background-repeat: no-repeat;
+    animation: ges-loader-text-4-jump 1.2s ease-in-out infinite;
+  }
+}
+
+@keyframes ges-loader-text-4-jump {
+  0% {
+    background-position:
+      calc(var(--ges-loader-size, 48px) * 0.07) 50%,
+      calc(var(--ges-loader-size, 48px) * 0.21) 50%,
+      calc(var(--ges-loader-size, 48px) * 0.35) 50%,
+      calc(var(--ges-loader-size, 48px) * 0.49) 50%,
+      calc(var(--ges-loader-size, 48px) * 0.63) 50%,
+      calc(var(--ges-loader-size, 48px) * 0.77) 50%,
+      calc(var(--ges-loader-size, 48px) * 0.91) 50%;
+  }
+  14.3% {
+    background-position:
+      calc(var(--ges-loader-size, 48px) * 0.07) calc(var(--ges-loader-size, 48px) * 0.2),
+      calc(var(--ges-loader-size, 48px) * 0.21) 50%,
+      calc(var(--ges-loader-size, 48px) * 0.35) 50%,
+      calc(var(--ges-loader-size, 48px) * 0.49) 50%,
+      calc(var(--ges-loader-size, 48px) * 0.63) 50%,
+      calc(var(--ges-loader-size, 48px) * 0.77) 50%,
+      calc(var(--ges-loader-size, 48px) * 0.91) 50%;
+  }
+  28.6% {
+    background-position:
+      calc(var(--ges-loader-size, 48px) * 0.07) 50%,
+      calc(var(--ges-loader-size, 48px) * 0.21) calc(var(--ges-loader-size, 48px) * 0.2),
+      calc(var(--ges-loader-size, 48px) * 0.35) 50%,
+      calc(var(--ges-loader-size, 48px) * 0.49) 50%,
+      calc(var(--ges-loader-size, 48px) * 0.63) 50%,
+      calc(var(--ges-loader-size, 48px) * 0.77) 50%,
+      calc(var(--ges-loader-size, 48px) * 0.91) 50%;
+  }
+  42.9% {
+    background-position:
+      calc(var(--ges-loader-size, 48px) * 0.07) 50%,
+      calc(var(--ges-loader-size, 48px) * 0.21) 50%,
+      calc(var(--ges-loader-size, 48px) * 0.35) calc(var(--ges-loader-size, 48px) * 0.2),
+      calc(var(--ges-loader-size, 48px) * 0.49) 50%,
+      calc(var(--ges-loader-size, 48px) * 0.63) 50%,
+      calc(var(--ges-loader-size, 48px) * 0.77) 50%,
+      calc(var(--ges-loader-size, 48px) * 0.91) 50%;
+  }
+  57.1% {
+    background-position:
+      calc(var(--ges-loader-size, 48px) * 0.07) 50%,
+      calc(var(--ges-loader-size, 48px) * 0.21) 50%,
+      calc(var(--ges-loader-size, 48px) * 0.35) 50%,
+      calc(var(--ges-loader-size, 48px) * 0.49) calc(var(--ges-loader-size, 48px) * 0.2),
+      calc(var(--ges-loader-size, 48px) * 0.63) 50%,
+      calc(var(--ges-loader-size, 48px) * 0.77) 50%,
+      calc(var(--ges-loader-size, 48px) * 0.91) 50%;
+  }
+  71.4% {
+    background-position:
+      calc(var(--ges-loader-size, 48px) * 0.07) 50%,
+      calc(var(--ges-loader-size, 48px) * 0.21) 50%,
+      calc(var(--ges-loader-size, 48px) * 0.35) 50%,
+      calc(var(--ges-loader-size, 48px) * 0.49) 50%,
+      calc(var(--ges-loader-size, 48px) * 0.63) calc(var(--ges-loader-size, 48px) * 0.2),
+      calc(var(--ges-loader-size, 48px) * 0.77) 50%,
+      calc(var(--ges-loader-size, 48px) * 0.91) 50%;
+  }
+  85.7% {
+    background-position:
+      calc(var(--ges-loader-size, 48px) * 0.07) 50%,
+      calc(var(--ges-loader-size, 48px) * 0.21) 50%,
+      calc(var(--ges-loader-size, 48px) * 0.35) 50%,
+      calc(var(--ges-loader-size, 48px) * 0.49) 50%,
+      calc(var(--ges-loader-size, 48px) * 0.63) 50%,
+      calc(var(--ges-loader-size, 48px) * 0.77) calc(var(--ges-loader-size, 48px) * 0.2),
+      calc(var(--ges-loader-size, 48px) * 0.91) 50%;
+  }
+  100% {
+    background-position:
+      calc(var(--ges-loader-size, 48px) * 0.07) 50%,
+      calc(var(--ges-loader-size, 48px) * 0.21) 50%,
+      calc(var(--ges-loader-size, 48px) * 0.35) 50%,
+      calc(var(--ges-loader-size, 48px) * 0.49) 50%,
+      calc(var(--ges-loader-size, 48px) * 0.63) 50%,
+      calc(var(--ges-loader-size, 48px) * 0.77) 50%,
+      calc(var(--ges-loader-size, 48px) * 0.91) calc(var(--ges-loader-size, 48px) * 0.2);
+  }
+}
+
+// 文本加载器 - 类型5 (进度文本)
+.ges-loader-text-5 {
+  width: var(--ges-loader-size, 48px);
+  height: calc(var(--ges-loader-size, 48px) * 0.5);
+  position: relative;
+  font-size: calc(var(--ges-loader-size, 48px) * 0.18);
+  color: rgba(var(--ges-loader-color-rgb, 24, 144, 255), 0.3);
+  font-family: monospace;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+
+  &::before {
+    content: '0%';
+    position: absolute;
+    animation: ges-loader-text-5-progress 4s steps(10, jump-none) infinite;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: calc(var(--ges-loader-size, 48px) * 0.04);
+    background-color: var(--ges-loader-color, #1890ff);
+    animation: ges-loader-text-5-width 4s steps(10, jump-none) infinite;
+  }
+}
+
+@keyframes ges-loader-text-5-progress {
+  0% {
+    content: '0%';
+    color: var(--ges-loader-color, #1890ff);
+  }
+  10% {
+    content: '10%';
+    color: var(--ges-loader-color, #1890ff);
+  }
+  20% {
+    content: '20%';
+    color: var(--ges-loader-color, #1890ff);
+  }
+  30% {
+    content: '30%';
+    color: var(--ges-loader-color, #1890ff);
+  }
+  40% {
+    content: '40%';
+    color: var(--ges-loader-color, #1890ff);
+  }
+  50% {
+    content: '50%';
+    color: var(--ges-loader-color, #1890ff);
+  }
+  60% {
+    content: '60%';
+    color: var(--ges-loader-color, #1890ff);
+  }
+  70% {
+    content: '70%';
+    color: var(--ges-loader-color, #1890ff);
+  }
+  80% {
+    content: '80%';
+    color: var(--ges-loader-color, #1890ff);
+  }
+  90% {
+    content: '90%';
+    color: var(--ges-loader-color, #1890ff);
+  }
+  100% {
+    content: '100%';
+    color: var(--ges-loader-color, #1890ff);
+  }
+}
+
+@keyframes ges-loader-text-5-width {
+  0% {
+    width: 0%;
+  }
+  10% {
+    width: 10%;
+  }
+  20% {
+    width: 20%;
+  }
+  30% {
+    width: 30%;
+  }
+  40% {
+    width: 40%;
+  }
+  50% {
+    width: 50%;
+  }
+  60% {
+    width: 60%;
+  }
+  70% {
+    width: 70%;
+  }
+  80% {
+    width: 80%;
+  }
+  90% {
+    width: 90%;
+  }
+  100% {
+    width: 100%;
+  }
+}

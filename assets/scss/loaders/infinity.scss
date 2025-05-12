@@ -1,0 +1,267 @@
+/**
+ * 无限循环加载器样式
+ * 创建日期: 2024-12-08
+ * 作者: Claude
+ * 更新日期: 2024-12-09 - 实现5种无限循环效果加载器
+ */
+
+@use 'sass:math';
+
+// 无限循环加载器 - 类型1 (无限符号)
+.ges-loader-infinity-1 {
+  width: var(--ges-loader-size, 48px);
+  height: var(--ges-loader-size, 48px);
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    width: calc(var(--ges-loader-size, 48px) * 0.8);
+    height: calc(var(--ges-loader-size, 48px) * 0.4);
+    top: 30%;
+    left: 10%;
+    border: calc(var(--ges-loader-size, 48px) * 0.04) solid var(--ges-loader-color, #1890ff);
+    border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+    border-bottom: none;
+    animation: ges-loader-infinity-1 2s linear infinite;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    width: calc(var(--ges-loader-size, 48px) * 0.8);
+    height: calc(var(--ges-loader-size, 48px) * 0.4);
+    bottom: 30%;
+    left: 10%;
+    border: calc(var(--ges-loader-size, 48px) * 0.04) solid var(--ges-loader-color, #1890ff);
+    border-radius: 0 0 50% 50% / 0 0 100% 100%;
+    border-top: none;
+    animation: ges-loader-infinity-1 2s linear infinite reverse;
+  }
+}
+
+@keyframes ges-loader-infinity-1 {
+  0% {
+    transform: translateX(0) rotate(0deg);
+  }
+  50% {
+    transform: translateX(calc(var(--ges-loader-size, 48px) * 0.1)) rotate(180deg);
+  }
+  100% {
+    transform: translateX(0) rotate(360deg);
+  }
+}
+
+// 无限循环加载器 - 类型2 (流动回环)
+.ges-loader-infinity-2 {
+  width: var(--ges-loader-size, 48px);
+  height: var(--ges-loader-size, 48px);
+  position: relative;
+  border-radius: 50%;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    width: 200%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      var(--ges-loader-color, #1890ff) 0%,
+      rgba(var(--ges-loader-color-rgb, 24, 144, 255), 0.4) 50%,
+      var(--ges-loader-color, #1890ff) 100%
+    );
+    animation: ges-loader-infinity-2 2s linear infinite;
+  }
+}
+
+@keyframes ges-loader-infinity-2 {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+// 无限循环加载器 - 类型3 (行星系统)
+.ges-loader-infinity-3 {
+  width: var(--ges-loader-size, 48px);
+  height: var(--ges-loader-size, 48px);
+  position: relative;
+  border-radius: 50%;
+
+  &::before {
+    content: '';
+    position: absolute;
+    width: calc(var(--ges-loader-size, 48px) * 0.2);
+    height: calc(var(--ges-loader-size, 48px) * 0.2);
+    background-color: var(--ges-loader-color, #1890ff);
+    border-radius: 50%;
+    top: 0;
+    left: calc(50% - var(--ges-loader-size, 48px) * 0.1);
+    animation: ges-loader-infinity-3 3s linear infinite;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    width: calc(var(--ges-loader-size, 48px) * 0.1);
+    height: calc(var(--ges-loader-size, 48px) * 0.1);
+    background-color: rgba(var(--ges-loader-color-rgb, 24, 144, 255), 0.7);
+    border-radius: 50%;
+    top: calc(var(--ges-loader-size, 48px) * 0.05);
+    left: calc(50% - var(--ges-loader-size, 48px) * 0.05);
+    animation: ges-loader-infinity-3-moon 1.5s linear infinite;
+  }
+}
+
+@keyframes ges-loader-infinity-3 {
+  0% {
+    transform: rotate(0deg) translateY(calc(var(--ges-loader-size, 48px) * 0.15));
+  }
+  100% {
+    transform: rotate(360deg) translateY(calc(var(--ges-loader-size, 48px) * 0.15));
+  }
+}
+
+@keyframes ges-loader-infinity-3-moon {
+  0% {
+    transform: rotate(0deg) translateX(calc(var(--ges-loader-size, 48px) * 0.2));
+  }
+  100% {
+    transform: rotate(360deg) translateX(calc(var(--ges-loader-size, 48px) * 0.2));
+  }
+}
+
+// 无限循环加载器 - 类型4 (循环追踪)
+.ges-loader-infinity-4 {
+  width: var(--ges-loader-size, 48px);
+  height: var(--ges-loader-size, 48px);
+  position: relative;
+
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    width: calc(var(--ges-loader-size, 48px) * 0.2);
+    height: calc(var(--ges-loader-size, 48px) * 0.2);
+    border-radius: 50%;
+  }
+
+  &::before {
+    background-color: var(--ges-loader-color, #1890ff);
+    animation: ges-loader-infinity-4-1 2s linear infinite;
+  }
+
+  &::after {
+    background-color: rgba(var(--ges-loader-color-rgb, 24, 144, 255), 0.5);
+    animation: ges-loader-infinity-4-2 2s linear infinite;
+  }
+}
+
+@keyframes ges-loader-infinity-4-1 {
+  0% {
+    transform: translate(calc(var(--ges-loader-size, 48px) * 0.4), calc(var(--ges-loader-size, 48px) * 0.4));
+  }
+  25% {
+    transform: translate(calc(var(--ges-loader-size, 48px) * 0.4), 0);
+  }
+  50% {
+    transform: translate(0, 0);
+  }
+  75% {
+    transform: translate(0, calc(var(--ges-loader-size, 48px) * 0.4));
+  }
+  100% {
+    transform: translate(calc(var(--ges-loader-size, 48px) * 0.4), calc(var(--ges-loader-size, 48px) * 0.4));
+  }
+}
+
+@keyframes ges-loader-infinity-4-2 {
+  0% {
+    transform: translate(0, 0);
+  }
+  25% {
+    transform: translate(0, calc(var(--ges-loader-size, 48px) * 0.4));
+  }
+  50% {
+    transform: translate(calc(var(--ges-loader-size, 48px) * 0.4), calc(var(--ges-loader-size, 48px) * 0.4));
+  }
+  75% {
+    transform: translate(calc(var(--ges-loader-size, 48px) * 0.4), 0);
+  }
+  100% {
+    transform: translate(0, 0);
+  }
+}
+
+// 无限循环加载器 - 类型5 (DNA螺旋)
+.ges-loader-infinity-5 {
+  width: var(--ges-loader-size, 48px);
+  height: var(--ges-loader-size, 48px);
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background:
+      radial-gradient(
+        circle calc(var(--ges-loader-size, 48px) * 0.075) at 30% 20%,
+        var(--ges-loader-color, #1890ff) 100%,
+        transparent 0
+      ),
+      radial-gradient(
+        circle calc(var(--ges-loader-size, 48px) * 0.075) at 70% 20%,
+        rgba(var(--ges-loader-color-rgb, 24, 144, 255), 0.6) 100%,
+        transparent 0
+      ),
+      radial-gradient(
+        circle calc(var(--ges-loader-size, 48px) * 0.075) at 30% 50%,
+        rgba(var(--ges-loader-color-rgb, 24, 144, 255), 0.6) 100%,
+        transparent 0
+      ),
+      radial-gradient(
+        circle calc(var(--ges-loader-size, 48px) * 0.075) at 70% 50%,
+        var(--ges-loader-color, #1890ff) 100%,
+        transparent 0
+      ),
+      radial-gradient(
+        circle calc(var(--ges-loader-size, 48px) * 0.075) at 30% 80%,
+        var(--ges-loader-color, #1890ff) 100%,
+        transparent 0
+      ),
+      radial-gradient(
+        circle calc(var(--ges-loader-size, 48px) * 0.075) at 70% 80%,
+        rgba(var(--ges-loader-color-rgb, 24, 144, 255), 0.6) 100%,
+        transparent 0
+      );
+    animation: ges-loader-infinity-5 1.5s linear infinite;
+  }
+}
+
+@keyframes ges-loader-infinity-5 {
+  0%,
+  100% {
+    opacity: 1;
+    background-position:
+      30% 20%,
+      70% 20%,
+      30% 50%,
+      70% 50%,
+      30% 80%,
+      70% 80%;
+  }
+  50% {
+    opacity: 0.8;
+    background-position:
+      70% 20%,
+      30% 20%,
+      70% 50%,
+      30% 50%,
+      70% 80%,
+      30% 80%;
+  }
+}

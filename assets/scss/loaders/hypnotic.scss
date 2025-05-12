@@ -1,0 +1,227 @@
+/**
+ * 催眠加载器样式
+ * 创建日期: 2024-12-08
+ * 作者: aiftt
+ * 更新日期: 2024-12-11 - 实现5种催眠效果加载器
+ */
+
+@use 'sass:math';
+
+// 催眠加载器 - 类型1 (螺旋催眠)
+.ges-loader-hypnotic-1 {
+  width: var(--ges-loader-size, 48px);
+  height: var(--ges-loader-size, 48px);
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    width: calc(var(--ges-loader-size, 48px) * 0.8);
+    height: calc(var(--ges-loader-size, 48px) * 0.8);
+    border-radius: 50%;
+    border: calc(var(--ges-loader-size, 48px) * 0.05) solid transparent;
+    border-top-color: var(--ges-loader-color, #1890ff);
+    border-bottom-color: var(--ges-loader-color, #1890ff);
+    top: 10%;
+    left: 10%;
+    animation: ges-loader-hypnotic-1 1.5s linear infinite;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    width: calc(var(--ges-loader-size, 48px) * 0.5);
+    height: calc(var(--ges-loader-size, 48px) * 0.5);
+    border-radius: 50%;
+    border: calc(var(--ges-loader-size, 48px) * 0.05) solid transparent;
+    border-left-color: var(--ges-loader-color, #1890ff);
+    border-right-color: var(--ges-loader-color, #1890ff);
+    top: 25%;
+    left: 25%;
+    animation: ges-loader-hypnotic-1 1.5s linear infinite reverse;
+  }
+}
+
+@keyframes ges-loader-hypnotic-1 {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+// 催眠加载器 - 类型2 (同心圆催眠)
+.ges-loader-hypnotic-2 {
+  width: var(--ges-loader-size, 48px);
+  height: var(--ges-loader-size, 48px);
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: calc(var(--ges-loader-size, 48px) * 0.7);
+    height: calc(var(--ges-loader-size, 48px) * 0.7);
+    border-radius: 50%;
+    background: repeating-radial-gradient(
+      var(--ges-loader-color, #1890ff),
+      var(--ges-loader-color, #1890ff) calc(var(--ges-loader-size, 48px) * 0.05),
+      transparent calc(var(--ges-loader-size, 48px) * 0.05),
+      transparent calc(var(--ges-loader-size, 48px) * 0.1)
+    );
+    animation: ges-loader-hypnotic-2 3s linear infinite;
+  }
+}
+
+@keyframes ges-loader-hypnotic-2 {
+  0% {
+    transform: translate(-50%, -50%) scale(0.5);
+    opacity: 1;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0.7;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(0.5);
+    opacity: 1;
+  }
+}
+
+// 催眠加载器 - 类型3 (漩涡催眠)
+.ges-loader-hypnotic-3 {
+  width: var(--ges-loader-size, 48px);
+  height: var(--ges-loader-size, 48px);
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    width: calc(var(--ges-loader-size, 48px) * 0.8);
+    height: calc(var(--ges-loader-size, 48px) * 0.8);
+    top: 10%;
+    left: 10%;
+    background: conic-gradient(
+      from 0deg,
+      var(--ges-loader-color, #1890ff),
+      rgba(var(--ges-loader-color-rgb, 24, 144, 255), 0.8),
+      rgba(var(--ges-loader-color-rgb, 24, 144, 255), 0.6),
+      rgba(var(--ges-loader-color-rgb, 24, 144, 255), 0.4),
+      rgba(var(--ges-loader-color-rgb, 24, 144, 255), 0.2),
+      transparent 70%
+    );
+    border-radius: 50%;
+    animation: ges-loader-hypnotic-3 2s linear infinite;
+  }
+}
+
+@keyframes ges-loader-hypnotic-3 {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+// 催眠加载器 - 类型4 (扭曲方块催眠)
+.ges-loader-hypnotic-4 {
+  width: var(--ges-loader-size, 48px);
+  height: var(--ges-loader-size, 48px);
+  position: relative;
+
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    width: calc(var(--ges-loader-size, 48px) * 0.6);
+    height: calc(var(--ges-loader-size, 48px) * 0.6);
+    border: calc(var(--ges-loader-size, 48px) * 0.04) solid var(--ges-loader-color, #1890ff);
+    top: 20%;
+    left: 20%;
+  }
+
+  &::before {
+    animation: ges-loader-hypnotic-4-1 2s ease-in-out infinite;
+  }
+
+  &::after {
+    width: calc(var(--ges-loader-size, 48px) * 0.4);
+    height: calc(var(--ges-loader-size, 48px) * 0.4);
+    top: 30%;
+    left: 30%;
+    animation: ges-loader-hypnotic-4-2 2s ease-in-out infinite;
+  }
+}
+
+@keyframes ges-loader-hypnotic-4-1 {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(180deg);
+  }
+}
+
+@keyframes ges-loader-hypnotic-4-2 {
+  0%,
+  100% {
+    transform: rotate(90deg);
+  }
+  50% {
+    transform: rotate(-90deg);
+  }
+}
+
+// 催眠加载器 - 类型5 (波纹催眠)
+.ges-loader-hypnotic-5 {
+  width: var(--ges-loader-size, 48px);
+  height: var(--ges-loader-size, 48px);
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    width: calc(var(--ges-loader-size, 48px) * 0.8);
+    height: calc(var(--ges-loader-size, 48px) * 0.8);
+    border-radius: 50%;
+    top: 10%;
+    left: 10%;
+    background-color: transparent;
+    border: calc(var(--ges-loader-size, 48px) * 0.03) dotted var(--ges-loader-color, #1890ff);
+    filter: blur(calc(var(--ges-loader-size, 48px) * 0.01));
+    animation: ges-loader-hypnotic-5 3s linear infinite;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    width: calc(var(--ges-loader-size, 48px) * 0.2);
+    height: calc(var(--ges-loader-size, 48px) * 0.2);
+    background-color: var(--ges-loader-color, #1890ff);
+    border-radius: 50%;
+    top: 40%;
+    left: 40%;
+    filter: blur(calc(var(--ges-loader-size, 48px) * 0.01));
+  }
+}
+
+@keyframes ges-loader-hypnotic-5 {
+  0% {
+    transform: rotate(0deg) scale(0.8);
+    opacity: 0.5;
+  }
+  50% {
+    transform: rotate(180deg) scale(1.2);
+    opacity: 1;
+  }
+  100% {
+    transform: rotate(360deg) scale(0.8);
+    opacity: 0.5;
+  }
+}

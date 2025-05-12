@@ -1,0 +1,140 @@
+/**
+ * 加载器样式入口文件
+ * 创建日期: 2024-12-06
+ * 作者: Claude
+ * 更新日期: 2024-12-07 - 添加更多加载器类型
+ * 更新日期: 2024-12-08 - 添加CSS Loaders风格加载器
+ */
+
+// 基础
+@use './base.scss';
+
+// 多边形加载器
+@use './polygon.scss';
+
+// 旋转加载器
+@use './spinners.scss';
+
+// 圆点加载器
+@use './dots.scss';
+
+// 条形加载器
+@use './bars.scss';
+
+// 环形加载器
+@use './rings.scss';
+
+// 波浪加载器
+@use './waves.scss';
+
+// 文本加载器
+@use './text.scss';
+
+// CSS Loaders 风格加载器
+// 经典加载器
+@use './classic.scss';
+
+// 形状加载器
+@use './shape.scss';
+
+// 3D加载器
+@use './x3d.scss';
+
+// 进度加载器
+@use './progress.scss';
+
+// 摇摆加载器
+@use './wobble.scss';
+
+// 无限循环加载器
+@use './infinity.scss';
+
+// 之字形加载器
+@use './zigzag.scss';
+
+// 机械加载器
+@use './mechanic.scss';
+
+// 填充加载器
+@use './filling.scss';
+
+// 弹跳加载器
+@use './bouncing.scss';
+
+// 发光加载器
+@use './glowing.scss';
+
+// 滚动加载器
+@use './rolling.scss';
+
+// 翻转加载器
+@use './flipping.scss';
+
+// 连续加载器
+@use './continuous.scss';
+
+// 脉冲加载器
+@use './pulsing.scss';
+
+// 街机风格加载器
+@use './arcade.scss';
+
+// 催眠加载器
+@use './hypnotic.scss';
+
+// 方形加载器
+@use './square.scss';
+
+// 圆形加载器
+@use './circle.scss';
+
+// 方形对圆形加载器
+@use './square-vs-circle.scss';
+
+// 多彩加载器
+@use './colorful.scss';
+
+// 自然风格加载器
+@use './nature.scss';
+
+// 时间加载器
+@use './time.scss';
+
+// 饥饿加载器
+@use './hungry.scss';
+
+// 手里剑加载器
+@use './shuriken.scss';
+
+// 舞者加载器
+@use './dancers.scss';
+
+// 移动加载器
+@use './moving.scss';
+
+// 眼睛加载器
+@use './eyes.scss';
+
+// 线条加载器
+@use './line.scss';
+
+// 细线加载器
+@use './thin.scss';
+
+// 切割加载器
+@use './cut.scss';
+
+// 克隆加载器
+@use './clones.scss';
+
+// 箭头加载器
+@use './arrow.scss';
+
+// 水滴加载器
+@use './blob.scss';
+
+// 迷宫加载器
+@use './maze.scss';
+
+// 工厂加载器
+@use './factory.scss';

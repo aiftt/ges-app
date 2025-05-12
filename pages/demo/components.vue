@@ -42,6 +42,7 @@
  * 2024-08-30 - 添加 VirtualTable 和 VirtualTree 组件
  * 2024-11-27 - 添加 CSS Shake 动画组件
  * 2024-09-12 - 使用集中管理的类型定义
+ * 2024-12-06 - 添加 Loader 多边形加载器组件
  */
 import type { Component } from 'vue'
 import { computed, markRaw, onMounted, ref } from 'vue'
@@ -85,6 +86,7 @@ import DemoInputNumber from '~/components/demo/input-number.vue'
 import DemoInputTag from '~/components/demo/input-tag.vue'
 import DemoInput from '~/components/demo/input.vue'
 import DemoList from '~/components/demo/list.vue'
+import DemoLoader from '~/components/demo/loader.vue'
 import DemoLogger from '~/components/demo/logger.vue'
 import DemoMagicAnimation from '~/components/demo/magic-animation.vue'
 import DemoMention from '~/components/demo/mention.vue'
@@ -173,6 +175,7 @@ const groups = ref<IComponentGroup[]>([
       { name: 'auto-animate', label: 'AutoAnimate 自动动画', component: markRaw(DemoAutoAnimate) },
       { name: 'magic-animation', label: 'Magic 动画效果', component: markRaw(DemoMagicAnimation) },
       { name: 'css-shake-animation', label: 'CSS Shake 摇晃动画', component: markRaw(DemoCssShakeAnimation) },
+      { name: 'loader', label: 'Loader 加载动画', component: markRaw(DemoLoader) },
       { name: 'resize-box', label: 'ResizeBox 可调整大小的盒子', component: markRaw(DemoResizeBox) },
       { name: 'split', label: 'Split 面板分割', component: markRaw(DemoSplit) },
       { name: 'pagination', label: 'Pagination 分页', component: markRaw(DemoPagination) },

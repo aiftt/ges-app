@@ -1,0 +1,404 @@
+/**
+ * 圆点加载器样式
+ * 创建日期: 2024-12-06
+ * 作者: Claude
+ * 更新日期: 2024-12-07 - 修正为纯CSS实现
+ */
+
+@use 'sass:math';
+
+// 圆点加载器 - 类型1 (三点切换)
+.ges-loader-dots-1 {
+  position: relative;
+  width: var(--ges-loader-size, 48px);
+  height: var(--ges-loader-size, 48px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &::before {
+    content: '';
+    width: calc(var(--ges-loader-size, 48px) * 0.2);
+    height: calc(var(--ges-loader-size, 48px) * 0.2);
+    border-radius: 50%;
+    background-color: var(--ges-loader-color, #1890ff);
+    animation: ges-loader-dots-1 1.5s infinite;
+  }
+}
+
+@keyframes ges-loader-dots-1 {
+  0%,
+  33% {
+    transform: translateX(-150%) scale(1);
+  }
+  33.1%,
+  66% {
+    transform: translateX(0) scale(1.5);
+  }
+  66.1%,
+  100% {
+    transform: translateX(150%) scale(1);
+  }
+}
+
+// 圆点加载器 - 类型2 (三点跳动)
+.ges-loader-dots-2 {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--ges-loader-size, 48px);
+  height: var(--ges-loader-size, 48px);
+
+  &::before,
+  &::after,
+  &::before {
+    content: '';
+    position: absolute;
+    width: calc(var(--ges-loader-size, 48px) * 0.15);
+    height: calc(var(--ges-loader-size, 48px) * 0.15);
+    border-radius: 50%;
+    background-color: var(--ges-loader-color, #1890ff);
+    animation: ges-loader-dots-2 1.2s infinite ease-in-out;
+  }
+
+  &::before {
+    left: calc(var(--ges-loader-size, 48px) * 0.25);
+    animation-delay: 0s;
+  }
+
+  &::after {
+    animation-delay: 0.2s;
+  }
+
+  // 使用另一个伪元素作为第三个点
+  &::before {
+    right: calc(var(--ges-loader-size, 48px) * 0.25);
+    left: auto;
+    animation-delay: 0.4s;
+  }
+}
+
+@keyframes ges-loader-dots-2 {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(calc(var(--ges-loader-size, 48px) * -0.3));
+  }
+}
+
+// 圆点加载器 - 类型3 (圆环脉冲)
+.ges-loader-dots-3 {
+  position: relative;
+  width: var(--ges-loader-size, 48px);
+  height: var(--ges-loader-size, 48px);
+
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    inset: 0;
+    background-color: var(--ges-loader-color, #1890ff);
+  }
+
+  &::before {
+    animation: ges-loader-dots-3-1 1.6s infinite ease-in-out;
+  }
+
+  &::after {
+    animation: ges-loader-dots-3-2 1.6s infinite ease-in-out;
+    animation-delay: 0.8s;
+  }
+}
+
+@keyframes ges-loader-dots-3-1 {
+  0%,
+  100% {
+    transform: scale(0);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1);
+    opacity: 0;
+  }
+}
+
+@keyframes ges-loader-dots-3-2 {
+  0%,
+  100% {
+    transform: scale(0);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1);
+    opacity: 0;
+  }
+}
+
+// 圆点加载器 - 类型4 (圆点环绕)
+.ges-loader-dots-4 {
+  position: relative;
+  width: var(--ges-loader-size, 48px);
+  height: var(--ges-loader-size, 48px);
+  border-radius: 50%;
+
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    width: calc(var(--ges-loader-size, 48px) * 0.15);
+    height: calc(var(--ges-loader-size, 48px) * 0.15);
+    background-color: var(--ges-loader-color, #1890ff);
+    border-radius: 50%;
+  }
+
+  &::before {
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    animation: ges-loader-dots-4-top 1.2s cubic-bezier(0.8, 0.3, 0.5, 0.8) infinite;
+  }
+
+  &::after {
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    animation: ges-loader-dots-4-bottom 1.2s cubic-bezier(0.8, 0.3, 0.5, 0.8) infinite;
+    animation-delay: 0.6s;
+  }
+}
+
+// 使用box-shadow创建左右两个点
+.ges-loader-dots-4::before {
+  box-shadow:
+    calc(var(--ges-loader-size, 48px) * -0.5) calc(var(--ges-loader-size, 48px) * 0.35) 0 0
+      var(--ges-loader-color, #1890ff),
+    calc(var(--ges-loader-size, 48px) * 0.5) calc(var(--ges-loader-size, 48px) * 0.35) 0 0
+      var(--ges-loader-color, #1890ff);
+}
+
+@keyframes ges-loader-dots-4-top {
+  0% {
+    transform: translateX(-50%) scale(1);
+  }
+  25%,
+  75% {
+    transform: translateX(-50%) scale(0.75);
+  }
+  50% {
+    transform: translateX(-50%) scale(0.5);
+  }
+  100% {
+    transform: translateX(-50%) scale(1);
+  }
+}
+
+@keyframes ges-loader-dots-4-bottom {
+  0% {
+    transform: translateX(-50%) scale(1);
+  }
+  25%,
+  75% {
+    transform: translateX(-50%) scale(0.75);
+  }
+  50% {
+    transform: translateX(-50%) scale(0.5);
+  }
+  100% {
+    transform: translateX(-50%) scale(1);
+  }
+}
+
+// 圆点加载器 - 类型5 (圆形进度)
+.ges-loader-dots-5 {
+  width: var(--ges-loader-size, 48px);
+  height: var(--ges-loader-size, 48px);
+  position: relative;
+
+  &::before {
+    content: '';
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: calc(var(--ges-loader-size, 48px) * 0.1) solid transparent;
+    border-top-color: var(--ges-loader-color, #1890ff);
+    animation: ges-loader-dots-5 1s linear infinite;
+    position: absolute;
+  }
+}
+
+@keyframes ges-loader-dots-5 {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+// 圆点加载器 - 类型6 (双环旋转)
+.ges-loader-dots-6 {
+  width: var(--ges-loader-size, 48px);
+  height: var(--ges-loader-size, 48px);
+  position: relative;
+
+  &::before,
+  &::after {
+    content: '';
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    position: absolute;
+    border: calc(var(--ges-loader-size, 48px) * 0.05) solid transparent;
+  }
+
+  &::before {
+    border-top-color: var(--ges-loader-color, #1890ff);
+    animation: ges-loader-dots-6-1 1.2s linear infinite;
+  }
+
+  &::after {
+    border-bottom-color: var(--ges-loader-color, #1890ff);
+    animation: ges-loader-dots-6-2 1.2s linear infinite;
+  }
+}
+
+@keyframes ges-loader-dots-6-1 {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes ges-loader-dots-6-2 {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(-360deg);
+  }
+}
+
+// 圆点加载器 - 类型7 (水波纹)
+.ges-loader-dots-7 {
+  width: var(--ges-loader-size, 48px);
+  height: var(--ges-loader-size, 48px);
+  position: relative;
+
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background-color: var(--ges-loader-color, #1890ff);
+    animation: ges-loader-dots-7 2.5s ease-in-out infinite;
+    opacity: 0;
+  }
+
+  &::after {
+    animation-delay: 1.25s;
+  }
+}
+
+@keyframes ges-loader-dots-7 {
+  0% {
+    transform: scale(0);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0;
+  }
+}
+
+// 圆点加载器 - 类型8 (点阵)
+.ges-loader-dots-8 {
+  width: var(--ges-loader-size, 48px);
+  height: var(--ges-loader-size, 48px);
+  position: relative;
+
+  // 使用背景渐变创建网格点
+  background-image:
+    radial-gradient(
+      circle,
+      var(--ges-loader-color, #1890ff) calc(var(--ges-loader-size, 48px) * 0.05),
+      transparent calc(var(--ges-loader-size, 48px) * 0.05)
+    ),
+    radial-gradient(
+      circle,
+      var(--ges-loader-color, #1890ff) calc(var(--ges-loader-size, 48px) * 0.05),
+      transparent calc(var(--ges-loader-size, 48px) * 0.05)
+    ),
+    radial-gradient(
+      circle,
+      var(--ges-loader-color, #1890ff) calc(var(--ges-loader-size, 48px) * 0.05),
+      transparent calc(var(--ges-loader-size, 48px) * 0.05)
+    ),
+    radial-gradient(
+      circle,
+      var(--ges-loader-color, #1890ff) calc(var(--ges-loader-size, 48px) * 0.05),
+      transparent calc(var(--ges-loader-size, 48px) * 0.05)
+    ),
+    radial-gradient(
+      circle,
+      var(--ges-loader-color, #1890ff) calc(var(--ges-loader-size, 48px) * 0.05),
+      transparent calc(var(--ges-loader-size, 48px) * 0.05)
+    ),
+    radial-gradient(
+      circle,
+      var(--ges-loader-color, #1890ff) calc(var(--ges-loader-size, 48px) * 0.05),
+      transparent calc(var(--ges-loader-size, 48px) * 0.05)
+    ),
+    radial-gradient(
+      circle,
+      var(--ges-loader-color, #1890ff) calc(var(--ges-loader-size, 48px) * 0.05),
+      transparent calc(var(--ges-loader-size, 48px) * 0.05)
+    ),
+    radial-gradient(
+      circle,
+      var(--ges-loader-color, #1890ff) calc(var(--ges-loader-size, 48px) * 0.05),
+      transparent calc(var(--ges-loader-size, 48px) * 0.05)
+    ),
+    radial-gradient(
+      circle,
+      var(--ges-loader-color, #1890ff) calc(var(--ges-loader-size, 48px) * 0.05),
+      transparent calc(var(--ges-loader-size, 48px) * 0.05)
+    );
+
+  background-size: 33.33% 33.33%;
+  background-position:
+    16.5% 16.5%,
+    50% 16.5%,
+    83.5% 16.5%,
+    16.5% 50%,
+    50% 50%,
+    83.5% 50%,
+    16.5% 83.5%,
+    50% 83.5%,
+    83.5% 83.5%;
+  background-repeat: no-repeat;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: inherit;
+    animation: ges-loader-dots-8-pulse 1.5s linear infinite;
+  }
+}
+
+@keyframes ges-loader-dots-8-pulse {
+  0%,
+  100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+}

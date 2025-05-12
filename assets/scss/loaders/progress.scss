@@ -1,0 +1,306 @@
+/**
+ * 进度加载器样式
+ * 创建日期: 2024-12-08
+ * 作者: Claude
+ */
+
+@use 'sass:math';
+
+// 进度加载器 - 类型1 (水平进度条)
+.ges-loader-progress-1 {
+  width: var(--ges-loader-size, 48px);
+  height: calc(var(--ges-loader-size, 48px) * 0.2);
+  position: relative;
+  background: rgba(var(--ges-loader-color-rgb, 24, 144, 255), 0.1);
+
+  &::before {
+    content: '';
+    position: absolute;
+    height: 100%;
+    width: 0;
+    background-color: var(--ges-loader-color, #1890ff);
+    animation: ges-loader-progress-1 2s ease-in-out infinite;
+  }
+}
+
+@keyframes ges-loader-progress-1 {
+  0% {
+    width: 0;
+  }
+  50% {
+    width: 100%;
+  }
+  100% {
+    width: 0;
+  }
+}
+
+// 进度加载器 - 类型2 (渐变条)
+.ges-loader-progress-2 {
+  width: var(--ges-loader-size, 48px);
+  height: calc(var(--ges-loader-size, 48px) * 0.2);
+  position: relative;
+  border-radius: calc(var(--ges-loader-size, 48px) * 0.1);
+  overflow: hidden;
+  background: rgba(var(--ges-loader-color-rgb, 24, 144, 255), 0.1);
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      rgba(var(--ges-loader-color-rgb, 24, 144, 255), 0.1),
+      var(--ges-loader-color, #1890ff),
+      rgba(var(--ges-loader-color-rgb, 24, 144, 255), 0.1)
+    );
+    background-size: 200%;
+    animation: ges-loader-progress-2 2s ease-in-out infinite;
+  }
+}
+
+@keyframes ges-loader-progress-2 {
+  0% {
+    background-position: 100% 0;
+  }
+  100% {
+    background-position: -100% 0;
+  }
+}
+
+// 进度加载器 - 类型3 (步进进度)
+.ges-loader-progress-3 {
+  width: var(--ges-loader-size, 48px);
+  height: calc(var(--ges-loader-size, 48px) * 0.2);
+  position: relative;
+  background: rgba(var(--ges-loader-color-rgb, 24, 144, 255), 0.1);
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 25%;
+    background-color: var(--ges-loader-color, #1890ff);
+    animation: ges-loader-progress-3 3s steps(4, jump-none) infinite;
+  }
+}
+
+@keyframes ges-loader-progress-3 {
+  0% {
+    left: 0%;
+    width: 25%;
+  }
+  100% {
+    left: 75%;
+    width: 25%;
+  }
+}
+
+// 进度加载器 - 类型4 (脉冲进度)
+.ges-loader-progress-4 {
+  width: var(--ges-loader-size, 48px);
+  height: calc(var(--ges-loader-size, 48px) * 0.15);
+  position: relative;
+  background: rgba(var(--ges-loader-color-rgb, 24, 144, 255), 0.1);
+  border-radius: calc(var(--ges-loader-size, 48px) * 0.075);
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 100%;
+    background-color: var(--ges-loader-color, #1890ff);
+    border-radius: calc(var(--ges-loader-size, 48px) * 0.075);
+    animation: ges-loader-progress-4 2.5s ease-in-out infinite;
+  }
+}
+
+@keyframes ges-loader-progress-4 {
+  0% {
+    width: 0;
+    opacity: 1;
+  }
+  25% {
+    width: 25%;
+    opacity: 0.8;
+  }
+  50% {
+    width: 50%;
+    opacity: 0.6;
+  }
+  75% {
+    width: 75%;
+    opacity: 0.8;
+  }
+  100% {
+    width: 100%;
+    opacity: 1;
+  }
+}
+
+// 进度加载器 - 类型5 (分段进度)
+.ges-loader-progress-5 {
+  width: var(--ges-loader-size, 48px);
+  height: calc(var(--ges-loader-size, 48px) * 0.2);
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-image:
+      linear-gradient(90deg, var(--ges-loader-color, #1890ff) 10%, transparent 0),
+      linear-gradient(90deg, var(--ges-loader-color, #1890ff) 10%, transparent 0),
+      linear-gradient(90deg, var(--ges-loader-color, #1890ff) 10%, transparent 0),
+      linear-gradient(90deg, var(--ges-loader-color, #1890ff) 10%, transparent 0),
+      linear-gradient(90deg, var(--ges-loader-color, #1890ff) 10%, transparent 0),
+      linear-gradient(90deg, var(--ges-loader-color, #1890ff) 10%, transparent 0),
+      linear-gradient(90deg, var(--ges-loader-color, #1890ff) 10%, transparent 0),
+      linear-gradient(90deg, var(--ges-loader-color, #1890ff) 10%, transparent 0),
+      linear-gradient(90deg, var(--ges-loader-color, #1890ff) 10%, transparent 0),
+      linear-gradient(90deg, var(--ges-loader-color, #1890ff) 10%, transparent 0);
+    background-size: 10% 100%;
+    background-repeat: no-repeat;
+    background-position:
+      0% 0,
+      10% 0,
+      20% 0,
+      30% 0,
+      40% 0,
+      50% 0,
+      60% 0,
+      70% 0,
+      80% 0,
+      90% 0;
+    animation: ges-loader-progress-5 4s steps(10, jump-none) infinite;
+  }
+}
+
+@keyframes ges-loader-progress-5 {
+  0% {
+    background-image:
+      linear-gradient(90deg, transparent 10%, transparent 0), linear-gradient(90deg, transparent 10%, transparent 0),
+      linear-gradient(90deg, transparent 10%, transparent 0), linear-gradient(90deg, transparent 10%, transparent 0),
+      linear-gradient(90deg, transparent 10%, transparent 0), linear-gradient(90deg, transparent 10%, transparent 0),
+      linear-gradient(90deg, transparent 10%, transparent 0), linear-gradient(90deg, transparent 10%, transparent 0),
+      linear-gradient(90deg, transparent 10%, transparent 0), linear-gradient(90deg, transparent 10%, transparent 0);
+  }
+  10% {
+    background-image:
+      linear-gradient(90deg, var(--ges-loader-color, #1890ff) 10%, transparent 0),
+      linear-gradient(90deg, transparent 10%, transparent 0), linear-gradient(90deg, transparent 10%, transparent 0),
+      linear-gradient(90deg, transparent 10%, transparent 0), linear-gradient(90deg, transparent 10%, transparent 0),
+      linear-gradient(90deg, transparent 10%, transparent 0), linear-gradient(90deg, transparent 10%, transparent 0),
+      linear-gradient(90deg, transparent 10%, transparent 0), linear-gradient(90deg, transparent 10%, transparent 0),
+      linear-gradient(90deg, transparent 10%, transparent 0);
+  }
+  20% {
+    background-image:
+      linear-gradient(90deg, var(--ges-loader-color, #1890ff) 10%, transparent 0),
+      linear-gradient(90deg, var(--ges-loader-color, #1890ff) 10%, transparent 0),
+      linear-gradient(90deg, transparent 10%, transparent 0), linear-gradient(90deg, transparent 10%, transparent 0),
+      linear-gradient(90deg, transparent 10%, transparent 0), linear-gradient(90deg, transparent 10%, transparent 0),
+      linear-gradient(90deg, transparent 10%, transparent 0), linear-gradient(90deg, transparent 10%, transparent 0),
+      linear-gradient(90deg, transparent 10%, transparent 0), linear-gradient(90deg, transparent 10%, transparent 0);
+  }
+  30% {
+    background-image:
+      linear-gradient(90deg, var(--ges-loader-color, #1890ff) 10%, transparent 0),
+      linear-gradient(90deg, var(--ges-loader-color, #1890ff) 10%, transparent 0),
+      linear-gradient(90deg, var(--ges-loader-color, #1890ff) 10%, transparent 0),
+      linear-gradient(90deg, transparent 10%, transparent 0), linear-gradient(90deg, transparent 10%, transparent 0),
+      linear-gradient(90deg, transparent 10%, transparent 0), linear-gradient(90deg, transparent 10%, transparent 0),
+      linear-gradient(90deg, transparent 10%, transparent 0), linear-gradient(90deg, transparent 10%, transparent 0),
+      linear-gradient(90deg, transparent 10%, transparent 0);
+  }
+  40% {
+    background-image:
+      linear-gradient(90deg, var(--ges-loader-color, #1890ff) 10%, transparent 0),
+      linear-gradient(90deg, var(--ges-loader-color, #1890ff) 10%, transparent 0),
+      linear-gradient(90deg, var(--ges-loader-color, #1890ff) 10%, transparent 0),
+      linear-gradient(90deg, var(--ges-loader-color, #1890ff) 10%, transparent 0),
+      linear-gradient(90deg, transparent 10%, transparent 0), linear-gradient(90deg, transparent 10%, transparent 0),
+      linear-gradient(90deg, transparent 10%, transparent 0), linear-gradient(90deg, transparent 10%, transparent 0),
+      linear-gradient(90deg, transparent 10%, transparent 0), linear-gradient(90deg, transparent 10%, transparent 0);
+  }
+  50% {
+    background-image:
+      linear-gradient(90deg, var(--ges-loader-color, #1890ff) 10%, transparent 0),
+      linear-gradient(90deg, var(--ges-loader-color, #1890ff) 10%, transparent 0),
+      linear-gradient(90deg, var(--ges-loader-color, #1890ff) 10%, transparent 0),
+      linear-gradient(90deg, var(--ges-loader-color, #1890ff) 10%, transparent 0),
+      linear-gradient(90deg, var(--ges-loader-color, #1890ff) 10%, transparent 0),
+      linear-gradient(90deg, transparent 10%, transparent 0), linear-gradient(90deg, transparent 10%, transparent 0),
+      linear-gradient(90deg, transparent 10%, transparent 0), linear-gradient(90deg, transparent 10%, transparent 0),
+      linear-gradient(90deg, transparent 10%, transparent 0);
+  }
+  60% {
+    background-image:
+      linear-gradient(90deg, var(--ges-loader-color, #1890ff) 10%, transparent 0),
+      linear-gradient(90deg, var(--ges-loader-color, #1890ff) 10%, transparent 0),
+      linear-gradient(90deg, var(--ges-loader-color, #1890ff) 10%, transparent 0),
+      linear-gradient(90deg, var(--ges-loader-color, #1890ff) 10%, transparent 0),
+      linear-gradient(90deg, var(--ges-loader-color, #1890ff) 10%, transparent 0),
+      linear-gradient(90deg, var(--ges-loader-color, #1890ff) 10%, transparent 0),
+      linear-gradient(90deg, transparent 10%, transparent 0), linear-gradient(90deg, transparent 10%, transparent 0),
+      linear-gradient(90deg, transparent 10%, transparent 0), linear-gradient(90deg, transparent 10%, transparent 0);
+  }
+  70% {
+    background-image:
+      linear-gradient(90deg, var(--ges-loader-color, #1890ff) 10%, transparent 0),
+      linear-gradient(90deg, var(--ges-loader-color, #1890ff) 10%, transparent 0),
+      linear-gradient(90deg, var(--ges-loader-color, #1890ff) 10%, transparent 0),
+      linear-gradient(90deg, var(--ges-loader-color, #1890ff) 10%, transparent 0),
+      linear-gradient(90deg, var(--ges-loader-color, #1890ff) 10%, transparent 0),
+      linear-gradient(90deg, var(--ges-loader-color, #1890ff) 10%, transparent 0),
+      linear-gradient(90deg, var(--ges-loader-color, #1890ff) 10%, transparent 0),
+      linear-gradient(90deg, transparent 10%, transparent 0), linear-gradient(90deg, transparent 10%, transparent 0),
+      linear-gradient(90deg, transparent 10%, transparent 0);
+  }
+  80% {
+    background-image:
+      linear-gradient(90deg, var(--ges-loader-color, #1890ff) 10%, transparent 0),
+      linear-gradient(90deg, var(--ges-loader-color, #1890ff) 10%, transparent 0),
+      linear-gradient(90deg, var(--ges-loader-color, #1890ff) 10%, transparent 0),
+      linear-gradient(90deg, var(--ges-loader-color, #1890ff) 10%, transparent 0),
+      linear-gradient(90deg, var(--ges-loader-color, #1890ff) 10%, transparent 0),
+      linear-gradient(90deg, var(--ges-loader-color, #1890ff) 10%, transparent 0),
+      linear-gradient(90deg, var(--ges-loader-color, #1890ff) 10%, transparent 0),
+      linear-gradient(90deg, var(--ges-loader-color, #1890ff) 10%, transparent 0),
+      linear-gradient(90deg, transparent 10%, transparent 0), linear-gradient(90deg, transparent 10%, transparent 0);
+  }
+  90% {
+    background-image:
+      linear-gradient(90deg, var(--ges-loader-color, #1890ff) 10%, transparent 0),
+      linear-gradient(90deg, var(--ges-loader-color, #1890ff) 10%, transparent 0),
+      linear-gradient(90deg, var(--ges-loader-color, #1890ff) 10%, transparent 0),
+      linear-gradient(90deg, var(--ges-loader-color, #1890ff) 10%, transparent 0),
+      linear-gradient(90deg, var(--ges-loader-color, #1890ff) 10%, transparent 0),
+      linear-gradient(90deg, var(--ges-loader-color, #1890ff) 10%, transparent 0),
+      linear-gradient(90deg, var(--ges-loader-color, #1890ff) 10%, transparent 0),
+      linear-gradient(90deg, var(--ges-loader-color, #1890ff) 10%, transparent 0),
+      linear-gradient(90deg, var(--ges-loader-color, #1890ff) 10%, transparent 0),
+      linear-gradient(90deg, transparent 10%, transparent 0);
+  }
+  100% {
+    background-image:
+      linear-gradient(90deg, var(--ges-loader-color, #1890ff) 10%, transparent 0),
+      linear-gradient(90deg, var(--ges-loader-color, #1890ff) 10%, transparent 0),
+      linear-gradient(90deg, var(--ges-loader-color, #1890ff) 10%, transparent 0),
+      linear-gradient(90deg, var(--ges-loader-color, #1890ff) 10%, transparent 0),
+      linear-gradient(90deg, var(--ges-loader-color, #1890ff) 10%, transparent 0),
+      linear-gradient(90deg, var(--ges-loader-color, #1890ff) 10%, transparent 0),
+      linear-gradient(90deg, var(--ges-loader-color, #1890ff) 10%, transparent 0),
+      linear-gradient(90deg, var(--ges-loader-color, #1890ff) 10%, transparent 0),
+      linear-gradient(90deg, var(--ges-loader-color, #1890ff) 10%, transparent 0),
+      linear-gradient(90deg, var(--ges-loader-color, #1890ff) 10%, transparent 0);
+  }
+}

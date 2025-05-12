@@ -1,0 +1,281 @@
+/**
+ * 波浪加载器样式
+ * 创建日期: 2024-12-07
+ * 作者: Claude
+ */
+
+@use 'sass:math';
+
+// 波浪加载器 - 类型1 (水平波浪)
+.ges-loader-wave-1 {
+  width: var(--ges-loader-size, 48px);
+  height: calc(var(--ges-loader-size, 48px) * 0.6);
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    width: 200%;
+    height: 100%;
+    top: -80%;
+    left: -50%;
+    border-radius: 40%;
+    background: var(--ges-loader-color, #1890ff);
+    animation: ges-loader-wave-1-move 3s ease-in-out infinite;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    width: 200%;
+    height: 100%;
+    top: -70%;
+    left: -50%;
+    border-radius: 40%;
+    background: rgba(var(--ges-loader-color-rgb, 24, 144, 255), 0.5);
+    animation: ges-loader-wave-1-move 3s ease-in-out infinite;
+    animation-delay: 0.5s;
+  }
+}
+
+@keyframes ges-loader-wave-1-move {
+  0% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(180deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+// 波浪加载器 - 类型2 (渐变波浪)
+.ges-loader-wave-2 {
+  width: var(--ges-loader-size, 48px);
+  height: calc(var(--ges-loader-size, 48px) * 0.7);
+  position: relative;
+  overflow: hidden;
+  border-radius: calc(var(--ges-loader-size, 48px) * 0.08);
+
+  &::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-image: linear-gradient(
+      to bottom,
+      rgba(var(--ges-loader-color-rgb, 24, 144, 255), 0.2) 0%,
+      var(--ges-loader-color, #1890ff) 100%
+    );
+    transform: translateY(100%);
+    animation: ges-loader-wave-2-rise 2s ease-in-out infinite;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: calc(var(--ges-loader-size, 48px) * 0.1);
+    background: rgba(255, 255, 255, 0.3);
+    bottom: 0;
+    transform: translateY(100%);
+    animation: ges-loader-wave-2-shine 2s ease-in-out infinite;
+  }
+}
+
+@keyframes ges-loader-wave-2-rise {
+  0% {
+    transform: translateY(100%);
+  }
+  60% {
+    transform: translateY(30%);
+  }
+  100% {
+    transform: translateY(100%);
+  }
+}
+
+@keyframes ges-loader-wave-2-shine {
+  0% {
+    transform: translateY(100%);
+  }
+  60% {
+    transform: translateY(calc(var(--ges-loader-size, 48px) * -0.3));
+  }
+  100% {
+    transform: translateY(100%);
+  }
+}
+
+// 波浪加载器 - 类型3 (音频波)
+.ges-loader-wave-3 {
+  width: var(--ges-loader-size, 48px);
+  height: calc(var(--ges-loader-size, 48px) * 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-image:
+      linear-gradient(var(--ges-loader-color, #1890ff) 100%, transparent 0),
+      linear-gradient(var(--ges-loader-color, #1890ff) 100%, transparent 0),
+      linear-gradient(var(--ges-loader-color, #1890ff) 100%, transparent 0),
+      linear-gradient(var(--ges-loader-color, #1890ff) 100%, transparent 0),
+      linear-gradient(var(--ges-loader-color, #1890ff) 100%, transparent 0);
+
+    background-repeat: no-repeat;
+    background-size:
+      calc(var(--ges-loader-size, 48px) * 0.08) 100%,
+      calc(var(--ges-loader-size, 48px) * 0.08) 100%,
+      calc(var(--ges-loader-size, 48px) * 0.08) 100%,
+      calc(var(--ges-loader-size, 48px) * 0.08) 100%,
+      calc(var(--ges-loader-size, 48px) * 0.08) 100%;
+
+    background-position:
+      calc(var(--ges-loader-size, 48px) * 0.1), calc(var(--ges-loader-size, 48px) * 0.3),
+      calc(var(--ges-loader-size, 48px) * 0.5), calc(var(--ges-loader-size, 48px) * 0.7),
+      calc(var(--ges-loader-size, 48px) * 0.9);
+
+    animation: ges-loader-wave-3-sound 1.2s ease-in-out infinite;
+  }
+}
+
+@keyframes ges-loader-wave-3-sound {
+  0% {
+    background-size:
+      calc(var(--ges-loader-size, 48px) * 0.08) 30%,
+      calc(var(--ges-loader-size, 48px) * 0.08) 70%,
+      calc(var(--ges-loader-size, 48px) * 0.08) 40%,
+      calc(var(--ges-loader-size, 48px) * 0.08) 90%,
+      calc(var(--ges-loader-size, 48px) * 0.08) 60%;
+  }
+  25% {
+    background-size:
+      calc(var(--ges-loader-size, 48px) * 0.08) 80%,
+      calc(var(--ges-loader-size, 48px) * 0.08) 30%,
+      calc(var(--ges-loader-size, 48px) * 0.08) 70%,
+      calc(var(--ges-loader-size, 48px) * 0.08) 40%,
+      calc(var(--ges-loader-size, 48px) * 0.08) 90%;
+  }
+  50% {
+    background-size:
+      calc(var(--ges-loader-size, 48px) * 0.08) 50%,
+      calc(var(--ges-loader-size, 48px) * 0.08) 80%,
+      calc(var(--ges-loader-size, 48px) * 0.08) 30%,
+      calc(var(--ges-loader-size, 48px) * 0.08) 70%,
+      calc(var(--ges-loader-size, 48px) * 0.08) 40%;
+  }
+  75% {
+    background-size:
+      calc(var(--ges-loader-size, 48px) * 0.08) 20%,
+      calc(var(--ges-loader-size, 48px) * 0.08) 50%,
+      calc(var(--ges-loader-size, 48px) * 0.08) 80%,
+      calc(var(--ges-loader-size, 48px) * 0.08) 30%,
+      calc(var(--ges-loader-size, 48px) * 0.08) 70%;
+  }
+  100% {
+    background-size:
+      calc(var(--ges-loader-size, 48px) * 0.08) 30%,
+      calc(var(--ges-loader-size, 48px) * 0.08) 70%,
+      calc(var(--ges-loader-size, 48px) * 0.08) 40%,
+      calc(var(--ges-loader-size, 48px) * 0.08) 90%,
+      calc(var(--ges-loader-size, 48px) * 0.08) 60%;
+  }
+}
+
+// 波浪加载器 - 类型4 (波纹)
+.ges-loader-wave-4 {
+  width: var(--ges-loader-size, 48px);
+  height: var(--ges-loader-size, 48px);
+  position: relative;
+
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: calc(var(--ges-loader-size, 48px) * 0.03) solid var(--ges-loader-color, #1890ff);
+    animation: ges-loader-wave-4-ripple 2s linear infinite;
+  }
+
+  &::after {
+    animation-delay: -0.5s;
+  }
+}
+
+@keyframes ges-loader-wave-4-ripple {
+  0% {
+    transform: scale(0.1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0;
+  }
+}
+
+// 波浪加载器 - 类型5 (水滴)
+.ges-loader-wave-5 {
+  width: var(--ges-loader-size, 48px);
+  height: var(--ges-loader-size, 48px);
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    width: 30%;
+    height: 40%;
+    background: var(--ges-loader-color, #1890ff);
+    top: 10%;
+    left: 35%;
+    border-radius: 40% 40% 60% 60%;
+    animation: ges-loader-wave-5-drip 2s ease infinite;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    width: calc(var(--ges-loader-size, 48px) * 0.6);
+    height: calc(var(--ges-loader-size, 48px) * 0.2);
+    background: rgba(var(--ges-loader-color-rgb, 24, 144, 255), 0.1);
+    bottom: 15%;
+    left: 20%;
+    border-radius: 50%;
+    animation: ges-loader-wave-5-spread 2s ease infinite;
+  }
+}
+
+@keyframes ges-loader-wave-5-drip {
+  0% {
+    transform: translateY(0) scale(1, 1);
+    opacity: 1;
+  }
+  70% {
+    transform: translateY(calc(var(--ges-loader-size, 48px) * 0.4)) scale(0.9, 1.1);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(calc(var(--ges-loader-size, 48px) * 0.4)) scale(1.5, 0.5);
+    opacity: 0;
+  }
+}
+
+@keyframes ges-loader-wave-5-spread {
+  0%,
+  70% {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+}

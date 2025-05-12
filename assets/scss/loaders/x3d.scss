@@ -1,0 +1,377 @@
+/**
+ * 3D加载器样式
+ * 创建日期: 2024-12-08
+ * 作者: Claude
+ */
+
+@use 'sass:math';
+
+// 3D加载器 - 类型1 (立方体旋转)
+.ges-loader-3d-1 {
+  width: var(--ges-loader-size, 48px);
+  height: var(--ges-loader-size, 48px);
+  perspective: calc(var(--ges-loader-size, 48px) * 4);
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    width: calc(var(--ges-loader-size, 48px) * 0.7);
+    height: calc(var(--ges-loader-size, 48px) * 0.7);
+    top: 15%;
+    left: 15%;
+    background-color: var(--ges-loader-color, #1890ff);
+    transform-style: preserve-3d;
+    animation: ges-loader-3d-1 2s linear infinite;
+  }
+}
+
+@keyframes ges-loader-3d-1 {
+  0% {
+    transform: rotateX(0deg) rotateY(0deg);
+  }
+  50% {
+    transform: rotateX(180deg) rotateY(90deg);
+  }
+  100% {
+    transform: rotateX(360deg) rotateY(180deg);
+  }
+}
+
+// 3D加载器 - 类型2 (折叠纸片)
+.ges-loader-3d-2 {
+  width: var(--ges-loader-size, 48px);
+  height: var(--ges-loader-size, 48px);
+  perspective: calc(var(--ges-loader-size, 48px) * 2);
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: var(--ges-loader-color, #1890ff);
+    transform-origin: center bottom;
+    animation: ges-loader-3d-2 1.5s ease-in-out infinite;
+  }
+}
+
+@keyframes ges-loader-3d-2 {
+  0%,
+  100% {
+    transform: rotateX(0deg);
+  }
+  50% {
+    transform: rotateX(-90deg);
+  }
+}
+
+// 3D加载器 - 类型3 (翻转扑克)
+.ges-loader-3d-3 {
+  width: var(--ges-loader-size, 48px);
+  height: var(--ges-loader-size, 48px);
+  perspective: calc(var(--ges-loader-size, 48px) * 5);
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      var(--ges-loader-color, #1890ff) 50%,
+      rgba(var(--ges-loader-color-rgb, 24, 144, 255), 0.5) 50%
+    );
+    transform-origin: center center;
+    animation: ges-loader-3d-3 2s linear infinite;
+  }
+}
+
+@keyframes ges-loader-3d-3 {
+  0% {
+    transform: rotateY(0deg);
+  }
+  50% {
+    transform: rotateY(180deg);
+  }
+  100% {
+    transform: rotateY(360deg);
+  }
+}
+
+// 3D加载器 - 类型4 (折纸风车)
+.ges-loader-3d-4 {
+  width: var(--ges-loader-size, 48px);
+  height: var(--ges-loader-size, 48px);
+  perspective: calc(var(--ges-loader-size, 48px) * 3);
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: transparent;
+    animation: ges-loader-3d-4-rotation 2s linear infinite;
+
+    background-image:
+      linear-gradient(45deg, var(--ges-loader-color, #1890ff) 25%, transparent 0),
+      linear-gradient(135deg, var(--ges-loader-color, #1890ff) 25%, transparent 0),
+      linear-gradient(225deg, var(--ges-loader-color, #1890ff) 25%, transparent 0),
+      linear-gradient(315deg, var(--ges-loader-color, #1890ff) 25%, transparent 0);
+    background-position:
+      0 0,
+      0 0,
+      0 0,
+      0 0;
+    background-size: 50% 50%;
+    background-repeat: no-repeat;
+  }
+}
+
+@keyframes ges-loader-3d-4-rotation {
+  0% {
+    transform: rotate3d(1, 1, 1, 0deg);
+  }
+  25% {
+    transform: rotate3d(1, 1, 0, 90deg);
+  }
+  50% {
+    transform: rotate3d(1, 0, 1, 180deg);
+  }
+  75% {
+    transform: rotate3d(0, 1, 1, 270deg);
+  }
+  100% {
+    transform: rotate3d(1, 1, 1, 360deg);
+  }
+}
+
+// 3D加载器 - 类型5 (卡片堆叠)
+.ges-loader-3d-5 {
+  width: var(--ges-loader-size, 48px);
+  height: var(--ges-loader-size, 48px);
+  perspective: calc(var(--ges-loader-size, 48px) * 5);
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    width: 80%;
+    height: 80%;
+    top: 10%;
+    left: 10%;
+    background-color: var(--ges-loader-color, #1890ff);
+    animation: ges-loader-3d-5 1.5s ease-in-out infinite;
+    box-shadow:
+      calc(var(--ges-loader-size, 48px) * 0.05) calc(var(--ges-loader-size, 48px) * 0.05) 0
+        rgba(var(--ges-loader-color-rgb, 24, 144, 255), 0.2),
+      calc(var(--ges-loader-size, 48px) * 0.1) calc(var(--ges-loader-size, 48px) * 0.1) 0
+        rgba(var(--ges-loader-color-rgb, 24, 144, 255), 0.4);
+  }
+}
+
+@keyframes ges-loader-3d-5 {
+  0%,
+  100% {
+    transform: translateZ(0) rotateX(0);
+  }
+  25% {
+    transform: translateZ(calc(var(--ges-loader-size, 48px) * -0.2)) rotateX(20deg);
+  }
+  75% {
+    transform: translateZ(calc(var(--ges-loader-size, 48px) * 0.2)) rotateX(-20deg);
+  }
+}
+
+// 3D加载器 - 类型6 (波浪扭曲)
+.ges-loader-3d-6 {
+  width: var(--ges-loader-size, 48px);
+  height: var(--ges-loader-size, 48px);
+  perspective: calc(var(--ges-loader-size, 48px) * 3);
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: calc(var(--ges-loader-size, 48px) * 0.8);
+    top: 10%;
+    background-color: var(--ges-loader-color, #1890ff);
+    animation: ges-loader-3d-6 1.8s ease-in-out infinite;
+    transform-origin: center center;
+  }
+}
+
+@keyframes ges-loader-3d-6 {
+  0%,
+  100% {
+    transform: rotateX(0deg) rotateY(0deg);
+  }
+  25% {
+    transform: rotateX(20deg) rotateY(10deg);
+  }
+  50% {
+    transform: rotateX(0deg) rotateY(30deg);
+  }
+  75% {
+    transform: rotateX(-20deg) rotateY(10deg);
+  }
+}
+
+// 3D加载器 - 类型7 (立方体展开)
+.ges-loader-3d-7 {
+  width: var(--ges-loader-size, 48px);
+  height: var(--ges-loader-size, 48px);
+  perspective: calc(var(--ges-loader-size, 48px) * 4);
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    width: calc(var(--ges-loader-size, 48px) * 0.7);
+    height: calc(var(--ges-loader-size, 48px) * 0.7);
+    top: 15%;
+    left: 15%;
+    background-color: rgba(var(--ges-loader-color-rgb, 24, 144, 255), 0.5);
+    border: calc(var(--ges-loader-size, 48px) * 0.03) solid var(--ges-loader-color, #1890ff);
+    transform-style: preserve-3d;
+    animation: ges-loader-3d-7 3s ease-in-out infinite;
+  }
+}
+
+@keyframes ges-loader-3d-7 {
+  0%,
+  100% {
+    transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg);
+  }
+  16.67% {
+    transform: rotateX(0deg) rotateY(90deg) rotateZ(0deg);
+  }
+  33.33% {
+    transform: rotateX(90deg) rotateY(90deg) rotateZ(0deg);
+  }
+  50% {
+    transform: rotateX(90deg) rotateY(180deg) rotateZ(0deg);
+  }
+  66.67% {
+    transform: rotateX(0deg) rotateY(180deg) rotateZ(90deg);
+  }
+  83.33% {
+    transform: rotateX(0deg) rotateY(270deg) rotateZ(90deg);
+  }
+}
+
+// 3D加载器 - 类型8 (钟摆)
+.ges-loader-3d-8 {
+  width: var(--ges-loader-size, 48px);
+  height: var(--ges-loader-size, 48px);
+  perspective: calc(var(--ges-loader-size, 48px) * 5);
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    width: calc(var(--ges-loader-size, 48px) * 0.15);
+    height: calc(var(--ges-loader-size, 48px) * 0.8);
+    top: 5%;
+    left: calc(50% - var(--ges-loader-size, 48px) * 0.075);
+    background-color: var(--ges-loader-color, #1890ff);
+    transform-origin: top center;
+    animation: ges-loader-3d-8 1.5s ease-in-out infinite;
+    border-radius: 0 0 calc(var(--ges-loader-size, 48px) * 0.075) calc(var(--ges-loader-size, 48px) * 0.075);
+  }
+}
+
+@keyframes ges-loader-3d-8 {
+  0%,
+  100% {
+    transform: rotate3d(0, 0, 1, 40deg);
+  }
+  50% {
+    transform: rotate3d(0, 0, 1, -40deg);
+  }
+}
+
+// 3D加载器 - 类型9 (折叠书页)
+.ges-loader-3d-9 {
+  width: var(--ges-loader-size, 48px);
+  height: var(--ges-loader-size, 48px);
+  perspective: calc(var(--ges-loader-size, 48px) * 3);
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    width: 45%;
+    height: 90%;
+    left: 5%;
+    top: 5%;
+    background-color: var(--ges-loader-color, #1890ff);
+    transform-origin: right center;
+    animation: ges-loader-3d-9-left 2.5s ease-in-out infinite;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    width: 45%;
+    height: 90%;
+    right: 5%;
+    top: 5%;
+    background-color: rgba(var(--ges-loader-color-rgb, 24, 144, 255), 0.7);
+    transform-origin: left center;
+    animation: ges-loader-3d-9-right 2.5s ease-in-out infinite;
+  }
+}
+
+@keyframes ges-loader-3d-9-left {
+  0%,
+  100% {
+    transform: rotateY(0deg);
+  }
+  50% {
+    transform: rotateY(-165deg);
+  }
+}
+
+@keyframes ges-loader-3d-9-right {
+  0%,
+  100% {
+    transform: rotateY(0deg);
+  }
+  50% {
+    transform: rotateY(165deg);
+  }
+}
+
+// 3D加载器 - 类型10 (悬浮球)
+.ges-loader-3d-10 {
+  width: var(--ges-loader-size, 48px);
+  height: var(--ges-loader-size, 48px);
+  perspective: calc(var(--ges-loader-size, 48px) * 3);
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    width: calc(var(--ges-loader-size, 48px) * 0.5);
+    height: calc(var(--ges-loader-size, 48px) * 0.5);
+    top: 25%;
+    left: 25%;
+    background-color: var(--ges-loader-color, #1890ff);
+    border-radius: 50%;
+    animation: ges-loader-3d-10 1.5s ease-in-out infinite;
+    box-shadow: 0 calc(var(--ges-loader-size, 48px) * 0.25) calc(var(--ges-loader-size, 48px) * 0.1) rgba(0, 0, 0, 0.2);
+  }
+}
+
+@keyframes ges-loader-3d-10 {
+  0%,
+  100% {
+    transform: translateZ(0);
+  }
+  50% {
+    transform: translateZ(calc(var(--ges-loader-size, 48px) * 0.3));
+  }
+}

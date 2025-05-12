@@ -1,0 +1,220 @@
+/**
+ * 脉冲加载器样式
+ * 创建日期: 2024-12-08
+ * 作者: aiftt
+ * 更新日期: 2024-12-11 - 实现5种脉冲效果加载器
+ */
+
+@use 'sass:math';
+
+// 脉冲加载器 - 类型1 (简单脉冲)
+.ges-loader-pulsing-1 {
+  width: var(--ges-loader-size, 48px);
+  height: var(--ges-loader-size, 48px);
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    width: calc(var(--ges-loader-size, 48px) * 0.6);
+    height: calc(var(--ges-loader-size, 48px) * 0.6);
+    background-color: var(--ges-loader-color, #1890ff);
+    border-radius: 50%;
+    top: 20%;
+    left: 20%;
+    animation: ges-loader-pulsing-1 1.5s ease-in-out infinite;
+  }
+}
+
+@keyframes ges-loader-pulsing-1 {
+  0%,
+  100% {
+    transform: scale(0.8);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+// 脉冲加载器 - 类型2 (双脉冲)
+.ges-loader-pulsing-2 {
+  width: var(--ges-loader-size, 48px);
+  height: var(--ges-loader-size, 48px);
+  position: relative;
+
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    background-color: var(--ges-loader-color, #1890ff);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  &::before {
+    width: calc(var(--ges-loader-size, 48px) * 0.3);
+    height: calc(var(--ges-loader-size, 48px) * 0.3);
+    animation: ges-loader-pulsing-2-1 1.5s ease-in-out infinite;
+    z-index: 1;
+  }
+
+  &::after {
+    width: calc(var(--ges-loader-size, 48px) * 0.6);
+    height: calc(var(--ges-loader-size, 48px) * 0.6);
+    animation: ges-loader-pulsing-2-2 1.5s ease-in-out infinite;
+    opacity: 0.5;
+  }
+}
+
+@keyframes ges-loader-pulsing-2-1 {
+  0%,
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(0.8);
+  }
+}
+
+@keyframes ges-loader-pulsing-2-2 {
+  0%,
+  100% {
+    transform: translate(-50%, -50%) scale(0.8);
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+// 脉冲加载器 - 类型3 (方块脉冲)
+.ges-loader-pulsing-3 {
+  width: var(--ges-loader-size, 48px);
+  height: var(--ges-loader-size, 48px);
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    width: calc(var(--ges-loader-size, 48px) * 0.6);
+    height: calc(var(--ges-loader-size, 48px) * 0.6);
+    background-color: var(--ges-loader-color, #1890ff);
+    top: 20%;
+    left: 20%;
+    animation: ges-loader-pulsing-3 1.5s ease-in-out infinite;
+  }
+}
+
+@keyframes ges-loader-pulsing-3 {
+  0%,
+  100% {
+    transform: scale(0.8) rotate(0deg);
+    border-radius: 0;
+  }
+  50% {
+    transform: scale(1) rotate(45deg);
+    border-radius: 20%;
+  }
+}
+
+// 脉冲加载器 - 类型4 (波纹脉冲)
+.ges-loader-pulsing-4 {
+  width: var(--ges-loader-size, 48px);
+  height: var(--ges-loader-size, 48px);
+  position: relative;
+
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    border: calc(var(--ges-loader-size, 48px) * 0.03) solid var(--ges-loader-color, #1890ff);
+  }
+
+  &::before {
+    width: calc(var(--ges-loader-size, 48px) * 0.3);
+    height: calc(var(--ges-loader-size, 48px) * 0.3);
+    opacity: 1;
+    animation: ges-loader-pulsing-4 1.5s ease-out infinite;
+  }
+
+  &::after {
+    width: calc(var(--ges-loader-size, 48px) * 0.3);
+    height: calc(var(--ges-loader-size, 48px) * 0.3);
+    opacity: 1;
+    animation: ges-loader-pulsing-4 1.5s ease-out 0.5s infinite;
+  }
+}
+
+@keyframes ges-loader-pulsing-4 {
+  0% {
+    width: calc(var(--ges-loader-size, 48px) * 0.3);
+    height: calc(var(--ges-loader-size, 48px) * 0.3);
+    opacity: 1;
+  }
+  100% {
+    width: calc(var(--ges-loader-size, 48px) * 0.8);
+    height: calc(var(--ges-loader-size, 48px) * 0.8);
+    opacity: 0;
+  }
+}
+
+// 脉冲加载器 - 类型5 (心跳脉冲)
+.ges-loader-pulsing-5 {
+  width: var(--ges-loader-size, 48px);
+  height: var(--ges-loader-size, 48px);
+  position: relative;
+
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    background-color: var(--ges-loader-color, #1890ff);
+    width: calc(var(--ges-loader-size, 48px) * 0.3);
+    height: calc(var(--ges-loader-size, 48px) * 0.45);
+    border-radius: 50% 50% 0 0;
+    top: 35%;
+    transform: rotate(-45deg);
+    transform-origin: 0 100%;
+  }
+
+  &::before {
+    left: 40%;
+    animation: ges-loader-pulsing-5-1 1s ease-in-out infinite;
+  }
+
+  &::after {
+    left: 40%;
+    transform: rotate(45deg);
+    transform-origin: 100% 100%;
+    animation: ges-loader-pulsing-5-2 1s ease-in-out infinite;
+  }
+}
+
+@keyframes ges-loader-pulsing-5-1 {
+  0%,
+  100% {
+    transform: rotate(-45deg) scale(0.8);
+  }
+  30%,
+  50% {
+    transform: rotate(-45deg) scale(1);
+  }
+}
+
+@keyframes ges-loader-pulsing-5-2 {
+  0%,
+  100% {
+    transform: rotate(45deg) scale(0.8);
+  }
+  30%,
+  50% {
+    transform: rotate(45deg) scale(1);
+  }
+}

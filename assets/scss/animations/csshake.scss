@@ -5,7 +5,11 @@
  * 源自: https://elrumordelaluz.github.io/csshake/
  * 许可: MIT license - https://opensource.org/licenses/MIT
  * 更新日期: 2024-11-27 - 初始创建，添加前缀css-shake-，区分不同动画库
+ * 更新日期: 2024-12-06 - 修复SCSS除法运算符弃用警告
+ * 更新日期: 2024-12-06 - 修复全局内置函数random()弃用警告
  */
+
+@use 'sass:math';
 
 // 配置变量
 $shake-prefix: 'css-shake' !default; // 统一前缀变量
@@ -42,15 +46,15 @@ $shake-animation-delay: 0s !default;
 
     @for $i from 1 through $steps {
       @if $i < $chunk * $precision {
-        $key: $i * 100% / $steps;
-        $hVal: if(random(100) > 50, $h * -1, $h) * random($i) / $steps;
-        $vVal: if(random(100) > 50, $v * -1, $v) * random($i) / $steps;
-        $rVal: if(random(100) > 50, $r * -1, $r) * random($i) / $steps;
+        $key: math.div($i * 100%, $steps);
+        $hVal: if(math.random(100) > 50, $h * -1, $h) * math.div(math.random($i), $steps);
+        $vVal: if(math.random(100) > 50, $v * -1, $v) * math.div(math.random($i), $steps);
+        $rVal: if(math.random(100) > 50, $r * -1, $r) * math.div(math.random($i), $steps);
 
         #{$key} {
           transform: translate(#{$hVal}, #{$vVal}) rotate(#{$rVal});
           @if $opacity {
-            opacity: random(100) / 100;
+            opacity: math.div(math.random(100), 100);
           }
         }
       }

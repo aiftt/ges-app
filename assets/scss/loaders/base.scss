@@ -1,0 +1,92 @@
+/**
+ * 加载器基础样式
+ * 创建日期: 2024-12-08
+ * 作者: Claude
+ */
+
+// 统一的加载器容器样式
+.ges-loader,
+[class^='ges-loader-'] {
+  display: inline-block;
+  position: relative;
+  box-sizing: border-box;
+
+  // 当有内容时，添加足够的空间
+  &.ges-loader-with-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    &::before,
+    &::after {
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+
+    &[class*='dots-'],
+    &[class*='bars-'],
+    &[class*='wave-'],
+    &[class*='text-'] {
+      > * {
+        margin-top: calc(var(--ges-loader-size, 48px) * 1.1);
+      }
+    }
+
+    &[class*='spinner-'],
+    &[class*='ring-'],
+    &[class*='polygon-'],
+    &[class*='classic-'],
+    &[class*='shape-'],
+    &[class*='3d-'] {
+      > * {
+        margin-top: calc(var(--ges-loader-size, 48px) * 1.2);
+      }
+    }
+
+    &[class*='progress-'] {
+      > * {
+        margin-top: calc(var(--ges-loader-size, 48px) * 0.3);
+      }
+    }
+  }
+}
+
+// 对旧类型多边形加载器的兼容，将ges-loader转为ges-loader-polygon-{type}
+.ges-loader-type-1 {
+  @extend .ges-loader-polygon-1 !optional;
+}
+.ges-loader-type-2 {
+  @extend .ges-loader-polygon-2 !optional;
+}
+.ges-loader-type-3 {
+  @extend .ges-loader-polygon-3 !optional;
+}
+.ges-loader-type-4 {
+  @extend .ges-loader-polygon-4 !optional;
+}
+.ges-loader-type-5 {
+  @extend .ges-loader-polygon-5 !optional;
+}
+.ges-loader-type-6 {
+  @extend .ges-loader-polygon-6 !optional;
+}
+.ges-loader-type-7 {
+  @extend .ges-loader-polygon-7 !optional;
+}
+.ges-loader-type-8 {
+  @extend .ges-loader-polygon-8 !optional;
+}
+.ges-loader-type-9 {
+  @extend .ges-loader-polygon-9 !optional;
+}
+.ges-loader-type-10 {
+  @extend .ges-loader-polygon-10 !optional;
+}
+.ges-loader-type-11 {
+  @extend .ges-loader-polygon-11 !optional;
+}
+.ges-loader-type-12 {
+  @extend .ges-loader-polygon-12 !optional;
+}

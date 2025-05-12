@@ -1,0 +1,231 @@
+/**
+ * 填充加载器样式
+ * 创建日期: 2024-12-08
+ * 作者: Claude
+ * 更新日期: 2024-12-09 - 实现5种填充效果加载器
+ */
+
+@use 'sass:math';
+
+// 填充加载器 - 类型1 (水平填充)
+.ges-loader-filling-1 {
+  width: var(--ges-loader-size, 48px);
+  height: var(--ges-loader-size, 48px);
+  position: relative;
+  border: calc(var(--ges-loader-size, 48px) * 0.05) solid var(--ges-loader-color, #1890ff);
+
+  &::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background-color: rgba(var(--ges-loader-color-rgb, 24, 144, 255), 0.3);
+    transform-origin: bottom;
+    animation: ges-loader-filling-1 2s ease-in-out infinite;
+  }
+}
+
+@keyframes ges-loader-filling-1 {
+  0%,
+  10% {
+    transform: scaleY(0);
+  }
+  90%,
+  100% {
+    transform: scaleY(1);
+  }
+}
+
+// 填充加载器 - 类型2 (圆形填充)
+.ges-loader-filling-2 {
+  width: var(--ges-loader-size, 48px);
+  height: var(--ges-loader-size, 48px);
+  position: relative;
+  border-radius: 50%;
+  border: calc(var(--ges-loader-size, 48px) * 0.05) solid var(--ges-loader-color, #1890ff);
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background-color: rgba(var(--ges-loader-color-rgb, 24, 144, 255), 0.3);
+    transform-origin: center bottom;
+    animation: ges-loader-filling-2 2s ease-in-out infinite;
+  }
+}
+
+@keyframes ges-loader-filling-2 {
+  0%,
+  10% {
+    transform: translateY(100%);
+  }
+  90%,
+  100% {
+    transform: translateY(0%);
+  }
+}
+
+// 填充加载器 - 类型3 (层次填充)
+.ges-loader-filling-3 {
+  width: var(--ges-loader-size, 48px);
+  height: var(--ges-loader-size, 48px);
+  position: relative;
+  background-color: transparent;
+  border: calc(var(--ges-loader-size, 48px) * 0.04) solid var(--ges-loader-color, #1890ff);
+
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    background-color: rgba(var(--ges-loader-color-rgb, 24, 144, 255), 0.3);
+    width: 100%;
+    animation: ges-loader-filling-3 1.5s ease-in-out infinite;
+  }
+
+  &::before {
+    height: 33.33%;
+    bottom: 0;
+    left: 0;
+    animation-delay: 0s;
+  }
+
+  &::after {
+    height: 33.33%;
+    bottom: 33.33%;
+    left: 0;
+    animation-delay: 0.5s;
+  }
+}
+
+@keyframes ges-loader-filling-3 {
+  0%,
+  10% {
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+  40%,
+  60% {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+  90%,
+  100% {
+    transform: scaleX(0);
+    transform-origin: right;
+  }
+}
+
+// 填充加载器 - 类型4 (角落填充)
+.ges-loader-filling-4 {
+  width: var(--ges-loader-size, 48px);
+  height: var(--ges-loader-size, 48px);
+  position: relative;
+  border: calc(var(--ges-loader-size, 48px) * 0.03) solid var(--ges-loader-color, #1890ff);
+
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    width: 50%;
+    height: 50%;
+    background-color: rgba(var(--ges-loader-color-rgb, 24, 144, 255), 0.3);
+  }
+
+  &::before {
+    top: 0;
+    left: 0;
+    animation: ges-loader-filling-4-1 2s ease-in-out infinite;
+  }
+
+  &::after {
+    bottom: 0;
+    right: 0;
+    animation: ges-loader-filling-4-2 2s ease-in-out infinite;
+  }
+}
+
+@keyframes ges-loader-filling-4-1 {
+  0%,
+  20% {
+    transform: translate(0, 0) scale(0);
+    transform-origin: top left;
+  }
+  70%,
+  100% {
+    transform: translate(0, 0) scale(1);
+    transform-origin: top left;
+  }
+}
+
+@keyframes ges-loader-filling-4-2 {
+  0%,
+  20% {
+    transform: translate(0, 0) scale(0);
+    transform-origin: bottom right;
+  }
+  70%,
+  100% {
+    transform: translate(0, 0) scale(1);
+    transform-origin: bottom right;
+  }
+}
+
+// 填充加载器 - 类型5 (液滴填充)
+.ges-loader-filling-5 {
+  width: var(--ges-loader-size, 48px);
+  height: var(--ges-loader-size, 48px);
+  position: relative;
+  border-radius: 0 0 calc(var(--ges-loader-size, 48px) * 0.5) calc(var(--ges-loader-size, 48px) * 0.5);
+  border: calc(var(--ges-loader-size, 48px) * 0.04) solid var(--ges-loader-color, #1890ff);
+  border-top: none;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    bottom: 0;
+    left: 0;
+    background-color: rgba(var(--ges-loader-color-rgb, 24, 144, 255), 0.3);
+    animation: ges-loader-filling-5 2.5s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    width: calc(var(--ges-loader-size, 48px) * 0.04);
+    height: calc(var(--ges-loader-size, 48px) * 0.1);
+    background-color: var(--ges-loader-color, #1890ff);
+    top: calc(var(--ges-loader-size, 48px) * -0.1);
+    left: calc(50% - var(--ges-loader-size, 48px) * 0.02);
+  }
+}
+
+@keyframes ges-loader-filling-5 {
+  0%,
+  10% {
+    transform: translateY(100%);
+    height: 100%;
+  }
+
+  20% {
+    height: 90%;
+  }
+
+  40% {
+    height: 80%;
+  }
+
+  90%,
+  100% {
+    transform: translateY(0%);
+    height: 100%;
+  }
+}

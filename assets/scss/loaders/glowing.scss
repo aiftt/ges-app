@@ -1,0 +1,204 @@
+/**
+ * 发光加载器样式
+ * 创建日期: 2024-12-08
+ * 作者: Claude
+ * 更新日期: 2024-12-09 - 实现5种发光效果加载器
+ */
+
+@use 'sass:math';
+
+// 发光加载器 - 类型1 (脉冲光环)
+.ges-loader-glowing-1 {
+  width: var(--ges-loader-size, 48px);
+  height: var(--ges-loader-size, 48px);
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    width: calc(var(--ges-loader-size, 48px) * 0.4);
+    height: calc(var(--ges-loader-size, 48px) * 0.4);
+    background-color: var(--ges-loader-color, #1890ff);
+    border-radius: 50%;
+    top: 30%;
+    left: 30%;
+    box-shadow: 0 0 calc(var(--ges-loader-size, 48px) * 0.2) var(--ges-loader-color, #1890ff);
+    animation: ges-loader-glowing-1 1.5s ease-in-out infinite alternate;
+  }
+}
+
+@keyframes ges-loader-glowing-1 {
+  0% {
+    box-shadow: 0 0 calc(var(--ges-loader-size, 48px) * 0.05) var(--ges-loader-color, #1890ff);
+    opacity: 0.3;
+  }
+  100% {
+    box-shadow: 0 0 calc(var(--ges-loader-size, 48px) * 0.3) var(--ges-loader-color, #1890ff);
+    opacity: 1;
+  }
+}
+
+// 发光加载器 - 类型2 (闪烁星星)
+.ges-loader-glowing-2 {
+  width: var(--ges-loader-size, 48px);
+  height: var(--ges-loader-size, 48px);
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-image:
+      radial-gradient(circle 10% at 20% 20%, var(--ges-loader-color, #1890ff) 100%, transparent 0),
+      radial-gradient(circle 10% at 80% 20%, var(--ges-loader-color, #1890ff) 100%, transparent 0),
+      radial-gradient(circle 10% at 50% 50%, var(--ges-loader-color, #1890ff) 100%, transparent 0),
+      radial-gradient(circle 10% at 20% 80%, var(--ges-loader-color, #1890ff) 100%, transparent 0),
+      radial-gradient(circle 10% at 80% 80%, var(--ges-loader-color, #1890ff) 100%, transparent 0);
+    animation: ges-loader-glowing-2 2s ease-in-out infinite;
+  }
+}
+
+@keyframes ges-loader-glowing-2 {
+  0%,
+  100% {
+    opacity: 0.6;
+    filter: blur(1px);
+  }
+  20% {
+    opacity: 1;
+    filter: blur(0);
+  }
+  40% {
+    opacity: 0.4;
+    filter: blur(2px);
+  }
+  60% {
+    opacity: 1;
+    filter: blur(0);
+  }
+  80% {
+    opacity: 0.7;
+    filter: blur(1px);
+  }
+}
+
+// 发光加载器 - 类型3 (霓虹轮廓)
+.ges-loader-glowing-3 {
+  width: var(--ges-loader-size, 48px);
+  height: var(--ges-loader-size, 48px);
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    width: calc(var(--ges-loader-size, 48px) * 0.7);
+    height: calc(var(--ges-loader-size, 48px) * 0.7);
+    border: calc(var(--ges-loader-size, 48px) * 0.04) solid var(--ges-loader-color, #1890ff);
+    border-radius: 50%;
+    top: 15%;
+    left: 15%;
+    box-shadow:
+      0 0 calc(var(--ges-loader-size, 48px) * 0.02) var(--ges-loader-color, #1890ff),
+      0 0 calc(var(--ges-loader-size, 48px) * 0.06) var(--ges-loader-color, #1890ff),
+      inset 0 0 calc(var(--ges-loader-size, 48px) * 0.04) var(--ges-loader-color, #1890ff);
+    animation: ges-loader-glowing-3 1.5s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+  }
+}
+
+@keyframes ges-loader-glowing-3 {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 1;
+  }
+}
+
+// 发光加载器 - 类型4 (电波扩散)
+.ges-loader-glowing-4 {
+  width: var(--ges-loader-size, 48px);
+  height: var(--ges-loader-size, 48px);
+  position: relative;
+
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    background-color: transparent;
+    border: calc(var(--ges-loader-size, 48px) * 0.05) solid var(--ges-loader-color, #1890ff);
+    transform: translate(-50%, -50%);
+    top: 50%;
+    left: 50%;
+  }
+
+  &::before {
+    width: calc(var(--ges-loader-size, 48px) * 0.3);
+    height: calc(var(--ges-loader-size, 48px) * 0.3);
+    opacity: 1;
+    animation: ges-loader-glowing-4-ripple 2s ease-out infinite;
+  }
+
+  &::after {
+    width: calc(var(--ges-loader-size, 48px) * 0.3);
+    height: calc(var(--ges-loader-size, 48px) * 0.3);
+    opacity: 1;
+    animation: ges-loader-glowing-4-ripple 2s ease-out 0.5s infinite;
+  }
+}
+
+@keyframes ges-loader-glowing-4-ripple {
+  0% {
+    width: calc(var(--ges-loader-size, 48px) * 0.3);
+    height: calc(var(--ges-loader-size, 48px) * 0.3);
+    opacity: 1;
+    box-shadow: 0 0 0 0 rgba(var(--ges-loader-color-rgb, 24, 144, 255), 0.5);
+  }
+  100% {
+    width: calc(var(--ges-loader-size, 48px) * 0.8);
+    height: calc(var(--ges-loader-size, 48px) * 0.8);
+    opacity: 0;
+    box-shadow: 0 0 0 calc(var(--ges-loader-size, 48px) * 0.2) rgba(var(--ges-loader-color-rgb, 24, 144, 255), 0);
+  }
+}
+
+// 发光加载器 - 类型5 (能量聚集)
+.ges-loader-glowing-5 {
+  width: var(--ges-loader-size, 48px);
+  height: var(--ges-loader-size, 48px);
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: radial-gradient(
+      circle,
+      var(--ges-loader-color, #1890ff) 0%,
+      rgba(var(--ges-loader-color-rgb, 24, 144, 255), 0.7) 25%,
+      rgba(var(--ges-loader-color-rgb, 24, 144, 255), 0.5) 50%,
+      rgba(var(--ges-loader-color-rgb, 24, 144, 255), 0.2) 75%,
+      rgba(var(--ges-loader-color-rgb, 24, 144, 255), 0) 100%
+    );
+    filter: blur(calc(var(--ges-loader-size, 48px) * 0.03));
+    animation: ges-loader-glowing-5 2s ease-in-out infinite;
+  }
+}
+
+@keyframes ges-loader-glowing-5 {
+  0%,
+  100% {
+    opacity: 0.5;
+    transform: scale(0.8);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+}

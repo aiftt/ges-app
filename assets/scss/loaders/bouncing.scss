@@ -1,0 +1,345 @@
+/**
+ * 弹跳加载器样式
+ * 创建日期: 2024-12-08
+ * 作者: Claude
+ * 更新日期: 2024-12-09 - 实现5种弹跳效果加载器
+ */
+
+@use 'sass:math';
+
+// 弹跳加载器 - 类型1 (单球弹跳)
+.ges-loader-bouncing-1 {
+  width: var(--ges-loader-size, 48px);
+  height: var(--ges-loader-size, 48px);
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    width: calc(var(--ges-loader-size, 48px) * 0.3);
+    height: calc(var(--ges-loader-size, 48px) * 0.3);
+    border-radius: 50%;
+    background-color: var(--ges-loader-color, #1890ff);
+    left: calc(50% - var(--ges-loader-size, 48px) * 0.15);
+    animation: ges-loader-bouncing-1 0.6s cubic-bezier(0.19, 0.57, 0.3, 0.98) infinite alternate;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    width: calc(var(--ges-loader-size, 48px) * 0.3);
+    height: calc(var(--ges-loader-size, 48px) * 0.03);
+    border-radius: 50%;
+    background-color: rgba(var(--ges-loader-color-rgb, 24, 144, 255), 0.2);
+    bottom: 0;
+    left: calc(50% - var(--ges-loader-size, 48px) * 0.15);
+    filter: blur(calc(var(--ges-loader-size, 48px) * 0.01));
+    animation: ges-loader-bouncing-1-shadow 0.6s cubic-bezier(0.19, 0.57, 0.3, 0.98) infinite alternate;
+  }
+}
+
+@keyframes ges-loader-bouncing-1 {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(calc(var(--ges-loader-size, 48px) * 0.6));
+  }
+}
+
+@keyframes ges-loader-bouncing-1-shadow {
+  0% {
+    transform: scale(1.5);
+    opacity: 0.2;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+}
+
+// 弹跳加载器 - 类型2 (三球连动)
+.ges-loader-bouncing-2 {
+  width: var(--ges-loader-size, 48px);
+  height: var(--ges-loader-size, 48px);
+  position: relative;
+
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    width: calc(var(--ges-loader-size, 48px) * 0.15);
+    height: calc(var(--ges-loader-size, 48px) * 0.15);
+    border-radius: 50%;
+    background-color: var(--ges-loader-color, #1890ff);
+    top: 0;
+    animation: ges-loader-bouncing-2 1.2s ease-in-out infinite;
+  }
+
+  &::before {
+    left: calc(var(--ges-loader-size, 48px) * 0.1);
+    animation-delay: 0s;
+  }
+
+  &::after {
+    left: calc(var(--ges-loader-size, 48px) * 0.42);
+    animation-delay: 0.2s;
+  }
+}
+
+.ges-loader-bouncing-2::before,
+.ges-loader-bouncing-2::after,
+.ges-loader-bouncing-2 {
+  &::before {
+    content: '';
+    position: absolute;
+    width: calc(var(--ges-loader-size, 48px) * 0.15);
+    height: calc(var(--ges-loader-size, 48px) * 0.15);
+    border-radius: 50%;
+    background-color: var(--ges-loader-color, #1890ff);
+    top: 0;
+    left: calc(var(--ges-loader-size, 48px) * 0.75);
+    animation: ges-loader-bouncing-2 1.2s ease-in-out infinite;
+    animation-delay: 0.4s;
+  }
+}
+
+@keyframes ges-loader-bouncing-2 {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(calc(var(--ges-loader-size, 48px) * 0.7));
+  }
+}
+
+// 弹跳加载器 - 类型3 (变形弹跳)
+.ges-loader-bouncing-3 {
+  width: var(--ges-loader-size, 48px);
+  height: var(--ges-loader-size, 48px);
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    width: calc(var(--ges-loader-size, 48px) * 0.35);
+    height: calc(var(--ges-loader-size, 48px) * 0.35);
+    background-color: var(--ges-loader-color, #1890ff);
+    border-radius: 50%;
+    left: calc(50% - var(--ges-loader-size, 48px) * 0.175);
+    top: 0;
+    animation: ges-loader-bouncing-3 1s cubic-bezier(0.68, -0.55, 0.27, 1.55) infinite;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    width: calc(var(--ges-loader-size, 48px) * 0.4);
+    height: calc(var(--ges-loader-size, 48px) * 0.03);
+    background-color: rgba(var(--ges-loader-color-rgb, 24, 144, 255), 0.2);
+    border-radius: 50%;
+    bottom: calc(var(--ges-loader-size, 48px) * 0.05);
+    left: calc(50% - var(--ges-loader-size, 48px) * 0.2);
+    filter: blur(calc(var(--ges-loader-size, 48px) * 0.01));
+    animation: ges-loader-bouncing-3-shadow 1s cubic-bezier(0.68, -0.55, 0.27, 1.55) infinite;
+  }
+}
+
+@keyframes ges-loader-bouncing-3 {
+  0%,
+  100% {
+    transform: translateY(0) scale(1, 1);
+  }
+  10% {
+    transform: translateY(0) scale(1.1, 0.9);
+  }
+  30% {
+    transform: translateY(calc(var(--ges-loader-size, 48px) * 0.3)) scale(0.9, 1.1);
+  }
+  50% {
+    transform: translateY(calc(var(--ges-loader-size, 48px) * 0.6)) scale(1, 1);
+  }
+  57% {
+    transform: translateY(calc(var(--ges-loader-size, 48px) * 0.6)) scale(1.1, 0.9);
+  }
+  64% {
+    transform: translateY(calc(var(--ges-loader-size, 48px) * 0.4)) scale(0.9, 1.1);
+  }
+  75% {
+    transform: translateY(calc(var(--ges-loader-size, 48px) * 0.2)) scale(1, 1);
+  }
+  82% {
+    transform: translateY(calc(var(--ges-loader-size, 48px) * 0.2)) scale(1.05, 0.95);
+  }
+  89% {
+    transform: translateY(calc(var(--ges-loader-size, 48px) * 0.1)) scale(0.95, 1.05);
+  }
+  95% {
+    transform: translateY(0) scale(1, 1);
+  }
+}
+
+@keyframes ges-loader-bouncing-3-shadow {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.2;
+  }
+  50% {
+    transform: scale(1.5);
+    opacity: 0.4;
+  }
+}
+
+// 弹跳加载器 - 类型4 (交替弹跳)
+.ges-loader-bouncing-4 {
+  width: var(--ges-loader-size, 48px);
+  height: var(--ges-loader-size, 48px);
+  position: relative;
+
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    width: calc(var(--ges-loader-size, 48px) * 0.25);
+    height: calc(var(--ges-loader-size, 48px) * 0.25);
+    border-radius: 50%;
+    background-color: var(--ges-loader-color, #1890ff);
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  &::before {
+    left: calc(var(--ges-loader-size, 48px) * 0.1);
+    animation: ges-loader-bouncing-4-left 1s ease-in-out infinite;
+  }
+
+  &::after {
+    right: calc(var(--ges-loader-size, 48px) * 0.1);
+    animation: ges-loader-bouncing-4-right 1s ease-in-out infinite;
+  }
+}
+
+@keyframes ges-loader-bouncing-4-left {
+  0%,
+  100% {
+    transform: translateY(-50%);
+  }
+  25% {
+    transform: translateY(calc(-50% - var(--ges-loader-size, 48px) * 0.3));
+  }
+  50% {
+    transform: translateY(-50%);
+  }
+  75% {
+    transform: translateY(calc(-50% + var(--ges-loader-size, 48px) * 0.3));
+  }
+}
+
+@keyframes ges-loader-bouncing-4-right {
+  0%,
+  100% {
+    transform: translateY(-50%);
+  }
+  25% {
+    transform: translateY(calc(-50% + var(--ges-loader-size, 48px) * 0.3));
+  }
+  50% {
+    transform: translateY(-50%);
+  }
+  75% {
+    transform: translateY(calc(-50% - var(--ges-loader-size, 48px) * 0.3));
+  }
+}
+
+// 弹跳加载器 - 类型5 (波浪弹跳)
+.ges-loader-bouncing-5 {
+  width: var(--ges-loader-size, 48px);
+  height: var(--ges-loader-size, 48px);
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+
+  &::before {
+    content: '';
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    background-image:
+      radial-gradient(
+        circle calc(var(--ges-loader-size, 48px) * 0.1) at calc(var(--ges-loader-size, 48px) * 0.1) 80%,
+        var(--ges-loader-color, #1890ff) 100%,
+        transparent 0
+      ),
+      radial-gradient(
+        circle calc(var(--ges-loader-size, 48px) * 0.1) at calc(var(--ges-loader-size, 48px) * 0.3) 80%,
+        var(--ges-loader-color, #1890ff) 100%,
+        transparent 0
+      ),
+      radial-gradient(
+        circle calc(var(--ges-loader-size, 48px) * 0.1) at calc(var(--ges-loader-size, 48px) * 0.5) 80%,
+        var(--ges-loader-color, #1890ff) 100%,
+        transparent 0
+      ),
+      radial-gradient(
+        circle calc(var(--ges-loader-size, 48px) * 0.1) at calc(var(--ges-loader-size, 48px) * 0.7) 80%,
+        var(--ges-loader-color, #1890ff) 100%,
+        transparent 0
+      ),
+      radial-gradient(
+        circle calc(var(--ges-loader-size, 48px) * 0.1) at calc(var(--ges-loader-size, 48px) * 0.9) 80%,
+        var(--ges-loader-color, #1890ff) 100%,
+        transparent 0
+      );
+    background-repeat: no-repeat;
+    animation: ges-loader-bouncing-5 1.2s ease-in-out infinite;
+  }
+}
+
+@keyframes ges-loader-bouncing-5 {
+  0%,
+  100% {
+    background-position:
+      calc(var(--ges-loader-size, 48px) * 0.1) calc(var(--ges-loader-size, 48px) * 0.35),
+      calc(var(--ges-loader-size, 48px) * 0.3) calc(var(--ges-loader-size, 48px) * 0.5),
+      calc(var(--ges-loader-size, 48px) * 0.5) calc(var(--ges-loader-size, 48px) * 0.65),
+      calc(var(--ges-loader-size, 48px) * 0.7) calc(var(--ges-loader-size, 48px) * 0.5),
+      calc(var(--ges-loader-size, 48px) * 0.9) calc(var(--ges-loader-size, 48px) * 0.35);
+  }
+  20% {
+    background-position:
+      calc(var(--ges-loader-size, 48px) * 0.1) calc(var(--ges-loader-size, 48px) * 0.5),
+      calc(var(--ges-loader-size, 48px) * 0.3) calc(var(--ges-loader-size, 48px) * 0.65),
+      calc(var(--ges-loader-size, 48px) * 0.5) calc(var(--ges-loader-size, 48px) * 0.5),
+      calc(var(--ges-loader-size, 48px) * 0.7) calc(var(--ges-loader-size, 48px) * 0.35),
+      calc(var(--ges-loader-size, 48px) * 0.9) calc(var(--ges-loader-size, 48px) * 0.5);
+  }
+  40% {
+    background-position:
+      calc(var(--ges-loader-size, 48px) * 0.1) calc(var(--ges-loader-size, 48px) * 0.65),
+      calc(var(--ges-loader-size, 48px) * 0.3) calc(var(--ges-loader-size, 48px) * 0.5),
+      calc(var(--ges-loader-size, 48px) * 0.5) calc(var(--ges-loader-size, 48px) * 0.35),
+      calc(var(--ges-loader-size, 48px) * 0.7) calc(var(--ges-loader-size, 48px) * 0.5),
+      calc(var(--ges-loader-size, 48px) * 0.9) calc(var(--ges-loader-size, 48px) * 0.65);
+  }
+  60% {
+    background-position:
+      calc(var(--ges-loader-size, 48px) * 0.1) calc(var(--ges-loader-size, 48px) * 0.5),
+      calc(var(--ges-loader-size, 48px) * 0.3) calc(var(--ges-loader-size, 48px) * 0.35),
+      calc(var(--ges-loader-size, 48px) * 0.5) calc(var(--ges-loader-size, 48px) * 0.5),
+      calc(var(--ges-loader-size, 48px) * 0.7) calc(var(--ges-loader-size, 48px) * 0.65),
+      calc(var(--ges-loader-size, 48px) * 0.9) calc(var(--ges-loader-size, 48px) * 0.5);
+  }
+  80% {
+    background-position:
+      calc(var(--ges-loader-size, 48px) * 0.1) calc(var(--ges-loader-size, 48px) * 0.35),
+      calc(var(--ges-loader-size, 48px) * 0.3) calc(var(--ges-loader-size, 48px) * 0.5),
+      calc(var(--ges-loader-size, 48px) * 0.5) calc(var(--ges-loader-size, 48px) * 0.65),
+      calc(var(--ges-loader-size, 48px) * 0.7) calc(var(--ges-loader-size, 48px) * 0.5),
+      calc(var(--ges-loader-size, 48px) * 0.9) calc(var(--ges-loader-size, 48px) * 0.35);
+  }
+}
