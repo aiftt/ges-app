@@ -19,7 +19,7 @@ export default defineEventHandler(async (event) => {
     if (!body.username || !body.password || !body.email) {
       return createError({
         statusCode: 400,
-        statusMessage: '用户名、密码和邮箱不能为空',
+        message: '用户名、密码和邮箱不能为空',
       })
     }
 
@@ -46,13 +46,13 @@ export default defineEventHandler(async (event) => {
     if (error instanceof Error && error.message === '用户名已存在') {
       return createError({
         statusCode: 400,
-        statusMessage: '用户名已存在',
+        message: '用户名已存在',
       })
     }
 
     return createError({
       statusCode: 500,
-      statusMessage: '创建用户失败',
+      message: '创建用户失败',
     })
   }
 })

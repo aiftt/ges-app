@@ -17,7 +17,7 @@ export default defineEventHandler(async (event) => {
     if (!userId) {
       return createError({
         statusCode: 400,
-        statusMessage: '用户ID不能为空',
+        message: '用户ID不能为空',
       })
     }
 
@@ -27,7 +27,7 @@ export default defineEventHandler(async (event) => {
     if (!user) {
       return createError({
         statusCode: 404,
-        statusMessage: '用户不存在',
+        message: '用户不存在',
       })
     }
 
@@ -42,7 +42,7 @@ export default defineEventHandler(async (event) => {
 
     return createError({
       statusCode: 500,
-      statusMessage: '获取用户信息失败',
+      message: '获取用户信息失败',
     })
   }
 })

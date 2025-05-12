@@ -26,7 +26,7 @@ export default defineEventHandler(async (event) => {
     if (!body.username || !body.password || !body.email) {
       return createError({
         statusCode: 400,
-        statusMessage: '请提供用户名、密码和邮箱',
+        message: '请提供用户名、密码和邮箱',
       })
     }
 
@@ -34,7 +34,7 @@ export default defineEventHandler(async (event) => {
     if (!body.captcha) {
       return createError({
         statusCode: 400,
-        statusMessage: '请提供验证码',
+        message: '请提供验证码',
       })
     }
 
@@ -42,7 +42,7 @@ export default defineEventHandler(async (event) => {
     if (!storedCaptcha || storedCaptcha.toLowerCase() !== body.captcha.toLowerCase()) {
       return createError({
         statusCode: 400,
-        statusMessage: '验证码错误',
+        message: '验证码错误',
       })
     }
 
@@ -51,7 +51,7 @@ export default defineEventHandler(async (event) => {
     if (existingUser) {
       return createError({
         statusCode: 400,
-        statusMessage: '用户名已存在',
+        message: '用户名已存在',
       })
     }
 
@@ -77,7 +77,7 @@ export default defineEventHandler(async (event) => {
 
     return createError({
       statusCode: 500,
-      statusMessage: '注册失败',
+      message: '注册失败',
     })
   }
 })

@@ -120,7 +120,7 @@ async function handleLogin() {
   }
   catch (error: any) {
     logger.error('登录失败', error)
-    formError.value = error.data?.statusMessage || '登录失败，请重试'
+    formError.value = error.data?.message || '登录失败，请重试'
     refreshCaptcha()
   }
   finally {
@@ -165,7 +165,7 @@ async function handleRegister() {
   }
   catch (error: any) {
     logger.error('注册失败', error)
-    formError.value = error.data?.statusMessage || '注册失败，请重试'
+    formError.value = error.data?.message || '注册失败，请重试'
     refreshCaptcha()
   }
   finally {

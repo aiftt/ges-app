@@ -24,7 +24,7 @@ export default defineEventHandler(async (event) => {
     if (!body.ids || !Array.isArray(body.ids) || body.ids.length === 0) {
       return createError({
         statusCode: 400,
-        statusMessage: '请提供要删除的用户ID列表',
+        message: '请提供要删除的用户ID列表',
       })
     }
 
@@ -64,7 +64,7 @@ export default defineEventHandler(async (event) => {
 
     return createError({
       statusCode: 500,
-      statusMessage: '批量删除用户失败',
+      message: '批量删除用户失败',
     })
   }
 })

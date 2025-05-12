@@ -44,7 +44,7 @@ export default defineEventHandler(async (event) => {
 
     return createError({
       statusCode: 500,
-      statusMessage: '获取用户列表失败',
+      message: '获取用户列表失败',
     })
   }
 })

@@ -4,16 +4,14 @@
  * 作者: aiftt
  */
 import type { Collection, Document, MongoClient } from 'mongodb'
-import * as process from 'node:process'
 import { MongoClient as Client } from 'mongodb'
+import { MONGODB_DB_NAME, MONGODB_URL } from '~/utils/db-config'
 import serverLogger from '~/utils/server-logger'
 
 // 创建日志记录器
 const logger = serverLogger.child({ tag: 'mongodb' })
 
-// MongoDB 连接配置
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017'
-const DB_NAME = process.env.DB_NAME || 'ges_admin'
+const DB_NAME = MONGODB_DB_NAME
 
 // MongoDB 客户端实例
 let client: MongoClient | null = null
@@ -24,7 +22,7 @@ let client: MongoClient | null = null
 export async function getClient(): Promise<MongoClient> {
   if (!client) {
     try {
-      client = await Client.connect(MONGODB_URI)
+      client = await Client.connect(MONGODB_URL)
       logger.info('MongoDB 连接成功')
     }
     catch (error) {

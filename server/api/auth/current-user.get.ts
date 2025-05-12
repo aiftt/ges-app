@@ -20,7 +20,7 @@ export default defineEventHandler(async (event) => {
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return createError({
         statusCode: 401,
-        statusMessage: '未提供认证令牌',
+        message: '未提供认证令牌',
       })
     }
 
@@ -37,7 +37,7 @@ export default defineEventHandler(async (event) => {
       if (!user) {
         return createError({
           statusCode: 404,
-          statusMessage: '用户不存在',
+          message: '用户不存在',
         })
       }
 
@@ -51,7 +51,7 @@ export default defineEventHandler(async (event) => {
     catch {
       return createError({
         statusCode: 401,
-        statusMessage: '无效的认证令牌',
+        message: '无效的认证令牌',
       })
     }
   }
@@ -60,7 +60,7 @@ export default defineEventHandler(async (event) => {
 
     return createError({
       statusCode: 500,
-      statusMessage: '获取当前用户信息失败',
+      message: '获取当前用户信息失败',
     })
   }
 })

@@ -231,6 +231,7 @@ async function fetchUsers(): Promise<IResponse> {
 
 - `definePageMeta` 必须在script标签内，import语句之后
 - 使用目录结构自动路由，动态路由使用 `[id].vue` 语法
+- 总是使用message返回接口信息，而不是 `statusMessage`。 `statusMessage` 已经废弃了。
 
 ### 数据获取
 

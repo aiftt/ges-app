@@ -12,7 +12,6 @@ import { MONGODB_DB_NAME, MONGODB_URL } from '~/utils/db-config'
 
 // 创建日志记录器
 const logger = useLogger('mongodb-connection')
-
 // 获取环境变量
 const config = {
   uri: MONGODB_URL,
@@ -77,6 +76,20 @@ if (import.meta.server) {
     process.exit(0)
   }
 
-  process.on('SIGINT', handleExit)
-  process.on('SIGTERM', handleExit)
+  // 使用node:process模块的实例来注册事件
+  try {
+    // 确保process是正确的Node.js进程对象
+    const nodeProcess = process
+    if (typeof nodeProcess.on === 'function') {
+      nodeProcess.on('SIGINT', handleExit)
+      nodeProcess.on('SIGTERM', handleExit)
+      logger.info('已注册进程退出事件处理程序')
+    }
+    else {
+      logger.warn('无法注册进程退出事件处理程序：process.on不是一个函数')
+    }
+  }
+  catch (error) {
+    logger.error('注册进程退出事件处理程序时出错', error)
+  }
 }

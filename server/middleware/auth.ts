@@ -13,9 +13,13 @@ const logger = useLogger('auth-middleware')
 
 // 不需要认证的路径前缀
 const publicPaths = [
+  '/login',
+  '/register',
   '/api/auth/login',
   '/api/auth/register',
   '/api/auth/forgot-password',
+  '/api/auth/captcha',
+  '/demo/components',
 ]
 
 export default defineEventHandler(async (event) => {
@@ -36,7 +40,7 @@ export default defineEventHandler(async (event) => {
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return createError({
         statusCode: 401,
-        statusMessage: '未提供认证令牌',
+        message: '未提供认证令牌',
       })
     }
 
@@ -52,7 +56,7 @@ export default defineEventHandler(async (event) => {
       if (!user) {
         return createError({
           statusCode: 401,
-          statusMessage: '无效的用户',
+          message: '无效的用户',
         })
       }
 
@@ -60,7 +64,7 @@ export default defineEventHandler(async (event) => {
       if (user.status !== 'active') {
         return createError({
           statusCode: 403,
-          statusMessage: '用户已被禁用',
+          message: '用户已被禁用',
         })
       }
 
@@ -71,7 +75,7 @@ export default defineEventHandler(async (event) => {
     catch {
       return createError({
         statusCode: 401,
-        statusMessage: '无效的认证令牌',
+        message: '无效的认证令牌',
       })
     }
   }
@@ -79,7 +83,7 @@ export default defineEventHandler(async (event) => {
     logger.error('认证中间件异常', error)
     return createError({
       statusCode: 500,
-      statusMessage: '服务器内部错误',
+      message: '服务器内部错误',
     })
   }
 })

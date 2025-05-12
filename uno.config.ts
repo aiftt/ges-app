@@ -1,9 +1,9 @@
-import { defineConfig, presetAttributify, presetIcons, presetTypography, presetUno, presetWebFonts, transformerDirectives, transformerVariantGroup } from 'unocss'
+import { defineConfig, presetAttributify, presetIcons, presetTypography, presetWebFonts, presetWind3, transformerDirectives, transformerVariantGroup } from 'unocss'
 
 export default defineConfig({
   // 启用预设
   presets: [
-    presetUno(), // 默认预设
+    presetWind3(), // 默认预设
     presetAttributify(), // 属性化模式支持
     presetIcons({ // 图标预设
       scale: 1.2, // 图标缩放
@@ -14,6 +14,7 @@ export default defineConfig({
     }),
     presetTypography(), // 排版预设
     presetWebFonts({ // 网络字体预设
+      // customFetch: (url) => fetch(url).then((it: Response) => it.data),
       fonts: {
         sans: 'Inter',
         mono: 'DM Mono',

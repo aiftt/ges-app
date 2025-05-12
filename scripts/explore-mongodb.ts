@@ -9,17 +9,13 @@ import type { Document } from 'mongodb'
 import * as process from 'node:process'
 import { MongoClient, ServerApiVersion } from 'mongodb'
 
-// 从环境变量获取连接字符串，如果未提供则使用默认值
-// 注意：实际使用时应替换为真实的连接字符串
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/your_database_name'
-
 /**
  * 探索MongoDB数据库结构
  * @returns {Promise<void>}
  */
 async function exploreMongoDB(): Promise<void> {
   // 创建MongoDB客户端
-  const client = new MongoClient(MONGODB_URI, {
+  const client = new MongoClient(MONGODB_URL, {
     serverApi: {
       version: ServerApiVersion.v1,
       strict: true,
@@ -42,7 +38,7 @@ async function exploreMongoDB(): Promise<void> {
     })
 
     // 获取当前数据库
-    const dbName = MONGODB_URI.split('/').pop() || 'your_database_name'
+    const dbName = MONGODB_URL.split('/').pop() || 'your_database_name'
     const db = client.db(dbName)
 
     // 获取集合列表

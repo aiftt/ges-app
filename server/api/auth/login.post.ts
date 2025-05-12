@@ -28,7 +28,7 @@ export default defineEventHandler(async (event) => {
     if (!body.username || !body.password) {
       return createError({
         statusCode: 400,
-        statusMessage: '请提供用户名和密码',
+        message: '请提供用户名和密码',
       })
     }
 
@@ -36,7 +36,7 @@ export default defineEventHandler(async (event) => {
     if (!body.captcha) {
       return createError({
         statusCode: 400,
-        statusMessage: '请提供验证码',
+        message: '请提供验证码',
       })
     }
 
@@ -44,7 +44,7 @@ export default defineEventHandler(async (event) => {
     if (!storedCaptcha || storedCaptcha.toLowerCase() !== body.captcha.toLowerCase()) {
       return createError({
         statusCode: 400,
-        statusMessage: '验证码错误',
+        message: '验证码错误',
       })
     }
 
@@ -54,7 +54,7 @@ export default defineEventHandler(async (event) => {
     if (!valid || !user) {
       return createError({
         statusCode: 401,
-        statusMessage: '用户名或密码错误',
+        message: '用户名或密码错误',
       })
     }
 
@@ -62,7 +62,7 @@ export default defineEventHandler(async (event) => {
     if (user.status !== 'active') {
       return createError({
         statusCode: 403,
-        statusMessage: '用户已被禁用',
+        message: '用户已被禁用',
       })
     }
 
@@ -100,7 +100,7 @@ export default defineEventHandler(async (event) => {
 
     return createError({
       statusCode: 500,
-      statusMessage: '登录失败',
+      message: '登录失败',
     })
   }
 })
