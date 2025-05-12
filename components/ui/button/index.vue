@@ -110,6 +110,8 @@ const buttonClass = computed(() => {
     'gap-2',
     // 字体
     'font-medium',
+    // 圆角
+    'rounded-md',
   ]
 
   // 按钮类型样式
@@ -147,12 +149,12 @@ const buttonClass = computed(() => {
 })
 
 // CSS变量计算
-const bgColorVar = computed(() => props.bgColor || undefined)
-const textColorVar = computed(() => props.textColor || undefined)
-const radiusVar = computed(() => props.radius || undefined)
-const shadowVar = computed(() => props.shadow || undefined)
-const borderColorVar = computed(() => props.borderColor || undefined)
-const hoverBgColorVar = computed(() => props.hoverBgColor || undefined)
+const bgColorVar = computed(() => props.bgColor || null)
+const textColorVar = computed(() => props.textColor || null)
+const radiusVar = computed(() => props.radius || null)
+const shadowVar = computed(() => props.shadow || null)
+const borderColorVar = computed(() => props.borderColor || null)
+const hoverBgColorVar = computed(() => props.hoverBgColor || null)
 
 // 图标尺寸转换
 const iconSize = computed(() => {

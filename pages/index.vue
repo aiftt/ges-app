@@ -31,13 +31,6 @@ const navCards = [
     path: '/demo/components',
     color: 'violet',
   },
-  {
-    title: '分割线演示',
-    description: '分割线组件使用示例',
-    icon: 'carbon:subtract',
-    path: '/demo/divider',
-    color: 'amber',
-  },
 ]
 
 // 卡片颜色样式映射

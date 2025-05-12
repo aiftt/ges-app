@@ -150,10 +150,10 @@ function parsePosition(pos: string | number): number {
 }
 
 // 计算CSS变量
-const borderColorVar = computed(() => props.borderColor || undefined)
-const bgColorVar = computed(() => props.bgColor || undefined)
-const splitterColorVar = computed(() => props.splitterColor || undefined)
-const splitterHoverColorVar = computed(() => props.splitterHoverColor || undefined)
+const borderColorVar = computed(() => props.borderColor || null)
+const bgColorVar = computed(() => props.bgColor || null)
+const splitterColorVar = computed(() => props.splitterColor || null)
+const splitterHoverColorVar = computed(() => props.splitterHoverColor || null)
 
 // 计算定位样式
 const containerClass = computed(() => {
@@ -261,7 +261,7 @@ function handleDragMove(e: MouseEvent | TouchEvent) {
   let newPositionPercent = oldPositionPercent + (delta / containerSize.value) * 100
 
   // 应用最小最大限制（确保每边至少有min%的空间）
-  newPositionPercent = Math.max(Math.min(newPositionPercent, 100 - props.min), props.min)
+  newPositionPercent = Math.max(Math.min(newPositionPercent, 100 - Number(props.min)), Number(props.min))
 
   // 更新位置（使用小数表示百分比，0-1范围）
   position.value = newPositionPercent / 100

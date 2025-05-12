@@ -103,7 +103,7 @@ const dividerMarginX = computed(() => {
   >
     <span class="ui-divider__before" />
     <span class="ui-divider__text">
-      <slot>{{ text }}</slot>
+      <slot />
     </span>
     <span class="ui-divider__after" />
   </div>

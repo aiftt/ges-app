@@ -64,7 +64,7 @@ const sizeVar = computed(() => {
   if (['small', 'default', 'large'].includes(props.size)) {
     return null
   }
-  return props.size
+  return props.size || null
 })
 
 // 根据颜色值计算文本颜色（深色背景用浅色文字，浅色背景用深色文字）

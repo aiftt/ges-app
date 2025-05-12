@@ -32,6 +32,7 @@ alwaysApply: true
 - 总是开发vue组件的时候要注意并解决水合问题
 - 总是通过 ref 来获取元素对象，禁止使用 id + getElementById 方式(会导致水合问题)
 - 总是在服务端通过 `import * as process from 'node:process'` 引入 process 对象
+- 总是在设置 css 变量的时候给个备用控制 `null` 解决 `undefined` 会被当作正常的值而覆盖备用值
 
 ### 绝对禁止的行为
 
@@ -186,7 +187,7 @@ const props = defineProps({
   color: String
 })
 
-// 计算属性
+// 计算属性，总是加上最后的 `[value] || null` 确保不会出现 --var-name: undefined; 情况
 const colorVar = computed(() => props.color || null)
 </script>
 
