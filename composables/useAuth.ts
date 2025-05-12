@@ -1,180 +1,230 @@
 /**
- * 认证组合式函数
- * 创建日期: 2024-03-19
+ * 认证相关的组合式函数
+ * 创建日期: 2024-06-19
  * 作者: aiftt
+ * 邮箱: ftt.loves@gmail.com
  */
-import type { ComputedRef, Ref } from 'vue'
-import type { IUser } from '~/server/types'
+import { useLogger } from '~/composables/useLogger'
+
+// 创建日志记录器
+const logger = useLogger('use-auth')
 
 /**
- * 认证状态接口
+ * Token存储键名
  */
-export interface IAuthState {
-  token: string | null
-  user: Omit<IUser, 'password'> | null
-  loading: boolean
-}
+const TOKEN_KEY = 'token'
 
 /**
- * 认证组合式函数返回值
+ * 用户信息存储键名
  */
-export interface IUseAuth {
-  token: Ref<string | null>
-  currentUser: ComputedRef<Omit<IUser, 'password'> | null>
-  isLogin: ComputedRef<boolean>
-  loading: Ref<boolean>
-  login: (username: string, password: string, remember?: boolean) => Promise<void>
-  logout: () => Promise<void>
-  checkAuth: () => Promise<void>
-}
+const USER_KEY = 'user_info'
 
 /**
- * 认证组合式函数
+ * 认证相关的组合式函数
  */
-export function useAuth(): IUseAuth {
-  // 获取工具
+export function useAuth() {
+  // 路由实例
   const router = useRouter()
-  const { $logger } = useNuxtApp()
-  const logger = $logger.child({ tag: 'auth' })
 
-  // 认证状态
-  const tokenCookie = useCookie<string | null>('token')
-  const authState = useState<IAuthState>('auth', () => ({
-    token: tokenCookie.value || null,
-    user: null,
-    loading: false,
-  }))
+  // 当前用户信息
+  const currentUser = useState<any | null>('currentUser', () => null)
 
-  // 计算属性
-  const currentUser = computed(() => authState.value.user)
-  const isLogin = computed(() => !!authState.value.token)
+  // 加载状态
+  const isLoading = ref(false)
 
   /**
-   * 登录
+   * 设置认证Token
    */
-  async function login(username: string, password: string, remember = false) {
-    try {
-      authState.value.loading = true
+  function setToken(token: string) {
+    if (import.meta.client) {
+      localStorage.setItem(TOKEN_KEY, token)
+    }
+  }
 
-      const response = await fetch('/api/auth/login', {
+  /**
+   * 获取认证Token
+   */
+  function getToken(): string | null {
+    if (import.meta.client) {
+      return localStorage.getItem(TOKEN_KEY)
+    }
+    return null
+  }
+
+  /**
+   * 清除认证Token
+   */
+  function clearToken() {
+    if (import.meta.client) {
+      localStorage.removeItem(TOKEN_KEY)
+    }
+  }
+
+  /**
+   * 保存用户信息到本地存储
+   */
+  function saveUserInfo(user: any) {
+    if (import.meta.client && user) {
+      localStorage.setItem(USER_KEY, JSON.stringify(user))
+    }
+  }
+
+  /**
+   * 从本地存储获取用户信息
+   */
+  function getUserInfo(): any | null {
+    if (import.meta.client) {
+      const userStr = localStorage.getItem(USER_KEY)
+      if (userStr) {
+        try {
+          return JSON.parse(userStr)
+        }
+        catch (error) {
+          logger.error('解析用户信息失败', error)
+        }
+      }
+    }
+    return null
+  }
+
+  /**
+   * 清除用户信息
+   */
+  function clearUserInfo() {
+    if (import.meta.client) {
+      localStorage.removeItem(USER_KEY)
+    }
+    currentUser.value = null
+  }
+
+  /**
+   * 用户登录
+   */
+  async function login(username: string, password: string): Promise<boolean> {
+    try {
+      isLoading.value = true
+
+      // 调用登录接口
+      const response = await $fetch<{
+        success: boolean
+        data?: { token: string, user: any }
+        message?: string
+      }>('/api/auth/login', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+        body: {
+          username,
+          password,
         },
-        body: JSON.stringify({ username, password, remember }),
       })
 
-      const result = await response.json()
-
-      if (result.success) {
-        // 保存认证状态
-        authState.value.token = result.data.token
-        authState.value.user = result.data.user
-
-        // 保存 token 到 cookie
-        if (remember) {
-          tokenCookie.value = result.data.token
+      // 登录成功
+      if (response.success && response.data) {
+        // 保存令牌
+        const token = response.data.token
+        if (token) {
+          setToken(token)
         }
 
-        // 跳转到管理后台首页
-        router.push('/admin/dashboard')
-        logger.info('用户登录成功')
+        // 保存用户信息
+        const user = response.data.user
+        if (user) {
+          currentUser.value = user
+          saveUserInfo(user)
+        }
+
+        return true
       }
-      else {
-        throw new Error(result.message)
-      }
+
+      return false
     }
     catch (error) {
-      logger.error('登录失败:', error)
-      throw error
+      logger.error('登录失败', error)
+      return false
     }
     finally {
-      authState.value.loading = false
+      isLoading.value = false
     }
   }
 
   /**
-   * 退出登录
+   * 用户登出
    */
-  async function logout() {
-    try {
-      authState.value.loading = true
+  function logout() {
+    // 清除令牌和用户信息
+    clearToken()
+    clearUserInfo()
 
-      // 调用退出接口
-      const response = await fetch('/api/auth/logout', {
-        method: 'POST',
+    // 跳转到登录页
+    router.push('/admin/login')
+  }
+
+  /**
+   * 检查是否已登录
+   */
+  function isLoggedIn(): boolean {
+    return !!getToken() && !!currentUser.value
+  }
+
+  /**
+   * 加载当前用户信息
+   */
+  async function loadUserInfo(): Promise<boolean> {
+    // 检查是否有令牌
+    const token = getToken()
+    if (!token) {
+      return false
+    }
+
+    try {
+      isLoading.value = true
+
+      // 先尝试从本地存储加载
+      const localUser = getUserInfo()
+      if (localUser) {
+        currentUser.value = localUser
+      }
+
+      // 从服务器获取最新用户信息
+      const response = await $fetch<{
+        success: boolean
+        data?: any
+      }>('/api/auth/current-user', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       })
 
-      const result = await response.json()
-
-      if (result.success) {
-        // 清除认证状态
-        authState.value.token = null
-        authState.value.user = null
-        tokenCookie.value = null
-
-        // 跳转到登录页
-        router.push('/admin/login')
-        logger.info('用户退出成功')
+      if (response.success && response.data) {
+        currentUser.value = response.data
+        saveUserInfo(response.data)
+        return true
       }
-      else {
-        throw new Error(result.message)
-      }
+
+      // 获取失败，清除令牌和用户信息
+      clearToken()
+      clearUserInfo()
+      return false
     }
     catch (error) {
-      logger.error('退出失败:', error)
-      throw error
+      logger.error('获取用户信息失败', error)
+      // 发生错误时清除令牌和用户信息
+      clearToken()
+      clearUserInfo()
+      return false
     }
     finally {
-      authState.value.loading = false
+      isLoading.value = false
     }
   }
 
-  /**
-   * 检查认证状态
-   */
-  async function checkAuth() {
-    try {
-      authState.value.loading = true
-
-      // 如果没有 token，直接返回
-      if (!authState.value.token) {
-        return
-      }
-
-      // 获取当前用户信息
-      const response = await fetch('/api/auth/current-user')
-      const result = await response.json()
-
-      if (result.success) {
-        authState.value.user = result.data
-      }
-      else {
-        // 认证失效，清除状态
-        authState.value.token = null
-        authState.value.user = null
-        tokenCookie.value = null
-      }
-    }
-    catch (error) {
-      logger.error('检查认证状态失败:', error)
-      // 发生错误时清除状态
-      authState.value.token = null
-      authState.value.user = null
-      tokenCookie.value = null
-    }
-    finally {
-      authState.value.loading = false
-    }
-  }
-
+  // 返回认证相关的方法和状态
   return {
-    token: toRef(authState.value, 'token'),
-    currentUser,
-    isLogin,
-    loading: toRef(authState.value, 'loading'),
+    currentUser: readonly(currentUser),
+    isLoading: readonly(isLoading),
     login,
     logout,
-    checkAuth,
+    isLoggedIn,
+    loadUserInfo,
+    getToken,
   }
 }

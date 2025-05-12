@@ -1,5 +1,14 @@
 规范：请严格遵循 @.cursor/rules/rule.mdc 规范
 
+计划：@admin.md
+
+问题：
+
+1. 
+   check-if-layout-used.js:12 [nuxt] Your project has layouts but the `<NuxtLayout />` component has not been used.
+
+   
+
 迭代：
 
 1. 接入 mongodb，我的数据库配置都在 .env 配置文件里了，不要将数据库信息写死到代码里使用.env里的配置

@@ -1,3 +1,9 @@
+<!--
+ * 管理后台登录页面
+ * 创建日期: 2024-06-19
+ * 作者: aiftt
+ * 邮箱: ftt.loves@gmail.com
+ -->
 <script setup lang="ts" name="AdminLogin">
 /**
  * 管理系统登录页面
@@ -13,201 +19,317 @@ const logger = useLogger('admin-login')
 const loginForm = reactive({
   username: '',
   password: '',
-  remember: false,
-  loading: false,
+  rememberMe: false,
 })
 
-// 错误信息
+// 登录错误信息
 const errorMessage = ref('')
+
+// 登录状态
+const isLoading = ref(false)
 
 // 路由实例
 const router = useRouter()
 
-// 处理登录提交
+// 处理登录
 async function handleLogin() {
-  if (!loginForm.username || !loginForm.password) {
-    errorMessage.value = '请填写完整的登录信息'
-    return
-  }
-
   try {
-    loginForm.loading = true
+    // 清除错误信息
     errorMessage.value = ''
 
-    // TODO: 对接真实登录接口
-    const response = await fetch('/api/auth/login', {
+    // 表单验证
+    if (!loginForm.username) {
+      errorMessage.value = '请输入用户名'
+      return
+    }
+
+    if (!loginForm.password) {
+      errorMessage.value = '请输入密码'
+      return
+    }
+
+    // 设置加载状态
+    isLoading.value = true
+
+    // 调用登录接口
+    const response = await $fetch<{
+      success: boolean
+      data?: { token: string, user: any }
+      message?: string
+    }>('/api/auth/login', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
+      body: {
         username: loginForm.username,
         password: loginForm.password,
-        remember: loginForm.remember,
-      }),
+      },
     })
 
-    const result = await response.json()
+    // 登录成功
+    if (response.success) {
+      // 保存令牌
+      const token = response.data?.token
+      if (token) {
+        localStorage.setItem('token', token)
+      }
 
-    if (result.success) {
-      logger.info('用户登录成功')
-      // 登录成功，跳转到管理后台首页
-      router.push('/admin/dashboard')
+      // 记住我功能
+      if (loginForm.rememberMe) {
+        localStorage.setItem('remembered_username', loginForm.username)
+      }
+      else {
+        localStorage.removeItem('remembered_username')
+      }
+
+      // 跳转到首页
+      router.push('/admin')
     }
     else {
-      // 登录失败
-      errorMessage.value = result.message || '用户名或密码错误'
-      logger.warn('用户登录失败', { username: loginForm.username })
+      errorMessage.value = response.message || '登录失败'
     }
   }
   catch (error) {
-    errorMessage.value = '登录过程中发生错误，请稍后重试'
-    logger.error('登录请求异常', error)
+    logger.error('登录失败', error)
+    errorMessage.value = '登录失败，请稍后重试'
   }
   finally {
-    loginForm.loading = false
+    isLoading.value = false
   }
 }
+
+// 在组件挂载时检查是否有记住的用户名
+onMounted(() => {
+  const rememberedUsername = localStorage.getItem('remembered_username')
+  if (rememberedUsername) {
+    loginForm.username = rememberedUsername
+    loginForm.rememberMe = true
+  }
+})
+
+// 页面元数据
+definePageMeta({
+  layout: false,
+})
 </script>
 
 <template>
-  <div class="login-container">
-    <div class="login-card">
+  <div class="login-page">
+    <div class="login-container">
       <div class="login-header">
-        <h1 class="login-title">
-          GES管理系统
-        </h1>
-        <p class="login-subtitle">
-          欢迎使用管理后台
+        <div class="logo">
+          <ui-icon icon="carbon:logo-nodejs" size="36px" />
+          <h1 class="title">
+            管理系统
+          </h1>
+        </div>
+        <p class="subtitle">
+          企业级后台管理系统
         </p>
       </div>
 
-      <div v-if="errorMessage" class="login-error">
-        <ui-alert type="error" closable>
-          {{ errorMessage }}
-        </ui-alert>
+      <div class="login-form">
+        <template v-if="errorMessage">
+          <div class="error-message">
+            <ui-icon icon="carbon:warning" />
+            <span>{{ errorMessage }}</span>
+          </div>
+        </template>
+
+        <div class="form-item">
+          <label>用户名</label>
+          <div class="input-wrapper">
+            <ui-icon icon="carbon:user" />
+            <input
+              v-model="loginForm.username"
+              type="text"
+              placeholder="请输入用户名"
+              @keyup.enter="handleLogin"
+            >
+          </div>
+        </div>
+
+        <div class="form-item">
+          <label>密码</label>
+          <div class="input-wrapper">
+            <ui-icon icon="carbon:password" />
+            <input
+              v-model="loginForm.password"
+              type="password"
+              placeholder="请输入密码"
+              @keyup.enter="handleLogin"
+            >
+          </div>
+        </div>
+
+        <div class="form-item form-options">
+          <div class="remember-me">
+            <input
+              id="remember-me"
+              v-model="loginForm.rememberMe"
+              type="checkbox"
+            >
+            <label for="remember-me">记住我</label>
+          </div>
+          <a href="#" class="forgot-password">忘记密码?</a>
+        </div>
+
+        <ui-button
+          type="primary"
+          size="large"
+          block
+          :loading="isLoading"
+          @click="handleLogin"
+        >
+          登录
+        </ui-button>
       </div>
 
-      <form class="login-form" @submit.prevent="handleLogin">
-        <div class="form-item">
-          <label for="username">用户名</label>
-          <ui-input
-            id="username"
-            v-model="loginForm.username"
-            placeholder="请输入用户名"
-            prefix-icon="carbon:user"
-            :disabled="loginForm.loading"
-          />
-        </div>
-
-        <div class="form-item">
-          <label for="password">密码</label>
-          <ui-input
-            id="password"
-            v-model="loginForm.password"
-            type="password"
-            placeholder="请输入密码"
-            prefix-icon="carbon:password"
-            :disabled="loginForm.loading"
-          />
-        </div>
-
-        <div class="form-item remember-row">
-          <ui-checkbox v-model="loginForm.remember" :disabled="loginForm.loading">
-            记住我
-          </ui-checkbox>
-          <a href="#" class="forgot-password">忘记密码？</a>
-        </div>
-
-        <div class="form-item">
-          <ui-button
-            type="primary"
-            size="large"
-            :loading="loginForm.loading"
-            block
-            @click="handleLogin"
-          >
-            登录
-          </ui-button>
-        </div>
-      </form>
+      <div class="login-footer">
+        <p>Copyright © 2024 All Rights Reserved.</p>
+      </div>
     </div>
   </div>
 </template>
 
 <style lang="scss" scoped>
-.login-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
+.login-page {
   width: 100%;
-  background-color: #f5f7fa;
-  background-image: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f0f2f5;
+  background-image: url('/images/login-bg.jpg');
+  background-size: cover;
+  background-position: center;
+  padding: 20px;
 }
 
-.login-card {
-  width: 400px;
-  padding: 40px;
-  background-color: #fff;
+.login-container {
+  width: 100%;
+  max-width: 400px;
+  background-color: white;
   border-radius: 8px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-
-  @media screen and (max-width: 480px) {
-    width: 90%;
-    padding: 30px 20px;
-  }
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  padding: 40px;
 }
 
 .login-header {
   text-align: center;
-  margin-bottom: 32px;
-}
+  margin-bottom: 40px;
 
-.login-title {
-  margin: 0;
-  font-size: 28px;
-  font-weight: 600;
-  color: var(--ui-color-primary, #3b82f6);
-}
+  .logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+  }
 
-.login-subtitle {
-  margin: 8px 0 0;
-  font-size: 16px;
-  color: #6b7280;
+  .title {
+    margin: 0 0 0 12px;
+    font-size: 28px;
+    color: #1890ff;
+  }
+
+  .subtitle {
+    margin: 0;
+    color: rgba(0, 0, 0, 0.45);
+    font-size: 14px;
+  }
 }
 
 .login-form {
+  .error-message {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    background-color: #fff2f0;
+    border: 1px solid #ffccc7;
+    border-radius: 4px;
+    color: #ff4d4f;
+    margin-bottom: 24px;
+
+    .ui-icon {
+      margin-right: 8px;
+    }
+  }
+
   .form-item {
     margin-bottom: 24px;
 
     label {
       display: block;
       margin-bottom: 8px;
-      font-size: 14px;
       font-weight: 500;
-      color: #374151;
+    }
+
+    .input-wrapper {
+      display: flex;
+      align-items: center;
+      border: 1px solid #d9d9d9;
+      border-radius: 4px;
+      padding: 0 12px;
+      transition: all 0.3s;
+
+      &:hover {
+        border-color: #40a9ff;
+      }
+
+      &:focus-within {
+        border-color: #1890ff;
+        box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+      }
+
+      .ui-icon {
+        color: rgba(0, 0, 0, 0.45);
+        margin-right: 8px;
+      }
+
+      input {
+        flex: 1;
+        height: 40px;
+        border: none;
+        outline: none;
+        background: transparent;
+        font-size: 14px;
+
+        &::placeholder {
+          color: rgba(0, 0, 0, 0.25);
+        }
+      }
+    }
+  }
+
+  .form-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+
+    .remember-me {
+      display: flex;
+      align-items: center;
+
+      input[type='checkbox'] {
+        margin-right: 8px;
+      }
+    }
+
+    .forgot-password {
+      color: #1890ff;
+      text-decoration: none;
+      font-size: 14px;
+
+      &:hover {
+        color: #40a9ff;
+      }
     }
   }
 }
 
-.login-error {
-  margin-bottom: 24px;
-}
-
-.remember-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.forgot-password {
+.login-footer {
+  margin-top: 40px;
+  text-align: center;
+  color: rgba(0, 0, 0, 0.45);
   font-size: 14px;
-  color: var(--ui-color-primary, #3b82f6);
-  text-decoration: none;
-
-  &:hover {
-    text-decoration: underline;
-  }
 }
 </style>

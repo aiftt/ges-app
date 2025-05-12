@@ -1,91 +1,93 @@
+import * as process from 'node:process'
+import { createError, defineEventHandler, readBody } from 'h3'
 /**
- * 用户登录接口
- * 创建日期: 2024-12-01
+ * 用户登录API
+ * 创建日期: 2024-06-19
  * 作者: aiftt
+ * 邮箱: ftt.loves@gmail.com
  */
-import type { ILoginRequest, ILoginResponse } from '~/server/types'
-import { defineEventHandler, readBody } from 'h3'
-import { getUserCollection } from '~/server/models/user.model'
-import serverLogger from '~/utils/server-logger'
+import jwt from 'jsonwebtoken'
+import { useLogger } from '~/composables/useLogger'
+import { updateUserLastLoginTime, verifyUserPassword } from '~/server/models/user'
 
-// 创建日志记录器
-const logger = serverLogger.child({ tag: 'auth-api' })
+const logger = useLogger('auth-login-api')
+
+// JWT密钥
+const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key'
+const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '7d'
+
+interface LoginRequest {
+  username: string
+  password: string
+}
 
 export default defineEventHandler(async (event) => {
   try {
-    const body = await readBody<ILoginRequest>(event)
+    // 解析请求体
+    const body = await readBody<LoginRequest>(event)
 
-    // 参数校验
+    // 验证参数
     if (!body.username || !body.password) {
-      return {
-        code: 400,
-        success: false,
-        message: '用户名和密码不能为空',
-        data: null,
-      }
+      return createError({
+        statusCode: 400,
+        statusMessage: '请提供用户名和密码',
+      })
     }
 
-    // 获取用户集合
-    const userCollection = await getUserCollection()
+    // 验证用户名密码
+    const { valid, user } = await verifyUserPassword(body.username, body.password)
 
-    // 查询用户
-    const user = await userCollection.findOne({
-      username: body.username,
-      password: body.password, // 注意：实际项目中应该使用加密密码比对
-    })
-
-    if (!user) {
-      logger.warn('用户登录失败: 用户名或密码错误', { username: body.username })
-      return {
-        code: 401,
-        success: false,
-        message: '用户名或密码错误',
-        data: null,
-      }
+    if (!valid || !user) {
+      return createError({
+        statusCode: 401,
+        statusMessage: '用户名或密码错误',
+      })
     }
 
     // 检查用户状态
     if (user.status !== 'active') {
-      logger.warn('用户登录失败: 账号已被禁用', { username: body.username })
-      return {
-        code: 403,
-        success: false,
-        message: '您的账号已被禁用，请联系管理员',
-        data: null,
-      }
+      return createError({
+        statusCode: 403,
+        statusMessage: '用户已被禁用',
+      })
     }
 
-    // 更新最后登录时间
-    await userCollection.updateOne(
-      { _id: user._id },
-      { $set: { lastLoginTime: new Date() } },
+    // 更新用户最后登录时间
+    if (user._id) {
+      await updateUserLastLoginTime(user._id)
+    }
+
+    // 生成JWT令牌
+    const payload = {
+      userId: user._id,
+      username: user.username,
+      roles: user.roles,
+    }
+
+    // @ts-expect-error - 忽略类型错误，因为jsonwebtoken的类型定义有问题
+    const token = jwt.sign(
+      payload,
+      JWT_SECRET,
+      {
+        expiresIn: JWT_EXPIRES_IN,
+      },
     )
 
-    // 生成登录响应（省略密码）
-    const { password, ...userInfo } = user
-
-    logger.info('用户登录成功', { username: body.username })
-
-    // 返回登录成功响应
-    const response: ILoginResponse = {
-      token: 'mock-token', // TODO: 实现JWT令牌生成
-      user: userInfo as any,
-    }
-
+    // 返回响应
     return {
-      code: 200,
       success: true,
-      message: '登录成功',
-      data: response,
+      data: {
+        token,
+        user,
+      },
     }
   }
   catch (error) {
-    logger.error('登录接口异常', error)
-    return {
-      code: 500,
-      success: false,
-      message: '服务器内部错误',
-      data: null,
-    }
+    logger.error('登录失败', error)
+
+    return createError({
+      statusCode: 500,
+      statusMessage: '登录失败',
+    })
   }
 })

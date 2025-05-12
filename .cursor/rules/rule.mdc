@@ -31,6 +31,7 @@ alwaysApply: true
 - 总是充分利用 scss 的特性，避免添加重复无意义的样式
 - 总是开发vue组件的时候要注意并解决水合问题
 - 总是通过 ref 来获取元素对象，禁止使用 id + getElementById 方式(会导致水合问题)
+- 总是在服务端通过 `import * as process from 'node:process'` 引入 process 对象
 
 ### 绝对禁止的行为
 

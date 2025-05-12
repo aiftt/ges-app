@@ -1,122 +1,53 @@
+import { createError, defineEventHandler, getRouterParam, readBody } from 'h3'
 /**
- * 更新用户接口
- * 创建日期: 2024-12-01
+ * 更新用户API
+ * 创建日期: 2024-06-19
  * 作者: aiftt
+ * 邮箱: ftt.loves@gmail.com
  */
-import type { IUpdateUserRequest } from '~/server/types'
-import { defineEventHandler, readBody } from 'h3'
-import { getUserCollection } from '~/server/models/user.model'
-import serverLogger from '~/utils/server-logger'
+import { useLogger } from '~/composables/useLogger'
+import { getUserById, updateUser } from '~/server/models/user'
 
-// 创建日志记录器
-const logger = serverLogger.child({ tag: 'users-api' })
+const logger = useLogger('users-api')
 
 export default defineEventHandler(async (event) => {
   try {
     // 获取用户ID
-    const userId = event.context.params?.id
-
+    const userId = getRouterParam(event, 'id')
     if (!userId) {
-      return {
-        code: 400,
-        success: false,
-        message: '用户ID不能为空',
-        data: null,
-      }
+      return createError({
+        statusCode: 400,
+        statusMessage: '用户ID不能为空',
+      })
+    }
+
+    // 检查用户是否存在
+    const existingUser = await getUserById(userId)
+    if (!existingUser) {
+      return createError({
+        statusCode: 404,
+        statusMessage: '用户不存在',
+      })
     }
 
     // 获取请求体
-    const body = await readBody<IUpdateUserRequest>(event)
-
-    // 获取用户集合
-    const userCollection = await getUserCollection()
-
-    // 检查用户是否存在
-    const existingUser = await userCollection.findOne({ _id: userId })
-
-    if (!existingUser) {
-      return {
-        code: 404,
-        success: false,
-        message: '用户不存在',
-        data: null,
-      }
-    }
-
-    // 检查邮箱是否被其他用户占用
-    if (body.email && body.email !== existingUser.email) {
-      const emailExists = await userCollection.findOne({
-        _id: { $ne: userId },
-        email: body.email,
-      })
-
-      if (emailExists) {
-        return {
-          code: 400,
-          success: false,
-          message: '邮箱已被其他用户使用',
-          data: null,
-        }
-      }
-    }
-
-    // 准备更新数据
-    const updateData: any = {
-      updateTime: new Date(),
-    }
-
-    // 设置需要更新的字段
-    if (body.email !== undefined)
-      updateData.email = body.email
-    if (body.avatar !== undefined)
-      updateData.avatar = body.avatar
-    if (body.realName !== undefined)
-      updateData.realName = body.realName
-    if (body.phone !== undefined)
-      updateData.phone = body.phone
-    if (body.status !== undefined)
-      updateData.status = body.status
-    if (body.roles !== undefined)
-      updateData.roles = body.roles
+    const body = await readBody(event)
 
     // 更新用户
-    const result = await userCollection.updateOne(
-      { _id: userId },
-      { $set: updateData },
-    )
+    const user = await updateUser(userId, body)
 
-    if (result.matchedCount === 0) {
-      return {
-        code: 404,
-        success: false,
-        message: '用户不存在',
-        data: null,
-      }
-    }
-
-    // 获取更新后的用户信息
-    const updatedUser = await userCollection.findOne({ _id: userId })
-
-    // 返回结果（隐藏密码）
-    const { password, ...userInfo } = updatedUser || {}
-
-    logger.info('更新用户成功', { userId })
-
+    // 返回响应
     return {
-      code: 200,
       success: true,
-      message: '更新用户成功',
-      data: userInfo,
+      data: user,
     }
   }
   catch (error) {
     logger.error('更新用户失败', error)
 
-    return {
-      code: 500,
-      success: false,
-      message: '服务器内部错误',
-      data: null,
-    }
+    return createError({
+      statusCode: 500,
+      statusMessage: '更新用户失败',
+    })
   }
 })

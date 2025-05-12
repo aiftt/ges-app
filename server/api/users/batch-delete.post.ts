@@ -1,27 +1,31 @@
 /**
- * 批量删除用户接口
- * 创建日期: 2024-12-01
+ * 批量删除用户API
+ * 创建日期: 2024-06-19
  * 作者: aiftt
+ * 邮箱: ftt.loves@gmail.com
  */
-import { defineEventHandler, readBody } from 'h3'
+import { createError, defineEventHandler, readBody } from 'h3'
+import { useLogger } from '~/composables/useLogger'
+import { deleteUsers } from '~/server/models/user'
 import { getUserCollection } from '~/server/models/user.model'
-import serverLogger from '~/utils/server-logger'
 
-// 创建日志记录器
-const logger = serverLogger.child({ tag: 'users-api' })
+const logger = useLogger('users-api')
+
+interface BatchDeleteRequest {
+  ids: string[]
+}
 
 export default defineEventHandler(async (event) => {
   try {
     // 获取请求体
-    const body = await readBody<{ ids: string[] }>(event)
+    const body = await readBody<BatchDeleteRequest>(event)
 
+    // 验证必要字段
     if (!body.ids || !Array.isArray(body.ids) || body.ids.length === 0) {
-      return {
-        code: 400,
-        success: false,
-        message: '用户ID列表不能为空',
-        data: null,
-      }
+      return createError({
+        statusCode: 400,
+        statusMessage: '请提供要删除的用户ID列表',
+      })
     }
 
     // 获取用户集合
@@ -43,27 +47,24 @@ export default defineEventHandler(async (event) => {
     }
 
     // 批量删除用户
-    const result = await userCollection.deleteMany({
-      _id: { $in: body.ids },
-    })
+    const deletedCount = await deleteUsers(body.ids)
 
-    logger.info('批量删除用户成功', { count: result.deletedCount, ids: body.ids })
+    logger.info('批量删除用户成功', { count: deletedCount, ids: body.ids })
 
+    // 返回响应
     return {
       code: 200,
       success: true,
-      message: `成功删除 ${result.deletedCount} 个用户`,
-      data: { count: result.deletedCount },
+      message: `成功删除 ${deletedCount} 个用户`,
+      data: { deletedCount },
     }
   }
   catch (error) {
     logger.error('批量删除用户失败', error)
 
-    return {
-      code: 500,
-      success: false,
-      message: '服务器内部错误',
-      data: null,
-    }
+    return createError({
+      statusCode: 500,
+      statusMessage: '批量删除用户失败',
+    })
   }
 })
