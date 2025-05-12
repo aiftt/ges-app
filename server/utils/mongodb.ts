@@ -1,113 +1,56 @@
-import type { Collection, Db, Document } from 'mongodb'
 /**
- * MongoDB服务工具
- *
- * 创建日期: 2024-11-28
+ * MongoDB 工具模块
+ * 创建日期: 2024-03-19
  * 作者: aiftt
- * 用途: 提供MongoDB连接和操作方法
  */
+import type { Collection, Document, MongoClient } from 'mongodb'
 import * as process from 'node:process'
-import { MongoClient, ServerApiVersion } from 'mongodb'
+import { MongoClient as Client } from 'mongodb'
 import serverLogger from '~/utils/server-logger'
 
-// 创建MongoDB专用logger
-const mongoLogger = serverLogger.child({ tag: 'mongodb' })
+// 创建日志记录器
+const logger = serverLogger.child({ tag: 'mongodb' })
 
-// MongoDB连接相关配置
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/your_database_name'
-const DB_NAME = MONGODB_URI.split('/').pop() || 'your_database_name'
+// MongoDB 连接配置
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017'
+const DB_NAME = process.env.DB_NAME || 'ges_admin'
 
-// 单例客户端实例
+// MongoDB 客户端实例
 let client: MongoClient | null = null
-let dbInstance: Db | null = null
 
 /**
- * 获取MongoDB客户端实例
- * @returns {Promise<MongoClient>} MongoDB客户端实例
+ * 获取 MongoDB 客户端实例
  */
 export async function getClient(): Promise<MongoClient> {
   if (!client) {
-    client = new MongoClient(MONGODB_URI, {
-      serverApi: {
-        version: ServerApiVersion.v1,
-        strict: true,
-        deprecationErrors: true,
-      },
-    })
-
     try {
-      await client.connect()
-      mongoLogger.info('MongoDB连接已初始化')
+      client = await Client.connect(MONGODB_URI)
+      logger.info('MongoDB 连接成功')
     }
     catch (error) {
-      mongoLogger.error('MongoDB连接失败:', error)
+      logger.error('MongoDB 连接失败:', error)
       throw error
     }
   }
-
   return client
 }
 
 /**
- * 获取数据库实例
- * @param {string} [dbName] - 可选的数据库名，默认使用连接字符串中的数据库名
- * @returns {Promise<Db>} 数据库实例
+ * 获取数据库集合
+ * @param collectionName 集合名称
  */
-export async function getDb(dbName?: string): Promise<Db> {
-  if (!dbInstance) {
-    const client = await getClient()
-    dbInstance = client.db(dbName || DB_NAME)
-  }
-
-  return dbInstance
+export async function getCollection<T extends Document = Document>(collectionName: string): Promise<Collection<T>> {
+  const client = await getClient()
+  return client.db(DB_NAME).collection<T>(collectionName)
 }
 
 /**
- * 获取集合
- * @param {string} collectionName - 集合名称
- * @param {string} [dbName] - 可选的数据库名
- * @returns {Promise<Collection>} 集合实例
- */
-export async function getCollection<T extends Document = Document>(
-  collectionName: string,
-  dbName?: string,
-): Promise<Collection<T>> {
-  const db = await getDb(dbName)
-  return db.collection<T>(collectionName)
-}
-
-/**
- * 关闭MongoDB连接
- * @returns {Promise<void>}
+ * 关闭数据库连接
  */
 export async function closeConnection(): Promise<void> {
   if (client) {
     await client.close()
     client = null
-    dbInstance = null
-    mongoLogger.info('MongoDB连接已关闭')
+    logger.info('MongoDB 连接已关闭')
   }
-}
-
-/**
- * 在应用程序退出时自动关闭连接
- */
-if (process.on) {
-  process.on('SIGINT', async () => {
-    await closeConnection()
-    process.exit(0)
-  })
-
-  process.on('SIGTERM', async () => {
-    await closeConnection()
-    process.exit(0)
-  })
-}
-
-// 注册 unhandledRejection 处理器，防止未捕获的Promise异常导致应用崩溃
-if (process.on) {
-  process.on('unhandledRejection', (reason) => {
-    mongoLogger.error('未处理的Promise拒绝:', reason)
-    // 记录错误但不退出进程
-  })
 }

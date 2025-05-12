@@ -54,6 +54,10 @@ alwaysApply: true
 
 - 禁止安装任何 @iconify 相关的图标包，项目中用的是 Nuxt 自带的 nuxt-icon，已经封装在 `<ui-icon/>` 组件了
 
+- 禁止在创建目录或文件的时候复杂化，比如：菜单管理(错误示范：`menu-management`，正确示范：`menu`)
+
+- 禁止使用原生的 confirm, alert,... 需要时使用 `useMessageBox`
+
 
 
 ## 文件组织规范
@@ -81,7 +85,7 @@ Nuxt项目标准目录结构：
 - **变量/函数**: camelCase（小驼峰）
 - **类/接口**: PascalCase（大驼峰）
 - **常量**: UPPER_SNAKE_CASE（大写下划线）
-- **文件**: kebab-case（短横线）
+- **文件**: kebab-case（短横线），禁止出现 `parent/sub-parent` 文件或目录命名，正确示范：`parent/sub` 即可 
 - **布尔变量**: 使用 `is`/`has`/`should` 前缀
 - **组件文件**: 子目录形式，如 `button/index.vue`、`date/picker.vue`
 - **事件名**：camelCase（小驼峰）
@@ -101,6 +105,7 @@ Nuxt项目标准目录结构：
  * 组件描述
  * 创建日期: YYYY-MM-DD
  * 作者: [作者名称：通过 git config user.name 获取作者名称，如果没有默认使用 aiftt]
+ * 邮箱：[作者邮箱：通过 git config user.email 获取作者邮箱，如果没有默认使用 ftt.loves@gmail.com]
  * 更新日期: YYYY-MM-DD - 更新内容
  */
 

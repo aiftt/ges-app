@@ -1,73 +1,87 @@
-import type { IUser } from '~/server/types/models'
 /**
- * 用户列表API接口
- *
- * 创建日期: 2024-11-28
+ * 获取用户列表接口
+ * 创建日期: 2024-12-01
  * 作者: aiftt
- * 用途: 获取用户列表
  */
+import type { IUserQueryParams } from '~/server/types'
 import { defineEventHandler, getQuery } from 'h3'
-import { UserService } from '~/server/services/user-service'
+import { getUserCollection } from '~/server/models/user.model'
+import serverLogger from '~/utils/server-logger'
 
-/**
- * 响应接口
- */
-interface IApiResponse<T> {
-  code: number
-  data: T
-  message: string
-}
+// 创建日志记录器
+const logger = serverLogger.child({ tag: 'users-api' })
 
 export default defineEventHandler(async (event) => {
   try {
     // 获取查询参数
-    const query = getQuery(event)
-    const page = Number.parseInt(query.page as string || '1', 10)
-    const limit = Number.parseInt(query.limit as string || '20', 10)
+    const query = getQuery(event) as any as IUserQueryParams
 
-    // 实例化用户服务
-    const userService = new UserService()
+    // 设置默认值
+    const page = Number.parseInt(query.page as any as string, 10) || 1
+    const pageSize = Number.parseInt(query.pageSize as any as string, 10) || 10
 
-    // 获取用户列表
-    const { users, total } = await userService.getAllUsers(page, limit)
+    // 构建查询条件
+    const filter: any = {}
 
-    // 返回成功响应
-    const response: IApiResponse<{
-      users: IUser[]
-      pagination: {
-        page: number
-        limit: number
-        total: number
-        totalPages: number
-      }
-    }> = {
-      code: 200,
-      data: {
-        users: users.map(user => ({
-          ...user,
-          password: undefined, // 移除密码字段
-        })),
-        pagination: {
-          page,
-          limit,
-          total,
-          totalPages: Math.ceil(total / limit),
-        },
-      },
-      message: '获取用户列表成功',
+    if (query.username) {
+      filter.username = { $regex: query.username, $options: 'i' }
     }
 
-    return response
+    if (query.email) {
+      filter.email = { $regex: query.email, $options: 'i' }
+    }
+
+    if (query.status) {
+      filter.status = query.status
+    }
+
+    if (query.realName) {
+      filter.realName = { $regex: query.realName, $options: 'i' }
+    }
+
+    // 获取用户集合
+    const userCollection = await getUserCollection()
+
+    // 统计总数
+    const total = await userCollection.countDocuments(filter)
+
+    // 查询用户列表
+    const users = await userCollection
+      .find(filter)
+      .sort({ createTime: -1 })
+      .skip((page - 1) * pageSize)
+      .limit(pageSize)
+      .toArray()
+
+    // 处理用户数据（隐藏密码）
+    const userList = users.map((user) => {
+      const { password, ...rest } = user
+      return rest
+    })
+
+    logger.info(`获取用户列表成功，共 ${total} 条记录`)
+
+    // 返回结果
+    return {
+      code: 200,
+      success: true,
+      message: '获取用户列表成功',
+      data: {
+        items: userList,
+        total,
+        page,
+        pageSize,
+      },
+    }
   }
   catch (error) {
-    // 记录错误信息
-    console.error('获取用户列表失败:', error)
+    logger.error('获取用户列表失败', error)
 
-    // 返回错误响应
     return {
       code: 500,
-      data: null,
+      success: false,
       message: '服务器内部错误',
+      data: null,
     }
   }
 })
