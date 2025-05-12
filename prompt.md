@@ -4,10 +4,7 @@
 
 问题：
 
-1. 
-   check-if-layout-used.js:12 [nuxt] Your project has layouts but the `<NuxtLayout />` component has not been used.
-
-   
+1.  check-if-layout-used.js:12 [nuxt] Your project has layouts but the `<NuxtLayout />` component has not been used.
 
 迭代：
 

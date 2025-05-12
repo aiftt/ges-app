@@ -1,4 +1,3 @@
-import * as process from 'node:process'
 /**
  * 认证中间件
  * 创建日期: 2024-06-19
@@ -8,11 +7,9 @@ import * as process from 'node:process'
 import jwt from 'jsonwebtoken'
 import { useLogger } from '~/composables/useLogger'
 import { getUserById } from '~/server/models/user'
+import { JWT_SECRET } from '~/utils/db-config'
 
 const logger = useLogger('auth-middleware')
-
-// JWT密钥
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key'
 
 // 不需要认证的路径前缀
 const publicPaths = [

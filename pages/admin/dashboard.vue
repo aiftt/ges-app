@@ -87,7 +87,7 @@ onMounted(() => {
     <div class="stats-row">
       <ui-card class="stats-card" :loading="loading">
         <div class="stats-content">
-          <div class="stats-icon user-icon">
+          <div class="user-icon stats-icon">
             <ui-icon icon="carbon:user" size="large" />
           </div>
           <div class="stats-info">

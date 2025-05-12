@@ -1,283 +1,89 @@
-# 后台管理系统开发计划
+/\*\*
 
-## 项目概述
+- 管理后台开发计划文档
+- 创建日期: 2024-06-19
+- 作者: aiftt
+- 邮箱: ftt.loves@gmail.com
+  \*/
 
-基于 Nuxt.js + Vue + MongoDB 构建的企业级后台管理系统，参考 JeecgBoot 的界面布局和功能设计。
+# 管理后台开发计划
 
-## 技术栈
+## 已完成功能
 
-- 前端：Nuxt.js (SSR)、Vue 3、UnoCSS
-- UI组件：自定义UI组件库（components/ui/目录）
-- 图标：nuxt-icon（已封装在 ui-icon 组件中）
-- 数据库：MongoDB
-- 状态管理：Pinia
-- 网络请求：useFetch
+### 基础架构
 
-## 目录结构规划
+- [x] MongoDB数据库连接工具(server/utils/db.ts)
+- [x] 用户模型设计与实现(server/models/user.ts)
+- [x] 管理后台布局(layouts/admin.vue)，包含侧边栏和顶部导航
+- [x] 数据库初始化脚本(scripts/init-database.ts)，创建基础用户、角色、菜单和字典数据
 
-```
-├── components/         # 组件目录
-│   ├── ui/             # UI组件库
-│   └── admin/          # 管理后台专用组件
-├── composables/        # 组合式函数
-├── layouts/            # 布局组件
-│   └── admin.vue       # 管理后台布局
-├── pages/              # 页面组件
-│   └── admin/          # 管理后台页面
-│       ├── login.vue   # 登录页
-│       ├── index.vue   # 仪表盘
-│       └── system/     # 系统管理
-│           ├── user.vue    # 用户管理
-│           ├── role.vue    # 角色管理
-│           ├── menu.vue    # 菜单管理
-│           └── dict.vue    # 字典管理
-├── server/             # 服务端目录
-│   ├── api/            # API路由
-│   ├── models/         # 数据模型
-│   ├── utils/          # 服务端工具函数
-│   └── middleware/     # 服务端中间件
-└── stores/             # Pinia状态管理
-```
+### 用户认证
 
-## 开发步骤
+- [x] 用户认证API(login.post.ts, current-user.get.ts)
+- [x] 登录页面(pages/admin/login.vue)
+- [x] 认证中间件(server/middleware/auth.ts)
+- [x] 认证工具函数(composables/useAuth.ts)
+- [x] 全局认证中间件(middleware/auth.global.ts)
 
-### 阶段一：基础架构搭建
+### 用户管理
 
-1. ✅ 创建开发计划文档
-2. 配置MongoDB连接
-   - 创建MongoDB连接工具
-   - 使用.env配置数据库连接信息
-3. 设计并实现管理后台布局
-   - 创建admin布局模板
-   - 实现侧边栏菜单
-   - 实现顶部导航栏
+- [x] 用户CRUD相关API接口(users/\*.ts)
+- [x] 管理后台首页(pages/admin/index.vue)
 
-### 阶段二：用户认证系统
+## 待开发功能
 
-1. 设计并实现用户数据模型
-2. 实现用户认证API
-   - 登录接口
-   - 获取当前用户信息接口
-   - 退出登录接口
-3. 实现登录页面
-4. 实现认证中间件
+### 后台系统
 
-### 阶段三：核心功能模块
+- [ ] 完善用户管理页面，支持更多操作和筛选功能
+- [ ] 角色管理功能，包括角色列表、新增/编辑/删除角色，权限分配
+- [ ] 菜单管理功能，包括菜单列表、新增/编辑/删除菜单，菜单排序
+- [ ] 字典管理功能，包括字典列表、字典项管理，支持动态数据选择
 
-1. 菜单管理
-   - 设计菜单数据模型
-   - 实现菜单CRUD接口
-   - 实现菜单管理页面
-2. 用户管理
-   - 完善用户数据模型
-   - 实现用户CRUD接口
-   - 优化用户管理页面
-3. 角色管理
-   - 设计角色数据模型
-   - 实现角色CRUD接口
-   - 实现角色管理页面
-   - 实现角色-菜单权限分配
-   - 实现角色-用户分配
-4. 字典管理
-   - 设计字典数据模型
-   - 实现字典CRUD接口
-   - 实现字典管理页面
+### 辅助功能
 
-### 阶段四：仪表盘与数据可视化
+- [ ] 系统监控，包括接口访问日志，系统资源使用情况
+- [ ] 系统配置管理，支持修改系统参数
+- [ ] 操作日志记录与查询
 
-1. 设计仪表盘布局
-2. 实现核心数据统计接口
-3. 实现数据可视化图表
-4. 完善仪表盘页面
+### 业务功能
 
-### 阶段五：优化与完善
+- [ ] 待定，根据业务需求开发
 
-1. 性能优化
-2. 体验优化
-3. 兼容性测试
-4. 错误处理与日志
-5. 安全性增强
+## 数据库初始化说明
 
-## 当前阶段工作计划
+为了便于开发和测试，已添加数据库初始化脚本，创建系统必要的基础数据。
 
-### 完成：阶段一 - 基础架构搭建
+### 初始化内容
 
-- [x] 配置MongoDB连接
-  - [x] 创建MongoDB连接工具
-  - [x] 使用.env配置数据库连接信息
-  - [x] 设计基础数据模型
-- [x] 设计并实现管理后台布局
-  - [x] 创建admin布局模板
-  - [x] 实现侧边栏菜单
-  - [x] 实现顶部导航栏
+1. **用户数据**
 
-### 进行中：阶段二 - 用户认证系统
+   - 管理员用户: 用户名 admin，密码 admin123
+   - 测试用户: 用户名 test，密码 test123
 
-- [x] 设计并实现用户数据模型
-- [x] 实现用户认证API
-  - [x] 登录接口
-  - [x] 获取当前用户信息接口
-- [x] 实现登录页面
-- [x] 实现认证中间件
-- [x] 实现认证工具（useAuth）
+2. **角色数据**
 
-### 待开发：阶段三 - 核心功能模块
+   - 系统管理员角色: 拥有所有权限
+   - 普通用户角色: 拥有基本权限
 
-- [ ] 用户管理
-  - [x] 实现用户CRUD接口
-  - [ ] 优化用户管理页面
-- [ ] 角色管理
-  - [ ] 设计角色数据模型
-  - [ ] 实现角色CRUD接口
-  - [ ] 实现角色管理页面
-- [ ] 菜单管理
-  - [ ] 设计菜单数据模型
-  - [ ] 实现菜单CRUD接口
-  - [ ] 实现菜单管理页面
-- [ ] 字典管理
-  - [ ] 设计字典数据模型
-  - [ ] 实现字典CRUD接口
-  - [ ] 实现字典管理页面
+3. **菜单数据**
 
-## 功能模块
+   - 仪表盘: 系统首页
+   - 系统管理:
+     - 用户管理
+     - 角色管理
+     - 菜单管理
+     - 字典管理
 
-1. 用户认证
+4. **字典数据**
+   - 用户状态字典: 正常/禁用
+   - 菜单类型字典: 菜单/按钮
 
-   - 登录页面
-   - 注册功能
-   - 找回密码
-   - JWT认证
+### 使用方法
 
-2. 布局和导航
+执行以下命令初始化数据库:
 
-   - 侧边栏菜单（可折叠）
-   - 顶部导航栏
-   - 面包屑导航
-   - 个人信息下拉菜单
-
-3. 系统管理
-
-   - 菜单管理
-   - 用户管理
-   - 角色管理
-   - 字典管理
-
-4. 仪表盘页面
-   - 数据概览统计
-   - 图表展示
-
-## 数据模型设计
-
-### 用户模型 (User)
-
-```typescript
-interface IUser {
-  _id: string
-  username: string
-  password: string // 加密存储
-  email: string
-  avatar?: string
-  realName?: string
-  phone?: string
-  status: 'active' | 'disabled'
-  roles: string[] // 角色ID数组
-  createTime: Date
-  updateTime: Date
-  lastLoginTime?: Date
-}
+```bash
+pnpm tsx scripts/init-database.ts
 ```
 
-### 角色模型 (Role)
-
-```typescript
-interface IRole {
-  _id: string
-  roleName: string
-  roleCode: string
-  description?: string
-  permissions: string[] // 权限标识数组
-  createTime: Date
-  updateTime: Date
-}
-```
-
-### 菜单模型 (Menu)
-
-```typescript
-interface IMenu {
-  _id: string
-  parentId: string // 父菜单ID，顶级菜单为''
-  name: string // 菜单名称
-  path: string // 路由路径
-  component?: string // 组件路径
-  redirect?: string // 重定向路径
-  icon?: string // 图标
-  orderNum: number // 排序号
-  type: 'menu' | 'button' // 菜单类型：菜单或按钮
-  permission?: string // 权限标识
-  status: 'active' | 'disabled' // 状态
-  visible: boolean // 是否可见
-  keepAlive: boolean // 是否缓存
-  createTime: Date
-  updateTime: Date
-}
-```
-
-### 字典模型 (Dict)
-
-```typescript
-interface IDict {
-  _id: string
-  dictName: string // 字典名称
-  dictCode: string // 字典编码
-  description?: string // 描述
-  status: 'active' | 'disabled' // 状态
-  createTime: Date
-  updateTime: Date
-}
-
-interface IDictItem {
-  _id: string
-  dictId: string // 所属字典ID
-  itemText: string // 字典项文本
-  itemValue: string // 字典项值
-  description?: string // 描述
-  orderNum: number // 排序号
-  status: 'active' | 'disabled' // 状态
-  createTime: Date
-  updateTime: Date
-}
-```
-
-## 接口设计
-
-### 认证接口
-
-- `POST /api/auth/login` - 用户登录
-- `POST /api/auth/logout` - 用户退出
-- `POST /api/auth/register` - 用户注册
-- `POST /api/auth/forgot-password` - 找回密码
-- `POST /api/auth/reset-password` - 重置密码
-- `GET /api/auth/current-user` - 获取当前用户信息
-
-### 用户管理接口
-
-- `GET /api/users` - 获取用户列表（分页）
-- `GET /api/users/:id` - 获取单个用户信息
-- `POST /api/users` - 创建用户
-- `PUT /api/users/:id` - 更新用户信息
-- `DELETE /api/users/:id` - 删除用户
-- `PUT /api/users/:id/status` - 修改用户状态
-- `PUT /api/users/:id/password` - 修改用户密码
-
-### 角色管理接口
-
-- `GET /api/roles` - 获取角色列表
-- `GET /api/roles/:id` - 获取单个角色信息
-- `POST /api/roles` - 创建角色
-- `PUT /api/roles/:id` - 更新角色信息
-- `DELETE /api/roles/:id` - 删除角色
-
-### 菜单管理接口
-
-- `GET /api/menus`
+注意: 脚本会检查数据是否已存在，不会重复创建。初次安装系统时，需要先运行此脚本创建基础数据。

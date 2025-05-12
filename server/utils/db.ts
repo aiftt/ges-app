@@ -8,14 +8,15 @@ import type { Db } from 'mongodb'
 import * as process from 'node:process'
 import { MongoClient } from 'mongodb'
 import { useLogger } from '~/composables/useLogger'
+import { MONGODB_DB_NAME, MONGODB_URL } from '~/utils/db-config'
 
 // 创建日志记录器
 const logger = useLogger('mongodb-connection')
 
 // 获取环境变量
 const config = {
-  uri: process.env.MONGODB_URI || 'mongodb://localhost:27017/gesApp',
-  dbName: process.env.MONGODB_DB_NAME || 'gesApp',
+  uri: MONGODB_URL,
+  dbName: MONGODB_DB_NAME,
 }
 
 // MongoDB客户端

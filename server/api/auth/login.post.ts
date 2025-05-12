@@ -1,4 +1,3 @@
-import * as process from 'node:process'
 import { createError, defineEventHandler, readBody } from 'h3'
 /**
  * 用户登录API
@@ -9,12 +8,9 @@ import { createError, defineEventHandler, readBody } from 'h3'
 import jwt from 'jsonwebtoken'
 import { useLogger } from '~/composables/useLogger'
 import { updateUserLastLoginTime, verifyUserPassword } from '~/server/models/user'
+import { JWT_EXPIRES_IN, JWT_SECRET } from '~/utils/db-config'
 
 const logger = useLogger('auth-login-api')
-
-// JWT密钥
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key'
-const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '7d'
 
 interface LoginRequest {
   username: string
@@ -64,7 +60,6 @@ export default defineEventHandler(async (event) => {
       roles: user.roles,
     }
 
-    // @ts-expect-error - 忽略类型错误，因为jsonwebtoken的类型定义有问题
     const token = jwt.sign(
       payload,
       JWT_SECRET,

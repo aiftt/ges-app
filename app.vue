@@ -34,7 +34,9 @@ const theme = ref<Theme>('light')
   >
     <div>
       <NuxtRouteAnnouncer />
-      <NuxtPage />
+      <NuxtLayout>
+        <NuxtPage />
+      </NuxtLayout>
     </div>
 
     <!-- 添加全局消息和通知组件 -->

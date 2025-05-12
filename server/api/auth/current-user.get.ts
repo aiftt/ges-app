@@ -1,4 +1,3 @@
-import * as process from 'node:process'
 /**
  * 获取当前用户信息API
  * 创建日期: 2024-06-19
@@ -8,11 +7,9 @@ import * as process from 'node:process'
 import jwt from 'jsonwebtoken'
 import { useLogger } from '~/composables/useLogger'
 import { getUserById } from '~/server/models/user'
+import { JWT_SECRET } from '~/utils/db-config'
 
 const logger = useLogger('auth-current-user-api')
-
-// JWT密钥
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key'
 
 export default defineEventHandler(async (event) => {
   try {
