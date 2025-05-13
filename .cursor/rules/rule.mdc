@@ -34,32 +34,23 @@ alwaysApply: true
 - 总是在服务端通过 `import * as process from 'node:process'` 引入 process 对象
 - 总是在设置 css 变量的时候给个备用控制 `null` 解决 `undefined` 会被当作正常的值而覆盖备用值
 - 总是使用 `ui/` 下面的组件来替代原生组件，除非 `ui/` 下面没有对应的组件，比如：`input` 应该使用 `ui-input`
+- 总是在进行数据操作之前检查是不是已经存在了该数据（模型）而不是一开始就直接新建(冗余操作)
 
 ### 绝对禁止的行为
 
 - 禁止在`components/ui/`目录下创建驼峰命名的文件（如`CamelCase.vue`）
-
 - 禁止组件命名使用连字符（如`camel-case.vue`），正确格式：`camel/case.vue`
-
 - 禁止使用 `style.setProperty`，必须使用 `v-bind + CSS变量`
-
 - 禁止使用 `typeof window` 判断环境
-
 - 禁止使用 `ts-ignore` 规避问题
-
 - 禁止保留未使用的代码和变量
-
 - 禁止直接使用 `localStorage/sessionStorage` API
-
 - 禁止在单文件组件中混用 Options API 和 Composition API
-
 - 禁止任何导致类型错误、语法错误的代码
-
 - 禁止安装任何 @iconify 相关的图标包，项目中用的是 Nuxt 自带的 nuxt-icon，已经封装在 `<ui-icon/>` 组件了
-
 - 禁止在创建目录或文件的时候复杂化，比如：菜单管理(错误示范：`menu-management`，正确示范：`menu`)
-
 - 禁止使用原生的 confirm, alert,... 需要时使用 `useMessageBox`
+- 禁止mock任何接口数据，任何时候都应该从数据库里去查
 
 
 

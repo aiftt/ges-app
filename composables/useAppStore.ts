@@ -1,6 +1,8 @@
 /**
  * 应用状态存储
  * 创建日期: 2024-09-03
+ * 更新日期: 2024-10-03 - 修复CACHE_EXPIRES引用
+ * 更新日期: 2024-10-07 - 优化菜单加载逻辑和性能
  * 作者: aiftt
  * 邮箱: ftt.loves@gmail.com
  */
@@ -8,6 +10,7 @@ import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
 import { useAuthStore } from '~/composables/useAuthStore'
 import { useLogger } from '~/composables/useLogger'
+import { CACHE_EXPIRES } from '~/utils/app-config'
 import { clearPrefixedStorage, usePersistStorage } from '~/utils/storage'
 
 // 日志记录器
@@ -58,6 +61,7 @@ export const useAppStore = defineStore('app', () => {
   // 加载状态
   const menuLoading = ref(false)
   const dictLoading = ref(false)
+  const menuError = ref<string | null>(null)
 
   /**
    * 加载菜单数据
@@ -72,21 +76,34 @@ export const useAppStore = defineStore('app', () => {
     if (menuLoading.value)
       return
 
+    // 重置错误状态
+    menuError.value = null
     menuLoading.value = true
+
+    const startTime = Date.now()
     logger.info('加载菜单数据')
 
     try {
       const response = await $fetch<{
         success: boolean
         data: { menus: MenuItem[] }
-      }>('/api/system/menus')
+        message?: string
+      }>('/api/menu')
 
       if (response.success) {
         allMenus.value = response.data.menus
-        logger.info('菜单数据加载成功', allMenus.value.length)
+        logger.info('菜单数据加载成功', { count: allMenus.value.length, time: `${Date.now() - startTime}ms` })
+      }
+      else {
+        // 处理业务逻辑错误
+        menuError.value = response.message || '菜单数据加载失败'
+        logger.warn('菜单数据加载失败', { message: menuError.value })
       }
     }
     catch (error) {
+      // 处理网络错误或服务器错误
+      const errorMessage = error instanceof Error ? error.message : '未知错误'
+      menuError.value = `菜单数据加载失败: ${errorMessage}`
       logger.error('加载菜单数据失败', error)
     }
     finally {
@@ -114,7 +131,7 @@ export const useAppStore = defineStore('app', () => {
       const response = await $fetch<{
         success: boolean
         data: { dictTypes: DictType[] }
-      }>('/api/system/dict-types')
+      }>('/api/dict/all')
 
       if (response.success) {
         // 转换为对象形式方便查询
@@ -212,6 +229,7 @@ export const useAppStore = defineStore('app', () => {
     dictTypes,
     menuLoading,
     dictLoading,
+    menuError,
     loadMenus,
     loadDictionaries,
     refreshAppData,
