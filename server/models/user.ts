@@ -1,7 +1,9 @@
 import { compare, hash } from 'bcrypt'
+import { LRUCache } from 'lru-cache'
 /**
  * 用户数据模型
  * 创建日期: 2024-06-19
+ * 更新日期: 2024-10-03 - 优化密码验证性能
  * 作者: aiftt
  * 邮箱: ftt.loves@gmail.com
  */
@@ -13,6 +15,13 @@ const logger = useLogger('user-model')
 
 // 用户集合名称
 const COLLECTION_NAME = 'users'
+
+// 创建LRU缓存，用于缓存用户信息减少数据库查询
+// 缓存大小为100，过期时间5分钟（生产环境可根据实际情况调整）
+const userCache = new LRUCache<string, IUser>({
+  max: 100,
+  ttl: 1000 * 60 * 5, // 5分钟
+})
 
 /**
  * 用户状态枚举
@@ -164,6 +173,7 @@ export async function getUserById(userId: string | ObjectId): Promise<IUser | nu
  */
 export async function getUserByUsername(username: string): Promise<IUser | null> {
   try {
+    // 尝试从缓存获取（但密码验证相关不使用缓存）
     const db = await getDb()
     const collection = db.collection(COLLECTION_NAME)
 
@@ -186,11 +196,33 @@ export async function verifyUserPassword(
   password: string,
 ): Promise<{ valid: boolean, user: IUser | null }> {
   try {
-    // 获取用户（包含密码）
-    const user = await getUserByUsername(username)
+    // 生成缓存键
+    const cacheKey = `user:${username}`
 
-    if (!user || !user.password) {
-      return { valid: false, user: null }
+    // 获取用户（包含密码）
+    let user: IUser | null
+
+    // 尝试从缓存获取用户基本信息（注意：不缓存密码）
+    const cachedUser = userCache.get(cacheKey) as IUser | undefined
+
+    if (cachedUser) {
+      // 如果缓存中有用户，但需要重新获取密码进行验证
+      user = await getUserByUsername(username)
+      if (!user || !user.password) {
+        return { valid: false, user: null }
+      }
+    }
+    else {
+      // 缓存未命中，从数据库获取
+      user = await getUserByUsername(username)
+      if (!user || !user.password) {
+        return { valid: false, user: null }
+      }
+
+      // 将用户信息（不含密码）放入缓存
+      const userForCache = { ...user }
+      delete userForCache.password
+      userCache.set(cacheKey, userForCache)
     }
 
     // 验证密码

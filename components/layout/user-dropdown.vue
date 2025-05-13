@@ -1,5 +1,5 @@
 <script setup lang="ts" name="LayoutUserDropdown">
-import type { UserInfo } from '~/stores/auth'
+import type { UserInfo } from '~/composables/useAuthStore'
 /**
  * 用户下拉菜单组件
  * 创建日期: 2024-09-03
@@ -7,9 +7,9 @@ import type { UserInfo } from '~/stores/auth'
  * 邮箱: ftt.loves@gmail.com
  */
 import { onClickOutside } from '@vueuse/core'
+import { useAppStore } from '~/composables/useAppStore'
+import { useAuthStore } from '~/composables/useAuthStore'
 import { useLogger } from '~/composables/useLogger'
-import { useAppStore } from '~/stores/app'
-import { useAuthStore } from '~/stores/auth'
 
 const logger = useLogger('user-dropdown')
 const authStore = useAuthStore()

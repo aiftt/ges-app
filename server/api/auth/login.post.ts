@@ -3,6 +3,7 @@ import { createError, defineEventHandler, getCookie, readBody } from 'h3'
  * 用户登录API
  * 创建日期: 2024-06-19
  * 更新日期: 2024-09-03 - 添加验证码验证功能
+ * 更新日期: 2024-10-03 - 优化响应时间，异步更新最后登录时间
  * 作者: aiftt
  * 邮箱: ftt.loves@gmail.com
  */
@@ -66,11 +67,6 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    // 更新用户最后登录时间
-    if (user._id) {
-      await updateUserLastLoginTime(user._id)
-    }
-
     // 生成JWT令牌
     const payload = {
       userId: user._id,
@@ -85,6 +81,16 @@ export default defineEventHandler(async (event) => {
         expiresIn: JWT_EXPIRES_IN,
       },
     )
+
+    // 异步更新用户最后登录时间，不阻塞响应
+    if (user._id) {
+      // 使用Promise.resolve().then()将更新操作放入微任务队列，避免阻塞响应
+      const userId = user._id
+      Promise.resolve().then(() => {
+        updateUserLastLoginTime(userId)
+          .catch(err => logger.error('更新用户最后登录时间失败', err))
+      })
+    }
 
     // 返回响应
     return {

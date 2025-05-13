@@ -1,3 +1,4 @@
+import { useAuthStore } from '~/composables/useAuthStore'
 /**
  * 访客中间件
  * 创建日期: 2024-09-03
@@ -6,7 +7,6 @@
  * 邮箱: ftt.loves@gmail.com
  */
 import { useLogger } from '~/composables/useLogger'
-import { useAuthStore } from '~/stores/auth'
 
 const logger = useLogger('guest-middleware')
 

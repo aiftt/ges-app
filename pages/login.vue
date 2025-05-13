@@ -3,19 +3,20 @@
  * 登录页面
  * 创建日期: 2024-09-03
  * 更新日期: 2024-09-03 - 增加Pinia持久化存储
+ * 更新日期: 2024-10-03 - 优化登录性能和用户体验
  * 作者: aiftt
  * 邮箱: ftt.loves@gmail.com
  */
 import { useRouter } from 'vue-router'
+import { useAppStore } from '~/composables/useAppStore'
+import { useAuthStore } from '~/composables/useAuthStore'
 import { useLogger } from '~/composables/useLogger'
-import { useAppStore } from '~/stores/app'
-import { useAuthStore } from '~/stores/auth'
 import { cleanExpiredStorage } from '~/utils/storage'
 
 // 定义页面元数据
 definePageMeta({
-  layout: 'blank' as any,
-  middleware: ['guest'] as any,
+  layout: 'blank',
+  middleware: ['guest'],
 })
 
 const logger = useLogger('login-page')
@@ -38,6 +39,15 @@ const formState = reactive({
   isLoading: false,
 })
 
+// 登录性能指标
+const performanceMetrics = reactive({
+  startTime: 0,
+  endTime: 0,
+  duration: 0,
+  loginState: '' as '' | 'validating' | 'authenticating' | 'processing' | 'success' | 'error',
+  errorDetails: '',
+})
+
 // 登录模式（登录/注册）
 const loginMode = ref<'login' | 'register'>('login')
 
@@ -46,6 +56,24 @@ const captchaRef = ref()
 
 // 表单错误信息
 const formError = ref('')
+
+// 根据登录阶段获取提示文本
+const loginStateText = computed(() => {
+  switch (performanceMetrics.loginState) {
+    case 'validating':
+      return '正在验证表单...'
+    case 'authenticating':
+      return '正在验证账号...'
+    case 'processing':
+      return '正在处理登录...'
+    case 'success':
+      return '登录成功，正在跳转...'
+    case 'error':
+      return `登录失败: ${performanceMetrics.errorDetails}`
+    default:
+      return ''
+  }
+})
 
 // 自定义验证规则
 // const rules = {
@@ -91,22 +119,31 @@ async function handleLogin() {
   formState.isLoading = true
   formError.value = ''
 
-  try {
-    const response = await $fetch<{
-      success: boolean
-      data: { token: string, user: any }
-    }>('/api/auth/login', {
-      method: 'POST',
-      body: {
-        username: formState.username,
-        password: formState.password,
-        captcha: formState.captcha,
-      },
-    })
+  // 重置并开始记录性能指标
+  performanceMetrics.startTime = performance.now()
+  performanceMetrics.endTime = 0
+  performanceMetrics.duration = 0
+  performanceMetrics.errorDetails = ''
+  performanceMetrics.loginState = 'validating'
 
-    if (response.success) {
-      // 使用 store 存储登录信息
-      authStore.setLoginInfo(response.data)
+  try {
+    // 表单验证阶段（非常快）
+    await new Promise(resolve => setTimeout(resolve, 100))
+
+    // 进入账号验证阶段
+    performanceMetrics.loginState = 'authenticating'
+
+    // 直接使用authStore的login方法
+    const success = await authStore.login(
+      formState.username,
+      formState.password,
+      formState.captcha,
+      false, // 不记住登录
+    )
+
+    if (success) {
+      // 进入登录后处理阶段
+      performanceMetrics.loginState = 'processing'
 
       // 加载菜单和字典数据
       await Promise.all([
@@ -114,16 +151,40 @@ async function handleLogin() {
         appStore.loadDictionaries(),
       ])
 
+      // 记录登录成功
+      performanceMetrics.loginState = 'success'
+      performanceMetrics.endTime = performance.now()
+      performanceMetrics.duration = Math.round(performanceMetrics.endTime - performanceMetrics.startTime)
+
+      // 记录性能指标
+      logger.info(`登录完成，总耗时: ${performanceMetrics.duration}ms`)
+
+      // 短暂延迟以显示成功状态
+      await new Promise(resolve => setTimeout(resolve, 500))
+
       // 跳转到首页
       router.push('/')
     }
+    else {
+      performanceMetrics.loginState = 'error'
+      performanceMetrics.errorDetails = '用户名或密码错误'
+      formError.value = '登录失败，请检查用户名和密码'
+      refreshCaptcha()
+    }
   }
   catch (error: any) {
+    performanceMetrics.loginState = 'error'
+    performanceMetrics.errorDetails = error.data?.message || '服务器错误'
     logger.error('登录失败', error)
     formError.value = error.data?.message || '登录失败，请重试'
     refreshCaptcha()
   }
   finally {
+    if (performanceMetrics.loginState !== 'success') {
+      performanceMetrics.endTime = performance.now()
+      performanceMetrics.duration = Math.round(performanceMetrics.endTime - performanceMetrics.startTime)
+      logger.info(`登录失败，总耗时: ${performanceMetrics.duration}ms`)
+    }
     formState.isLoading = false
   }
 }
@@ -185,44 +246,44 @@ function handleSubmit() {
 </script>
 
 <template>
-  <div class="login-page">
-    <div class="login-container">
-      <div class="login-header">
-        <h1 class="login-title">
+  <div class="min-h-screen flex items-center justify-center bg-[var(--ui-color-bg,#f1f5f9)]">
+    <div class="w-[420px] rounded-lg bg-[var(--ui-color-bg-light,#fff)] p-8 shadow-lg">
+      <div class="mb-6 text-center">
+        <h1 class="text-2xl text-[var(--ui-color-text,#111827)] font-semibold">
           {{ loginMode === 'login' ? '用户登录' : '用户注册' }}
         </h1>
       </div>
 
-      <div v-if="formError" class="login-error">
+      <div v-if="formError" class="mb-4 rounded bg-[var(--ui-color-danger-light,#fee2e2)] p-3 text-sm text-[var(--ui-color-danger,#dc2626)]">
         {{ formError }}
       </div>
 
       <form class="login-form" @submit.prevent="handleSubmit">
         <!-- 用户名 -->
-        <div class="form-item">
-          <label for="username" class="form-label">用户名</label>
-          <div class="form-control">
-            <ui-icon class="input-icon" icon="carbon:user" />
+        <div class="mb-4">
+          <label for="username" class="mb-1.5 block text-sm text-[var(--ui-color-text-light,#4b5563)]">用户名</label>
+          <div class="relative">
+            <ui-icon class="absolute left-3 top-1/2 text-[var(--ui-color-text-lighter,#9ca3af)] -translate-y-1/2" icon="carbon:user" />
             <input
               id="username"
               v-model="formState.username"
               type="text"
-              class="form-input"
+              class="h-10 w-full border border-[var(--ui-color-border,#e5e7eb)] rounded bg-[var(--ui-color-bg-light,#fff)] px-3 pl-9 text-[var(--ui-color-text,#111827)] focus:border-[var(--ui-color-primary,#4f46e5)] focus:shadow focus:shadow-[var(--ui-color-primary-light,rgba(79,70,229,0.1))] focus:outline-none"
               placeholder="请输入用户名"
             >
           </div>
         </div>
 
         <!-- 密码 -->
-        <div class="form-item">
-          <label for="password" class="form-label">密码</label>
-          <div class="form-control">
-            <ui-icon class="input-icon" icon="carbon:password" />
+        <div class="mb-4">
+          <label for="password" class="mb-1.5 block text-sm text-[var(--ui-color-text-light,#4b5563)]">密码</label>
+          <div class="relative">
+            <ui-icon class="absolute left-3 top-1/2 text-[var(--ui-color-text-lighter,#9ca3af)] -translate-y-1/2" icon="carbon:password" />
             <input
               id="password"
               v-model="formState.password"
               type="password"
-              class="form-input"
+              class="h-10 w-full border border-[var(--ui-color-border,#e5e7eb)] rounded bg-[var(--ui-color-bg-light,#fff)] px-3 pl-9 text-[var(--ui-color-text,#111827)] focus:border-[var(--ui-color-primary,#4f46e5)] focus:shadow focus:shadow-[var(--ui-color-primary-light,rgba(79,70,229,0.1))] focus:outline-none"
               placeholder="请输入密码"
             >
           </div>
@@ -231,30 +292,30 @@ function handleSubmit() {
         <!-- 注册模式下的额外字段 -->
         <template v-if="loginMode === 'register'">
           <!-- 确认密码 -->
-          <div class="form-item">
-            <label for="confirmPassword" class="form-label">确认密码</label>
-            <div class="form-control">
-              <ui-icon class="input-icon" icon="carbon:password" />
+          <div class="mb-4">
+            <label for="confirmPassword" class="mb-1.5 block text-sm text-[var(--ui-color-text-light,#4b5563)]">确认密码</label>
+            <div class="relative">
+              <ui-icon class="absolute left-3 top-1/2 text-[var(--ui-color-text-lighter,#9ca3af)] -translate-y-1/2" icon="carbon:password" />
               <input
                 id="confirmPassword"
                 v-model="registerForm.confirmPassword"
                 type="password"
-                class="form-input"
+                class="h-10 w-full border border-[var(--ui-color-border,#e5e7eb)] rounded bg-[var(--ui-color-bg-light,#fff)] px-3 pl-9 text-[var(--ui-color-text,#111827)] focus:border-[var(--ui-color-primary,#4f46e5)] focus:shadow focus:shadow-[var(--ui-color-primary-light,rgba(79,70,229,0.1))] focus:outline-none"
                 placeholder="请再次输入密码"
               >
             </div>
           </div>
 
           <!-- 邮箱 -->
-          <div class="form-item">
-            <label for="email" class="form-label">邮箱</label>
-            <div class="form-control">
-              <ui-icon class="input-icon" icon="carbon:email" />
+          <div class="mb-4">
+            <label for="email" class="mb-1.5 block text-sm text-[var(--ui-color-text-light,#4b5563)]">邮箱</label>
+            <div class="relative">
+              <ui-icon class="absolute left-3 top-1/2 text-[var(--ui-color-text-lighter,#9ca3af)] -translate-y-1/2" icon="carbon:email" />
               <input
                 id="email"
                 v-model="registerForm.email"
                 type="email"
-                class="form-input"
+                class="h-10 w-full border border-[var(--ui-color-border,#e5e7eb)] rounded bg-[var(--ui-color-bg-light,#fff)] px-3 pl-9 text-[var(--ui-color-text,#111827)] focus:border-[var(--ui-color-primary,#4f46e5)] focus:shadow focus:shadow-[var(--ui-color-primary-light,rgba(79,70,229,0.1))] focus:outline-none"
                 placeholder="请输入邮箱"
               >
             </div>
@@ -262,32 +323,32 @@ function handleSubmit() {
         </template>
 
         <!-- 验证码 -->
-        <div class="form-item">
-          <label for="captcha" class="form-label">验证码</label>
-          <div class="captcha-container">
-            <div class="form-control captcha-input">
-              <ui-icon class="input-icon" icon="carbon:image" />
+        <div class="mb-4">
+          <label for="captcha" class="mb-1.5 block text-sm text-[var(--ui-color-text-light,#4b5563)]">验证码</label>
+          <div class="flex gap-2">
+            <div class="relative flex-1">
+              <ui-icon class="absolute left-3 top-1/2 text-[var(--ui-color-text-lighter,#9ca3af)] -translate-y-1/2" icon="carbon:image" />
               <input
                 id="captcha"
                 v-model="formState.captcha"
                 type="text"
-                class="form-input"
+                class="h-10 w-full border border-[var(--ui-color-border,#e5e7eb)] rounded bg-[var(--ui-color-bg-light,#fff)] px-3 pl-9 text-[var(--ui-color-text,#111827)] focus:border-[var(--ui-color-primary,#4f46e5)] focus:shadow focus:shadow-[var(--ui-color-primary-light,rgba(79,70,229,0.1))] focus:outline-none"
                 placeholder="请输入验证码"
               >
             </div>
             <ui-captcha
               ref="captchaRef"
-              class="captcha-widget"
+              class="flex-shrink-0"
               @refresh="formState.captcha = ''"
             />
           </div>
         </div>
 
         <!-- 登录按钮 -->
-        <div class="form-item">
+        <div class="mb-4">
           <button
             type="submit"
-            class="login-button"
+            class="h-10 w-full flex cursor-pointer items-center justify-center rounded bg-[var(--ui-color-primary,#4f46e5)] text-base text-white font-medium transition-all duration-200 disabled:cursor-not-allowed disabled:bg-[var(--ui-color-text-lighter,#9ca3af)] hover:bg-[var(--ui-color-primary-dark,#4338ca)]"
             :disabled="formState.isLoading"
           >
             <ui-icon
@@ -295,15 +356,25 @@ function handleSubmit() {
               icon="carbon:renew"
               class="mr-1 animate-spin"
             />
-            {{ loginMode === 'login' ? '登 录' : '注 册' }}
+            <template v-if="!formState.isLoading">
+              {{ loginMode === 'login' ? '登 录' : '注 册' }}
+            </template>
+            <template v-else>
+              {{ loginStateText }}
+            </template>
           </button>
         </div>
 
+        <!-- 登录性能指标 -->
+        <div v-if="performanceMetrics.duration > 0" class="mt-2 text-center text-xs text-[var(--ui-color-text-lighter,#9ca3af)]">
+          <div>登录耗时: {{ performanceMetrics.duration }}ms</div>
+        </div>
+
         <!-- 切换登录/注册 -->
-        <div class="login-footer">
+        <div class="mt-4 text-center">
           <button
             type="button"
-            class="toggle-mode"
+            class="cursor-pointer border-none bg-transparent text-sm text-[var(--ui-color-primary,#4f46e5)] hover:underline"
             @click="toggleMode"
           >
             {{ loginMode === 'login' ? '没有账号？立即注册' : '已有账号？立即登录' }}
@@ -315,139 +386,5 @@ function handleSubmit() {
 </template>
 
 <style lang="scss" scoped>
-.login-page {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-  background-color: var(--ui-color-bg, #f1f5f9);
-}
-
-.login-container {
-  width: 420px;
-  padding: 32px;
-  border-radius: 8px;
-  background-color: var(--ui-color-bg-light, #fff);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-}
-
-.login-header {
-  margin-bottom: 24px;
-  text-align: center;
-}
-
-.login-title {
-  font-size: 24px;
-  font-weight: 600;
-  color: var(--ui-color-text, #111827);
-}
-
-.login-error {
-  margin-bottom: 16px;
-  padding: 12px;
-  border-radius: 4px;
-  background-color: var(--ui-color-danger-light, #fee2e2);
-  color: var(--ui-color-danger, #dc2626);
-  font-size: 14px;
-}
-
-.login-form {
-  .form-item {
-    margin-bottom: 16px;
-  }
-
-  .form-label {
-    display: block;
-    margin-bottom: 6px;
-    font-size: 14px;
-    color: var(--ui-color-text-light, #4b5563);
-  }
-
-  .form-control {
-    position: relative;
-  }
-
-  .input-icon {
-    position: absolute;
-    top: 50%;
-    left: 12px;
-    transform: translateY(-50%);
-    color: var(--ui-color-text-lighter, #9ca3af);
-  }
-
-  .form-input {
-    width: 100%;
-    height: 40px;
-    padding: 0 12px 0 36px;
-    border: 1px solid var(--ui-color-border, #e5e7eb);
-    border-radius: 4px;
-    background-color: var(--ui-color-bg-light, #fff);
-    color: var(--ui-color-text, #111827);
-
-    &:focus {
-      outline: none;
-      border-color: var(--ui-color-primary, #4f46e5);
-      box-shadow: 0 0 0 2px var(--ui-color-primary-light, rgba(79, 70, 229, 0.1));
-    }
-
-    &::placeholder {
-      color: var(--ui-color-text-lighter, #9ca3af);
-    }
-  }
-
-  .captcha-container {
-    display: flex;
-    gap: 8px;
-  }
-
-  .captcha-input {
-    flex: 1;
-  }
-
-  .captcha-widget {
-    flex-shrink: 0;
-  }
-}
-
-.login-button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 40px;
-  border: none;
-  border-radius: 4px;
-  background-color: var(--ui-color-primary, #4f46e5);
-  color: #fff;
-  font-size: 16px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s;
-
-  &:hover {
-    background-color: var(--ui-color-primary-dark, #4338ca);
-  }
-
-  &:disabled {
-    background-color: var(--ui-color-text-lighter, #9ca3af);
-    cursor: not-allowed;
-  }
-}
-
-.login-footer {
-  margin-top: 16px;
-  text-align: center;
-
-  .toggle-mode {
-    border: none;
-    background: none;
-    color: var(--ui-color-primary, #4f46e5);
-    font-size: 14px;
-    cursor: pointer;
-
-    &:hover {
-      text-decoration: underline;
-    }
-  }
-}
+// 仅保留需要使用CSS变量的特殊样式，其余均通过unocss实现
 </style>

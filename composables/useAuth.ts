@@ -155,7 +155,7 @@ export function useAuth() {
     clearUserInfo()
 
     // 跳转到登录页
-    router.push('/admin/login')
+    router.push('/login')
   }
 
   /**

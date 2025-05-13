@@ -1,3 +1,5 @@
+import { useAppStore } from '~/composables/useAppStore'
+import { useAuthStore } from '~/composables/useAuthStore'
 /**
  * 初始化Pinia存储插件（仅客户端）
  * 创建日期: 2024-09-03
@@ -5,9 +7,6 @@
  * 邮箱: ftt.loves@gmail.com
  */
 import { useLogger } from '~/composables/useLogger'
-import { useAppStore } from '~/stores/app'
-import { useAuthStore } from '~/stores/auth'
-import { cleanExpiredStorage } from '~/utils/storage'
 
 export default defineNuxtPlugin(async () => {
   const logger = useLogger('init-stores')

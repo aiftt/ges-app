@@ -33,6 +33,7 @@ alwaysApply: true
 - 总是通过 ref 来获取元素对象，禁止使用 id + getElementById 方式(会导致水合问题)
 - 总是在服务端通过 `import * as process from 'node:process'` 引入 process 对象
 - 总是在设置 css 变量的时候给个备用控制 `null` 解决 `undefined` 会被当作正常的值而覆盖备用值
+- 总是使用 `ui/` 下面的组件来替代原生组件，除非 `ui/` 下面没有对应的组件，比如：`input` 应该使用 `ui-input`
 
 ### 绝对禁止的行为
 
@@ -97,7 +98,29 @@ Nuxt项目标准目录结构：
 ### 基础规范
 
 - 总是用 `h(...)` 方式来实现函数式组件，禁止使用 `jsx` 方式声明组件
+
 - 禁止 vue 组件中显示的导入 `import ... from 'vue'` ，nuxtjs 有 vue 自动引入机制，可直接使用 vue 中的所有内容
+
+- 总是使用 unocss classname 来添加样式，而不是采用冗余的 `<style></style>`，要充分利用 unocss
+  错误示范：
+
+  ```vue
+  <template><div class="test"></div></template>
+  <style>
+    .test {
+      // ...
+  		font-size: 12px;
+      text-align: center;
+    }
+  </style>
+  ```
+
+  正确示范：
+  ```vue
+  <template><div class="text-sm text-center"></div></template>
+  ```
+
+  
 
 ### 基本结构
 

@@ -20,7 +20,7 @@
 ### 用户认证
 
 - [x] 用户认证API(login.post.ts, current-user.get.ts)
-- [x] 登录页面(pages/admin/login.vue)
+- [x] 登录页面(pages/login.vue)
 - [x] 认证中间件(server/middleware/auth.ts)
 - [x] 认证工具函数(composables/useAuth.ts)
 - [x] 全局认证中间件(middleware/auth.global.ts)

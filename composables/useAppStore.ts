@@ -6,15 +6,12 @@
  */
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
+import { useAuthStore } from '~/composables/useAuthStore'
 import { useLogger } from '~/composables/useLogger'
-import { useAuthStore } from '~/stores/auth'
 import { clearPrefixedStorage, usePersistStorage } from '~/utils/storage'
 
 // 日志记录器
 const logger = useLogger('app-store')
-
-// 菜单和字典缓存时间 - 24小时
-const CACHE_EXPIRES = 24 * 60 * 60 * 1000
 
 // 菜单类型
 export interface MenuItem {
@@ -154,8 +151,7 @@ export const useAppStore = defineStore('app', () => {
   function clearAppCache() {
     allMenus.value = []
     dictTypes.value = {}
-    clearPrefixedStorage('menu_')
-    clearPrefixedStorage('dict_')
+    clearPrefixedStorage()
     logger.info('应用缓存已清除')
   }
 

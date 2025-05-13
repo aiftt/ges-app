@@ -7,12 +7,6 @@
 import { useStorage } from '@vueuse/core'
 import { computed, ref, watch } from 'vue'
 
-// 存储前缀
-const STORAGE_PREFIX = '__ges_'
-
-// 默认过期时间：24小时
-const DEFAULT_EXPIRES = 24 * 60 * 60 * 1000
-
 /**
  * 带过期时间的存储项目
  */
@@ -20,6 +14,8 @@ export interface StorageItem<T> {
   data: T
   expires: number // 过期时间戳
 }
+
+const removers = new Map<string, [() => number | undefined, () => void]>()
 
 /**
  * 创建带过期时间的存储
@@ -31,7 +27,7 @@ export interface StorageItem<T> {
 export function usePersistStorage<T>(
   key: string,
   initialValue: T,
-  expiresIn = DEFAULT_EXPIRES,
+  expiresIn = CACHE_EXPIRES,
   storage: 'localStorage' | 'sessionStorage' = 'localStorage',
 ) {
   // 添加前缀
@@ -100,6 +96,8 @@ export function usePersistStorage<T>(
     valueRef.value = initialValue
   }
 
+  removers.set(prefixedKey, [() => storageRef.value?.expires, clear])
+
   return {
     value: valueRef,
     isExpired,
@@ -110,23 +108,10 @@ export function usePersistStorage<T>(
 
 /**
  * 清除所有带特定前缀的存储
- * @param specificPrefix 特定前缀，在STORAGE_PREFIX之后
  */
-export function clearPrefixedStorage(specificPrefix = '') {
-  const fullPrefix = `${STORAGE_PREFIX}${specificPrefix}`
-
-  // 清除localStorage
-  Object.keys(localStorage).forEach((key) => {
-    if (key.startsWith(fullPrefix)) {
-      localStorage.removeItem(key)
-    }
-  })
-
-  // 清除sessionStorage
-  Object.keys(sessionStorage).forEach((key) => {
-    if (key.startsWith(fullPrefix)) {
-      sessionStorage.removeItem(key)
-    }
+export function clearPrefixedStorage() {
+  removers.forEach(([, clear]) => {
+    clear()
   })
 }
 
@@ -136,35 +121,10 @@ export function clearPrefixedStorage(specificPrefix = '') {
 export function cleanExpiredStorage() {
   const now = Date.now()
 
-  // 检查localStorage
-  Object.keys(localStorage).forEach((key) => {
-    if (key.startsWith(STORAGE_PREFIX)) {
-      try {
-        const item = JSON.parse(localStorage.getItem(key) || '{}')
-        if (item && item.expires && item.expires < now) {
-          localStorage.removeItem(key)
-        }
-      }
-      catch {
-        // 无效JSON，移除
-        localStorage.removeItem(key)
-      }
-    }
-  })
-
-  // 检查sessionStorage
-  Object.keys(sessionStorage).forEach((key) => {
-    if (key.startsWith(STORAGE_PREFIX)) {
-      try {
-        const item = JSON.parse(sessionStorage.getItem(key) || '{}')
-        if (item && item.expires && item.expires < now) {
-          sessionStorage.removeItem(key)
-        }
-      }
-      catch {
-        // 无效JSON，移除
-        sessionStorage.removeItem(key)
-      }
+  removers.forEach(([expires, clear]) => {
+    const expiredTime = expires?.()
+    if (expiredTime && expiredTime < now) {
+      clear()
     }
   })
 }
@@ -178,6 +138,5 @@ export function initStorage() {
   cleanExpiredStorage()
 
   // 每小时自动清理一次过期存储
-  const CLEANUP_INTERVAL = 60 * 60 * 1000 // 1小时
   setInterval(cleanExpiredStorage, CLEANUP_INTERVAL)
 }
