@@ -4,6 +4,7 @@
  * 创建日期: 2023-11-15
  * 作者: aiftt
  * 更新日期: 2024-09-15 - 使用集中管理的类型定义
+ * 更新日期: 2024-10-14 - 使用CSS变量+v-bind实现动态样式
  *
  * 提供响应式栅格布局系统，基于 CSS Grid 实现
  */
@@ -114,73 +115,34 @@ const gridClass = computed(() => {
     'grid',
   ]
 
-  // 设置列数
+  // 设置列数 (只保留数字预设类)
   if (typeof props.cols === 'number') {
     classes.push(`grid-cols-${props.cols}`)
   }
-  else if (props.cols) {
-    classes.push(`grid-cols-[${props.cols}]`)
+
+  // 响应式列数 (只保留数字预设类)
+  if (props.smCols && typeof props.smCols === 'number') {
+    classes.push(`sm:grid-cols-${props.smCols}`)
   }
 
-  // 响应式列数
-  if (props.smCols) {
-    if (typeof props.smCols === 'number') {
-      classes.push(`sm:grid-cols-${props.smCols}`)
-    }
-    else {
-      classes.push(`sm:grid-cols-[${props.smCols}]`)
-    }
+  if (props.mdCols && typeof props.mdCols === 'number') {
+    classes.push(`md:grid-cols-${props.mdCols}`)
   }
 
-  if (props.mdCols) {
-    if (typeof props.mdCols === 'number') {
-      classes.push(`md:grid-cols-${props.mdCols}`)
-    }
-    else {
-      classes.push(`md:grid-cols-[${props.mdCols}]`)
-    }
+  if (props.lgCols && typeof props.lgCols === 'number') {
+    classes.push(`lg:grid-cols-${props.lgCols}`)
   }
 
-  if (props.lgCols) {
-    if (typeof props.lgCols === 'number') {
-      classes.push(`lg:grid-cols-${props.lgCols}`)
-    }
-    else {
-      classes.push(`lg:grid-cols-[${props.lgCols}]`)
-    }
+  if (props.xlCols && typeof props.xlCols === 'number') {
+    classes.push(`xl:grid-cols-${props.xlCols}`)
   }
 
-  if (props.xlCols) {
-    if (typeof props.xlCols === 'number') {
-      classes.push(`xl:grid-cols-${props.xlCols}`)
-    }
-    else {
-      classes.push(`xl:grid-cols-[${props.xlCols}]`)
-    }
-  }
-
-  // 设置行数
+  // 设置行数 (只保留数字预设类)
   if (typeof props.rows === 'number') {
     classes.push(`grid-rows-${props.rows}`)
   }
-  else if (props.rows) {
-    classes.push(`grid-rows-[${props.rows}]`)
-  }
 
-  // 设置间距
-  if (props.gap) {
-    classes.push(`gap-[${props.gap}]`)
-  }
-
-  if (props.colGap) {
-    classes.push(`gap-x-[${props.colGap}]`)
-  }
-
-  if (props.rowGap) {
-    classes.push(`gap-y-[${props.rowGap}]`)
-  }
-
-  // 对齐方式
+  // 对齐方式 - 这些都是预定义类名，不会有问题
   if (props.justifyItems === 'start') {
     classes.push('justify-items-start')
   }
@@ -263,10 +225,6 @@ const gridClass = computed(() => {
     classes.push('auto-cols-auto')
   }
 
-  if (props.autoFill && props.autoCols) {
-    classes.push(`grid-cols-[repeat(auto-fill,minmax(${props.autoFill},1fr))]`)
-  }
-
   // 密集布局
   if (props.dense) {
     classes.push('grid-flow-dense')
@@ -277,8 +235,32 @@ const gridClass = computed(() => {
     classes.push(props.class)
   }
 
-  return classes.join(' ')
+  // 添加CSS变量标识类
+  if (typeof props.cols === 'string' || typeof props.rows === 'string'
+    || props.gap || props.colGap || props.rowGap || props.autoFill
+    || (typeof props.smCols === 'string')
+    || (typeof props.mdCols === 'string')
+    || (typeof props.lgCols === 'string')
+    || (typeof props.xlCols === 'string')) {
+    classes.push('ui-grid--custom-styles')
+  }
+
+  return classes
 })
+
+// 使用 v-bind 和 CSS 变量定义计算属性，添加 || null 确保不会出现undefined值
+const colsVar = computed(() => typeof props.cols === 'string' ? props.cols : null)
+const rowsVar = computed(() => typeof props.rows === 'string' ? props.rows : null)
+const gapVar = computed(() => props.gap || null)
+const colGapVar = computed(() => props.colGap || null)
+const rowGapVar = computed(() => props.rowGap || null)
+const autoFillVar = computed(() => props.autoFill && props.autoCols
+  ? `repeat(auto-fill, minmax(${props.autoFill}, 1fr))`
+  : null)
+const smColsVar = computed(() => typeof props.smCols === 'string' ? props.smCols : null)
+const mdColsVar = computed(() => typeof props.mdCols === 'string' ? props.mdCols : null)
+const lgColsVar = computed(() => typeof props.lgCols === 'string' ? props.lgCols : null)
+const xlColsVar = computed(() => typeof props.xlCols === 'string' ? props.xlCols : null)
 </script>
 
 <template>
@@ -286,3 +268,67 @@ const gridClass = computed(() => {
     <slot />
   </div>
 </template>
+
+<style scoped>
+.ui-grid--custom-styles {
+  /* 网格模板 */
+  --ui-grid-template-columns: v-bind(colsVar);
+  --ui-grid-template-rows: v-bind(rowsVar);
+
+  /* 自动填充 */
+  --ui-grid-auto-fill: v-bind(autoFillVar);
+
+  /* 间距 */
+  --ui-grid-gap: v-bind(gapVar);
+  --ui-grid-column-gap: v-bind(colGapVar);
+  --ui-grid-row-gap: v-bind(rowGapVar);
+
+  /* 应用CSS变量 */
+  grid-template-columns: var(--ui-grid-template-columns, var(--ui-grid-auto-fill));
+  grid-template-rows: var(--ui-grid-template-rows);
+  gap: var(--ui-grid-gap);
+  column-gap: var(--ui-grid-column-gap);
+  row-gap: var(--ui-grid-row-gap);
+}
+
+/* 响应式断点样式 */
+@media (min-width: 640px) {
+  .ui-grid--custom-styles {
+    --ui-grid-sm-cols: v-bind(smColsVar);
+    grid-template-columns: var(--ui-grid-sm-cols, var(--ui-grid-template-columns, var(--ui-grid-auto-fill)));
+  }
+}
+
+@media (min-width: 768px) {
+  .ui-grid--custom-styles {
+    --ui-grid-md-cols: v-bind(mdColsVar);
+    grid-template-columns: var(
+      --ui-grid-md-cols,
+      var(--ui-grid-sm-cols, var(--ui-grid-template-columns, var(--ui-grid-auto-fill)))
+    );
+  }
+}
+
+@media (min-width: 1024px) {
+  .ui-grid--custom-styles {
+    --ui-grid-lg-cols: v-bind(lgColsVar);
+    grid-template-columns: var(
+      --ui-grid-lg-cols,
+      var(--ui-grid-md-cols, var(--ui-grid-sm-cols, var(--ui-grid-template-columns, var(--ui-grid-auto-fill))))
+    );
+  }
+}
+
+@media (min-width: 1280px) {
+  .ui-grid--custom-styles {
+    --ui-grid-xl-cols: v-bind(xlColsVar);
+    grid-template-columns: var(
+      --ui-grid-xl-cols,
+      var(
+        --ui-grid-lg-cols,
+        var(--ui-grid-md-cols, var(--ui-grid-sm-cols, var(--ui-grid-template-columns, var(--ui-grid-auto-fill))))
+      )
+    );
+  }
+}
+</style>

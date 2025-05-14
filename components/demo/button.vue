@@ -84,7 +84,7 @@ const exampleCode = {
         </ui-button>
       </div>
       <div class="rounded bg-gray-100 p-4 dark:bg-gray-800">
-        <ui-code :code="exampleCode.sizes" lang="vue" :line-numbers="true" theme="auto" />
+        <ui-code :code="exampleCode.sizes" lang="vue" line-numbers theme="auto" />
       </div>
     </section>
 

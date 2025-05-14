@@ -68,6 +68,19 @@ const props = withDefaults(defineProps<{
    * 弹出子菜单的位置（仅在折叠模式有效）
    */
   popupPlacement?: PopupPlacement
+  /**
+   * 菜单项数据，用于直接渲染菜单
+   * 支持直接传入数据，无需手动使用submenu和menu-item组件
+   */
+  items?: Array<{
+    itemKey: string | number
+    title: string
+    icon?: string
+    to?: string
+    disabled?: boolean
+    danger?: boolean
+    children?: any[]
+  }>
 }>(), {
   mode: 'vertical',
   theme: 'light',
@@ -80,6 +93,7 @@ const props = withDefaults(defineProps<{
   router: false,
   itemSpacing: 8,
   popupPlacement: 'right',
+  items: () => [],
 })
 
 // 定义事件
@@ -251,6 +265,35 @@ defineExpose({
    */
   getOpenKeys: () => menuState.openKeys,
 })
+
+// 递归渲染菜单项函数
+function renderMenuItems(items: any[]) {
+  return items.map((item) => {
+    if (item.children?.length) {
+      return h('ui-menu-submenu', {
+        key: item.itemKey,
+        itemKey: item.itemKey,
+        title: item.title,
+        icon: item.icon,
+        disabled: item.disabled,
+        to: item.to,
+      }, {
+        default: () => renderMenuItems(item.children),
+      })
+    }
+    else {
+      return h('ui-menu-item', {
+        key: item.itemKey,
+        itemKey: item.itemKey,
+        title: item.title,
+        icon: item.icon,
+        disabled: item.disabled,
+        danger: item.danger,
+        to: item.to,
+      })
+    }
+  })
+}
 </script>
 
 <template>
@@ -260,7 +303,16 @@ defineExpose({
     :style="menuStyle"
     role="menu"
   >
-    <slot />
+    <!-- 自动渲染菜单项 -->
+    <template v-if="props.items && props.items.length">
+      <component
+        :is="item"
+        v-for="item in renderMenuItems(props.items)"
+        :key="item.key"
+      />
+    </template>
+    <!-- 默认插槽 -->
+    <slot v-else />
   </ul>
 </template>
 

@@ -18,8 +18,6 @@
  * 更新日期: 2023-05-14 - 将样式移动到全局样式文件中
  * 更新日期: 2023-06-10 - 重构组件，使用v-bind+CSS变量实现样式，符合UI组件规范
  */
-import { nanoid } from 'nanoid'
-import logger from '~/utils/logger'
 
 // 定义props
 const props = withDefaults(defineProps<{
@@ -72,9 +70,6 @@ const props = withDefaults(defineProps<{
   highlightLines: '',
 })
 
-// 创建代码组件专用logger
-const codeLogger = logger.client.child({ tag: 'code' })
-
 // 可用的主题列表（确保和已导入的CSS文件一致）
 const availableThemes = [
   { value: 'auto', label: '自动' },
@@ -105,19 +100,6 @@ const availableThemes = [
 // 当前选择的主题
 const currentTheme = ref(props.theme)
 
-// Highlight.js及其语言模块
-let hljs: any = null
-
-// 同步导入highlight.js，解决加载问题
-if (import.meta.client) {
-  import('highlight.js').then((module) => {
-    hljs = module.default
-    highlightCode()
-  }).catch((error) => {
-    codeLogger.error('Failed to load highlight.js:', error)
-  })
-}
-
 // 监听主题变化
 watch(() => props.theme, (newTheme) => {
   currentTheme.value = newTheme
@@ -132,124 +114,9 @@ function updateCodeTheme(themeName: string) {
   }
 }
 
-// 生成唯一ID，避免SSR水合不匹配
-const uniqueId = ref(`code-${nanoid(6)}`)
-
-// 响应式状态
-const codeElement = ref<HTMLElement | null>(null)
-const highlightedCode = ref('')
-const isHighlighting = ref(false)
-
-// 标准化语言名称
-const normalizedLang = computed(() => {
-  const langMap: Record<string, string> = {
-    js: 'javascript',
-    ts: 'typescript',
-    html: 'xml',
-    vue: 'xml',
-    htm: 'xml',
-    xml: 'xml',
-    css: 'css',
-    scss: 'scss',
-    json: 'json',
-    bash: 'bash',
-    sh: 'bash',
-    shell: 'bash',
-    md: 'markdown',
-    yaml: 'yaml',
-    yml: 'yaml',
-    dockerfile: 'dockerfile',
-    docker: 'dockerfile',
-    nginx: 'nginx',
-  }
-
-  return langMap[props.lang.toLowerCase()] || props.lang || 'plaintext'
-})
-
-// 按需加载语言模块
-async function loadLanguage(lang: string) {
-  if (!hljs || lang === 'plaintext')
-    return
-
-  // 检查语言是否已加载
-  if (hljs.getLanguage(lang))
-    return
-
-  try {
-    // 按需加载语言模块
-    const langModule = await import(/* @vite-ignore */ `highlight.js/lib/languages/${lang}`).catch(() => null)
-    if (langModule) {
-      hljs.registerLanguage(lang, langModule.default)
-      codeLogger.info(`Language loaded: ${lang}`)
-    }
-  }
-  catch (error) {
-    codeLogger.error(`Failed to load language: ${lang}`, error)
-  }
-}
-
-// 高亮显示代码
-async function highlightCode() {
-  if (!import.meta.client || !props.code) {
-    highlightedCode.value = escapeHtml(props.code)
-    return
-  }
-
-  if (!hljs) {
-    // hljs还未加载完成
-    highlightedCode.value = escapeHtml(props.code)
-    return
-  }
-
-  isHighlighting.value = true
-
-  try {
-    // 如果是指定语言，确保语言模块已加载
-    if (normalizedLang.value !== 'plaintext') {
-      await loadLanguage(normalizedLang.value)
-    }
-
-    // 尝试使用指定语言高亮
-    if (normalizedLang.value !== 'plaintext' && hljs.getLanguage(normalizedLang.value)) {
-      highlightedCode.value = hljs.highlight(props.code, { language: normalizedLang.value }).value
-    }
-    else {
-      // 否则使用自动检测
-      highlightedCode.value = hljs.highlightAuto(props.code).value
-    }
-  }
-  catch (error) {
-    codeLogger.error('Failed to highlight code:', error)
-    highlightedCode.value = escapeHtml(props.code)
-  }
-  finally {
-    isHighlighting.value = false
-  }
-}
-
-// HTML转义函数
-function escapeHtml(str: string): string {
-  return str
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#039;')
-}
-
-// 当代码内容或语言变化时重新高亮
-watch(
-  () => [props.code, props.lang],
-  () => {
-    highlightCode()
-  },
-  { immediate: true },
-)
-
 // 组件挂载后高亮代码
 onMounted(() => {
   if (import.meta.client) {
-    highlightCode()
     updateCodeTheme(currentTheme.value)
   }
 })
@@ -288,21 +155,23 @@ const headerBgColorVar = computed(() => props.headerBgColor || null)
 
       <!-- 语言显示 -->
       <div v-if="showLanguage" class="rounded px-2 py-1 text-xs font-medium uppercase opacity-70">
-        {{ normalizedLang }}
+        {{ lang }}
       </div>
     </div>
 
     <!-- 代码展示区域 -->
     <div class="ui-code-content relative">
       <div class="ui-code-wrapper w-full flex overflow-x-auto">
-        <!-- 代码内容 -->
         <client-only>
-          <pre class="m-0 flex-1 overflow-auto"><code
-            :id="uniqueId"
-            ref="codeElement"
-            class="hljs px-4 !text-shadow-none"
-            v-html="highlightedCode"
-          /></pre>
+          <!-- 代码内容 -->
+          <highlightjs
+            :line-numbers="lineNumbers"
+            autodetect
+            ignore-illegals
+            :code="code"
+            :language="lang"
+            class="w-full"
+          />
         </client-only>
       </div>
     </div>

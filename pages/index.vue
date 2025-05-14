@@ -14,7 +14,7 @@ const navCards = [
     title: '控制台',
     description: '系统管理与监控中心',
     icon: 'carbon:dashboard',
-    path: '/console',
+    path: '/admin',
     color: 'emerald',
   },
   {

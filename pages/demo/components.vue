@@ -135,6 +135,7 @@ import DemoTree from '~/components/demo/tree.vue'
 import DemoTrigger from '~/components/demo/trigger.vue'
 import DemoTsx from '~/components/demo/tsx.vue'
 import DemoTypography from '~/components/demo/typography.vue'
+import DemoUiDemo from '~/components/demo/ui-demo.vue'
 import DemoUpload from '~/components/demo/upload.vue'
 import DemoVerificationCode from '~/components/demo/verification-code.vue'
 import DemoVirtualSelect from '~/components/demo/virtual-select.vue'
@@ -191,6 +192,7 @@ const groups = ref<IComponentGroup[]>([
       { name: 'virtual-table', label: 'VirtualTable 虚拟表格', component: markRaw(DemoVirtualTable) },
       { name: 'qrcode', label: 'QRCode 二维码', component: markRaw(DemoQrcode) },
       { name: 'code', label: 'Code 代码', component: markRaw(DemoCode) },
+      { name: 'ui-demo', label: 'UiDemo 组件演示', component: markRaw(DemoUiDemo) },
       { name: 'image', label: 'Image 图片', component: markRaw(DemoImage) },
       { name: 'tag', label: 'Tag 标签', component: markRaw(DemoTag) },
       { name: 'badge', label: 'Badge 徽章', component: markRaw(DemoBadge) },
@@ -349,14 +351,14 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="mx-auto px-4 py-8 container">
-    <h1 class="mb-8 text-3xl font-bold">
+  <div class="mx-auto h-screen w-screen flex flex-col">
+    <h1 class="h-16 flex flex-none items-center border-b pl-4 text-3xl font-bold">
       UI 组件演示
     </h1>
 
-    <div h-full flex>
+    <div flex flex-1 class="h-[calc(100vh-4rem)]">
       <!-- 左侧导航 -->
-      <div :class="sideBarClass" fixed left-0 top-0 h-full overflow-y-auto>
+      <div :class="sideBarClass" max-h-full flex-none overflow-y-auto>
         <!-- 分组导航 -->
         <div v-for="(group, i) in groups" :key="i" mb-6>
           <div mb-3 text-sm text-gray-500 font-medium dark:text-gray-400>
@@ -375,10 +377,6 @@ onMounted(() => {
           </div>
         </div>
       </div>
-
-      <!-- 用于占位的元素，确保内容区域不被菜单遮挡 -->
-      <div class="hidden md:block lg:w-72 md:w-60" />
-
       <!-- 右侧内容 -->
       <div flex-1 overflow-auto p-6>
         <component :is="activeComponent" />

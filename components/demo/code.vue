@@ -6,16 +6,44 @@
  * 更新日期: 2023-10-20 - 添加更多语言支持和主题选项
  * 更新日期: 2023-05-11 - 更新为支持Highlight.js的新版本
  * 更新日期: 2023-06-10 - 添加自定义样式演示
+ * 更新日期: 2024-10-14 - 动态导入代码示例文件
  */
 
-import { computed, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
+import { useLogger } from '~/composables/useLogger'
 
-import cssCode from '~/assets/demo-code/css.css?raw'
-import htmlCode from '~/assets/demo-code/html.html?raw'
-// 示例代码
-import jsCode from '~/assets/demo-code/javascript.js?raw'
-import tsCode from '~/assets/demo-code/typescript.ts?raw'
-import vueCode from '~/assets/demo-code/vue.vue?raw'
+const logger = useLogger('demo-code')
+
+// 动态导入示例代码文件
+const demoCodeFiles = import.meta.glob('~/assets/demo-code/*.{js,ts,vue,html,css,scss,jsx,json,md,yml,sh,txt,diff}', { query: '?raw', eager: true, import: 'default' })
+
+// 示例代码内容对象
+const demoCode = ref<Record<string, string>>({})
+
+// 初始化示例代码
+onMounted(() => {
+  // 解析导入的文件，获取语言和内容
+  for (const path in demoCodeFiles) {
+    const fileName = path.split('/').pop() || ''
+    const fileNameParts = fileName.split('.')
+    const ext = fileNameParts.pop() || ''
+
+    // 根据文件扩展名确定语言标识
+    const langKey: string = {
+      js: 'javascript',
+      ts: 'typescript',
+      tsx: 'typescript',
+      md: 'markdown',
+      yml: 'yaml',
+      sh: 'bash',
+      txt: 'plaintext',
+      diff: 'diff',
+    }[ext] || ext
+
+    demoCode.value[langKey] = demoCodeFiles[path] as string
+    logger.info(`已加载 ${langKey} 示例代码`)
+  }
+})
 
 // 当前主题
 const currentTheme = ref('light')
@@ -43,12 +71,14 @@ const languages = [
   { value: 'css', label: 'CSS' },
   { value: 'scss', label: 'SCSS' },
   { value: 'jsx', label: 'JSX' },
+  { value: 'tsx', label: 'TSX' },
   { value: 'vue', label: 'Vue' },
   { value: 'bash', label: 'Bash' },
   { value: 'json', label: 'JSON' },
   { value: 'markdown', label: 'Markdown' },
   { value: 'yaml', label: 'YAML' },
   { value: 'plaintext', label: '纯文本' },
+  { value: 'diff', label: 'Diff' },
 ]
 
 // 主题选项
@@ -98,22 +128,9 @@ export default defineComponent({
   }
 })`
 
-// 根据选择的语言切换代码示例
+// 根据选择的语言提供代码示例
 const currentCode = computed(() => {
-  switch (selectedLanguage.value) {
-    case 'javascript':
-      return jsCode
-    case 'html':
-      return htmlCode
-    case 'css':
-      return cssCode
-    case 'vue':
-      return vueCode
-    case 'typescript':
-      return tsCode
-    default:
-      return jsCode
-  }
+  return demoCode.value[selectedLanguage.value] || '// 没有找到对应语言的示例代码'
 })
 
 // 修改主题

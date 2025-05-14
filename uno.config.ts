@@ -1,5 +1,7 @@
 import { defineConfig, presetAttributify, presetIcons, presetTypography, presetWebFonts, presetWind3, transformerDirectives, transformerVariantGroup } from 'unocss'
 
+const n = (s: string) => Array.from({ length: 12 }).map((_, i) => `${s}-${i + 1}`)
+
 export default defineConfig({
   // 启用预设
   presets: [
@@ -64,5 +66,9 @@ export default defineConfig({
   safelist: [
     'text-primary',
     'bg-primary',
+    ...n('col-span'),
+    ...n('row-span'),
+    ...n('grid-cols'),
+    ...n('grid-rows'),
   ],
 })

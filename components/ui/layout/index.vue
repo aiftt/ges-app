@@ -5,6 +5,7 @@
  * 作者: aiftt
  * 更新日期: 2023-12-02 - 改为使用CSS变量实现样式
  * 更新日期: 2024-09-13 - 使用集中管理的类型定义
+ * 更新日期: 2024-10-14 - 优化CSS变量实现，解决UnoCSS问题
  *
  * 用于构建页面的基本布局结构，提供灵活的布局控制
  */
@@ -105,8 +106,17 @@ const props = withDefaults(defineProps<{
   class: '',
 })
 
-// 背景颜色样式变量
+// CSS变量计算属性，添加 || null 确保undefined不会覆盖默认值
 const bgColorVar = computed(() => props.bgColor || null)
+const colsVar = computed(() => typeof props.cols === 'string' ? props.cols : null)
+const rowsVar = computed(() => typeof props.rows === 'string' ? props.rows : null)
+const gapVar = computed(() => props.gap || null)
+const gapXVar = computed(() => props.gapX || null)
+const gapYVar = computed(() => props.gapY || null)
+const paddingVar = computed(() => props.padding || null)
+const marginVar = computed(() => props.margin || null)
+const widthVar = computed(() => !props.fullWidth && props.width ? props.width : null)
+const heightVar = computed(() => !props.fullHeight && props.height ? props.height : null)
 
 // 计算布局容器的类名
 const layoutClass = computed(() => {
@@ -181,65 +191,27 @@ const layoutClass = computed(() => {
   else if (props.type === 'grid') {
     classes.push('grid')
 
-    // 网格列数
-    if (props.cols) {
-      if (typeof props.cols === 'number') {
-        classes.push(`grid-cols-${props.cols}`)
-      }
-      else {
-        classes.push(`grid-cols-[${props.cols}]`)
-      }
+    // 网格列数 - 只保留数字形式的类名
+    if (props.cols && typeof props.cols === 'number') {
+      classes.push(`grid-cols-${props.cols}`)
     }
 
-    // 网格行数
-    if (props.rows) {
-      if (typeof props.rows === 'number') {
-        classes.push(`grid-rows-${props.rows}`)
-      }
-      else {
-        classes.push(`grid-rows-[${props.rows}]`)
-      }
+    // 网格行数 - 只保留数字形式的类名
+    if (props.rows && typeof props.rows === 'number') {
+      classes.push(`grid-rows-${props.rows}`)
     }
   }
   else {
     classes.push('block')
   }
 
-  // 间距
-  if (props.gap) {
-    classes.push(`gap-[${props.gap}]`)
-  }
-
-  if (props.gapX) {
-    classes.push(`gap-x-[${props.gapX}]`)
-  }
-
-  if (props.gapY) {
-    classes.push(`gap-y-[${props.gapY}]`)
-  }
-
-  // 宽度和高度
+  // 宽度和高度 - 保留静态类名
   if (props.fullWidth) {
     classes.push('w-full')
-  }
-  else if (props.width) {
-    classes.push(`w-[${props.width}]`)
   }
 
   if (props.fullHeight) {
     classes.push('h-full')
-  }
-  else if (props.height) {
-    classes.push(`h-[${props.height}]`)
-  }
-
-  // 内边距和外边距
-  if (props.padding) {
-    classes.push(`p-[${props.padding}]`)
-  }
-
-  if (props.margin) {
-    classes.push(`m-[${props.margin}]`)
   }
 
   // 添加自定义类名
@@ -247,12 +219,14 @@ const layoutClass = computed(() => {
     classes.push(props.class)
   }
 
-  // 自定义背景色标记
-  if (props.bgColor) {
-    classes.push('ui-layout--custom-bg')
+  // 添加CSS变量标识类
+  if (props.bgColor || typeof props.cols === 'string' || typeof props.rows === 'string'
+    || props.gap || props.gapX || props.gapY || props.padding || props.margin
+    || (!props.fullWidth && props.width) || (!props.fullHeight && props.height)) {
+    classes.push('ui-layout--custom-styles')
   }
 
-  return classes.join(' ')
+  return classes
 })
 </script>
 
@@ -263,8 +237,37 @@ const layoutClass = computed(() => {
 </template>
 
 <style scoped>
-.ui-layout--custom-bg {
+.ui-layout--custom-styles {
+  /* 背景颜色 */
   --ui-layout-bg-color: v-bind(bgColorVar);
+
+  /* 网格属性 */
+  --ui-layout-grid-cols: v-bind(colsVar);
+  --ui-layout-grid-rows: v-bind(rowsVar);
+
+  /* 间距 */
+  --ui-layout-gap: v-bind(gapVar);
+  --ui-layout-gap-x: v-bind(gapXVar);
+  --ui-layout-gap-y: v-bind(gapYVar);
+
+  /* 边距 */
+  --ui-layout-padding: v-bind(paddingVar);
+  --ui-layout-margin: v-bind(marginVar);
+
+  /* 尺寸 */
+  --ui-layout-width: v-bind(widthVar);
+  --ui-layout-height: v-bind(heightVar);
+
+  /* 应用CSS变量 */
   background-color: var(--ui-layout-bg-color);
+  grid-template-columns: var(--ui-layout-grid-cols);
+  grid-template-rows: var(--ui-layout-grid-rows);
+  gap: var(--ui-layout-gap);
+  column-gap: var(--ui-layout-gap-x);
+  row-gap: var(--ui-layout-gap-y);
+  padding: var(--ui-layout-padding);
+  margin: var(--ui-layout-margin);
+  width: var(--ui-layout-width);
+  height: var(--ui-layout-height);
 }
 </style>

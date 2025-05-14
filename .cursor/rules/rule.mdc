@@ -35,6 +35,7 @@ alwaysApply: true
 - 总是在设置 css 变量的时候给个备用控制 `null` 解决 `undefined` 会被当作正常的值而覆盖备用值
 - 总是使用 `ui/` 下面的组件来替代原生组件，除非 `ui/` 下面没有对应的组件，比如：`input` 应该使用 `ui-input`
 - 总是在进行数据操作之前检查是不是已经存在了该数据（模型）而不是一开始就直接新建(冗余操作)
+- 总是在需要用到 css 动画的时候，到 `@assets/scss/animations` 下面去找，如果没有才考虑自己实现
 
 ### 绝对禁止的行为
 
@@ -51,6 +52,7 @@ alwaysApply: true
 - 禁止在创建目录或文件的时候复杂化，比如：菜单管理(错误示范：`menu-management`，正确示范：`menu`)
 - 禁止使用原生的 confirm, alert,... 需要时使用 `useMessageBox`
 - 禁止mock任何接口数据，任何时候都应该从数据库里去查
+- 禁止使用 unocss 动态 class，unocss 不支持，错误示范：`col-span-${n}`
 
 
 

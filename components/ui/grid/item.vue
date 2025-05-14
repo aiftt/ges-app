@@ -3,6 +3,7 @@
  * 栅格项组件
  * 创建日期: 2023-11-15
  * 作者: aiftt
+ * 更新日期: 2024-10-14 - 使用CSS变量+v-bind替代动态类名
  *
  * 用于在Grid布局中定位元素，设置跨行跨列等
  */
@@ -57,52 +58,50 @@ const props = withDefaults(defineProps<{
   class: '',
 })
 
+// 计算CSS变量
+const colStartVar = computed(() => typeof props.colStart === 'string' ? props.colStart : null)
+const colEndVar = computed(() => typeof props.colEnd === 'string' ? props.colEnd : null)
+const rowStartVar = computed(() => typeof props.rowStart === 'string' ? props.rowStart : null)
+const rowEndVar = computed(() => typeof props.rowEnd === 'string' ? props.rowEnd : null)
+
 // 计算Grid Item的类名
 const itemClass = computed(() => {
   const classes = [
     'ui-grid-item',
   ]
 
-  // 列位置相关
-  if (props.colStart) {
-    if (typeof props.colStart === 'number') {
-      classes.push(`col-start-${props.colStart}`)
-    }
-    else {
-      classes.push(`col-start-[${props.colStart}]`)
-    }
+  // 列位置相关 (只保留数字类名)
+  if (typeof props.colStart === 'number') {
+    classes.push(`col-start-${props.colStart}`)
+  }
+  else if (props.colStart) {
+    classes.push('ui-grid-item--custom-col-start')
   }
 
-  if (props.colEnd) {
-    if (typeof props.colEnd === 'number') {
-      classes.push(`col-end-${props.colEnd}`)
-    }
-    else {
-      classes.push(`col-end-[${props.colEnd}]`)
-    }
+  if (typeof props.colEnd === 'number') {
+    classes.push(`col-end-${props.colEnd}`)
+  }
+  else if (props.colEnd) {
+    classes.push('ui-grid-item--custom-col-end')
   }
 
   if (props.colSpan > 0) {
     classes.push(`col-span-${props.colSpan}`)
   }
 
-  // 行位置相关
-  if (props.rowStart) {
-    if (typeof props.rowStart === 'number') {
-      classes.push(`row-start-${props.rowStart}`)
-    }
-    else {
-      classes.push(`row-start-[${props.rowStart}]`)
-    }
+  // 行位置相关 (只保留数字类名)
+  if (typeof props.rowStart === 'number') {
+    classes.push(`row-start-${props.rowStart}`)
+  }
+  else if (props.rowStart) {
+    classes.push('ui-grid-item--custom-row-start')
   }
 
-  if (props.rowEnd) {
-    if (typeof props.rowEnd === 'number') {
-      classes.push(`row-end-${props.rowEnd}`)
-    }
-    else {
-      classes.push(`row-end-[${props.rowEnd}]`)
-    }
+  if (typeof props.rowEnd === 'number') {
+    classes.push(`row-end-${props.rowEnd}`)
+  }
+  else if (props.rowEnd) {
+    classes.push('ui-grid-item--custom-row-end')
   }
 
   if (props.rowSpan > 0) {
@@ -144,7 +143,7 @@ const itemClass = computed(() => {
     classes.push(props.class)
   }
 
-  return classes.join(' ')
+  return classes
 })
 </script>
 
@@ -153,3 +152,25 @@ const itemClass = computed(() => {
     <slot />
   </div>
 </template>
+
+<style scoped>
+.ui-grid-item--custom-col-start {
+  --ui-grid-item-col-start: v-bind(colStartVar);
+  grid-column-start: var(--ui-grid-item-col-start);
+}
+
+.ui-grid-item--custom-col-end {
+  --ui-grid-item-col-end: v-bind(colEndVar);
+  grid-column-end: var(--ui-grid-item-col-end);
+}
+
+.ui-grid-item--custom-row-start {
+  --ui-grid-item-row-start: v-bind(rowStartVar);
+  grid-row-start: var(--ui-grid-item-row-start);
+}
+
+.ui-grid-item--custom-row-end {
+  --ui-grid-item-row-end: v-bind(rowEndVar);
+  grid-row-end: var(--ui-grid-item-row-end);
+}
+</style>
