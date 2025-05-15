@@ -108,4 +108,23 @@
   // Popconfirm 变量
   --ui-popconfirm-min-width: 180px;
   --ui-popconfirm-max-width: 350px;
+
+  // Segmented 变量
+  --ui-segmented-bg-color: #f3f4f6;
+  --ui-segmented-text-color: #6b7280;
+  --ui-segmented-active-text-color: #111827;
+  --ui-segmented-thumb-color: #ffffff;
+  --ui-segmented-item-gap: 2px;
+  --ui-segmented-border-color: #e5e7eb;
+  --ui-segmented-disabled-opacity: 0.5;
+  --ui-segmented-transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ui-segmented-radius: 4px;
+  --ui-segmented-height: 32px;
+  --ui-segmented-font-size: 14px;
+  --ui-segmented-item-padding: 0 12px;
+
+  // Trigger 变量
+  --ui-trigger-bg: white;
+  --ui-trigger-color: rgba(0, 0, 0, 0.85);
+  --ui-trigger-border: #e5e7eb;
 }

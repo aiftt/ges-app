@@ -404,6 +404,26 @@ function handleVerticalTrackClick(e: MouseEvent) {
   })
 }
 
+// 声明用于清理的变量
+let resizeObserver: MutationObserver | null = null
+
+// 在组件顶层声明onUnmounted，确保在组件卸载时执行清理
+onUnmounted(() => {
+  // 清理观察器
+  if (resizeObserver) {
+    resizeObserver.disconnect()
+  }
+
+  // 清理窗口事件监听
+  window.removeEventListener('resize', updateScrollbar)
+
+  // 确保清理鼠标事件监听
+  document.removeEventListener('mousemove', handleVerticalMouseMove)
+  document.removeEventListener('mouseup', handleVerticalMouseUp)
+  document.removeEventListener('mousemove', handleHorizontalMouseMove)
+  document.removeEventListener('mouseup', handleHorizontalMouseUp)
+})
+
 function handleHorizontalTrackClick(e: MouseEvent) {
   if (!wrapperRef.value)
     return
@@ -523,36 +543,20 @@ onMounted(() => {
 
     // 添加DOM变化监听，当内容变化时更新滚动条
     if (contentRef.value) {
-      const observer = new MutationObserver(() => {
+      resizeObserver = new MutationObserver(() => {
         updateScrollbar()
       })
 
-      observer.observe(contentRef.value, {
+      resizeObserver.observe(contentRef.value, {
         childList: true,
         subtree: true,
         characterData: true,
         attributes: true,
       })
-
-      // 清理观察器
-      onUnmounted(() => {
-        observer.disconnect()
-      })
     }
 
     // 添加窗口尺寸变化监听
     window.addEventListener('resize', updateScrollbar)
-
-    // 清理窗口事件监听
-    onUnmounted(() => {
-      window.removeEventListener('resize', updateScrollbar)
-
-      // 确保清理鼠标事件监听
-      document.removeEventListener('mousemove', handleVerticalMouseMove)
-      document.removeEventListener('mouseup', handleVerticalMouseUp)
-      document.removeEventListener('mousemove', handleHorizontalMouseMove)
-      document.removeEventListener('mouseup', handleHorizontalMouseUp)
-    })
   })
 })
 

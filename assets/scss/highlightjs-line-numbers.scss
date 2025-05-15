@@ -1,0 +1,67 @@
+/**
+ * highlight.js 行号和高亮行样式
+ * 创建日期: 2024-12-16
+ * 作者: aiftt
+ */
+
+/* 行号容器样式 */
+.hljs-line-numbers {
+  position: relative;
+  counter-reset: line;
+  padding-left: 3.5em;
+
+  code {
+    position: relative;
+  }
+
+  code::before {
+    counter-increment: line;
+    content: counter(line);
+    position: absolute;
+    left: -3.5em;
+    width: 3em;
+    text-align: right;
+    padding-right: 0.5em;
+    color: #aaa;
+    border-right: 1px solid #ddd;
+    user-select: none;
+  }
+}
+
+/* 高亮行样式 */
+.hljs-highlight-line {
+  background-color: rgba(255, 255, 150, 0.3);
+  display: block;
+  margin: 0 -1rem;
+  padding: 0 1rem;
+}
+
+/* 暗色主题下的样式调整 */
+:root.dark .hljs-line-numbers code::before {
+  border-right-color: #333;
+  color: #666;
+}
+
+:root.dark .hljs-highlight-line {
+  background-color: rgba(255, 255, 150, 0.1);
+}
+
+/* 各种主题下的行号和高亮行样式微调 */
+[data-code-theme='github-dark'] .hljs-line-numbers code::before,
+[data-code-theme='github-dark-dimmed'] .hljs-line-numbers code::before,
+[data-code-theme='atom-one-dark'] .hljs-line-numbers code::before,
+[data-code-theme='vs2015'] .hljs-line-numbers code::before,
+[data-code-theme='monokai'] .hljs-line-numbers code::before,
+[data-code-theme='tokyo-night-dark'] .hljs-line-numbers code::before {
+  border-right-color: #333;
+  color: #666;
+}
+
+[data-code-theme='github-dark'] .hljs-highlight-line,
+[data-code-theme='github-dark-dimmed'] .hljs-highlight-line,
+[data-code-theme='atom-one-dark'] .hljs-highlight-line,
+[data-code-theme='vs2015'] .hljs-highlight-line,
+[data-code-theme='monokai'] .hljs-highlight-line,
+[data-code-theme='tokyo-night-dark'] .hljs-highlight-line {
+  background-color: rgba(255, 255, 150, 0.1);
+}

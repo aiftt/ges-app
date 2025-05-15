@@ -207,19 +207,6 @@ function handleKeyDown(event: KeyboardEvent, _index: number) {
 
 <style scoped>
 .ui-segmented {
-  --ui-segmented-bg-color: #f3f4f6;
-  --ui-segmented-text-color: #6b7280;
-  --ui-segmented-active-text-color: #111827;
-  --ui-segmented-thumb-color: #ffffff;
-  --ui-segmented-item-gap: 2px;
-  --ui-segmented-border-color: #e5e7eb;
-  --ui-segmented-disabled-opacity: 0.5;
-  --ui-segmented-transition: all 0.2s ease-in-out;
-  --ui-segmented-radius: 4px;
-  --ui-segmented-height: 32px;
-  --ui-segmented-font-size: 14px;
-  --ui-segmented-item-padding: 0 12px;
-
   position: relative;
   display: inline-flex;
   background-color: var(--ui-segmented-bg-color);
@@ -307,9 +294,22 @@ function handleKeyDown(event: KeyboardEvent, _index: number) {
   bottom: 0;
   background-color: var(--ui-segmented-thumb-color);
   border-radius: calc(var(--ui-segmented-radius) - var(--ui-segmented-item-gap));
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
   z-index: 1;
   transition: var(--ui-segmented-transition);
+  transform-origin: center;
+  animation: segmentedThumbIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes segmentedThumbIn {
+  from {
+    transform: scale(0.8);
+    opacity: 0.5;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 .ui-segmented-loading {
@@ -331,12 +331,5 @@ function handleKeyDown(event: KeyboardEvent, _index: number) {
   color: var(--ui-segmented-text-color);
 }
 
-/* 暗黑模式适配 */
-:root.dark .ui-segmented {
-  --ui-segmented-bg-color: #374151;
-  --ui-segmented-text-color: #9ca3af;
-  --ui-segmented-active-text-color: #f9fafb;
-  --ui-segmented-thumb-color: #1f2937;
-  --ui-segmented-border-color: #4b5563;
-}
+/* 移除内部的深色模式适配，使用公共主题文件中的变量 */
 </style>

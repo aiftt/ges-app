@@ -53,6 +53,7 @@ alwaysApply: true
 - 禁止使用原生的 confirm, alert,... 需要时使用 `useMessageBox`
 - 禁止mock任何接口数据，任何时候都应该从数据库里去查
 - 禁止使用 unocss 动态 class，unocss 不支持，错误示范：`col-span-${n}`
+- 禁止新增 ui组件样式文件存放 css 变量，放到 @asssets/scss/themes 公共主题文件中
 
 
 

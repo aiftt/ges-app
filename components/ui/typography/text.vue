@@ -7,9 +7,10 @@
  * 更新日期: 2023-12-05 - 更新为v-bind + CSS变量实现方式
  * 更新日期: 2024-08-22 - 修复水合问题，使用ref替代document.getElementById
  * 更新日期: 2024-09-11 - 使用集中管理的类型定义
+ * 更新日期: 2024-09-17 - 增加对 ellipsis 和 copyable 的对象配置支持
  */
 
-import type { ComponentSize, TextType } from '~/types/ui'
+import type { ComponentSize, CopyableConfig, EllipsisConfig, TextType } from '~/types/ui'
 import logger from '~/utils/logger'
 
 // 定义props
@@ -47,17 +48,17 @@ const props = withDefaults(defineProps<{
    */
   code?: boolean
   /**
-   * 是否可复制
+   * 是否可复制或复制配置
    */
-  copyable?: boolean
+  copyable?: boolean | CopyableConfig
   /**
    * 文本对齐方式
    */
   align?: 'left' | 'center' | 'right'
   /**
-   * 文本省略
+   * 文本省略配置
    */
-  ellipsis?: boolean
+  ellipsis?: boolean | EllipsisConfig
   /**
    * 省略显示的行数
    */
@@ -87,6 +88,25 @@ logger.client.debug('Text component props:', props)
 
 // 组件相关的logger - 使用专用的客户端子日志器
 const textLogger = logger.client.child({ tag: 'text' })
+
+// 处理省略配置
+const ellipsisConfig = computed(() => {
+  if (!props.ellipsis)
+    return null
+  if (typeof props.ellipsis === 'boolean')
+    return { rows: props.lines }
+  return props.ellipsis
+})
+
+// 计算实际省略行数
+const ellipsisRows = computed(() => {
+  if (!ellipsisConfig.value)
+    return 0
+  return ellipsisConfig.value.rows || props.lines
+})
+
+// 控制文本是否展开
+const expanded = ref(false)
 
 // 计算文本类名
 const textClass = computed(() => {
@@ -132,11 +152,17 @@ const textClass = computed(() => {
   }
 
   // 省略样式
-  if (props.ellipsis) {
+  if (props.ellipsis && !expanded.value) {
     classes.push('ui-typography-text--ellipsis')
 
-    if (props.lines > 1) {
-      classes.push(`ui-typography-text--lines-${props.lines}`)
+    // 处理多行省略情况
+    if (ellipsisRows.value > 1) {
+      classes.push(`ui-typography-text--lines-${ellipsisRows.value}`)
+    }
+
+    // 如果配置了可展开，添加相应的类
+    if (ellipsisConfig.value?.expandable) {
+      classes.push('ui-typography-text--expandable')
     }
   }
 
@@ -150,11 +176,35 @@ const textClass = computed(() => {
 
 // 生成唯一ID避免冲突 - 使用SSR兼容的ID生成器
 const textRef = ref<HTMLSpanElement | null>(null)
-const textId = import.meta.client
-  ? Math.random().toString(36).substring(2, 10)
-  : 'ssr-placeholder'
 
-const copied = ref(false)
+// 处理复制配置
+const copyConfig = computed(() => {
+  if (!props.copyable)
+    return null
+  if (typeof props.copyable === 'boolean')
+    return { text: '', tooltips: [] }
+  return props.copyable
+})
+
+// 使用复制文本组合式函数
+function getTextToCopy() {
+  // 如果提供了自定义文本，则使用它
+  if (copyConfig.value?.text) {
+    return copyConfig.value.text
+  }
+  // 否则使用文本内容
+  return textRef.value?.textContent || ''
+}
+
+const { copied, copy, tooltipText } = useCopyText(getTextToCopy, {
+  tooltips: copyConfig.value?.tooltips as [string, string] || ['复制', '已复制'],
+  onSuccess: (text) => {
+    textLogger.info('文本复制成功', { length: text.length })
+  },
+  onError: (err) => {
+    textLogger.error('文本复制失败', err)
+  },
+})
 
 // 复制按钮样式
 const copyButtonClass = computed(() => {
@@ -164,55 +214,67 @@ const copyButtonClass = computed(() => {
   ].join(' ')
 })
 
-// 复制功能
-function copyText() {
-  if (!props.copyable || !import.meta.client)
-    return
-
-  const text = textRef.value?.textContent || ''
-  textLogger.info('复制文本', { length: text.length })
-
-  navigator.clipboard.writeText(text)
-    .then(() => {
-      // 复制成功
-      textLogger.info('文本复制成功')
-      copied.value = true
-      setTimeout(() => {
-        copied.value = false
-      }, 2000)
-    })
-    .catch((err) => {
-      textLogger.error('文本复制失败', err)
-    })
+// 处理展开/收起
+function toggleExpand() {
+  expanded.value = !expanded.value
 }
+
+// 获取展开/收起符号
+const expandSymbol = computed(() => {
+  if (!ellipsisConfig.value?.expandable)
+    return ''
+  return ellipsisConfig.value.symbol || (expanded.value ? '收起' : '展开')
+})
 
 // 自定义颜色CSS变量
 const colorVar = computed(() => props.color || null)
 </script>
 
 <template>
-  <span
-    :id="`ui-text-${textId}`"
-    ref="textRef"
-    class="group ui-typography-text"
-    :class="[textClass]"
-  >
-    <slot />
-
-    <span v-if="copyable" :class="copyButtonClass" @click="copyText">
-      <ui-icon :icon="copied ? 'carbon:checkmark' : 'carbon:copy'" size="small" />
+  <div class="ui-text-container">
+    <span
+      ref="textRef"
+      class="group ui-typography-text"
+      :class="[textClass]"
+    >
+      <slot />
     </span>
-  </span>
+
+    <!-- 展开/收起按钮 -->
+    <client-only>
+      <a
+        v-if="ellipsisConfig?.expandable"
+        class="ui-typography-text__expand-button"
+        @click="toggleExpand"
+      >
+        {{ expandSymbol }}
+      </a>
+
+      <!-- 复制按钮 -->
+      <span
+        v-if="copyable"
+        :class="copyButtonClass"
+        :title="tooltipText"
+        @click="copy"
+      >
+        <ui-icon :icon="copied ? 'carbon:checkmark' : 'carbon:copy'" size="small" />
+      </span>
+    </client-only>
+  </div>
 </template>
 
 <style scoped>
+.ui-text-container {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
 .ui-typography-text {
   /* CSS变量绑定 */
   --ui-text-custom-color: v-bind(colorVar);
 
   font-family: var(--ui-font-family, sans-serif);
-  display: inline-flex;
-  align-items: center;
   position: relative;
 }
 
@@ -337,6 +399,19 @@ const colorVar = computed(() => props.color || null)
   line-clamp: 5;
   -webkit-box-orient: vertical;
   white-space: normal;
+}
+
+/* 可展开省略样式 */
+.ui-typography-text--expandable {
+  position: relative;
+}
+
+.ui-typography-text__expand-button {
+  color: var(--ui-color-primary, #3b82f6);
+  cursor: pointer;
+  margin-left: 4px;
+  font-size: 0.875em;
+  font-weight: normal;
 }
 
 /* 复制按钮样式 */

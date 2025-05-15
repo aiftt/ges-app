@@ -6,9 +6,12 @@
  * 更新日期: 2023-12-05 - 更新为v-bind + CSS变量实现方式，添加自定义颜色支持
  * 更新日期: 2024-08-22 - 修复水合问题，使用ref替代document.getElementById
  * 更新日期: 2024-09-11 - 使用集中管理的类型定义
+ * 更新日期: 2024-09-17 - 使用通用的useCopyText组合式函数
+ * 更新日期: 2024-09-17 - 增强省略功能，支持可展开的省略文本
+ * 更新日期: 2024-09-17 - 完善复制功能，支持自定义提示文本和复制内容
  */
 
-import type { Alignment, TagType } from '~/types/ui'
+import type { Alignment, CopyableConfig, EllipsisConfig, TagType } from '~/types/ui'
 import logger from '~/utils/logger'
 
 // 定义props
@@ -38,17 +41,21 @@ const props = withDefaults(defineProps<{
    */
   hoverable?: boolean
   /**
-   * 是否可复制
+   * 是否可复制或复制配置
    */
-  copyable?: boolean
+  copyable?: boolean | CopyableConfig
   /**
-   * 文本省略
+   * 文本省略配置
    */
-  ellipsis?: boolean
+  ellipsis?: boolean | EllipsisConfig
   /**
    * 自定义颜色
    */
   color?: string
+  /**
+   * 标题内容
+   */
+  title?: string
 }>(), {
   level: 1,
   type: 'default',
@@ -67,6 +74,27 @@ logger.client.debug('Title component props:', props)
 // 组件相关的logger
 const titleLogger = logger.client.child({ tag: 'title' })
 
+// 处理省略配置
+const ellipsisConfig = computed(() => {
+  if (!props.ellipsis)
+    return null
+  if (typeof props.ellipsis === 'boolean')
+    return { expandable: false }
+  return props.ellipsis
+})
+
+// 处理复制配置
+const copyConfig = computed(() => {
+  if (!props.copyable)
+    return null
+  if (typeof props.copyable === 'boolean')
+    return { text: '', tooltips: [] }
+  return props.copyable
+})
+
+// 控制文本是否展开
+const expanded = ref(false)
+
 // 计算标题类名
 const titleClasses = computed(() => [
   'ui-typography-title',
@@ -77,59 +105,91 @@ const titleClasses = computed(() => [
   {
     'ui-typography-title--with-margin': props.withMargin,
     'ui-typography-title--hoverable': props.hoverable,
-    'ui-typography-title--ellipsis': props.ellipsis,
+    'ui-typography-title--ellipsis': props.ellipsis && !expanded.value,
+    'ui-typography-title--expandable': ellipsisConfig.value?.expandable,
     'ui-typography-title--custom-color': Boolean(props.color),
   },
 ])
 
 // 生成唯一ID避免冲突
 const titleRef = ref<HTMLHeadingElement | null>(null)
-const titleId = Math.random().toString(36).substring(2, 10)
-const copied = ref(false)
 
 // 自定义颜色CSS变量
 const colorVar = computed(() => props.color || null)
 
-// 复制功能
-function copyText() {
-  if (props.copyable && import.meta.client) {
-    const text = titleRef.value?.textContent || ''
-    titleLogger.info('复制标题文本', { level: props.level, length: text.length })
-
-    navigator.clipboard.writeText(text)
-      .then(() => {
-        // 复制成功
-        titleLogger.info('标题文本复制成功')
-        copied.value = true
-        setTimeout(() => {
-          copied.value = false
-        }, 2000)
-      })
-      .catch((err) => {
-        titleLogger.error('标题文本复制失败', err)
-      })
+// 使用复制文本组合式函数
+function getTextToCopy() {
+  // 如果提供了自定义文本，则使用它
+  if (copyConfig.value?.text) {
+    return copyConfig.value.text
   }
+  // 否则使用标题内容
+  return titleRef.value?.textContent || ''
 }
+
+const { copied, copy, tooltipText } = useCopyText(getTextToCopy, {
+  tooltips: copyConfig.value?.tooltips as [string, string] || ['复制', '已复制'],
+  onSuccess: (text) => {
+    titleLogger.info('标题文本复制成功', { level: props.level, length: text.length })
+  },
+  onError: (err) => {
+    titleLogger.error('标题文本复制失败', err)
+  },
+})
+
+// 处理展开/收起
+function toggleExpand() {
+  expanded.value = !expanded.value
+}
+
+// 获取展开/收起符号
+const expandSymbol = computed(() => {
+  if (!ellipsisConfig.value?.expandable)
+    return ''
+  return ellipsisConfig.value.symbol || (expanded.value ? '收起' : '展开')
+})
 </script>
 
 <template>
-  <client-only>
+  <div class="ui-title-container">
     <component
       :is="`h${level}`"
-      :id="`ui-title-${titleId}`"
       ref="titleRef"
       :class="titleClasses"
-      @click="copyable && copyText()"
+      @click="hoverable && copyable && copy()"
     >
-      <slot />
-      <span v-if="copyable" class="ui-typography-title__copyable" :class="{ copied }">
-        <ui-icon :icon="copied ? 'carbon:checkmark' : 'carbon:copy'" size="small" />
-      </span>
+      <slot>{{ title }}</slot>
+      <client-only>
+        <span
+          v-if="copyable"
+          class="ui-typography-title__copyable"
+          :class="{ copied }"
+          :title="tooltipText"
+          @click.stop="copy"
+        >
+          <ui-icon :icon="copied ? 'carbon:checkmark' : 'carbon:copy'" size="small" />
+        </span>
+      </client-only>
     </component>
-  </client-only>
+
+    <!-- 展开/收起按钮 -->
+    <client-only>
+      <a
+        v-if="ellipsisConfig?.expandable"
+        class="ui-typography-title__expand-button"
+        @click="toggleExpand"
+      >
+        {{ expandSymbol }}
+      </a>
+    </client-only>
+  </div>
 </template>
 
 <style scoped>
+.ui-title-container {
+  position: relative;
+}
+
 .ui-typography-title {
   /* CSS变量绑定 */
   --ui-title-custom-color: v-bind(colorVar);
@@ -247,6 +307,19 @@ function copyText() {
   text-overflow: ellipsis;
   white-space: nowrap;
   max-width: 100%;
+}
+
+/* 可展开省略样式 */
+.ui-typography-title--expandable {
+  position: relative;
+}
+
+.ui-typography-title__expand-button {
+  color: var(--ui-color-primary, #3b82f6);
+  cursor: pointer;
+  margin-left: 4px;
+  font-size: 0.875em;
+  font-weight: normal;
 }
 
 /* 复制按钮 */

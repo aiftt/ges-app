@@ -4,6 +4,7 @@
  * 创建日期: 2024-07-09
  * 作者: aiftt
  * 更新日期: 2024-07-09 - 初始实现
+ * 更新日期: 2024-12-08 - 使用ui-demo组件重构演示页面
  */
 import { ref } from 'vue'
 
@@ -35,295 +36,354 @@ const customPresets = [
   '#000000',
   '#ffffff',
 ]
-</script>
 
-<template>
-  <div>
-    <ui-typography>
-      <ui-typography-title :level="3">
-        ColorPicker 颜色选择器
-      </ui-typography-title>
-      <ui-typography-paragraph>用于颜色选择，支持多种颜色格式。</ui-typography-paragraph>
-    </ui-typography>
+// 代码示例
+const basicCode = `<ui-input-color-picker v-model="basicColor" />
 
-    <!-- 基础用法 -->
-    <div class="demo-section">
-      <ui-typography-title :level="4">
-        基础用法
-      </ui-typography-title>
-      <ui-typography-paragraph>基础颜色选择器。</ui-typography-paragraph>
-      <div class="demo-component">
-        <ui-input-color-picker v-model="basicColor" />
-        <div class="demo-value">
-          当前值: {{ basicColor }}
-        </div>
-      </div>
-      <div class="demo-code">
-        <pre><code>{{ `<ui-input-color-picker v-model="basicColor" />` }}</code></pre>
-      </div>
-    </div>
+<script setup>
+const basicColor = ref('#409EFF')
+<\/script>`
 
-    <!-- 透明度 -->
-    <div class="demo-section">
-      <ui-typography-title :level="4">
-        带透明度
-      </ui-typography-title>
-      <ui-typography-paragraph>通过 show-alpha 属性支持选择透明度。</ui-typography-paragraph>
-      <div class="demo-component">
-        <ui-input-color-picker v-model="alphaColor" show-alpha format="rgb" />
-        <div class="demo-value">
-          当前值: {{ alphaColor }}
-        </div>
-      </div>
-      <div class="demo-code">
-        <pre><code>{{ `<ui-input-color-picker v-model="alphaColor" show-alpha format="rgb" />` }}</code></pre>
-      </div>
-    </div>
+const alphaCode = `<ui-input-color-picker v-model="alphaColor" show-alpha format="rgb" />
 
-    <!-- 不同颜色格式 -->
-    <div class="demo-section">
-      <ui-typography-title :level="4">
-        不同颜色格式
-      </ui-typography-title>
-      <ui-typography-paragraph>支持hex、rgb、hsl三种格式。</ui-typography-paragraph>
-      <div class="demo-component">
-        <div class="format-row">
-          <span class="format-label">HEX:</span>
-          <ui-input-color-picker v-model="hexColor" format="hex" />
-          <span class="format-value">{{ hexColor }}</span>
-        </div>
-        <div class="format-row">
-          <span class="format-label">RGB:</span>
-          <ui-input-color-picker v-model="rgbColor" format="rgb" />
-          <span class="format-value">{{ rgbColor }}</span>
-        </div>
-        <div class="format-row">
-          <span class="format-label">HSL:</span>
-          <ui-input-color-picker v-model="hslColor" format="hsl" />
-          <span class="format-value">{{ hslColor }}</span>
-        </div>
-      </div>
-      <div class="demo-code">
-        <pre><code>{{ `<ui-input-color-picker v-model="hexColor" format="hex" />
+<script setup>
+const alphaColor = ref('rgba(64, 158, 255, 0.5)')
+<\/script>`
+
+const formatCode = `<ui-input-color-picker v-model="hexColor" format="hex" />
 <ui-input-color-picker v-model="rgbColor" format="rgb" />
-<ui-input-color-picker v-model="hslColor" format="hsl" />` }}</code></pre>
-      </div>
-    </div>
+<ui-input-color-picker v-model="hslColor" format="hsl" />
 
-    <!-- 只读和禁用状态 -->
-    <div class="demo-section">
-      <ui-typography-title :level="4">
-        只读和禁用状态
-      </ui-typography-title>
-      <ui-typography-paragraph>支持只读和禁用状态。</ui-typography-paragraph>
-      <div class="demo-component">
-        <div class="state-row">
-          <span class="state-label">只读:</span>
-          <ui-input-color-picker v-model="readonlyColor" readonly />
-        </div>
-        <div class="state-row">
-          <span class="state-label">禁用:</span>
-          <ui-input-color-picker v-model="disabledColor" disabled />
-        </div>
-      </div>
-      <div class="demo-code">
-        <pre><code>{{ `<ui-input-color-picker v-model="readonlyColor" readonly />
-<ui-input-color-picker v-model="disabledColor" disabled />` }}</code></pre>
-      </div>
-    </div>
+<script setup>
+const hexColor = ref('#67C23A')
+const rgbColor = ref('rgb(103, 194, 58)')
+const hslColor = ref('hsl(96, 54%, 49%)')
+<\/script>`
 
-    <!-- 自定义预设颜色 -->
-    <div class="demo-section">
-      <ui-typography-title :level="4">
-        自定义预设颜色
-      </ui-typography-title>
-      <ui-typography-paragraph>通过 preset-colors 属性自定义预设颜色。</ui-typography-paragraph>
-      <div class="demo-component">
-        <ui-input-color-picker v-model="customPresetColor" :preset-colors="customPresets" />
-      </div>
-      <div class="demo-code">
-        <pre><code>{{ `<ui-input-color-picker v-model="customPresetColor" :preset-colors="customPresets" />
+const stateCode = `<ui-input-color-picker v-model="readonlyColor" readonly />
+<ui-input-color-picker v-model="disabledColor" disabled />
 
-// 自定义预设颜色
+<script setup>
+const readonlyColor = ref('#E6A23C')
+const disabledColor = ref('#F56C6C')
+<\/script>`
+
+const presetCode = `<ui-input-color-picker v-model="customPresetColor" :preset-colors="customPresets" />
+
+<script setup>
+const customPresetColor = ref('#409EFF')
 const customPresets = [
   '#ff4500', '#ff8c00', '#ffd700', '#90ee90', '#00ced1',
   '#1e90ff', '#c71585', '#000000', '#ffffff'
-]` }}</code></pre>
-      </div>
-    </div>
+]
+<\/script>`
 
-    <!-- 尺寸 -->
-    <div class="demo-section">
-      <ui-typography-title :level="4">
-        不同尺寸
-      </ui-typography-title>
-      <ui-typography-paragraph>颜色选择器提供三种不同的尺寸。</ui-typography-paragraph>
-      <div class="demo-component">
-        <div class="demo-sizes">
-          <div>
-            <span class="size-label">小:</span>
-            <ui-input-color-picker v-model="basicColor" size="small" />
+const sizeCode = `<ui-input-color-picker v-model="basicColor" size="small" />
+<ui-input-color-picker v-model="basicColor" />
+<ui-input-color-picker v-model="basicColor" size="large" />
+
+<script setup>
+const basicColor = ref('#409EFF')
+<\/script>`
+</script>
+
+<template>
+  <div class="p-4">
+    <h2 class="mb-6 text-2xl font-bold">
+      ColorPicker 颜色选择器
+    </h2>
+    <p class="mb-8 text-gray-500 dark:text-gray-400">
+      用于颜色选择，支持多种颜色格式，包括RGB、HEX、HSL等。
+    </p>
+
+    <!-- 基础用法 -->
+    <ui-demo
+      title="基础用法"
+      description="基础颜色选择器，默认使用HEX格式。"
+      :code="basicCode"
+    >
+      <div class="space-y-4">
+        <ui-input-color-picker v-model="basicColor" />
+        <div class="rounded bg-gray-100 p-2 dark:bg-gray-800">
+          当前值: <span class="font-mono">{{ basicColor }}</span>
+        </div>
+      </div>
+    </ui-demo>
+
+    <!-- 透明度 -->
+    <ui-demo
+      title="带透明度"
+      description="通过 show-alpha 属性支持选择透明度，需要配合RGB或HSL格式使用。"
+      :code="alphaCode"
+    >
+      <div class="space-y-4">
+        <ui-input-color-picker v-model="alphaColor" show-alpha format="rgb" />
+        <div class="rounded bg-gray-100 p-2 dark:bg-gray-800">
+          当前值: <span class="font-mono">{{ alphaColor }}</span>
+        </div>
+      </div>
+    </ui-demo>
+
+    <!-- 不同颜色格式 -->
+    <ui-demo
+      title="不同颜色格式"
+      description="支持HEX、RGB、HSL三种格式，可以通过format属性指定。"
+      :code="formatCode"
+    >
+      <div class="space-y-4">
+        <div class="flex flex-wrap items-center gap-4">
+          <div class="flex items-center gap-2">
+            <span class="font-medium">HEX:</span>
+            <ui-input-color-picker v-model="hexColor" format="hex" />
+            <span class="text-sm font-mono">{{ hexColor }}</span>
           </div>
-          <div>
-            <span class="size-label">默认:</span>
-            <ui-input-color-picker v-model="basicColor" />
+        </div>
+        <div class="flex flex-wrap items-center gap-4">
+          <div class="flex items-center gap-2">
+            <span class="font-medium">RGB:</span>
+            <ui-input-color-picker v-model="rgbColor" format="rgb" />
+            <span class="text-sm font-mono">{{ rgbColor }}</span>
           </div>
-          <div>
-            <span class="size-label">大:</span>
-            <ui-input-color-picker v-model="basicColor" size="large" />
+        </div>
+        <div class="flex flex-wrap items-center gap-4">
+          <div class="flex items-center gap-2">
+            <span class="font-medium">HSL:</span>
+            <ui-input-color-picker v-model="hslColor" format="hsl" />
+            <span class="text-sm font-mono">{{ hslColor }}</span>
           </div>
         </div>
       </div>
-      <div class="demo-code">
-        <pre><code>{{ `<ui-input-color-picker v-model="basicColor" size="small" />
-<ui-input-color-picker v-model="basicColor" />
-<ui-input-color-picker v-model="basicColor" size="large" />` }}</code></pre>
+    </ui-demo>
+
+    <!-- 只读和禁用状态 -->
+    <ui-demo
+      title="只读和禁用状态"
+      description="支持只读和禁用状态，分别通过readonly和disabled属性设置。"
+      :code="stateCode"
+    >
+      <div class="space-y-4">
+        <div class="flex flex-wrap items-center gap-4">
+          <span class="font-medium">只读:</span>
+          <ui-input-color-picker v-model="readonlyColor" readonly />
+        </div>
+        <div class="flex flex-wrap items-center gap-4">
+          <span class="font-medium">禁用:</span>
+          <ui-input-color-picker v-model="disabledColor" disabled />
+        </div>
       </div>
-    </div>
+    </ui-demo>
 
-    <!-- 属性表格 -->
-    <div class="demo-section">
-      <ui-typography-title :level="4">
+    <!-- 自定义预设颜色 -->
+    <ui-demo
+      title="自定义预设颜色"
+      description="通过preset-colors属性自定义预设颜色，方便快速选择常用颜色。"
+      :code="presetCode"
+    >
+      <div class="space-y-4">
+        <ui-input-color-picker v-model="customPresetColor" :preset-colors="customPresets" />
+        <div class="flex flex-wrap gap-2">
+          <div
+            v-for="(color, index) in customPresets"
+            :key="index"
+            class="h-6 w-6 border border-gray-300 rounded-full"
+            :style="{ backgroundColor: color }"
+            :title="color"
+          />
+        </div>
+      </div>
+    </ui-demo>
+
+    <!-- 尺寸 -->
+    <ui-demo
+      title="不同尺寸"
+      description="颜色选择器提供小、默认、大三种尺寸。"
+      :code="sizeCode"
+    >
+      <div class="flex flex-wrap items-end gap-4">
+        <div>
+          <div class="mb-2 text-sm">
+            小
+          </div>
+          <ui-input-color-picker v-model="basicColor" size="small" />
+        </div>
+        <div>
+          <div class="mb-2 text-sm">
+            默认
+          </div>
+          <ui-input-color-picker v-model="basicColor" />
+        </div>
+        <div>
+          <div class="mb-2 text-sm">
+            大
+          </div>
+          <ui-input-color-picker v-model="basicColor" size="large" />
+        </div>
+      </div>
+    </ui-demo>
+
+    <!-- API 参考 -->
+    <div class="mt-8 border border-gray-200 rounded-lg bg-gray-50 p-6 dark:border-gray-700 dark:bg-gray-800">
+      <h2 class="mb-4 text-xl font-bold">
+        API 参考
+      </h2>
+
+      <h3 class="mb-2 text-lg font-medium">
         属性
-      </ui-typography-title>
-      <table class="demo-table">
-        <thead>
-          <tr>
-            <th>属性</th>
-            <th>说明</th>
-            <th>类型</th>
-            <th>默认值</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>modelValue / v-model</td>
-            <td>绑定值（十六进制颜色值）</td>
-            <td>string</td>
-            <td>''</td>
-          </tr>
-          <tr>
-            <td>disabled</td>
-            <td>是否禁用</td>
-            <td>boolean</td>
-            <td>false</td>
-          </tr>
-          <tr>
-            <td>readonly</td>
-            <td>是否只读</td>
-            <td>boolean</td>
-            <td>false</td>
-          </tr>
-          <tr>
-            <td>size</td>
-            <td>尺寸</td>
-            <td>'small' | 'default' | 'large'</td>
-            <td>default</td>
-          </tr>
-          <tr>
-            <td>show-alpha</td>
-            <td>是否显示透明度控制</td>
-            <td>boolean</td>
-            <td>false</td>
-          </tr>
-          <tr>
-            <td>format</td>
-            <td>格式化颜色值的格式</td>
-            <td>'hex' | 'rgb' | 'hsl'</td>
-            <td>hex</td>
-          </tr>
-          <tr>
-            <td>allow-custom</td>
-            <td>是否支持自定义颜色输入</td>
-            <td>boolean</td>
-            <td>true</td>
-          </tr>
-          <tr>
-            <td>preset-colors</td>
-            <td>预设颜色</td>
-            <td>string[]</td>
-            <td>预设颜色列表</td>
-          </tr>
-          <tr>
-            <td>clearable</td>
-            <td>是否可清空</td>
-            <td>boolean</td>
-            <td>false</td>
-          </tr>
-          <tr>
-            <td>placement</td>
-            <td>弹出位置</td>
-            <td>'top' | 'bottom'</td>
-            <td>bottom</td>
-          </tr>
-          <tr>
-            <td>popover-width</td>
-            <td>颜色面板宽度</td>
-            <td>number | string</td>
-            <td>250</td>
-          </tr>
-          <tr>
-            <td>show-history</td>
-            <td>是否显示历史记录</td>
-            <td>boolean</td>
-            <td>true</td>
-          </tr>
-          <tr>
-            <td>history-max</td>
-            <td>历史记录最大数量</td>
-            <td>number</td>
-            <td>8</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+      </h3>
+      <div class="overflow-x-auto">
+        <table class="min-w-full border-collapse">
+          <thead>
+            <tr class="bg-gray-100 dark:bg-gray-700">
+              <th class="border border-gray-300 px-4 py-2 text-left dark:border-gray-600">
+                属性
+              </th>
+              <th class="border border-gray-300 px-4 py-2 text-left dark:border-gray-600">
+                说明
+              </th>
+              <th class="border border-gray-300 px-4 py-2 text-left dark:border-gray-600">
+                类型
+              </th>
+              <th class="border border-gray-300 px-4 py-2 text-left dark:border-gray-600">
+                默认值
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
+                modelValue / v-model
+              </td>
+              <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
+                绑定值
+              </td>
+              <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
+                string
+              </td>
+              <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
+                -
+              </td>
+            </tr>
+            <tr>
+              <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
+                format
+              </td>
+              <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
+                颜色格式
+              </td>
+              <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
+                'hex' / 'rgb' / 'hsl'
+              </td>
+              <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
+                'hex'
+              </td>
+            </tr>
+            <tr>
+              <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
+                show-alpha
+              </td>
+              <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
+                是否支持透明度
+              </td>
+              <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
+                boolean
+              </td>
+              <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
+                false
+              </td>
+            </tr>
+            <tr>
+              <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
+                preset-colors
+              </td>
+              <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
+                预设颜色数组
+              </td>
+              <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
+                string[]
+              </td>
+              <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
+                -
+              </td>
+            </tr>
+            <tr>
+              <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
+                size
+              </td>
+              <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
+                尺寸
+              </td>
+              <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
+                'small' / 'default' / 'large'
+              </td>
+              <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
+                'default'
+              </td>
+            </tr>
+            <tr>
+              <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
+                disabled
+              </td>
+              <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
+                是否禁用
+              </td>
+              <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
+                boolean
+              </td>
+              <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
+                false
+              </td>
+            </tr>
+            <tr>
+              <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
+                readonly
+              </td>
+              <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
+                是否只读
+              </td>
+              <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
+                boolean
+              </td>
+              <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
+                false
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
-    <!-- 事件表格 -->
-    <div class="demo-section">
-      <ui-typography-title :level="4">
+      <h3 class="mb-2 mt-6 text-lg font-medium">
         事件
-      </ui-typography-title>
-      <table class="demo-table">
-        <thead>
-          <tr>
-            <th>事件名</th>
-            <th>说明</th>
-            <th>参数</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>update:modelValue</td>
-            <td>颜色值变更时触发</td>
-            <td>新颜色值（string）</td>
-          </tr>
-          <tr>
-            <td>change</td>
-            <td>颜色值变更时触发</td>
-            <td>新颜色值（string）</td>
-          </tr>
-          <tr>
-            <td>visible-change</td>
-            <td>下拉面板显示/隐藏时触发</td>
-            <td>是否显示（boolean）</td>
-          </tr>
-          <tr>
-            <td>blur</td>
-            <td>色彩选择器失去焦点时触发</td>
-            <td>-</td>
-          </tr>
-          <tr>
-            <td>focus</td>
-            <td>色彩选择器获得焦点时触发</td>
-            <td>-</td>
-          </tr>
-          <tr>
-            <td>clear</td>
-            <td>清空颜色时触发</td>
-            <td>-</td>
-          </tr>
-        </tbody>
-      </table>
+      </h3>
+      <div class="overflow-x-auto">
+        <table class="min-w-full border-collapse">
+          <thead>
+            <tr class="bg-gray-100 dark:bg-gray-700">
+              <th class="border border-gray-300 px-4 py-2 text-left dark:border-gray-600">
+                事件名
+              </th>
+              <th class="border border-gray-300 px-4 py-2 text-left dark:border-gray-600">
+                说明
+              </th>
+              <th class="border border-gray-300 px-4 py-2 text-left dark:border-gray-600">
+                参数
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
+                change
+              </td>
+              <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
+                当前值变化时触发
+              </td>
+              <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
+                (value: string)
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 </template>

@@ -974,14 +974,21 @@ watch(dataSource, () => {
   vertical-align: middle;
   color: var(--ui-color-text-secondary);
   line-height: 0;
+  height: 1rem; /* 减小整体高度 */
+  position: relative;
+  top: -1px; /* 微调使其与文字垂直居中 */
 }
 
 .ui-table-sort-icon-up,
 .ui-table-sort-icon-down {
   cursor: pointer;
   color: var(--ui-color-text-secondary);
-  padding: 1px;
-  font-size: 0.8em;
+  padding: 0;
+  font-size: 1rem;
+  line-height: 0;
+  display: flex;
+  align-items: center;
+  margin: -2px 0; /* 增加负margin进一步减少间距 */
 }
 
 .ui-table-sort-icon--active {

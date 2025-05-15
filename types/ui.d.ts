@@ -5,7 +5,10 @@
  * 更新日期: 2024-09-14 - 添加边框、列表、步骤条相关类型和菜单相关类型
  * 更新日期: 2024-09-15 - 添加Grid组件相关类型和TsxDemo组件类型、Watermark组件类型
  * 更新日期: 2024-09-16 - 添加表单组件相关类型
+ * 更新日期: 2024-09-17 - 添加段落组件相关类型
  */
+
+export type ResponsiveSize = 'xs' | 'sm' | 'base' | 'lg' | 'xl'
 
 /**
  * 按钮类型
@@ -20,7 +23,7 @@ export type TagType = 'default' | 'primary' | 'success' | 'warning' | 'danger'
 /**
  * 文本类型
  */
-export type TextType = 'default' | 'primary' | 'success' | 'warning' | 'danger' | 'secondary'
+export type TextType = 'default' | 'primary' | 'success' | 'warning' | 'danger' | 'secondary' | 'info'
 
 /**
  * 警告提示类型
@@ -45,7 +48,7 @@ export type VerificationType = 'text' | 'number' | 'alphanumeric'
 /**
  * 组件尺寸
  */
-export type ComponentSize = 'small' | 'default' | 'large'
+export type ComponentSize = 'small' | 'default' | 'large' | ResponsiveSize
 
 /**
  * 下拉菜单位置
@@ -266,3 +269,31 @@ export type ErrorMessagePosition = 'inline' | 'bottom'
  * 字体粗细
  */
 export type FontWeight = 'normal' | 'light' | 'bold' | number
+
+/**
+ * 段落文本间距类型
+ */
+export type ParagraphSpacing = 'compact' | 'normal' | 'relaxed' | ComponentSize
+
+/**
+ * 段落省略配置
+ */
+export interface EllipsisConfig {
+  rows?: number
+  expandable?: boolean
+  symbol?: string
+}
+
+/**
+ * 复制配置
+ */
+export interface CopyableConfig {
+  /**
+   * 自定义复制的文本，未指定时复制组件内的文本
+   */
+  text?: string
+  /**
+   * 自定义工具提示文本 [默认提示, 复制后提示]
+   */
+  tooltips?: [string, string]
+}

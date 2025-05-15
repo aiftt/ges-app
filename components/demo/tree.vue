@@ -3,6 +3,7 @@
  * 树形控件组件示例页面
  * 创建日期: 2024-07-30
  * 作者: aiftt
+ * 更新日期: 2024-12-08 - 使用ui-demo组件重构演示页面
  */
 
 import { h, ref } from 'vue'
@@ -271,187 +272,131 @@ function handleDrop(info: any) {
   draggableTreeData.value = data
   console.warn('拖拽成功:', `${dragNode.label} -> ${node.label}`)
 }
-</script>
 
-<template>
-  <div class="p-6">
-    <h1 class="mb-6 text-2xl font-bold">
-      树形控件 (Tree)
-    </h1>
+// 代码示例
+const basicCode = `<ui-tree :data="basicTreeData" />
 
-    <div class="space-y-10">
-      <!-- 基础树 -->
-      <section>
-        <h2 class="mb-4 text-xl font-semibold">
-          基础用法
-        </h2>
-        <div class="rounded-lg bg-white p-4 shadow dark:bg-gray-800">
-          <ui-tree :data="basicTreeData" />
-        </div>
+<script setup>
+const basicTreeData = [
+  {
+    id: '1',
+    label: '一级节点 1',
+    children: [
+      {
+        id: '1-1',
+        label: '二级节点 1-1',
+        children: [
+          { id: '1-1-1', label: '三级节点 1-1-1' },
+          { id: '1-1-2', label: '三级节点 1-1-2' },
+        ],
+      },
+      { id: '1-2', label: '二级节点 1-2' },
+    ],
+  },
+  {
+    id: '2',
+    label: '一级节点 2',
+    children: [
+      { id: '2-1', label: '二级节点 2-1' },
+      { id: '2-2', label: '二级节点 2-2' },
+    ],
+  },
+]
+<\/script>`
 
-        <div class="mt-6 rounded bg-gray-100 p-4 dark:bg-gray-700">
-          <pre class="overflow-auto text-sm"><code>{{ `<ui-tree :data="basicTreeData" />` }}</code></pre>
-        </div>
-      </section>
-
-      <!-- 可选择树 -->
-      <section>
-        <h2 class="mb-4 text-xl font-semibold">
-          可选择树
-        </h2>
-        <div class="rounded-lg bg-white p-4 shadow dark:bg-gray-800">
-          <ui-tree
-            :data="selectableTreeData"
-            :selected-keys="selectedKeys"
-
-            selectable highlight-current
-            @select="handleNodeSelect"
-          />
-          <div v-if="selectedNode" class="mt-4 rounded bg-gray-100 p-2 dark:bg-gray-700">
-            <p class="text-sm">
-              当前选中: {{ selectedNode.label }} (ID: {{ selectedNode.id }})
-            </p>
-          </div>
-        </div>
-
-        <div class="mt-6 rounded bg-gray-100 p-4 dark:bg-gray-700">
-          <pre class="overflow-auto text-sm"><code>{{ `<ui-tree
+const selectableCode = `<ui-tree
   :data="selectableTreeData"
   :selected-keys="selectedKeys"
   selectable
   highlight-current
   @select="handleNodeSelect"
-/>` }}</code></pre>
-        </div>
-      </section>
+/>
 
-      <!-- 复选框树 -->
-      <section>
-        <h2 class="mb-4 text-xl font-semibold">
-          复选框树
-        </h2>
-        <div class="rounded-lg bg-white p-4 shadow dark:bg-gray-800">
-          <ui-tree
-            :data="checkableTreeData"
-            :checked-keys="checkedKeys"
-            checkable
-            @check="handleNodeCheck"
-          />
-        </div>
+<script setup>
+const selectedKeys = ref([])
+const selectedNode = ref(null)
 
-        <div class="mt-6 rounded bg-gray-100 p-4 dark:bg-gray-700">
-          <pre class="overflow-auto text-sm"><code>{{ `<ui-tree
+function handleNodeSelect(keys, node) {
+  selectedNode.value = node
+  console.warn('选中节点:', node.label)
+}
+<\/script>`
+
+const checkableCode = `<ui-tree
   :data="checkableTreeData"
   :checked-keys="checkedKeys"
   checkable
   @check="handleNodeCheck"
-/>` }}</code></pre>
-        </div>
-      </section>
+/>
 
-      <!-- 自定义图标 -->
-      <section>
-        <h2 class="mb-4 text-xl font-semibold">
-          自定义图标
-        </h2>
-        <div class="rounded-lg bg-white p-4 shadow dark:bg-gray-800">
-          <ui-tree
-            :data="iconTreeData"
-            :expanded-keys="expandedKeys"
-            show-icon
-            @expand="handleNodeExpand"
-          />
-        </div>
+<script setup>
+const checkedKeys = ref(['1-1', '2-2'])
 
-        <div class="mt-6 rounded bg-gray-100 p-4 dark:bg-gray-700">
-          <pre class="overflow-auto text-sm"><code>{{ `<ui-tree
+function handleNodeCheck(keys, info) {
+  console.warn('复选框状态变化:', info.checkedNodes.map(n => n.label))
+}
+<\/script>`
+
+const iconCode = `<ui-tree
   :data="iconTreeData"
   :expanded-keys="expandedKeys"
   show-icon
   @expand="handleNodeExpand"
-/>` }}</code></pre>
-        </div>
-      </section>
+/>
 
-      <!-- 可搜索树 -->
-      <section>
-        <h2 class="mb-4 text-xl font-semibold">
-          可搜索树
-        </h2>
-        <div class="rounded-lg bg-white p-4 shadow dark:bg-gray-800">
-          <ui-tree
-            v-model:search-value="searchValue"
-            :data="searchableTreeData"
-            searchable
-            default-expand-all
-          />
-        </div>
+<script setup>
+const expandedKeys = ref(['1', '2'])
+const iconTreeData = [
+  {
+    id: '1',
+    label: '文档',
+    icon: 'carbon:folder',
+    children: [
+      { id: '1-1', label: '项目计划.docx', icon: 'carbon:document' },
+      { id: '1-2', label: '需求文档.docx', icon: 'carbon:document' },
+    ],
+  },
+  {
+    id: '2',
+    label: '图片',
+    icon: 'carbon:folder',
+    children: [
+      { id: '2-1', label: 'logo.png', icon: 'carbon:image' },
+      { id: '2-2', label: 'banner.jpg', icon: 'carbon:image' },
+    ],
+  },
+  // 更多数据...
+]
+<\/script>`
 
-        <div class="mt-6 rounded bg-gray-100 p-4 dark:bg-gray-700">
-          <pre class="overflow-auto text-sm"><code>{{ `<ui-tree
+const searchableCode = `<ui-tree
+  v-model:search-value="searchValue"
   :data="searchableTreeData"
   searchable
-  v-model:search-value="searchValue"
   default-expand-all
-/>` }}</code></pre>
-        </div>
-      </section>
+/>
 
-      <!-- 可拖拽树 -->
-      <section>
-        <h2 class="mb-4 text-xl font-semibold">
-          可拖拽树
-        </h2>
-        <div class="rounded-lg bg-white p-4 shadow dark:bg-gray-800">
-          <ui-tree
-            :data="draggableTreeData"
-            draggable
-            @drop="handleDrop"
-          />
-          <div class="mt-4 text-sm text-gray-500">
-            提示：可以拖拽节点改变其位置
-          </div>
-        </div>
+<script setup>
+const searchValue = ref('')
+// 数据结构...
+<\/script>`
 
-        <div class="mt-6 rounded bg-gray-100 p-4 dark:bg-gray-700">
-          <pre class="overflow-auto text-sm"><code>{{ `<ui-tree
+const draggableCode = `<ui-tree
   :data="draggableTreeData"
   draggable
   @drop="handleDrop"
-/>` }}</code></pre>
-        </div>
-      </section>
+/>
 
-      <!-- 连接线风格 -->
-      <section>
-        <h2 class="mb-4 text-xl font-semibold">
-          连接线风格
-        </h2>
-        <div class="grid grid-cols-1 gap-6 rounded-lg bg-white p-4 shadow md:grid-cols-2 dark:bg-gray-800">
-          <div>
-            <h3 class="mb-2 font-medium">
-              实线连接
-            </h3>
-            <ui-tree
-              :data="lineStyleTreeData"
-              line-style="line"
-              default-expand-all
-            />
-          </div>
-          <div>
-            <h3 class="mb-2 font-medium">
-              虚线连接
-            </h3>
-            <ui-tree
-              :data="lineStyleTreeData"
-              line-style="dashed"
-              default-expand-all
-            />
-          </div>
-        </div>
+<script setup>
+const draggableTreeData = ref([/* 树结构数据 */])
 
-        <div class="mt-6 rounded bg-gray-100 p-4 dark:bg-gray-700">
-          <pre class="overflow-auto text-sm"><code>{{ `<!-- 实线连接 -->
+function handleDrop(info) {
+  const { dragNode, node, dropPosition } = info
+  // 处理拖拽逻辑...
+}
+<\/script>`
+
+const lineStyleCode = `<!-- 实线连接 -->
 <ui-tree
   :data="lineStyleTreeData"
   line-style="line"
@@ -463,446 +408,377 @@ function handleDrop(info: any) {
   :data="lineStyleTreeData"
   line-style="dashed"
   default-expand-all
-/>` }}</code></pre>
+/>`
+</script>
+
+<template>
+  <div class="p-6">
+    <h1 class="mb-6 text-2xl font-bold">
+      树形控件 (Tree)
+    </h1>
+    <p class="mb-8 text-gray-500 dark:text-gray-400">
+      树形控件用于展示具有层级关系的数据结构，支持选择、复选框、搜索、拖拽等功能。
+    </p>
+
+    <!-- 基础树 -->
+    <ui-demo
+      title="基础用法"
+      description="最基本的树形结构展示，默认可展开和折叠。"
+      :code="basicCode"
+    >
+      <ui-tree :data="basicTreeData" />
+    </ui-demo>
+
+    <!-- 可选择树 -->
+    <ui-demo
+      title="可选择树"
+      description="设置 selectable 属性启用节点选择功能，highlight-current 可以高亮当前选中节点。"
+      :code="selectableCode"
+    >
+      <div>
+        <ui-tree
+          :data="selectableTreeData"
+          :selected-keys="selectedKeys"
+          selectable
+          highlight-current
+          @select="handleNodeSelect"
+        />
+        <div v-if="selectedNode" class="mt-4 rounded bg-gray-100 p-2 dark:bg-gray-700">
+          <p class="text-sm">
+            当前选中: {{ selectedNode.label }} (ID: {{ selectedNode.id }})
+          </p>
         </div>
-      </section>
+      </div>
+    </ui-demo>
 
-      <!-- API 文档 -->
-      <section>
-        <h2 class="mb-4 text-xl font-semibold">
-          API
-        </h2>
+    <!-- 复选框树 -->
+    <ui-demo
+      title="复选框树"
+      description="设置 checkable 属性显示复选框，支持多选和级联选择。"
+      :code="checkableCode"
+    >
+      <ui-tree
+        :data="checkableTreeData"
+        :checked-keys="checkedKeys"
+        checkable
+        @check="handleNodeCheck"
+      />
+    </ui-demo>
 
-        <h3 class="mb-2 mt-4 text-lg font-medium">
-          Tree Props
-        </h3>
-        <table class="min-w-full border border-gray-300 dark:border-gray-700">
-          <thead class="bg-gray-100 dark:bg-gray-700">
-            <tr>
-              <th class="border-b px-4 py-2 text-left">
+    <!-- 自定义图标 -->
+    <ui-demo
+      title="自定义图标"
+      description="通过 show-icon 属性显示图标，每个节点可以设置自己的图标。"
+      :code="iconCode"
+    >
+      <ui-tree
+        :data="iconTreeData"
+        :expanded-keys="expandedKeys"
+        show-icon
+        @expand="handleNodeExpand"
+      />
+    </ui-demo>
+
+    <!-- 可搜索树 -->
+    <ui-demo
+      title="可搜索树"
+      description="设置 searchable 属性启用搜索功能，可以快速筛选节点。"
+      :code="searchableCode"
+    >
+      <ui-tree
+        v-model:search-value="searchValue"
+        :data="searchableTreeData"
+        searchable
+        default-expand-all
+      />
+    </ui-demo>
+
+    <!-- 可拖拽树 -->
+    <ui-demo
+      title="可拖拽树"
+      description="设置 draggable 属性启用拖拽功能，可以调整节点位置。"
+      :code="draggableCode"
+    >
+      <div>
+        <ui-tree
+          :data="draggableTreeData"
+          draggable
+          @drop="handleDrop"
+        />
+        <div class="mt-4 text-sm text-gray-500">
+          提示：可以拖拽节点改变其位置
+        </div>
+      </div>
+    </ui-demo>
+
+    <!-- 连接线风格 -->
+    <ui-demo
+      title="连接线风格"
+      description="通过 line-style 属性设置节点间连接线的样式，支持实线、虚线和无连接线。"
+      :code="lineStyleCode"
+    >
+      <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+        <div>
+          <h3 class="mb-2 font-medium">
+            实线连接
+          </h3>
+          <ui-tree
+            :data="lineStyleTreeData"
+            line-style="line"
+            default-expand-all
+          />
+        </div>
+        <div>
+          <h3 class="mb-2 font-medium">
+            虚线连接
+          </h3>
+          <ui-tree
+            :data="lineStyleTreeData"
+            line-style="dashed"
+            default-expand-all
+          />
+        </div>
+      </div>
+    </ui-demo>
+
+    <!-- API 文档 -->
+    <div class="mt-8 border border-gray-200 rounded-lg bg-gray-50 p-6 dark:border-gray-700 dark:bg-gray-800">
+      <h2 class="mb-4 text-xl font-bold">
+        API 参考
+      </h2>
+
+      <h3 class="mb-2 mt-4 text-lg font-medium">
+        Tree Props
+      </h3>
+      <div class="overflow-x-auto">
+        <table class="min-w-full border-collapse">
+          <thead>
+            <tr class="bg-gray-100 dark:bg-gray-700">
+              <th class="border border-gray-300 px-4 py-2 text-left dark:border-gray-600">
                 属性
               </th>
-              <th class="border-b px-4 py-2 text-left">
+              <th class="border border-gray-300 px-4 py-2 text-left dark:border-gray-600">
                 类型
               </th>
-              <th class="border-b px-4 py-2 text-left">
+              <th class="border border-gray-300 px-4 py-2 text-left dark:border-gray-600">
                 默认值
               </th>
-              <th class="border-b px-4 py-2 text-left">
+              <th class="border border-gray-300 px-4 py-2 text-left dark:border-gray-600">
                 说明
               </th>
             </tr>
           </thead>
-          <tbody class="bg-white dark:bg-gray-800">
+          <tbody>
             <tr>
-              <td class="border-b px-4 py-2">
+              <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                 data
               </td>
-              <td class="border-b px-4 py-2">
+              <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                 ITreeNode[]
               </td>
-              <td class="border-b px-4 py-2">
+              <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                 -
               </td>
-              <td class="border-b px-4 py-2">
+              <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                 树结构数据
               </td>
             </tr>
             <tr>
-              <td class="border-b px-4 py-2">
+              <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                 checkable
               </td>
-              <td class="border-b px-4 py-2">
+              <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                 boolean
               </td>
-              <td class="border-b px-4 py-2">
+              <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                 false
               </td>
-              <td class="border-b px-4 py-2">
+              <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                 是否显示复选框
               </td>
             </tr>
             <tr>
-              <td class="border-b px-4 py-2">
+              <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                 defaultExpandAll
               </td>
-              <td class="border-b px-4 py-2">
+              <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                 boolean
               </td>
-              <td class="border-b px-4 py-2">
+              <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                 false
               </td>
-              <td class="border-b px-4 py-2">
+              <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                 是否默认展开所有节点
               </td>
             </tr>
             <tr>
-              <td class="border-b px-4 py-2">
+              <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                 selectedKeys
               </td>
-              <td class="border-b px-4 py-2">
+              <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                 (string | number)[]
               </td>
-              <td class="border-b px-4 py-2">
+              <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                 []
               </td>
-              <td class="border-b px-4 py-2">
+              <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                 已选中的节点值
               </td>
             </tr>
             <tr>
-              <td class="border-b px-4 py-2">
+              <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                 checkedKeys
               </td>
-              <td class="border-b px-4 py-2">
+              <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                 (string | number)[]
               </td>
-              <td class="border-b px-4 py-2">
+              <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                 []
               </td>
-              <td class="border-b px-4 py-2">
+              <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                 已选中的复选框节点值
               </td>
             </tr>
             <tr>
-              <td class="border-b px-4 py-2">
+              <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                 expandedKeys
               </td>
-              <td class="border-b px-4 py-2">
+              <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                 (string | number)[]
               </td>
-              <td class="border-b px-4 py-2">
+              <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                 []
               </td>
-              <td class="border-b px-4 py-2">
+              <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                 默认展开的节点值
               </td>
             </tr>
             <tr>
-              <td class="border-b px-4 py-2">
+              <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                 draggable
               </td>
-              <td class="border-b px-4 py-2">
+              <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                 boolean
               </td>
-              <td class="border-b px-4 py-2">
+              <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                 false
               </td>
-              <td class="border-b px-4 py-2">
+              <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                 是否可拖拽
               </td>
             </tr>
             <tr>
-              <td class="border-b px-4 py-2">
+              <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                 searchable
               </td>
-              <td class="border-b px-4 py-2">
+              <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                 boolean
               </td>
-              <td class="border-b px-4 py-2">
+              <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                 false
               </td>
-              <td class="border-b px-4 py-2">
+              <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                 是否可搜索
               </td>
             </tr>
             <tr>
-              <td class="border-b px-4 py-2">
+              <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                 searchValue
               </td>
-              <td class="border-b px-4 py-2">
+              <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                 string
               </td>
-              <td class="border-b px-4 py-2">
+              <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                 ''
               </td>
-              <td class="border-b px-4 py-2">
+              <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                 搜索值
               </td>
             </tr>
             <tr>
-              <td class="border-b px-4 py-2">
-                indent
-              </td>
-              <td class="border-b px-4 py-2">
-                number
-              </td>
-              <td class="border-b px-4 py-2">
-                24
-              </td>
-              <td class="border-b px-4 py-2">
-                节点缩进距离，单位px
-              </td>
-            </tr>
-            <tr>
-              <td class="border-b px-4 py-2">
+              <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                 lineStyle
               </td>
-              <td class="border-b px-4 py-2">
+              <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                 'line' | 'dashed' | 'none'
               </td>
-              <td class="border-b px-4 py-2">
+              <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                 'line'
               </td>
-              <td class="border-b px-4 py-2">
+              <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                 节点间连接线样式
-              </td>
-            </tr>
-            <tr>
-              <td class="border-b px-4 py-2">
-                selectable
-              </td>
-              <td class="border-b px-4 py-2">
-                boolean
-              </td>
-              <td class="border-b px-4 py-2">
-                true
-              </td>
-              <td class="border-b px-4 py-2">
-                是否可选择
-              </td>
-            </tr>
-            <tr>
-              <td class="border-b px-4 py-2">
-                highlightCurrent
-              </td>
-              <td class="border-b px-4 py-2">
-                boolean
-              </td>
-              <td class="border-b px-4 py-2">
-                false
-              </td>
-              <td class="border-b px-4 py-2">
-                是否高亮当前选中节点
-              </td>
-            </tr>
-            <tr>
-              <td class="border-b px-4 py-2">
-                loading
-              </td>
-              <td class="border-b px-4 py-2">
-                boolean
-              </td>
-              <td class="border-b px-4 py-2">
-                false
-              </td>
-              <td class="border-b px-4 py-2">
-                是否显示加载状态
-              </td>
-            </tr>
-            <tr>
-              <td class="border-b px-4 py-2">
-                showIcon
-              </td>
-              <td class="border-b px-4 py-2">
-                boolean
-              </td>
-              <td class="border-b px-4 py-2">
-                false
-              </td>
-              <td class="border-b px-4 py-2">
-                是否显示节点图标
               </td>
             </tr>
           </tbody>
         </table>
+      </div>
 
-        <h3 class="mb-2 mt-6 text-lg font-medium">
-          Tree Events
-        </h3>
-        <table class="min-w-full border border-gray-300 dark:border-gray-700">
-          <thead class="bg-gray-100 dark:bg-gray-700">
-            <tr>
-              <th class="border-b px-4 py-2 text-left">
+      <h3 class="mb-2 mt-6 text-lg font-medium">
+        Tree Events
+      </h3>
+      <div class="overflow-x-auto">
+        <table class="min-w-full border-collapse">
+          <thead>
+            <tr class="bg-gray-100 dark:bg-gray-700">
+              <th class="border border-gray-300 px-4 py-2 text-left dark:border-gray-600">
                 事件名
               </th>
-              <th class="border-b px-4 py-2 text-left">
+              <th class="border border-gray-300 px-4 py-2 text-left dark:border-gray-600">
                 说明
               </th>
-              <th class="border-b px-4 py-2 text-left">
+              <th class="border border-gray-300 px-4 py-2 text-left dark:border-gray-600">
                 回调参数
               </th>
             </tr>
           </thead>
-          <tbody class="bg-white dark:bg-gray-800">
+          <tbody>
             <tr>
-              <td class="border-b px-4 py-2">
+              <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                 select
               </td>
-              <td class="border-b px-4 py-2">
+              <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                 节点选中状态变化
               </td>
-              <td class="border-b px-4 py-2">
+              <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                 (selectedKeys: (string | number)[], node: ITreeNode)
               </td>
             </tr>
             <tr>
-              <td class="border-b px-4 py-2">
+              <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                 check
               </td>
-              <td class="border-b px-4 py-2">
+              <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                 节点复选框状态变化
               </td>
-              <td class="border-b px-4 py-2">
+              <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                 (checkedKeys: (string | number)[], info: object)
               </td>
             </tr>
             <tr>
-              <td class="border-b px-4 py-2">
+              <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                 expand
               </td>
-              <td class="border-b px-4 py-2">
+              <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                 节点展开/折叠时触发
               </td>
-              <td class="border-b px-4 py-2">
+              <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                 (expandedKeys: (string | number)[], info: object)
               </td>
             </tr>
             <tr>
-              <td class="border-b px-4 py-2">
-                contextmenu
+              <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
+                drop
               </td>
-              <td class="border-b px-4 py-2">
-                节点被右键点击时触发
+              <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
+                拖拽完成时触发
               </td>
-              <td class="border-b px-4 py-2">
-                (event: MouseEvent, node: ITreeNode)
-              </td>
-            </tr>
-            <tr>
-              <td class="border-b px-4 py-2">
-                update:selectedKeys
-              </td>
-              <td class="border-b px-4 py-2">
-                更新选中的节点键值
-              </td>
-              <td class="border-b px-4 py-2">
-                (selectedKeys: (string | number)[])
-              </td>
-            </tr>
-            <tr>
-              <td class="border-b px-4 py-2">
-                update:checkedKeys
-              </td>
-              <td class="border-b px-4 py-2">
-                更新选中的复选框节点键值
-              </td>
-              <td class="border-b px-4 py-2">
-                (checkedKeys: (string | number)[])
-              </td>
-            </tr>
-            <tr>
-              <td class="border-b px-4 py-2">
-                update:expandedKeys
-              </td>
-              <td class="border-b px-4 py-2">
-                更新展开的节点键值
-              </td>
-              <td class="border-b px-4 py-2">
-                (expandedKeys: (string | number)[])
+              <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
+                (info: {dragNode, node, dropPosition})
               </td>
             </tr>
           </tbody>
         </table>
-
-        <h3 class="mb-2 mt-6 text-lg font-medium">
-          TreeNode 数据结构
-        </h3>
-        <table class="min-w-full border border-gray-300 dark:border-gray-700">
-          <thead class="bg-gray-100 dark:bg-gray-700">
-            <tr>
-              <th class="border-b px-4 py-2 text-left">
-                属性
-              </th>
-              <th class="border-b px-4 py-2 text-left">
-                类型
-              </th>
-              <th class="border-b px-4 py-2 text-left">
-                说明
-              </th>
-            </tr>
-          </thead>
-          <tbody class="bg-white dark:bg-gray-800">
-            <tr>
-              <td class="border-b px-4 py-2">
-                id
-              </td>
-              <td class="border-b px-4 py-2">
-                string | number
-              </td>
-              <td class="border-b px-4 py-2">
-                节点唯一标识
-              </td>
-            </tr>
-            <tr>
-              <td class="border-b px-4 py-2">
-                label
-              </td>
-              <td class="border-b px-4 py-2">
-                string
-              </td>
-              <td class="border-b px-4 py-2">
-                节点标签内容
-              </td>
-            </tr>
-            <tr>
-              <td class="border-b px-4 py-2">
-                children
-              </td>
-              <td class="border-b px-4 py-2">
-                ITreeNode[]
-              </td>
-              <td class="border-b px-4 py-2">
-                子节点
-              </td>
-            </tr>
-            <tr>
-              <td class="border-b px-4 py-2">
-                disabled
-              </td>
-              <td class="border-b px-4 py-2">
-                boolean
-              </td>
-              <td class="border-b px-4 py-2">
-                是否禁用
-              </td>
-            </tr>
-            <tr>
-              <td class="border-b px-4 py-2">
-                expanded
-              </td>
-              <td class="border-b px-4 py-2">
-                boolean
-              </td>
-              <td class="border-b px-4 py-2">
-                是否默认展开
-              </td>
-            </tr>
-            <tr>
-              <td class="border-b px-4 py-2">
-                selected
-              </td>
-              <td class="border-b px-4 py-2">
-                boolean
-              </td>
-              <td class="border-b px-4 py-2">
-                是否默认选中
-              </td>
-            </tr>
-            <tr>
-              <td class="border-b px-4 py-2">
-                icon
-              </td>
-              <td class="border-b px-4 py-2">
-                string
-              </td>
-              <td class="border-b px-4 py-2">
-                节点图标
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </section>
+      </div>
     </div>
   </div>
 </template>

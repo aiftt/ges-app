@@ -1,4 +1,5 @@
 <script setup lang="ts" name="DemoParagraph">
+import type { TextType } from '~/types/ui'
 /**
  * 段落组件演示
  * 创建日期: 2024-11-30
@@ -6,7 +7,7 @@
  */
 
 // 段落类型
-const paragraphTypes = [
+const paragraphTypes: Array<{ label: string, value: TextType }> = [
   { label: '默认', value: 'default' },
   { label: '主要', value: 'primary' },
   { label: '成功', value: 'success' },
@@ -455,7 +456,7 @@ const multipleParagraphs = [
         <div class="space-y-6">
           <!-- 卡片组合 -->
           <div class="border rounded-lg p-4">
-            <ui-title level="4">
+            <ui-title :level="4">
               文章标题
             </ui-title>
             <ui-text type="secondary" size="sm" class="mb-4">

@@ -102,7 +102,7 @@ const longTitleText = '这是一个很长的标题文本，用于测试标题的
           <div class="text-sm text-gray-500 dark:text-gray-400">
             有边距 (默认):
           </div>
-          <ui-title level="2" with-margin>
+          <ui-title :level="2" with-margin>
             {{ titleText }}
           </ui-title>
           <p>标题下方的文本内容将会有合理的间距。</p>
@@ -112,7 +112,7 @@ const longTitleText = '这是一个很长的标题文本，用于测试标题的
           <div class="text-sm text-gray-500 dark:text-gray-400">
             无边距:
           </div>
-          <ui-title level="2" :with-margin="false">
+          <ui-title :level="2" :with-margin="false">
             {{ titleText }}
           </ui-title>
           <p>标题下方的文本内容将会紧密排布，没有额外间距。</p>
@@ -130,15 +130,15 @@ const longTitleText = '这是一个很长的标题文本，用于测试标题的
       </p>
       <div class="border rounded bg-white p-4 dark:bg-gray-800">
         <div class="space-y-6">
-          <ui-title level="3" align="left">
+          <ui-title :level="3" align="left">
             左对齐标题 (默认)
           </ui-title>
 
-          <ui-title level="3" align="center">
+          <ui-title :level="3" align="center">
             居中对齐标题
           </ui-title>
 
-          <ui-title level="3" align="right">
+          <ui-title :level="3" align="right">
             右对齐标题
           </ui-title>
         </div>
@@ -160,7 +160,7 @@ const longTitleText = '这是一个很长的标题文本，用于测试标题的
               不省略:
             </div>
             <div class="max-w-md">
-              <ui-title level="3">
+              <ui-title :level="3">
                 {{ longTitleText }}
               </ui-title>
             </div>
@@ -171,7 +171,7 @@ const longTitleText = '这是一个很长的标题文本，用于测试标题的
               单行省略:
             </div>
             <div class="max-w-md">
-              <ui-title level="3" ellipsis>
+              <ui-title :level="3" ellipsis>
                 {{ longTitleText }}
               </ui-title>
             </div>
@@ -182,7 +182,7 @@ const longTitleText = '这是一个很长的标题文本，用于测试标题的
               可交互省略:
             </div>
             <div class="max-w-md">
-              <ui-title level="3" :ellipsis="{ expandable: true, symbol: '展开/收起' }">
+              <ui-title :level="3" :ellipsis="{ expandable: true, symbol: '展开/收起' }">
                 {{ longTitleText }}
               </ui-title>
             </div>
@@ -205,7 +205,7 @@ const longTitleText = '这是一个很长的标题文本，用于测试标题的
             <div class="text-sm text-gray-500 dark:text-gray-400">
               {{ mode.label }}:
             </div>
-            <ui-title level="2" :render="mode.value">
+            <ui-title :level="2" :render="mode.value">
               {{ titleText }}
             </ui-title>
           </div>
@@ -224,7 +224,7 @@ const longTitleText = '这是一个很长的标题文本，用于测试标题的
       <div class="border rounded bg-white p-4 dark:bg-gray-800">
         <div class="space-y-8">
           <div>
-            <ui-title level="2" type="primary">
+            <ui-title :level="2" type="primary">
               主要文章标题
             </ui-title>
             <ui-paragraph>
@@ -233,7 +233,7 @@ const longTitleText = '这是一个很长的标题文本，用于测试标题的
           </div>
 
           <div>
-            <ui-title level="3" type="success">
+            <ui-title :level="3" type="success">
               成功状态的小节标题
             </ui-title>
             <ui-paragraph>
@@ -258,7 +258,7 @@ const longTitleText = '这是一个很长的标题文本，用于测试标题的
       <div class="border rounded bg-white p-4 dark:bg-gray-800">
         <div class="space-y-8">
           <div>
-            <ui-title level="2" type="primary">
+            <ui-title :level="2" type="primary">
               <span class="flex items-center">
                 <ui-icon icon="carbon:document" class="mr-2 text-xl" />
                 带图标的标题
@@ -270,7 +270,7 @@ const longTitleText = '这是一个很长的标题文本，用于测试标题的
           </div>
 
           <div>
-            <ui-title level="3" type="warning" class="flex items-center justify-between">
+            <ui-title :level="3" type="warning" class="flex items-center justify-between">
               <span>带操作的标题</span>
               <ui-button size="small">
                 操作按钮
@@ -282,7 +282,7 @@ const longTitleText = '这是一个很长的标题文本，用于测试标题的
           </div>
 
           <div>
-            <ui-title level="4" mark type="danger">
+            <ui-title :level="4" mark type="danger">
               <span>标记样式标题</span>
             </ui-title>
             <ui-paragraph>

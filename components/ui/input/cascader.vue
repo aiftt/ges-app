@@ -250,6 +250,8 @@ function selectOption(option: CascaderOption, level: number) {
 
       // 更新值
       setModelValue(selectedNodes.value.map(node => node.value))
+
+      // 多选模式下不关闭下拉框
     }
     else {
       // 单选模式
@@ -594,31 +596,31 @@ function hideDropdown() {
   display: inline-block;
   width: 100%;
   font-size: var(--ui-font-size);
-  color: var(--ui-color-text, #374151);
+  color: var(--ui-color-text);
 }
 
 .ui-cascader-input {
   display: flex;
   align-items: center;
   width: 100%;
-  height: var(--ui-input-height, 36px);
+  height: var(--ui-cascader-height);
   padding: 0 10px;
-  background-color: var(--ui-color-bg, #ffffff);
-  border: 1px solid var(--ui-color-border, #d1d5db);
-  border-radius: var(--ui-border-radius, 4px);
+  background-color: var(--ui-cascader-bg);
+  border: 1px solid var(--ui-cascader-border);
+  border-radius: var(--ui-cascader-radius);
   transition: all 0.3s;
   cursor: pointer;
 }
 
 .ui-cascader--disabled .ui-cascader-input {
-  background-color: var(--ui-color-disabled-bg, #f3f4f6);
-  color: var(--ui-color-disabled-text, #9ca3af);
+  background-color: var(--ui-cascader-disabled-bg);
+  color: var(--ui-cascader-disabled-text);
   cursor: not-allowed;
 }
 
 .ui-cascader--active .ui-cascader-input {
-  border-color: var(--ui-color-primary, #3b82f6);
-  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+  border-color: var(--ui-cascader-active-border);
+  box-shadow: 0 0 0 2px var(--ui-cascader-active-shadow);
 }
 
 .ui-cascader-values {
@@ -629,7 +631,7 @@ function hideDropdown() {
 }
 
 .ui-cascader-placeholder {
-  color: var(--ui-color-placeholder, #9ca3af);
+  color: var(--ui-cascader-placeholder-color);
 }
 
 .ui-cascader-label {
@@ -646,7 +648,7 @@ function hideDropdown() {
   padding: 0 8px;
   font-size: 12px;
   line-height: 20px;
-  background-color: var(--ui-color-bg-light, #f3f4f6);
+  background-color: var(--ui-cascader-tag-bg);
   border-radius: 2px;
 }
 
@@ -655,16 +657,16 @@ function hideDropdown() {
   cursor: pointer;
   font-size: 14px;
   line-height: 1;
-  color: var(--ui-color-text-secondary, #6b7280);
+  color: var(--ui-cascader-tag-close-color);
 }
 
 .ui-cascader-tag-close:hover {
-  color: var(--ui-color-text, #374151);
+  color: var(--ui-color-text);
 }
 
 .ui-cascader-arrow {
   margin-left: 8px;
-  color: var(--ui-color-text-secondary, #6b7280);
+  color: var(--ui-color-text-secondary);
   transition: transform 0.3s;
 }
 
@@ -674,12 +676,12 @@ function hideDropdown() {
 
 .ui-cascader-clear {
   margin-left: 8px;
-  color: var(--ui-color-text-secondary, #6b7280);
+  color: var(--ui-color-text-secondary);
   cursor: pointer;
 }
 
 .ui-cascader-clear:hover {
-  color: var(--ui-color-text, #374151);
+  color: var(--ui-color-text);
 }
 
 .ui-cascader-search-input {
@@ -690,7 +692,7 @@ function hideDropdown() {
   border: none;
   outline: none;
   background: transparent;
-  color: var(--ui-color-text, #374151);
+  color: var(--ui-color-text);
 }
 
 .ui-cascader-dropdown {
@@ -701,9 +703,9 @@ function hideDropdown() {
   width: 100%;
   min-width: 180px;
   margin-top: 5px;
-  background-color: var(--ui-bg-color, #fff);
-  border: 1px solid var(--ui-border-color, #dcdfe6);
-  border-radius: var(--ui-border-radius, 4px);
+  background-color: var(--ui-cascader-dropdown-bg);
+  border: 1px solid var(--ui-cascader-dropdown-border);
+  border-radius: var(--ui-cascader-radius);
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
   overflow-y: auto;
   max-height: v-bind(maxHeight);
@@ -718,7 +720,7 @@ function hideDropdown() {
   min-width: 180px;
   height: 100%;
   box-sizing: border-box;
-  border-right: 1px solid var(--ui-border-color, #e4e7ed);
+  border-right: 1px solid var(--ui-cascader-dropdown-border);
   overflow-y: auto;
   scrollbar-width: thin; /* Firefox */
   scrollbar-color: rgba(0, 0, 0, 0.3) transparent; /* Firefox */
@@ -758,22 +760,22 @@ function hideDropdown() {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  color: var(--ui-text-color, #606266);
+  color: var(--ui-color-text);
 }
 
 .ui-cascader-node:hover {
-  background-color: var(--ui-color-primary-lightest, #f0f9eb);
+  background-color: var(--ui-cascader-node-hover-bg);
 }
 
 .ui-cascader-node--active {
-  color: var(--ui-color-primary, #409eff);
+  color: var(--ui-cascader-node-active-color);
   font-weight: 500;
-  background-color: var(--ui-color-primary-lightest, #f0f9eb);
+  background-color: var(--ui-cascader-node-active-bg);
 }
 
 .ui-cascader-node--disabled {
   cursor: not-allowed;
-  color: var(--ui-disabled-text, #c0c4cc);
+  color: var(--ui-cascader-disabled-text);
 }
 
 .ui-cascader-node-label {
@@ -788,12 +790,12 @@ function hideDropdown() {
 
 /* 不同尺寸 */
 .ui-cascader--small .ui-cascader-input {
-  height: var(--ui-input-height-small, 28px);
+  height: calc(var(--ui-cascader-height) - 8px);
   font-size: var(--ui-font-size-small, 12px);
 }
 
 .ui-cascader--large .ui-cascader-input {
-  height: var(--ui-input-height-large, 44px);
+  height: calc(var(--ui-cascader-height) + 8px);
   font-size: var(--ui-font-size-large, 16px);
 }
 </style>

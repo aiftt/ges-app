@@ -7,9 +7,11 @@
  * 更新日期: 2023-12-06 - 更新为v-bind + CSS变量实现方式
  * 更新日期: 2024-08-22 - 修复水合问题，使用ref替代document.getElementById
  * 更新日期: 2024-09-11 - 使用集中管理的类型定义
+ * 更新日期: 2024-09-17 - 更新类型定义，支持高级配置选项
+ * 更新日期: 2024-09-17 - 使用通用的useCopyText组合式函数
  */
 
-import type { Alignment, ComponentSize, TextType } from '~/types/ui'
+import type { Alignment, ComponentSize, CopyableConfig, EllipsisConfig, ParagraphSpacing, TextType } from '~/types/ui'
 import logger from '~/utils/logger'
 
 // 定义props
@@ -31,17 +33,17 @@ const props = withDefaults(defineProps<{
    */
   italic?: boolean
   /**
-   * 是否可复制
+   * 是否可复制或复制配置
    */
-  copyable?: boolean
+  copyable?: boolean | CopyableConfig
   /**
    * 文本对齐方式
    */
   align?: Alignment
   /**
-   * 文本省略
+   * 文本省略配置
    */
-  ellipsis?: boolean
+  ellipsis?: boolean | EllipsisConfig
   /**
    * 省略显示的行数
    */
@@ -53,7 +55,7 @@ const props = withDefaults(defineProps<{
   /**
    * 段落间距
    */
-  spacing?: ComponentSize
+  spacing?: ParagraphSpacing
 }>(), {
   type: 'default',
   size: 'default',
@@ -72,6 +74,25 @@ logger.client.debug('Paragraph component props:', props)
 
 // 组件相关的logger - 使用专用的客户端子日志器
 const paragraphLogger = logger.client.child({ tag: 'paragraph' })
+
+// 处理省略配置
+const ellipsisConfig = computed(() => {
+  if (!props.ellipsis)
+    return null
+  if (typeof props.ellipsis === 'boolean')
+    return { rows: props.lines }
+  return props.ellipsis
+})
+
+// 计算实际省略行数
+const ellipsisRows = computed(() => {
+  if (!ellipsisConfig.value)
+    return 0
+  return ellipsisConfig.value.rows || props.lines
+})
+
+// 控制文本是否展开
+const expanded = ref(false)
 
 // 计算段落类名
 const paragraphClass = computed(() => {
@@ -102,11 +123,17 @@ const paragraphClass = computed(() => {
   }
 
   // 省略样式
-  if (props.ellipsis) {
+  if (props.ellipsis && !expanded.value) {
     classes.push('ui-typography-paragraph--ellipsis')
 
-    if (props.lines > 1) {
-      classes.push(`ui-typography-paragraph--lines-${props.lines}`)
+    // 处理多行省略情况
+    if (ellipsisRows.value > 1) {
+      classes.push(`ui-typography-paragraph--lines-${ellipsisRows.value}`)
+    }
+
+    // 如果配置了可展开，添加相应的类
+    if (ellipsisConfig.value?.expandable) {
+      classes.push('ui-typography-paragraph--expandable')
     }
   }
 
@@ -123,7 +150,35 @@ const colorVar = computed(() => props.color || null)
 
 // 生成唯一ID避免冲突 - 使用SSR兼容的ID生成器
 const paragraphRef = ref<HTMLParagraphElement | null>(null)
-const copied = ref(false)
+
+// 处理复制配置
+const copyConfig = computed(() => {
+  if (!props.copyable)
+    return null
+  if (typeof props.copyable === 'boolean')
+    return { text: '', tooltips: [] }
+  return props.copyable
+})
+
+// 使用复制文本组合式函数
+function getTextToCopy() {
+  // 如果提供了自定义文本，则使用它
+  if (copyConfig.value?.text) {
+    return copyConfig.value.text
+  }
+  // 否则使用段落内容
+  return paragraphRef.value?.textContent || ''
+}
+
+const { copied, copy, tooltipText } = useCopyText(getTextToCopy, {
+  tooltips: copyConfig.value?.tooltips as [string, string] || ['复制', '已复制'],
+  onSuccess: (text) => {
+    paragraphLogger.info('段落文本复制成功', { length: text.length })
+  },
+  onError: (err) => {
+    paragraphLogger.error('段落文本复制失败', err)
+  },
+})
 
 // 复制按钮样式
 const copyButtonClass = computed(() => {
@@ -133,44 +188,57 @@ const copyButtonClass = computed(() => {
   ].join(' ')
 })
 
-// 复制功能
-function copyText() {
-  if (!props.copyable || !import.meta.client)
-    return
-
-  const text = paragraphRef.value?.textContent || ''
-  paragraphLogger.info('复制段落文本', { length: text.length })
-
-  navigator.clipboard.writeText(text)
-    .then(() => {
-      // 复制成功
-      paragraphLogger.info('段落文本复制成功')
-      copied.value = true
-      setTimeout(() => {
-        copied.value = false
-      }, 2000)
-    })
-    .catch((err) => {
-      paragraphLogger.error('段落文本复制失败', err)
-    })
+// 处理展开/收起
+function toggleExpand() {
+  expanded.value = !expanded.value
 }
+
+// 获取展开/收起符号
+const expandSymbol = computed(() => {
+  if (!ellipsisConfig.value?.expandable)
+    return ''
+  return ellipsisConfig.value.symbol || (expanded.value ? '收起' : '展开')
+})
 </script>
 
 <template>
-  <p
-    ref="paragraphRef"
-    class="group"
-    :class="[paragraphClass]"
-  >
-    <slot />
+  <div class="ui-paragraph-container">
+    <p
+      ref="paragraphRef"
+      class="group"
+      :class="[paragraphClass]"
+    >
+      <slot />
+    </p>
 
-    <span v-if="copyable" :class="copyButtonClass" @click="copyText">
-      <ui-icon :icon="copied ? 'carbon:checkmark' : 'carbon:copy'" size="small" />
-    </span>
-  </p>
+    <client-only>
+      <!-- 展开/收起按钮 -->
+      <a
+        v-if="ellipsisConfig?.expandable"
+        class="ui-typography-paragraph__expand-button"
+        @click="toggleExpand"
+      >
+        {{ expandSymbol }}
+      </a>
+
+      <!-- 复制按钮 -->
+      <span
+        v-if="copyable"
+        :class="copyButtonClass"
+        :title="tooltipText"
+        @click="copy"
+      >
+        <ui-icon :icon="copied ? 'carbon:checkmark' : 'carbon:copy'" size="small" />
+      </span>
+    </client-only>
+  </div>
 </template>
 
 <style scoped>
+.ui-paragraph-container {
+  position: relative;
+}
+
 .ui-typography-paragraph {
   /* CSS变量绑定 */
   --ui-paragraph-custom-color: v-bind(colorVar);
@@ -237,6 +305,22 @@ function copyText() {
   margin-bottom: 2rem;
 }
 
+/* 添加新的段落间距类型 */
+.ui-typography-paragraph--spacing-compact {
+  margin-bottom: 0.5rem;
+  line-height: 1.3;
+}
+
+.ui-typography-paragraph--spacing-normal {
+  margin-bottom: 1rem;
+  line-height: 1.5;
+}
+
+.ui-typography-paragraph--spacing-relaxed {
+  margin-bottom: 1.5rem;
+  line-height: 1.8;
+}
+
 /* 文本对齐 */
 .ui-typography-paragraph--align-left {
   text-align: left;
@@ -300,6 +384,17 @@ function copyText() {
   line-clamp: 5;
   -webkit-box-orient: vertical;
   white-space: normal;
+}
+
+/* 更通用的省略行支持 */
+.ui-typography-paragraph--expandable {
+  position: relative;
+}
+
+.ui-typography-paragraph__expand-button {
+  color: var(--ui-color-primary, #3b82f6);
+  cursor: pointer;
+  margin-left: 4px;
 }
 
 /* 复制按钮样式 */

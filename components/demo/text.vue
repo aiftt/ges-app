@@ -397,7 +397,7 @@ const _specialFormats = [
           </div>
 
           <div class="border rounded p-3">
-            <ui-title level="5">
+            <ui-title :level="5">
               卡片标题
             </ui-title>
             <ui-text type="secondary" size="sm">

@@ -71,7 +71,7 @@ const props = withDefaults(defineProps<{
    */
   logoSize?: number
 }>(), {
-  size: 200,
+  size: 150,
   color: '#000000',
   backgroundColor: '#ffffff',
   margin: 0,
@@ -214,9 +214,10 @@ async function addLogoToCanvas(canvas: HTMLCanvasElement) {
 
     logoImg.onload = () => {
       // 计算Logo尺寸和位置
-      const logoSize = props.size * (props.logoSize || 0.2)
-      const logoX = (props.size - logoSize) / 2
-      const logoY = (props.size - logoSize) / 2
+      const size = props.size
+      const logoSize = size * (props.logoSize || 0.2)
+      const logoX = (size - logoSize) / 2
+      const logoY = (size - logoSize) / 2
 
       // 为Logo添加白色背景
       ctx.fillStyle = '#ffffff'
@@ -246,9 +247,10 @@ async function addLogoToSvg(svg: SVGElement) {
     svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg')
 
     // 计算Logo尺寸和位置
-    const logoSize = props.size * (props.logoSize || 0.2)
-    const logoX = (props.size - logoSize) / 2
-    const logoY = (props.size - logoSize) / 2
+    const size = props.size
+    const logoSize = size * (props.logoSize || 0.2)
+    const logoX = (size - logoSize) / 2
+    const logoY = (size - logoSize) / 2
 
     // 创建白色背景矩形
     const bgRect = document.createElementNS('http://www.w3.org/2000/svg', 'rect')

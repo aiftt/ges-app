@@ -274,6 +274,33 @@ const classNames = computed(() => [
   z-index: 1;
 }
 
+/* 垂直方向节点容器 */
+.ui-timeline-item--vertical .ui-timeline-item__node-container {
+  left: 0;
+  top: 0;
+  width: 16px;
+  height: 16px;
+}
+
+.ui-timeline-item--vertical.ui-timeline-item--right .ui-timeline-item__node-container {
+  right: 0;
+  left: auto;
+}
+
+/* 水平方向节点容器 */
+.ui-timeline-item--horizontal .ui-timeline-item__node-container {
+  top: 0;
+  left: calc(50% - 7px);
+  width: 16px;
+  height: 16px;
+}
+
+/* 居中节点容器 */
+.ui-timeline-item--vertical.ui-timeline-item--center .ui-timeline-item__node-container {
+  left: 50%;
+  transform: translateX(-50%);
+}
+
 .ui-timeline-item__tail {
   position: absolute;
   content: '';
@@ -281,6 +308,39 @@ const classNames = computed(() => [
   width: 2px;
   background-color: var(--ui-border-color, #dcdfe6);
   z-index: 0;
+}
+
+/* 垂直方向时间线 */
+.ui-timeline-item--vertical .ui-timeline-item__tail {
+  left: 7px; /* 确保垂直方向时连接线位置正确 */
+  top: 0;
+  height: calc(100% - 10px); /* 确保连接线能够正确连接到下一个节点 */
+}
+
+.ui-timeline-item--vertical.ui-timeline-item--right .ui-timeline-item__tail {
+  right: 7px;
+  left: auto;
+}
+
+/* 水平时间线样式 */
+.ui-timeline-item--horizontal .ui-timeline-item__tail {
+  height: 2px;
+  width: calc(100% - 10px); /* 确保连接线能够正确连接到下一个节点 */
+  left: 10px; /* 稍微偏移起点，使连接线从节点中心开始 */
+  top: 7px;
+}
+
+.ui-timeline-item--vertical.ui-timeline-item--center .ui-timeline-item__tail {
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.ui-timeline-item--center.ui-timeline-item--horizontal .ui-timeline-item__tail {
+  height: 2px;
+  width: 100%;
+  left: 0;
+  top: 7px;
+  transform: none;
 }
 
 .ui-timeline-item__node {

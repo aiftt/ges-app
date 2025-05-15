@@ -1,22 +1,27 @@
 /**
- * 主题索引文件 - 导入所有主题文件
- * 创建日期: 2023-12-07
+ * 主题变量入口文件
+ * 创建日期: 2024-06-30
  * 作者: aiftt
- * 更新日期: 2023-12-07 - 从主题变量文件拆分
+ * 更新日期: 2024-12-16 - 删除单独的组件主题文件，使用公共主题文件
  */
 
-// 导入基础变量
-@use './base.scss';
+@use 'base.scss';
+@use 'light.scss';
+@use 'dark.scss';
+@use 'code.scss';
 
-// 导入亮色主题变量
-@use './light.scss';
+// 导出一些公共变量，便于JavaScript访问
+:export {
+  // 主色
+  colorPrimary: var(--ui-color-primary);
 
-// 导入暗色主题变量
-@use './dark.scss';
+  // 状态颜色
+  colorSuccess: var(--ui-color-success);
+  colorWarning: var(--ui-color-warning);
+  colorError: var(--ui-color-error);
+  colorInfo: var(--ui-color-info);
 
-// 导入代码高亮主题变量
-@use './code.scss';
-
-// 在这里可以导入其他主题变量，如：
-// @use './blue.scss';
-// @use './purple.scss';
+  // 中性色
+  colorText: var(--ui-color-text);
+  colorBg: var(--ui-color-bg);
+}

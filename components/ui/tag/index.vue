@@ -153,7 +153,7 @@ function handleClick(event: MouseEvent) {
     @click="handleClick"
   >
     <!-- 前缀图标 -->
-    <ui-icon v-if="icon" :icon="icon" class="ui-tag-icon" />
+    <ui-icon v-if="icon" :icon="icon" class="ui-tag-icon mr-1 text-sm" />
 
     <!-- 内容 -->
     <span class="ui-tag-content">
@@ -164,7 +164,7 @@ function handleClick(event: MouseEvent) {
     <ui-icon
       v-if="closable && !disabled"
       :icon="closeIcon"
-      class="ui-tag-close-icon"
+      class="ui-tag-close-icon ml-1 cursor-pointer text-sm opacity-70 transition-opacity duration-200"
       @click="handleClose"
     />
   </div>
@@ -284,19 +284,6 @@ function handleClick(event: MouseEvent) {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-}
-
-.ui-tag-icon {
-  margin-right: 4px;
-  font-size: 0.85em;
-}
-
-.ui-tag-close-icon {
-  margin-left: 4px;
-  font-size: 0.85em;
-  opacity: 0.7;
-  cursor: pointer;
-  transition: opacity 0.2s;
 }
 
 .ui-tag-close-icon:hover {

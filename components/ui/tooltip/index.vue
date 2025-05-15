@@ -313,7 +313,8 @@ onBeforeUnmount(() => {
   width: 0;
   height: 0;
   border-style: solid;
-  border-width: 4px;
+  border-width: 5px;
+  filter: drop-shadow(0 0 1px rgba(0, 0, 0, 0.15));
 }
 
 /* 主题样式 */
@@ -330,30 +331,30 @@ onBeforeUnmount(() => {
 
 /* 箭头位置和颜色 */
 .ui-tooltip--top .ui-tooltip-arrow {
-  bottom: -8px;
+  bottom: -9px;
   left: 50%;
-  margin-left: -4px;
+  margin-left: -5px;
   border-color: var(--ui-tooltip-bg, rgba(0, 0, 0, 0.85)) transparent transparent;
 }
 
 .ui-tooltip--right .ui-tooltip-arrow {
-  left: -8px;
+  left: -9px;
   top: 50%;
-  margin-top: -4px;
+  margin-top: -5px;
   border-color: transparent var(--ui-tooltip-bg, rgba(0, 0, 0, 0.85)) transparent transparent;
 }
 
 .ui-tooltip--bottom .ui-tooltip-arrow {
-  top: -8px;
+  top: -9px;
   left: 50%;
-  margin-left: -4px;
+  margin-left: -5px;
   border-color: transparent transparent var(--ui-tooltip-bg, rgba(0, 0, 0, 0.85));
 }
 
 .ui-tooltip--left .ui-tooltip-arrow {
-  right: -8px;
+  right: -9px;
   top: 50%;
-  margin-top: -4px;
+  margin-top: -5px;
   border-color: transparent transparent transparent var(--ui-tooltip-bg, rgba(0, 0, 0, 0.85));
 }
 
@@ -370,18 +371,30 @@ onBeforeUnmount(() => {
 /* 亮色主题箭头颜色调整 */
 .ui-tooltip--light.ui-tooltip--top .ui-tooltip-arrow {
   border-top-color: #e5e7eb;
+  border-width: 5px;
+  bottom: -10px;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.15));
 }
 
 .ui-tooltip--light.ui-tooltip--right .ui-tooltip-arrow {
   border-right-color: #e5e7eb;
+  border-width: 5px;
+  left: -10px;
+  filter: drop-shadow(-1px 0 2px rgba(0, 0, 0, 0.15));
 }
 
 .ui-tooltip--light.ui-tooltip--bottom .ui-tooltip-arrow {
   border-bottom-color: #e5e7eb;
+  border-width: 5px;
+  top: -10px;
+  filter: drop-shadow(0 -1px 2px rgba(0, 0, 0, 0.15));
 }
 
 .ui-tooltip--light.ui-tooltip--left .ui-tooltip-arrow {
   border-left-color: #e5e7eb;
+  border-width: 5px;
+  right: -10px;
+  filter: drop-shadow(1px 0 2px rgba(0, 0, 0, 0.15));
 }
 
 /* 深色模式适配 */

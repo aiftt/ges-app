@@ -616,7 +616,8 @@ defineExpose({
   width: 0;
   height: 0;
   border-style: solid;
-  border-width: 8px;
+  border-width: var(--ui-trigger-arrow-size, 8px);
+  filter: drop-shadow(var(--ui-trigger-arrow-shadow, 0 0 1px rgba(0, 0, 0, 0.1)));
   z-index: -1;
   top: v-bind(arrowTop);
   left: v-bind(arrowLeft);
@@ -663,24 +664,40 @@ defineExpose({
 .ui-trigger-theme-light.ui-trigger-placement-top .ui-trigger-arrow,
 .ui-trigger-theme-light.ui-trigger-placement-top-start .ui-trigger-arrow,
 .ui-trigger-theme-light.ui-trigger-placement-top-end .ui-trigger-arrow {
-  border-top-color: var(--ui-trigger-border);
+  border-top-color: var(--ui-trigger-bg);
+  border-right-color: transparent;
+  border-bottom-color: transparent;
+  border-left-color: transparent;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.15));
 }
 
 .ui-trigger-theme-light.ui-trigger-placement-right .ui-trigger-arrow,
 .ui-trigger-theme-light.ui-trigger-placement-right-start .ui-trigger-arrow,
 .ui-trigger-theme-light.ui-trigger-placement-right-end .ui-trigger-arrow {
-  border-right-color: var(--ui-trigger-border);
+  border-top-color: transparent;
+  border-right-color: var(--ui-trigger-bg);
+  border-bottom-color: transparent;
+  border-left-color: transparent;
+  filter: drop-shadow(-1px 0 2px rgba(0, 0, 0, 0.15));
 }
 
 .ui-trigger-theme-light.ui-trigger-placement-bottom .ui-trigger-arrow,
 .ui-trigger-theme-light.ui-trigger-placement-bottom-start .ui-trigger-arrow,
 .ui-trigger-theme-light.ui-trigger-placement-bottom-end .ui-trigger-arrow {
-  border-bottom-color: var(--ui-trigger-border);
+  border-top-color: transparent;
+  border-right-color: transparent;
+  border-bottom-color: var(--ui-trigger-bg);
+  border-left-color: transparent;
+  filter: drop-shadow(0 -1px 2px rgba(0, 0, 0, 0.15));
 }
 
 .ui-trigger-theme-light.ui-trigger-placement-left .ui-trigger-arrow,
 .ui-trigger-theme-light.ui-trigger-placement-left-start .ui-trigger-arrow,
 .ui-trigger-theme-light.ui-trigger-placement-left-end .ui-trigger-arrow {
-  border-left-color: var(--ui-trigger-border);
+  border-top-color: transparent;
+  border-right-color: transparent;
+  border-bottom-color: transparent;
+  border-left-color: var(--ui-trigger-bg);
+  filter: drop-shadow(1px 0 2px rgba(0, 0, 0, 0.15));
 }
 </style>

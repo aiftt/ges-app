@@ -334,29 +334,28 @@ const displayDateRange = computed(() => {
 })
 
 // 显示事件内容的tooltip
-const showTooltip = ref(false)
-const tooltipContent = ref('')
-const tooltipPosition = reactive({ top: 0, left: 0 })
+const hoveredDay = ref<Date | null>(null)
+const hoverEvents = ref<Array<{ type?: string, content?: string }>>([])
 
 // 显示事件tooltip
-function showEventTooltip(event: { content?: string }, e: MouseEvent) {
-  if (!event.content)
+function showEventTooltip(date: Date, events: Array<{ type?: string, content?: string }>, _e: MouseEvent) {
+  if (!events || events.length === 0)
     return
 
-  tooltipContent.value = event.content
-  tooltipPosition.top = e.clientY + 10
-  tooltipPosition.left = e.clientX + 10
-  showTooltip.value = true
+  hoveredDay.value = date
+  hoverEvents.value = events
 }
 
 // 隐藏事件tooltip
 function hideEventTooltip() {
-  showTooltip.value = false
+  hoveredDay.value = null
+  hoverEvents.value = []
 }
 
 // 在组件卸载时确保tooltip隐藏
 onBeforeUnmount(() => {
-  showTooltip.value = false
+  hoveredDay.value = null
+  hoverEvents.value = []
 })
 </script>
 
@@ -422,6 +421,8 @@ onBeforeUnmount(() => {
           'ui-calendar-day-disabled': day.isDisabled,
         }"
         @click="handleDateClick(day)"
+        @mouseenter="showEventTooltip(day.date, findDayEvents(day.date), $event)"
+        @mouseleave="hideEventTooltip"
       >
         <div class="ui-calendar-day-number">
           {{ day.date.getDate() }}
@@ -433,8 +434,6 @@ onBeforeUnmount(() => {
             :key="eventIndex"
             class="ui-calendar-day-event"
             :style="{ backgroundColor: event.type ? eventTypeColors[event.type] : eventTypeColors.primary }"
-            @mouseenter="showEventTooltip(event, $event)"
-            @mouseleave="hideEventTooltip"
           />
         </div>
       </div>
@@ -456,13 +455,32 @@ onBeforeUnmount(() => {
     </div>
 
     <!-- 事件tooltip -->
-    <div
-      v-if="showTooltip"
-      class="ui-calendar-tooltip"
-      :style="{ top: `${tooltipPosition.top}px`, left: `${tooltipPosition.left}px` }"
-    >
-      {{ tooltipContent }}
-    </div>
+    <ui-tooltip :show="hoveredDay !== null && hoverEvents.length > 0">
+      <template #trigger>
+        <!-- 空内容，tooltip将通过showEventTooltip/hideEventTooltip手动控制 -->
+        <span />
+      </template>
+      <div class="ui-calendar-events-tooltip">
+        <div v-if="hoveredDay" class="ui-calendar-events-tooltip-date">
+          {{ format(hoveredDay, 'yyyy年MM月dd日') }}
+        </div>
+        <div class="ui-calendar-events-tooltip-list">
+          <div
+            v-for="(event, index) in hoverEvents"
+            :key="index"
+            class="ui-calendar-events-tooltip-item"
+          >
+            <span
+              class="ui-calendar-events-tooltip-dot"
+              :style="{ backgroundColor: event.type ? eventTypeColors[event.type] : eventTypeColors.primary }"
+            />
+            <span class="ui-calendar-events-tooltip-content">
+              {{ event.content || '事件' }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </ui-tooltip>
   </div>
 </template>
 
@@ -621,17 +639,40 @@ onBeforeUnmount(() => {
   margin-right: 4px;
 }
 
-.ui-calendar-tooltip {
-  position: fixed;
-  z-index: 1000;
-  background-color: var(--ui-color-bg-dark, #1f2937);
-  color: white;
-  padding: 6px 10px;
-  border-radius: var(--ui-border-radius, 0.375rem);
-  font-size: 12px;
-  max-width: 200px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-  pointer-events: none;
+.ui-calendar-events-tooltip {
+  padding: 8px;
+  max-width: 250px;
+}
+
+.ui-calendar-events-tooltip-date {
+  font-weight: 500;
+  margin-bottom: 8px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--ui-border-color, #e5e7eb);
+}
+
+.ui-calendar-events-tooltip-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ui-calendar-events-tooltip-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.ui-calendar-events-tooltip-dot {
+  flex-shrink: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.ui-calendar-events-tooltip-content {
+  font-size: 13px;
+  word-break: break-word;
 }
 
 /* 暗黑模式适配 */
@@ -676,8 +717,7 @@ onBeforeUnmount(() => {
   background-color: var(--ui-color-primary-dark, rgba(16, 185, 129, 0.2));
 }
 
-.dark .ui-calendar-tooltip {
-  background-color: var(--ui-color-bg-light, #f9fafb);
-  color: var(--ui-color-text, #374151);
+.dark .ui-calendar-events-tooltip-date {
+  border-color: var(--ui-border-color-dark, #4b5563);
 }
 </style>

@@ -75,6 +75,10 @@ const props = withDefaults(defineProps<{
    * 卡片类名
    */
   popperClass?: string
+  /**
+   * 是否显示关闭按钮
+   */
+  showClose?: boolean
 }>(), {
   title: '',
   content: '',
@@ -90,6 +94,7 @@ const props = withDefaults(defineProps<{
   zIndex: 1000,
   theme: 'light',
   maxWidth: '300px',
+  showClose: false,
 })
 
 const emit = defineEmits<{
@@ -152,7 +157,7 @@ defineExpose({
 
     <!-- 内容插槽 -->
     <template #content>
-      <div class="ui-popover">
+      <div class="ui-popover" :style="{ 'max-width': maxWidth }">
         <!-- 标题 -->
         <div v-if="title || $slots.title" class="ui-popover-title">
           <slot name="title">

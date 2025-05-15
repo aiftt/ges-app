@@ -11,9 +11,9 @@ const qrValue = ref('https://example.com')
 // Logo
 const qrLogo = ref('')
 // 渲染方式
-const qrRenderAs = ref('canvas')
+const qrRenderAs = ref<RenderAs>('canvas')
 // 校正级别
-const qrErrorLevel = ref('M')
+const qrErrorLevel = ref<ErrorCorrectionLevel>('M')
 // 尺寸
 const qrSize = ref(200)
 // 边距
@@ -30,10 +30,18 @@ const qrLogoSize = ref(0.2)
 const customValue = ref('')
 const customQrValue = ref('https://nuxt.com')
 
-// 渲染选项
-const renderOptions = ['canvas', 'svg', 'img']
 // 校正级别选项
-const errorLevelOptions = ['L', 'M', 'Q', 'H']
+const errorLevelOptions = ['L', 'M', 'Q', 'H'] as const
+type ErrorCorrectionLevel = 'L' | 'M' | 'Q' | 'H'
+
+// 渲染选项
+const renderOptions = ['canvas', 'svg', 'img'] as const
+type RenderAs = 'canvas' | 'svg' | 'img'
+
+// 为演示准备的常量
+const LEVEL_H: ErrorCorrectionLevel = 'H'
+const LEVEL_M: ErrorCorrectionLevel = 'M'
+const RENDER_CANVAS: RenderAs = 'canvas'
 
 // 颜色预设
 const colorPresets = [
@@ -293,8 +301,8 @@ function updateCustomValue() {
           <div class="flex flex-col items-center">
             <ui-qrcode
               :value="customQrValue"
-              render-as="canvas"
-              error-correction-level="H"
+              :render-as="RENDER_CANVAS"
+              :error-correction-level="LEVEL_H"
               :size="150"
               :rounded="true"
               class-name="shadow-lg"
@@ -321,8 +329,8 @@ function updateCustomValue() {
           </h3>
           <ui-qrcode
             value="https://github.com/"
-            size="150"
-            error-correction-level="M"
+            :size="150"
+            :error-correction-level="LEVEL_M"
           />
           <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
             默认配置
@@ -336,8 +344,8 @@ function updateCustomValue() {
           </h3>
           <ui-qrcode
             value="https://github.com/"
-            size="150"
-            error-correction-level="H"
+            :size="150"
+            :error-correction-level="LEVEL_H"
             logo="/nuxt.svg"
           />
           <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
@@ -352,10 +360,9 @@ function updateCustomValue() {
           </h3>
           <ui-qrcode
             value="https://github.com/"
-            size="150"
+            :size="150"
             color="#1677ff"
             background-color="#f0f9ff"
-            rounded
           />
           <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
             自定义颜色和圆角
@@ -377,7 +384,7 @@ function updateCustomValue() {
 // 自定义尺寸和校正级别
 &lt;ui-qrcode
   value="https://github.com/"
-  size="200"
+  :size="200"
   error-correction-level="H"
 /&gt;
 
@@ -392,7 +399,7 @@ function updateCustomValue() {
 &lt;ui-qrcode
   value="https://github.com/"
   logo="/path/to/logo.png"
-  logo-size="0.2"
+  :logo-size="0.2"
   error-correction-level="H"
 /&gt;
 
@@ -400,6 +407,7 @@ function updateCustomValue() {
 &lt;ui-qrcode
   value="https://github.com/"
   render-as="svg"
+  :size="150"
 /&gt;</code></pre>
       </div>
     </div>

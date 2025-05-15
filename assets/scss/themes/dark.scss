@@ -126,6 +126,8 @@
   --ui-trigger-bg: #1f2937;
   --ui-trigger-border: #374151;
   --ui-trigger-color: #f9fafb;
+  --ui-trigger-arrow-size: 8px;
+  --ui-trigger-arrow-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
 
   // 分割线颜色
   --ui-color-split-dark: #4b5563;
@@ -450,4 +452,35 @@
   --ui-button-disabled-bg: #1f2937;
   --ui-button-disabled-text: #6b7280;
   --ui-button-disabled-border: transparent;
+
+  // Segmented组件变量
+  --ui-segmented-bg-color: #374151;
+  --ui-segmented-text-color: #9ca3af;
+  --ui-segmented-active-text-color: #f9fafb;
+  --ui-segmented-thumb-color: #1f2937;
+  --ui-segmented-border-color: #4b5563;
+  --ui-segmented-disabled-opacity: 0.5;
+  --ui-segmented-transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ui-segmented-radius: 4px;
+  --ui-segmented-height: 32px;
+  --ui-segmented-font-size: 14px;
+  --ui-segmented-item-padding: 0 12px;
+
+  // Cascader组件变量
+  --ui-cascader-height: 36px;
+  --ui-cascader-bg: var(--ui-color-bg);
+  --ui-cascader-border: var(--ui-color-border);
+  --ui-cascader-radius: var(--ui-border-radius);
+  --ui-cascader-active-border: var(--ui-color-primary);
+  --ui-cascader-active-shadow: rgba(59, 130, 246, 0.2);
+  --ui-cascader-dropdown-bg: var(--ui-color-bg);
+  --ui-cascader-dropdown-border: var(--ui-border-color);
+  --ui-cascader-node-hover-bg: var(--ui-color-bg-hover);
+  --ui-cascader-node-active-color: var(--ui-color-primary);
+  --ui-cascader-node-active-bg: #2a3441;
+  --ui-cascader-disabled-bg: var(--ui-color-disabled-bg);
+  --ui-cascader-disabled-text: var(--ui-color-disabled-text);
+  --ui-cascader-tag-bg: var(--ui-color-bg-light);
+  --ui-cascader-tag-close-color: var(--ui-color-text-secondary);
+  --ui-cascader-placeholder-color: var(--ui-color-disabled-text);
 }

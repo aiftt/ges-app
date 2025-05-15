@@ -768,6 +768,7 @@ defineExpose({
     height: 24px;
     align-items: center;
     justify-content: center;
+    color: var(--ui-color-text-secondary, #909399);
 
     &.is-leaf {
       visibility: hidden;

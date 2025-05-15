@@ -176,6 +176,7 @@ defineExpose({
     :visible="confirmVisible"
     theme="light"
     :z-index="zIndex"
+    arrow
     @update:visible="handleVisibleChange"
   >
     <!-- 默认插槽作为触发元素 -->

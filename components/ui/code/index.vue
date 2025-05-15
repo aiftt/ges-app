@@ -30,10 +30,6 @@ const props = withDefaults(defineProps<{
    */
   lang?: string
   /**
-   * 是否显示行号
-   */
-  lineNumbers?: boolean
-  /**
    * 是否显示语言标签
    */
   showLanguage?: boolean
@@ -41,10 +37,6 @@ const props = withDefaults(defineProps<{
    * 主题
    */
   theme?: string
-  /**
-   * 高亮行数，格式如 "1,3-5"
-   */
-  highlightLines?: string
   /**
    * 最大高度
    */
@@ -64,10 +56,8 @@ const props = withDefaults(defineProps<{
 }>(), {
   code: '',
   lang: 'plaintext',
-  lineNumbers: true,
   showLanguage: true,
   theme: 'github-dark',
-  highlightLines: '',
 })
 
 // 可用的主题列表（确保和已导入的CSS文件一致）
@@ -165,7 +155,6 @@ const headerBgColorVar = computed(() => props.headerBgColor || null)
         <client-only>
           <!-- 代码内容 -->
           <highlightjs
-            :line-numbers="lineNumbers"
             autodetect
             ignore-illegals
             :code="code"

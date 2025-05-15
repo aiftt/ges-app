@@ -2,10 +2,44 @@
 
 计划：@admin.md 开发后台管理系统
 
-迭代：
+按照 重构计划继续推进 @plan.md, 使用 ui-demo 组件替换现有的演示结构 规范：请严格遵循 rule.mdc 注意本次修改仅限于 components/demo/ 目录下的组件，请勿扩散至其他目录。完成一个后直接继续完成下一个直到所有都完成，注意 `</script>` 在字符串中要进行转义：`<\/script>`，完成后更新计划文档
 
-1. 控制台改造
-   - 采取主流后台管理系统布局（左侧LOGO+菜单，右侧导航栏+内容区）
+组件css 变量放到 @asssets/scss/themes 公共主题文件中，不要单独新增样式文件
+
+
+
+问题：
+
+- Cascader 级联选择器 改成单击节点直接选中不要双击选中，多选模式 没有回显且我选中一个后就关闭了多选模式不应该选择的时候关闭，可搜索-有问题搜索结果要展示完整路径
+
+问题：
+
+- Popover 气泡卡片 没有三角标识
+- Popconfirm 气泡确认框 三角标识样式改一下，然后下方和右侧的时候没有三角(或者位置不对导致被挡住了？)
+- Trigger 触发器 没有三角标识
+- table 头里的排序三角，上下间隔有点大导致头部被撑高了，优化一下两者之间的垂直间隔，被你改的太小了，并且也没和标题垂直居中
+- Code 代码:去掉行号逻辑和高亮行逻辑
+- Timeline 时间线：连接线条线不见了
+- Tree 树形控件：好像还没实现，或者有问题
+- VirtualTree 虚拟树：箭头颜色改一下（亮色主题下，纯黑色太突兀了）
+- Calendar 日历：带事件标记：鼠标放到带事件的格子上时，使用 tooltip 展示事件列表及其对应简介(注意下 tooltip 样式)
+- Cascader 级联选择器: 多选模式下，选中一个后就关闭了并且也没有回显
+- TimePicker 时间选择器：在选择时分秒的时候不要关闭下拉框(需要点击确认才关闭，不然不符合实际应用场景，我选完了时，肯定还要继续选择分和秒)
+- TimeSelect 时间选择：下拉框闪现，并且位置计算不对
+- DateTimePicker 日期时间选择器：下拉框被 ui-demo 挡住了
+- Select 选择器:多选模式下，不应该选完一个就关闭下拉框
+- ColorPicker 颜色选择器:自定义预设颜色 下面的预设颜色圆圈点击没反应
+- Alert 警告提示：需要支持能通过 useAlert 方式使用
+- Dialog 对话框：需要支持能通过 useDialog 方式使用
+- Drawer: Extraneous non-props attributes (modelValue) were passed to component but could not be automatically inherited because component renders fragment or text or teleport root nodes.
+- Spin 加载中: 基础用法,不同尺寸，样式代码缺失
+- Anchor 锚点 有问题，我滚动没效果
+- Dropdown 下拉菜单：审查下代码，为啥默认都展开了，并且我点击触发器没展开也没收起
+- Menu 菜单：左边贴着边界了，水平需要有个间距(要支持配置)
+- tabs 标签页：切换的时候加个动画效果，被你改出问题了 <transition> can only be used on a single element or component. Use <transition-group> for lists.
+- Steps 步骤条：1. 太丑了，2. 没有连接线
+
+检查并更新 @issues.md 继续修复还未修复的问题，重构 issues.md 只需要保存问题是否已经解决与否就行，使用 `- [ ]` 记录
 
 # UI
 

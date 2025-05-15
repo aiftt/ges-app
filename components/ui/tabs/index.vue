@@ -255,7 +255,9 @@ provide('tabs', {
 
     <!-- 内容区域 -->
     <div class="ui-tabs-content">
-      <slot />
+      <transition :name="transition">
+        <slot />
+      </transition>
     </div>
   </div>
 </template>
@@ -513,10 +515,61 @@ provide('tabs', {
 .ui-tabs-content {
   padding: 16px 0;
   flex: 1;
+  position: relative; /* 确保相对定位用于动画 */
 }
 
 .ui-tabs--left .ui-tabs-content,
 .ui-tabs--right .ui-tabs-content {
   padding: 0 16px;
+}
+
+/* 过渡动画样式 */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+.slide-fade-enter-active {
+  transition: all 0.3s ease-out;
+}
+
+.slide-fade-leave-active {
+  transition: all 0.2s cubic-bezier(1, 0.5, 0.8, 1);
+}
+
+.slide-fade-enter-from,
+.slide-fade-leave-to {
+  transform: translateX(10px);
+  opacity: 0;
+}
+
+.slide-up-enter-active {
+  transition: all 0.3s ease-out;
+}
+
+.slide-up-leave-active {
+  transition: all 0.2s cubic-bezier(1, 0.5, 0.8, 1);
+}
+
+.slide-up-enter-from,
+.slide-up-leave-to {
+  transform: translateY(10px);
+  opacity: 0;
+}
+
+.zoom-enter-active,
+.zoom-leave-active {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.zoom-enter-from,
+.zoom-leave-to {
+  opacity: 0;
+  transform: scale(0.95);
 }
 </style>

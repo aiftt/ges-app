@@ -93,6 +93,7 @@ import DemoMention from '~/components/demo/mention.vue'
 import DemoMenu from '~/components/demo/menu.vue'
 import DemoMessage from '~/components/demo/message.vue'
 import DemoModal from '~/components/demo/modal.vue'
+import DemoNotification from '~/components/demo/notification.vue'
 import DemoOverflowlist from '~/components/demo/overflowlist-demo.vue'
 import DemoPageHeader from '~/components/demo/pageheader.vue'
 import DemoPagination from '~/components/demo/pagination-demo.vue'
@@ -244,6 +245,7 @@ const groups = ref<IComponentGroup[]>([
       { name: 'drawer', label: 'Drawer 抽屉', component: markRaw(DemoDrawer) },
       { name: 'message', label: 'Message 消息提示', component: markRaw(DemoMessage) },
       { name: 'modal', label: 'Modal 模态框', component: markRaw(DemoModal) },
+      { name: 'notification', label: 'Notification 通知', component: markRaw(DemoNotification) },
       { name: 'progress', label: 'Progress 进度条', component: markRaw(DemoProgress) },
       { name: 'result', label: 'Result 结果', component: markRaw(DemoResult) },
       { name: 'skeleton', label: 'Skeleton 骨架屏', component: markRaw(DemoSkeleton) },
