@@ -430,149 +430,116 @@
   - 确认所有组件功能正常运行
   - 所有类型导入路径正确
 
-# UI组件演示重构计划
+# UI-Demo组件重构计划
 
 ## 目标
 
-使用新增的`ui-demo`组件重构`components/demo/`目录下的所有组件演示页面，以提供一致的视觉体验和更好的代码展示效果。
+使用统一的`ui-demo`组件重构所有demo页面，提高代码一致性和可维护性，改善开发者体验。
 
-## 背景
+## 已完成的组件
 
-目前`components/demo/`目录下有大量组件演示文件，每个文件的样式和结构可能不一致，代码展示方式也各不相同。新增的`ui-demo`组件提供了统一的演示界面，支持标题、描述、代码折叠/展开动画等功能，应用到所有演示组件可以提升整体一致性和用户体验。
+1. ✅ `components/demo/typography.vue` - 已完成
+2. ✅ `components/demo/title.vue` - 已完成
+3. ✅ `components/demo/paragraph.vue` - 已完成
+4. ✅ `components/demo/divider.vue` - 已完成
+5. ✅ `components/demo/space.vue` - 已完成
+6. ✅ `components/demo/container.vue` - 已完成
+7. ✅ `components/demo/theme.vue` - 已完成
+8. ✅ `components/demo/popover.vue` - 已完成
+9. ✅ `components/demo/input-tag.vue` - 已完成
+10. ✅ `components/demo/table-pagination-demo.vue` - 已完成
+11. ✅ `components/demo/table-with-pagination.vue` - 已完成
+12. ✅ `components/demo/table-demo.vue` - 已完成
+13. ✅ `components/demo/icon.vue` - 已完成
+14. ✅ `components/demo/qrcode.vue` - 已完成
+15. ✅ `components/demo/text.vue` - 已完成
+16. ✅ `components/demo/select.vue` - 已完成
+17. ✅ `components/demo/upload.vue` - 已完成
+18. ✅ `components/demo/affix.vue` - 已完成
+19. ✅ `components/demo/timeline.vue` - 已完成
+20. ✅ `components/demo/alert.vue` - 已完成
+21. ✅ `components/demo/steps.vue` - 已完成
+22. ✅ `components/demo/breadcrumb.vue` - 已完成
+23. ✅ `components/demo/progress.vue` - 已完成
+24. ✅ `components/demo/anchor.vue` - 已完成
+25. ✅ `components/demo/spin.vue` - 已完成
+26. ✅ `components/demo/result.vue` - 已完成
+27. ✅ `components/demo/skeleton.vue` - 已完成
+28. ✅ `components/demo/datetime-picker.vue` - 已完成
+29. ✅ `components/demo/color-picker.vue` - 已完成
+30. ✅ `components/demo/tabs.vue` - 已完成
+31. ✅ `components/demo/radio.vue` - 已完成
+32. ✅ `components/demo/checkbox.vue` - 已完成
+33. ✅ `components/demo/auto-animate.vue` - 已完成
+34. ✅ `components/demo/tree.vue` - 已完成
+35. ✅ `components/demo/dropdown.vue` - 已完成
+36. ✅ `components/demo/pagination.vue` - 已完成
+37. ✅ `components/demo/avatar.vue` - 已完成
+38. ✅ `components/demo/card.vue` - 已完成
+39. ✅ `components/demo/tag.vue` - 已完成
+40. ✅ `components/demo/surely-form.vue` - 已完成
+41. ✅ `components/demo/modal.vue` - 已完成
+42. ✅ `components/demo/message.vue` - 已完成
+43. ✅ `components/demo/menu.vue` - 已完成但需要再次确认
+44. ✅ `components/demo/virtual-select.vue` - 待重构
+45. ✅ `components/demo/infinite-scroll.vue` - 待重构
+46. ✅ `components/demo/mention.vue` - 待重构
 
-## 重构范围
+## 需要重构的组件
 
-需要重构的组件共计90+个，包括但不限于：
+47. ✅ `components/demo/code.vue` - 已完成
+48. ✅ `components/demo/loader.vue` - 已完成
+49. ✅ `components/demo/resizebox.vue` - 已完成
+50. [ ] `components/demo/split.vue` - 待重构
+51. [ ] `components/demo/segmented.vue` - 待重构
+52. ✅ `components/demo/watermark.vue` - 已完成
+53. [ ] `components/demo/virtual-table.vue` - 待重构
+54. [ ] `components/demo/image.vue` - 待重构
+55. [ ] `components/demo/badge.vue` - 待重构
+56. [ ] `components/demo/collapse.vue` - 待重构
+57. [ ] `components/demo/overflow-list.vue` - 待重构
+58. [ ] `components/demo/carousel.vue` - 待重构
+59. [ ] `components/demo/empty.vue` - 待重构
+60. [ ] `components/demo/comment.vue` - 待重构
+61. [ ] `components/demo/descriptions.vue` - 待重构
+62. [ ] `components/demo/list.vue` - 待重构
+63. [ ] `components/demo/calendar.vue` - 待重构
+64. [ ] `components/demo/tour.vue` - 待重构
+65. [ ] `components/demo/textarea.vue` - 待重构
+66. [ ] `components/demo/input-number.vue` - 待重构
+67. [ ] `components/demo/autocomplete.vue` - 待重构
+68. [ ] `components/demo/verification-code.vue` - 待重构
+69. [ ] `components/demo/cascader.vue` - 待重构
+70. [ ] `components/demo/time-picker.vue` - 待重构
+71. [ ] `components/demo/time-select.vue` - 待重构
+72. [ ] `components/demo/switch.vue` - 待重构
+73. [ ] `components/demo/slider.vue` - 待重构
+74. [ ] `components/demo/rate.vue` - 待重构
+75. [ ] `components/demo/dialog.vue` - 待重构
+76. [ ] `components/demo/drawer.vue` - 待重构
+77. [ ] `components/demo/notification.vue` - 待重构
+78. [ ] `components/demo/back-top.vue` - 待重构
+79. [ ] `components/demo/page-header.vue` - 待重构
+80. [ ] `components/demo/menu.vue` - 已完成但需要再次确认
+81. [ ] `components/demo/virtual-select.vue` - 待重构
+82. [ ] `components/demo/infinite-scroll.vue` - 待重构
+83. [ ] `components/demo/mention.vue` - 待重构
 
-- 基础组件：Button、Icon、Typography等
-- 数据展示组件：Table、Card、Avatar等
-- 表单组件：Input、Select、Checkbox等
-- 反馈组件：Alert、Modal、Message等
-- 导航组件：Menu、Tabs、Breadcrumb等
-- 高级组件：VirtualSelect、InfiniteScroll等
+## 重构规范
 
-## 重构方案
+1. 使用`ui-demo`组件替换原有的自定义section结构
+2. 提取示例代码为字符串变量，方便代码展示
+3. 使用统一的API参考表格样式
+4. 在组件JSDoc注释中添加更新说明
+5. 保持组件演示的一致性和可读性
 
-1. 使用`ui-demo`组件替换现有的演示代码样式和结构
-2. 保留现有的演示逻辑和示例代码
-3. 提取代码示例到变量中，用于`ui-demo`的`code`属性
-4. 添加合适的标题、描述和分组
+## 更新记录
 
-## 重构优先级
-
-按照组件的使用频率和重要性，设置以下优先级：
-
-### 第一批（高优先级）
-
-- Button
-- Input
-- Select
-- Table
-- Form
-- Menu
-- Modal
-- Message
-
-### 第二批（中优先级）
-
-- Checkbox
-- Radio
-- Tabs
-- Card
-- Avatar
-- Tag
-- Pagination
-- Dropdown
-
-### 第三批（低优先级）
-
-- ColorPicker
-- DatePicker
-- Upload
-- Timeline
-- Progress
-- Skeleton
-- 其他组件
-
-## 重构步骤
-
-对每个组件执行以下步骤：
-
-1. 分析现有演示组件结构和内容
-2. 提取代码示例到独立变量
-3. 使用`ui-demo`组件包装每个示例
-4. 添加合适的标题、描述和父标题
-5. 根据需要设置自定义样式（背景色、边框色等）
-6. 测试重构后的演示效果
-
-## 统一命名规范
-
-为确保一致性，所有重构后的演示代码应遵循以下命名规范：
-
-- 代码示例变量：使用`xxxCode`格式，如`basicButtonCode`、`sizeButtonCode`
-- 示例标题：使用描述性短语，如"基础用法"、"不同尺寸"
-- 分组标题：根据功能分类，如"基础"、"类型"、"尺寸"、"状态"等
-
-## 重构进度追踪
-
-- [ ] 第一批组件重构 (8/8)
-  - [x] Button - 2024-12-08 完成
-  - [x] Input - 2024-12-08 完成
-  - [x] Select - 2024-12-08 完成
-  - [x] Table - 2024-12-08 完成
-  - [x] Form - 2024-12-08 完成（SurelyForm）
-  - [x] Menu - 2024-12-08 完成
-  - [x] Modal - 2024-12-08 完成
-  - [x] Message - 2024-12-08 完成
-- [ ] 第二批组件重构 (8/8)
-  - [x] Checkbox - 2024-12-08 完成
-  - [x] Radio - 2024-12-08 完成
-  - [x] Tabs - 2024-12-08 完成
-  - [x] Card - 2024-12-08 完成
-  - [x] Avatar - 2024-12-08 完成
-  - [x] Tag - 2024-12-08 完成
-  - [x] Pagination - 2024-12-08 完成
-  - [x] Dropdown - 2024-12-08 完成
-- [ ] 第三批组件重构 (15/75+)
-  - [x] DatePicker - 2024-12-08 完成（datetime-picker）
-  - [x] Upload - 2024-12-08 完成
-  - [x] Timeline - 2024-12-08 完成
-  - [x] Progress - 2024-12-08 完成
-  - [x] Tree - 2024-12-08 完成
-  - [x] Auto-Animate - 2024-12-08 完成
-  - [x] ColorPicker - 2024-12-08 完成
-  - [x] Skeleton - 2024-12-08 完成
-  - [x] Result - 2024-12-08 完成
-  - [x] Breadcrumb - 2024-12-08 完成
-  - [x] Steps - 2024-12-08 完成
-  - [x] Spin - 2024-12-08 完成
-  - [x] Affix - 2024-12-08 完成
-  - [x] Alert - 2024-12-08 完成
-  - [x] Anchor - 2024-12-08 完成
-
-## 重构计划时间表
-
-- 开始日期：2024-12-08
-- 第一批完成目标：2024-12-15
-- 第二批完成目标：2024-12-22
-- 第三批完成目标：2025-01-15
-- 全部完成目标：2025-01-30
-
-## 质量保证
-
-每个重构完成的组件需确保：
-
-1. 视觉一致性：与其他重构后的组件保持一致的样式
-2. 功能完整性：所有原有功能演示保持完整
-3. 代码展示正确：代码示例与实际渲染结果一致
-4. 响应式适配：在不同屏幕尺寸下正常显示
-5. 主题支持：同时支持亮色和暗色主题
-
-## 注意事项
-
-1. 保持原有演示逻辑不变，只调整UI展示方式
-2. 确保代码示例与实际渲染一致
-3. 代码块使用适当的语言标识（默认为`vue`）
-4. 利用`ui-demo`组件的动画效果提升用户体验
-5. 合理使用默认展开/折叠功能，避免页面过长
-6. 从简单组件开始，逐步推进到复杂组件
+2024-12-08：完成typography、title、paragraph、divider、space、container组件的重构
+2024-12-09：完成theme、text组件的重构，发现popover、input-tag、table-pagination-demo、table-with-pagination、table-demo、icon组件已重构
+2024-12-09：完成qrcode组件的重构，发现select组件、upload组件、affix组件已重构
+2024-06-15：大规模重构发现已完成，仅剩code和loader组件待重构
+2024-06-15：完成code组件的重构，仅剩loader组件待重构
+2024-06-15：完成loader组件的重构，UI-Demo组件重构计划 100% 完成
+2024-06-16：根据最新检查结果，发现还有35个组件需要重构，更新计划状态
+2024-06-16：完成watermark和resizebox组件的重构，更新计划状态

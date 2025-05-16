@@ -1,8 +1,9 @@
-<script setup lang="ts">
+<script setup lang="ts" name="DemoQrcode">
 /**
  * QRCode组件演示
  * 创建日期: 2023-12-01
  * 作者: aiftt
+ * 更新日期: 2024-12-09 - 使用ui-demo组件重构演示页面
  */
 import { ref } from 'vue'
 
@@ -65,6 +66,121 @@ function updateCustomValue() {
     customQrValue.value = customValue.value
   }
 }
+
+// 示例代码字符串
+const basicQrcodeCode = `<ui-qrcode value="https://github.com/" />`
+
+const sizeQrcodeCode = `<ui-qrcode
+  value="https://github.com/"
+  :size="200"
+  error-correction-level="H"
+/>`
+
+const colorQrcodeCode = `<ui-qrcode
+  value="https://github.com/"
+  color="#1677ff"
+  background-color="#f0f9ff"
+/>`
+
+const logoQrcodeCode = `<ui-qrcode
+  value="https://github.com/"
+  logo="/path/to/logo.png"
+  :logo-size="0.2"
+  error-correction-level="H"
+/>`
+
+const renderQrcodeCode = `<ui-qrcode
+  value="https://github.com/"
+  render-as="svg"
+  :size="150"
+/>`
+
+const customQrcodeCode = `<template>
+  <div class="flex flex-col items-center gap-4 md:flex-row">
+    <div class="w-full md:w-1/2">
+      <label class="mb-1 block text-sm font-medium">输入自定义内容</label>
+      <div class="flex">
+        <input
+          v-model="customValue"
+          type="text"
+          class="w-full border rounded-l p-2"
+          placeholder="输入网址、文本或其他内容"
+        >
+        <button
+          class="rounded-r bg-blue-500 px-4 py-2 text-white"
+          @click="updateCustomValue"
+        >
+          生成
+        </button>
+      </div>
+    </div>
+
+    <div class="flex flex-col items-center">
+      <ui-qrcode
+        :value="customQrValue"
+        render-as="canvas"
+        error-correction-level="H"
+        :size="150"
+        :rounded="true"
+        class-name="shadow-lg"
+      />
+      <div class="mt-2 text-sm text-gray-500">
+        {{ customQrValue }}
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup>
+import { ref } from 'vue'
+
+const customValue = ref('')
+const customQrValue = ref('https://nuxt.com')
+
+// 更新自定义二维码内容
+function updateCustomValue() {
+  if (customValue.value.trim()) {
+    customQrValue.value = customValue.value
+  }
+}
+<\/script>`
+
+const variantsQrCodeCode = `<!-- 基础二维码 -->
+<ui-qrcode
+  value="https://github.com/"
+  :size="150"
+  error-correction-level="M"
+/>
+
+<!-- 带Logo二维码 -->
+<ui-qrcode
+  value="https://github.com/"
+  :size="150"
+  error-correction-level="H"
+  logo="/nuxt.svg"
+/>
+
+<!-- 彩色二维码 -->
+<ui-qrcode
+  value="https://github.com/"
+  :size="150"
+  color="#1677ff"
+  background-color="#f0f9ff"
+/>`
+
+const configurationCode = `<ui-qrcode
+  :value="qrValue"
+  :size="qrSize"
+  :color="qrColor"
+  :background-color="qrBackgroundColor"
+  :margin="qrMargin"
+  :error-correction-level="qrErrorLevel"
+  :render-as="qrRenderAs"
+  :logo="qrLogo"
+  :logo-size="qrLogoSize"
+  :rounded="qrRounded"
+  class-name="shadow-lg"
+/>`
 </script>
 
 <template>
@@ -72,212 +188,222 @@ function updateCustomValue() {
     <h1 class="mb-6 text-2xl font-bold">
       QRCode 二维码组件
     </h1>
+    <p class="mb-8 text-gray-500 dark:text-gray-400">
+      用于生成二维码的组件，支持自定义尺寸、颜色、边距、Logo等功能。
+    </p>
 
-    <div class="flex flex-col gap-8 md:flex-row">
-      <!-- 二维码预览区 -->
-      <div class="flex flex-1 flex-col items-center rounded-lg bg-gray-50 p-6 dark:bg-gray-800">
-        <h2 class="mb-4 text-xl font-bold">
-          预览
-        </h2>
+    <!-- 交互式配置器 -->
+    <ui-demo
+      title="交互式配置器"
+      description="通过调整各种参数实时预览二维码效果。"
+      :code="configurationCode"
+    >
+      <div class="flex flex-col gap-8 md:flex-row">
+        <!-- 二维码预览区 -->
+        <div class="flex flex-1 flex-col items-center rounded-lg bg-gray-50 p-6 dark:bg-gray-800">
+          <h2 class="mb-4 text-xl font-bold">
+            预览
+          </h2>
 
-        <div class="flex flex-col items-center gap-4">
-          <ui-qrcode
-            :value="qrValue"
-            :size="qrSize"
-            :color="qrColor"
-            :background-color="qrBackgroundColor"
-            :margin="qrMargin"
-            :error-correction-level="qrErrorLevel"
-            :render-as="qrRenderAs"
-            :logo="qrLogo"
-            :logo-size="qrLogoSize"
-            :rounded="qrRounded"
-            class-name="shadow-lg"
-          />
+          <div class="flex flex-col items-center gap-4">
+            <ui-qrcode
+              :value="qrValue"
+              :size="qrSize"
+              :color="qrColor"
+              :background-color="qrBackgroundColor"
+              :margin="qrMargin"
+              :error-correction-level="qrErrorLevel"
+              :render-as="qrRenderAs"
+              :logo="qrLogo"
+              :logo-size="qrLogoSize"
+              :rounded="qrRounded"
+              class-name="shadow-lg"
+            />
 
-          <div class="mt-2 text-sm text-gray-500 dark:text-gray-400">
-            {{ qrValue }}
+            <div class="mt-2 text-sm text-gray-500 dark:text-gray-400">
+              {{ qrValue }}
+            </div>
           </div>
         </div>
-      </div>
 
-      <!-- 控制面板 -->
-      <div class="flex-1">
-        <h2 class="mb-4 text-xl font-bold">
-          配置选项
-        </h2>
+        <!-- 控制面板 -->
+        <div class="flex-1">
+          <h2 class="mb-4 text-xl font-bold">
+            配置选项
+          </h2>
 
-        <div class="space-y-4">
-          <!-- 内容 -->
-          <div class="form-group">
-            <label class="mb-1 block text-sm font-medium">内容</label>
-            <input
-              v-model="qrValue"
-              type="text"
-              class="w-full border rounded p-2 dark:border-gray-600 dark:bg-gray-700"
-              placeholder="输入要编码的内容"
-            >
-          </div>
-
-          <!-- 尺寸 -->
-          <div class="form-group">
-            <label class="mb-1 block text-sm font-medium">尺寸: {{ qrSize }}px</label>
-            <input
-              v-model="qrSize"
-              type="range"
-              min="100"
-              max="400"
-              step="10"
-              class="w-full"
-            >
-          </div>
-
-          <!-- 渲染方式 -->
-          <div class="form-group">
-            <label class="mb-1 block text-sm font-medium">渲染方式</label>
-            <div class="flex gap-2">
-              <button
-                v-for="option in renderOptions"
-                :key="option"
-                class="border rounded px-3 py-1" :class="[
-                  qrRenderAs === option
-                    ? 'bg-blue-500 text-white border-blue-500'
-                    : 'bg-white dark:bg-gray-700 dark:border-gray-600',
-                ]"
-                @click="qrRenderAs = option"
-              >
-                {{ option }}
-              </button>
-            </div>
-          </div>
-
-          <!-- 校正级别 -->
-          <div class="form-group">
-            <label class="mb-1 block text-sm font-medium">校正级别</label>
-            <div class="flex gap-2">
-              <button
-                v-for="option in errorLevelOptions"
-                :key="option"
-                class="border rounded px-3 py-1" :class="[
-                  qrErrorLevel === option
-                    ? 'bg-blue-500 text-white border-blue-500'
-                    : 'bg-white dark:bg-gray-700 dark:border-gray-600',
-                ]"
-                @click="qrErrorLevel = option"
-              >
-                {{ option }}
-              </button>
-            </div>
-            <div class="mt-1 text-xs text-gray-500">
-              L:低(7%) M:中(15%) Q:高(25%) H:最高(30%)
-            </div>
-          </div>
-
-          <!-- 边距 -->
-          <div class="form-group">
-            <label class="mb-1 block text-sm font-medium">边距: {{ qrMargin }}</label>
-            <input
-              v-model="qrMargin"
-              type="range"
-              min="0"
-              max="10"
-              class="w-full"
-            >
-          </div>
-
-          <!-- 颜色主题 -->
-          <div class="form-group">
-            <label class="mb-1 block text-sm font-medium">颜色主题</label>
-            <div class="flex flex-wrap gap-2">
-              <button
-                v-for="(preset, index) in colorPresets"
-                :key="index"
-                class="flex flex-col items-center border rounded p-2"
-                @click="applyColorPreset(preset)"
-              >
-                <div
-                  class="mb-1 h-10 w-10 rounded"
-                  :style="{ backgroundColor: preset.bg, border: `1px solid ${preset.color}` }"
-                >
-                  <div class="m-auto mt-1 h-6 w-6" :style="{ backgroundColor: preset.color }" />
-                </div>
-                <span class="text-xs">{{ preset.name }}</span>
-              </button>
-            </div>
-          </div>
-
-          <!-- 自定义颜色 -->
-          <div class="form-group grid grid-cols-1 gap-4 md:grid-cols-2">
-            <div>
-              <label class="mb-1 block text-sm font-medium">前景色</label>
-              <div class="flex items-center">
-                <input
-                  v-model="qrColor"
-                  type="color"
-                  class="h-8 w-8 border-0 p-0"
-                >
-                <input
-                  v-model="qrColor"
-                  type="text"
-                  class="ml-2 flex-1 border rounded p-2 dark:border-gray-600 dark:bg-gray-700"
-                >
-              </div>
-            </div>
-            <div>
-              <label class="mb-1 block text-sm font-medium">背景色</label>
-              <div class="flex items-center">
-                <input
-                  v-model="qrBackgroundColor"
-                  type="color"
-                  class="h-8 w-8 border-0 p-0"
-                >
-                <input
-                  v-model="qrBackgroundColor"
-                  type="text"
-                  class="ml-2 flex-1 border rounded p-2 dark:border-gray-600 dark:bg-gray-700"
-                >
-              </div>
-            </div>
-          </div>
-
-          <!-- Logo设置 -->
-          <div class="form-group">
-            <div class="flex items-center">
-              <label class="text-sm font-medium">Logo</label>
-              <div class="ml-2">
-                <input v-model="qrLogo" type="checkbox" value="/nuxt.svg" false-value="">
-              </div>
-            </div>
-            <div v-if="qrLogo" class="mt-2">
-              <label class="block text-sm font-medium">Logo大小: {{ Math.round(qrLogoSize * 100) }}%</label>
+          <div class="space-y-4">
+            <!-- 内容 -->
+            <div class="form-group">
+              <label class="mb-1 block text-sm font-medium">内容</label>
               <input
-                v-model="qrLogoSize"
+                v-model="qrValue"
+                type="text"
+                class="w-full border rounded p-2 dark:border-gray-600 dark:bg-gray-700"
+                placeholder="输入要编码的内容"
+              >
+            </div>
+
+            <!-- 尺寸 -->
+            <div class="form-group">
+              <label class="mb-1 block text-sm font-medium">尺寸: {{ qrSize }}px</label>
+              <input
+                v-model="qrSize"
                 type="range"
-                min="0.1"
-                max="0.3"
-                step="0.01"
+                min="100"
+                max="400"
+                step="10"
                 class="w-full"
               >
             </div>
-          </div>
 
-          <!-- 圆角设置 -->
-          <div class="form-group flex items-center">
-            <label class="text-sm font-medium">圆角</label>
-            <div class="ml-2">
-              <input v-model="qrRounded" type="checkbox">
+            <!-- 渲染方式 -->
+            <div class="form-group">
+              <label class="mb-1 block text-sm font-medium">渲染方式</label>
+              <div class="flex gap-2">
+                <button
+                  v-for="option in renderOptions"
+                  :key="option"
+                  class="border rounded px-3 py-1" :class="[
+                    qrRenderAs === option
+                      ? 'bg-blue-500 text-white border-blue-500'
+                      : 'bg-white dark:bg-gray-700 dark:border-gray-600',
+                  ]"
+                  @click="qrRenderAs = option"
+                >
+                  {{ option }}
+                </button>
+              </div>
+            </div>
+
+            <!-- 校正级别 -->
+            <div class="form-group">
+              <label class="mb-1 block text-sm font-medium">校正级别</label>
+              <div class="flex gap-2">
+                <button
+                  v-for="option in errorLevelOptions"
+                  :key="option"
+                  class="border rounded px-3 py-1" :class="[
+                    qrErrorLevel === option
+                      ? 'bg-blue-500 text-white border-blue-500'
+                      : 'bg-white dark:bg-gray-700 dark:border-gray-600',
+                  ]"
+                  @click="qrErrorLevel = option"
+                >
+                  {{ option }}
+                </button>
+              </div>
+              <div class="mt-1 text-xs text-gray-500">
+                L:低(7%) M:中(15%) Q:高(25%) H:最高(30%)
+              </div>
+            </div>
+
+            <!-- 边距 -->
+            <div class="form-group">
+              <label class="mb-1 block text-sm font-medium">边距: {{ qrMargin }}</label>
+              <input
+                v-model="qrMargin"
+                type="range"
+                min="0"
+                max="10"
+                class="w-full"
+              >
+            </div>
+
+            <!-- 颜色主题 -->
+            <div class="form-group">
+              <label class="mb-1 block text-sm font-medium">颜色主题</label>
+              <div class="flex flex-wrap gap-2">
+                <button
+                  v-for="(preset, index) in colorPresets"
+                  :key="index"
+                  class="flex flex-col items-center border rounded p-2"
+                  @click="applyColorPreset(preset)"
+                >
+                  <div
+                    class="mb-1 h-10 w-10 rounded"
+                    :style="{ backgroundColor: preset.bg, border: `1px solid ${preset.color}` }"
+                  >
+                    <div class="m-auto mt-1 h-6 w-6" :style="{ backgroundColor: preset.color }" />
+                  </div>
+                  <span class="text-xs">{{ preset.name }}</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- 自定义颜色 -->
+            <div class="form-group grid grid-cols-1 gap-4 md:grid-cols-2">
+              <div>
+                <label class="mb-1 block text-sm font-medium">前景色</label>
+                <div class="flex items-center">
+                  <input
+                    v-model="qrColor"
+                    type="color"
+                    class="h-8 w-8 border-0 p-0"
+                  >
+                  <input
+                    v-model="qrColor"
+                    type="text"
+                    class="ml-2 flex-1 border rounded p-2 dark:border-gray-600 dark:bg-gray-700"
+                  >
+                </div>
+              </div>
+              <div>
+                <label class="mb-1 block text-sm font-medium">背景色</label>
+                <div class="flex items-center">
+                  <input
+                    v-model="qrBackgroundColor"
+                    type="color"
+                    class="h-8 w-8 border-0 p-0"
+                  >
+                  <input
+                    v-model="qrBackgroundColor"
+                    type="text"
+                    class="ml-2 flex-1 border rounded p-2 dark:border-gray-600 dark:bg-gray-700"
+                  >
+                </div>
+              </div>
+            </div>
+
+            <!-- Logo设置 -->
+            <div class="form-group">
+              <div class="flex items-center">
+                <label class="text-sm font-medium">Logo</label>
+                <div class="ml-2">
+                  <input v-model="qrLogo" type="checkbox" value="/nuxt.svg" false-value="">
+                </div>
+              </div>
+              <div v-if="qrLogo" class="mt-2">
+                <label class="block text-sm font-medium">Logo大小: {{ Math.round(qrLogoSize * 100) }}%</label>
+                <input
+                  v-model="qrLogoSize"
+                  type="range"
+                  min="0.1"
+                  max="0.3"
+                  step="0.01"
+                  class="w-full"
+                >
+              </div>
+            </div>
+
+            <!-- 圆角设置 -->
+            <div class="form-group flex items-center">
+              <label class="text-sm font-medium">圆角</label>
+              <div class="ml-2">
+                <input v-model="qrRounded" type="checkbox">
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </ui-demo>
 
     <!-- 自定义内容示例 -->
-    <div class="mt-12">
-      <h2 class="mb-4 text-xl font-bold">
-        自定义内容示例
-      </h2>
-
+    <ui-demo
+      title="自定义内容示例"
+      description="用户可以输入自定义内容生成二维码。"
+      :code="customQrcodeCode"
+    >
       <div class="rounded-lg bg-gray-50 p-6 dark:bg-gray-800">
         <div class="flex flex-col items-center gap-4 md:flex-row">
           <div class="w-full md:w-1/2">
@@ -313,14 +439,14 @@ function updateCustomValue() {
           </div>
         </div>
       </div>
-    </div>
+    </ui-demo>
 
     <!-- 多种用例示例 -->
-    <div class="mt-12">
-      <h2 class="mb-4 text-xl font-bold">
-        多种用例示例
-      </h2>
-
+    <ui-demo
+      title="多种用例示例"
+      description="展示了不同场景下二维码的使用方式。"
+      :code="variantsQrCodeCode"
+    >
       <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
         <!-- 示例1: 基础二维码 -->
         <div class="flex flex-col items-center rounded-lg bg-gray-50 p-4 dark:bg-gray-800">
@@ -369,51 +495,99 @@ function updateCustomValue() {
           </p>
         </div>
       </div>
-    </div>
+    </ui-demo>
 
-    <!-- 代码示例 -->
-    <div class="mt-12">
-      <h2 class="mb-4 text-xl font-bold">
-        使用代码示例
-      </h2>
-
-      <div class="overflow-auto rounded-lg bg-gray-800 p-4 text-gray-100">
-        <pre><code>// 基础用法
-&lt;ui-qrcode value="https://github.com/" /&gt;
-
-// 自定义尺寸和校正级别
-&lt;ui-qrcode
-  value="https://github.com/"
-  :size="200"
-  error-correction-level="H"
-/&gt;
-
-// 自定义颜色
-&lt;ui-qrcode
-  value="https://github.com/"
-  color="#1677ff"
-  background-color="#f0f9ff"
-/&gt;
-
-// 带Logo
-&lt;ui-qrcode
-  value="https://github.com/"
-  logo="/path/to/logo.png"
-  :logo-size="0.2"
-  error-correction-level="H"
-/&gt;
-
-// 指定渲染方式
-&lt;ui-qrcode
-  value="https://github.com/"
-  render-as="svg"
-  :size="150"
-/&gt;</code></pre>
+    <!-- 基础用法示例 -->
+    <ui-demo
+      title="基础用法示例"
+      description="展示了QRCode组件的基础用法示例。"
+      :code="basicQrcodeCode"
+    >
+      <div class="flex flex-col items-center">
+        <ui-qrcode value="https://github.com/" />
+        <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
+          最简单的用法，只需要传入value属性
+        </p>
       </div>
-    </div>
+    </ui-demo>
+
+    <!-- 自定义尺寸和校正级别 -->
+    <ui-demo
+      title="自定义尺寸和校正级别"
+      description="可以设置二维码的尺寸和容错级别。"
+      :code="sizeQrcodeCode"
+    >
+      <div class="flex flex-col items-center">
+        <ui-qrcode
+          value="https://github.com/"
+          :size="200"
+          error-correction-level="H"
+        />
+        <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
+          设置尺寸为200px，校正级别为H（最高）
+        </p>
+      </div>
+    </ui-demo>
+
+    <!-- 自定义颜色 -->
+    <ui-demo
+      title="自定义颜色"
+      description="可以设置二维码的前景色和背景色。"
+      :code="colorQrcodeCode"
+    >
+      <div class="flex flex-col items-center">
+        <ui-qrcode
+          value="https://github.com/"
+          color="#1677ff"
+          background-color="#f0f9ff"
+        />
+        <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
+          自定义前景色为蓝色，背景色为淡蓝色
+        </p>
+      </div>
+    </ui-demo>
+
+    <!-- 带Logo示例 -->
+    <ui-demo
+      title="带Logo示例"
+      description="在二维码中心添加Logo图片，并设置Logo尺寸。"
+      :code="logoQrcodeCode"
+    >
+      <div class="flex flex-col items-center">
+        <ui-qrcode
+          value="https://github.com/"
+          logo="/nuxt.svg"
+          :logo-size="0.2"
+          error-correction-level="H"
+        />
+        <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
+          添加Logo时建议使用较高的校正级别
+        </p>
+      </div>
+    </ui-demo>
+
+    <!-- 不同渲染方式 -->
+    <ui-demo
+      title="不同渲染方式"
+      description="二维码支持canvas、svg和img三种渲染方式。"
+      :code="renderQrcodeCode"
+    >
+      <div class="flex flex-wrap justify-center gap-8">
+        <div v-for="render in renderOptions" :key="render" class="flex flex-col items-center">
+          <ui-qrcode
+            value="https://github.com/"
+            :render-as="render"
+            :size="150"
+          />
+          <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
+            {{ render }} 渲染
+          </p>
+        </div>
+      </div>
+    </ui-demo>
 
     <!-- 组件属性说明 -->
-    <div class="mt-12">
+    <div class="mt-12 border border-gray-200 rounded-lg bg-white p-6 dark:border-gray-700 dark:bg-gray-800">
       <h2 class="mb-4 text-xl font-bold">
         组件属性
       </h2>
@@ -501,7 +675,7 @@ function updateCustomValue() {
                 number
               </td>
               <td class="border-b px-4 py-2 dark:border-gray-700">
-                0
+                4
               </td>
               <td class="border-b px-4 py-2 dark:border-gray-700">
                 二维码边距
@@ -512,13 +686,13 @@ function updateCustomValue() {
                 errorCorrectionLevel
               </td>
               <td class="border-b px-4 py-2 dark:border-gray-700">
-                string
+                'L' | 'M' | 'Q' | 'H'
               </td>
               <td class="border-b px-4 py-2 dark:border-gray-700">
-                M
+                'M'
               </td>
               <td class="border-b px-4 py-2 dark:border-gray-700">
-                校正级别，可选：L(7%), M(15%), Q(25%), H(30%)
+                容错级别（L:7%, M:15%, Q:25%, H:30%）
               </td>
             </tr>
             <tr>
@@ -526,27 +700,13 @@ function updateCustomValue() {
                 renderAs
               </td>
               <td class="border-b px-4 py-2 dark:border-gray-700">
-                string
+                'canvas' | 'svg' | 'img'
               </td>
               <td class="border-b px-4 py-2 dark:border-gray-700">
-                canvas
+                'canvas'
               </td>
               <td class="border-b px-4 py-2 dark:border-gray-700">
-                渲染方式，可选：canvas, svg, img
-              </td>
-            </tr>
-            <tr>
-              <td class="border-b px-4 py-2 dark:border-gray-700">
-                className
-              </td>
-              <td class="border-b px-4 py-2 dark:border-gray-700">
-                string
-              </td>
-              <td class="border-b px-4 py-2 dark:border-gray-700">
-                ''
-              </td>
-              <td class="border-b px-4 py-2 dark:border-gray-700">
-                自定义类名
+                渲染方式
               </td>
             </tr>
             <tr>
@@ -557,10 +717,10 @@ function updateCustomValue() {
                 string
               </td>
               <td class="border-b px-4 py-2 dark:border-gray-700">
-                -
+                ''
               </td>
               <td class="border-b px-4 py-2 dark:border-gray-700">
-                中间logo图片地址
+                中心Logo图片的URL
               </td>
             </tr>
             <tr>
@@ -574,7 +734,7 @@ function updateCustomValue() {
                 0.2
               </td>
               <td class="border-b px-4 py-2 dark:border-gray-700">
-                logo尺寸比例(0-1)
+                Logo尺寸占二维码尺寸的比例
               </td>
             </tr>
             <tr>
@@ -588,7 +748,21 @@ function updateCustomValue() {
                 false
               </td>
               <td class="border-b px-4 py-2 dark:border-gray-700">
-                是否使用圆角
+                是否使用圆角样式
+              </td>
+            </tr>
+            <tr>
+              <td class="border-b px-4 py-2 dark:border-gray-700">
+                className
+              </td>
+              <td class="border-b px-4 py-2 dark:border-gray-700">
+                string
+              </td>
+              <td class="border-b px-4 py-2 dark:border-gray-700">
+                ''
+              </td>
+              <td class="border-b px-4 py-2 dark:border-gray-700">
+                附加到根元素的CSS类名
               </td>
             </tr>
           </tbody>

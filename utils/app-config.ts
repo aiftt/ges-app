@@ -24,4 +24,7 @@ export const PUBLIC_PATHS = [
   // '/api/auth/validate-token',
   // 示例页面
   '/demo/components',
+  // 系统路径
+  '/.well-known',
+  '/_nuxt',
 ]
