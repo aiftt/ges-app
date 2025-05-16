@@ -439,8 +439,8 @@ const lineStyleCode = `<!-- 实线连接 -->
         <ui-tree
           :data="selectableTreeData"
           :selected-keys="selectedKeys"
-          selectable
-          highlight-current
+
+          selectable highlight-current
           @select="handleNodeSelect"
         />
         <div v-if="selectedNode" class="mt-4 rounded bg-gray-100 p-2 dark:bg-gray-700">

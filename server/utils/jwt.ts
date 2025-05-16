@@ -4,6 +4,7 @@
  * 作者: aiftt
  * 邮箱: ftt.loves@gmail.com
  */
+import type { Secret } from 'jsonwebtoken'
 import jwt from 'jsonwebtoken'
 import { useLogger } from '~/composables/useLogger'
 
@@ -16,7 +17,9 @@ interface IJwtPayload {
   iat?: number
 }
 
-const DEFAULT_EXPIRES_IN = '7d' // 默认7天过期
+type ExpiresIn = string | number
+
+const DEFAULT_EXPIRES_IN: ExpiresIn = '7d' // 默认7天过期
 
 /**
  * 生成JWT令牌
@@ -24,16 +27,17 @@ const DEFAULT_EXPIRES_IN = '7d' // 默认7天过期
  * @param expiresIn 过期时间
  * @returns JWT令牌
  */
-export function generateToken(payload: Omit<IJwtPayload, 'exp' | 'iat'>, expiresIn = DEFAULT_EXPIRES_IN): string {
+export function generateToken(payload: Omit<IJwtPayload, 'exp' | 'iat'>, expiresIn: ExpiresIn = DEFAULT_EXPIRES_IN): string {
   try {
     const runtimeConfig = useRuntimeConfig()
-    const secret = runtimeConfig.jwtSecret as string
+    const secret = runtimeConfig.jwtSecret as Secret
 
     if (!secret) {
       throw new Error('缺少JWT密钥配置')
     }
 
-    const token = jwt.sign(payload, secret, { expiresIn })
+    // jsonwebtoken的类型定义有问题，这里直接传入
+    const token = jwt.sign(payload, secret, { expiresIn: expiresIn as any })
     logger.debug('生成JWT令牌成功')
     return token
   }
@@ -54,7 +58,7 @@ export function generateToken(payload: Omit<IJwtPayload, 'exp' | 'iat'>, expires
 export function verifyToken(token: string): IJwtPayload | null {
   try {
     const runtimeConfig = useRuntimeConfig()
-    const secret = runtimeConfig.jwtSecret as string
+    const secret = runtimeConfig.jwtSecret as Secret
 
     if (!secret) {
       logger.warn('缺少JWT密钥配置')

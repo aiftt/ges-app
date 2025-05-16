@@ -106,7 +106,10 @@ const copyableTextCode = `<!-- 基础复制 -->
 </ui-text>
 
 <!-- 带复制回调 -->
-<ui-text :copyable="{ onCopy: () => alert('文本已复制!') }">
+<ui-text :copyable="{ onCopy: () => {
+  // 这里可以使用消息提示组件
+  console.log('文本已复制!');
+} }">
   复制后会触发回调函数
 </ui-text>`
 
@@ -119,7 +122,7 @@ const editorTextCode = `<!-- 可编辑文本 -->
 </ui-text>
 
 <!-- 带编辑回调 -->
-<ui-text :editable="{ onChange: value => console.log('编辑后的文本:', value) }">
+<ui-text :editable="{ onChange: (value: string) => console.log('编辑后的文本:', value) }">
   编辑后会触发回调函数
 </ui-text>
 
@@ -415,7 +418,7 @@ const combinedTextCode = `<!-- 组合多种样式 -->
         </div>
 
         <div>
-          <ui-text :copyable="{ onCopy: () => alert('文本已复制!') }">
+          <ui-text :copyable="{ onCopy: () => { console.log('文本已复制!'); } }">
             复制后会触发回调函数
           </ui-text>
         </div>
@@ -442,7 +445,7 @@ const combinedTextCode = `<!-- 组合多种样式 -->
         </div>
 
         <div>
-          <ui-text :editable="{ onChange: value => console.log('编辑后的文本:', value) }">
+          <ui-text :editable="{ onChange: (value: string) => console.log('编辑后的文本:', value) }">
             编辑后会触发回调函数
           </ui-text>
         </div>
