@@ -5,6 +5,7 @@
  * 作者: aiftt
  * 更新日期: 2024-01-05 - 修复垂直分割线渲染问题
  * 更新日期: 2024-09-14 - 使用集中管理的类型定义
+ * 更新日期: 2024-12-19 - 根据Element Plus完全重构组件实现
  *
  * 用于分隔内容的水平或垂直分割线
  */
@@ -31,23 +32,53 @@ const props = withDefaults(defineProps<{
    */
   position?: Alignment
   /**
-   * 是否虚线
-   * @deprecated 使用 type='dashed' 代替
-   */
-  dashed?: boolean
-  /**
    * 自定义类名
    */
   class?: string
   /**
-   * 自定义样式
+   * 分割线宽度
    */
-  style?: string
+  width?: string
+  /**
+   * 分割线外边距
+   */
+  margin?: string
 }>(), {
   direction: 'horizontal',
   type: 'solid',
   position: 'center',
-  dashed: false,
+})
+
+// 主题颜色映射
+const colorMap = {
+  primary: 'var(--ui-color-primary, #409eff)',
+  success: 'var(--ui-color-success, #67c23a)',
+  warning: 'var(--ui-color-warning, #e6a23c)',
+  danger: 'var(--ui-color-danger, #f56c6c)',
+  info: 'var(--ui-color-info, #909399)',
+}
+
+// 计算分割线样式
+const dividerStyle = computed(() => {
+  const style: Record<string, string> = {}
+
+  // 处理颜色
+  if (props.color) {
+    const colorValue = (colorMap as Record<string, string>)[props.color] || props.color
+    style['--ui-divider-color'] = colorValue
+  }
+
+  // 处理宽度
+  if (props.width) {
+    style['--ui-divider-width'] = props.width
+  }
+
+  // 处理边距
+  if (props.margin) {
+    style['--ui-divider-margin'] = props.margin
+  }
+
+  return style
 })
 
 // 计算分割线的类名
@@ -58,173 +89,97 @@ const dividerClass = computed(() => {
     `ui-divider--${props.type}`,
   ]
 
-  if (props.position) {
-    classes.push(`ui-divider--text-${props.position}`)
-  }
-
   // 添加自定义类名
   if (props.class) {
     classes.push(props.class)
   }
 
-  return classes.join(' ')
-})
-
-// 计算CSS变量值 - 使用计算属性和v-bind
-const dividerColor = computed(() => props.color || null)
-const dividerWidth = computed(() => props.style ? props.style.split(';')[0].split(':')[1] : null)
-const dividerMargin = computed(() => {
-  if (!props.style)
-    return null
-  const margin = props.style.split(';').find(item => item.startsWith('margin'))
-  if (margin) {
-    const [, value] = margin.split(':')
-    return value
-  }
-  return null
-})
-const dividerMarginX = computed(() => {
-  if (!props.style)
-    return null
-  const marginX = props.style.split(';').find(item => item.startsWith('margin-left') || item.startsWith('margin-right'))
-  if (marginX) {
-    const [, value] = marginX.split(':')
-    return value
-  }
-  return null
+  return classes
 })
 </script>
 
 <template>
-  <!-- 有文本的分割线 -->
   <div
-    v-if="position"
     :class="dividerClass"
+    :style="dividerStyle"
+    role="separator"
   >
-    <span class="ui-divider__before" />
-    <span class="ui-divider__text">
+    <div
+      v-if="$slots.default && direction !== 'vertical'"
+      class="ui-divider__text" :class="[`ui-divider__text--${position}`]"
+    >
       <slot />
-    </span>
-    <span class="ui-divider__after" />
+    </div>
   </div>
-
-  <!-- 无文本分割线 -->
-  <div
-    v-else
-    :class="dividerClass"
-  />
 </template>
 
 <style scoped>
 .ui-divider {
-  --ui-divider-color: v-bind(dividerColor);
-  --ui-divider-width: v-bind(dividerWidth);
-  --ui-divider-margin-y: v-bind(dividerMargin);
-  --ui-divider-margin-x: v-bind(dividerMarginX);
-
-  box-sizing: border-box;
   position: relative;
-  display: flex;
-  align-items: center;
+  display: block;
+  box-sizing: border-box;
   font-size: 0.875rem;
-  line-height: normal;
-  list-style: none;
 }
 
 .ui-divider--horizontal {
+  display: block;
+  height: var(--ui-divider-width);
   width: 100%;
-  min-width: 100%;
-  height: var(--ui-divider-width, 1px);
+  margin: var(--ui-divider-margin);
+  border-top: var(--ui-divider-width) var(--ui-divider-type, solid) var(--ui-divider-color);
   clear: both;
-  margin-top: var(--ui-divider-margin-y, 1rem);
-  margin-bottom: var(--ui-divider-margin-y, 1rem);
 }
 
 .ui-divider--vertical {
-  display: inline-flex;
-  height: 0.9em;
+  display: inline-block;
+  width: var(--ui-divider-width);
+  height: 1em;
+  margin: 0 0.5rem;
   vertical-align: middle;
-  width: var(--ui-divider-width, 1px);
-  margin-left: var(--ui-divider-margin-x, 1rem);
-  margin-right: var(--ui-divider-margin-x, 1rem);
+  border-left: var(--ui-divider-width) var(--ui-divider-type, solid) var(--ui-divider-color);
 }
 
 /* 边框类型 */
-.ui-divider--horizontal:not(.ui-divider--with-text).ui-divider--solid {
-  border-top: 1px solid var(--ui-divider-color, rgb(229, 231, 235));
+.ui-divider--dashed {
+  --ui-divider-type: dashed;
 }
 
-.ui-divider--horizontal:not(.ui-divider--with-text).ui-divider--dashed {
-  border-top: 1px dashed var(--ui-divider-color, rgb(229, 231, 235));
-}
-
-.ui-divider--horizontal:not(.ui-divider--with-text).ui-divider--dotted {
-  border-top: 1px dotted var(--ui-divider-color, rgb(229, 231, 235));
-}
-
-.ui-divider--vertical.ui-divider--solid {
-  border-left: 1px solid var(--ui-divider-color, rgb(229, 231, 235));
-}
-
-.ui-divider--vertical.ui-divider--dashed {
-  border-left: 1px dashed var(--ui-divider-color, rgb(229, 231, 235));
-}
-
-.ui-divider--vertical.ui-divider--dotted {
-  border-left: 1px dotted var(--ui-divider-color, rgb(229, 231, 235));
+.ui-divider--dotted {
+  --ui-divider-type: dotted;
 }
 
 /* 带文本的分割线 */
-.ui-divider--with-text {
+.ui-divider--horizontal:has(.ui-divider__text) {
+  display: flex;
+  align-items: center;
+  margin: var(--ui-divider-margin);
   border-top: 0;
-  background: transparent;
 }
 
-.ui-divider--with-text .ui-divider__text {
-  display: inline-block;
+.ui-divider--horizontal:has(.ui-divider__text)::before,
+.ui-divider--horizontal:has(.ui-divider__text)::after {
+  content: '';
+  flex: 1;
+  height: var(--ui-divider-width);
+  background-color: var(--ui-divider-color);
+}
+
+.ui-divider__text {
   padding: 0 1rem;
   font-weight: 500;
-  white-space: nowrap;
   color: var(--ui-text-color, rgb(75, 85, 99));
+  white-space: nowrap;
 }
 
-.ui-divider--with-text .ui-divider__before,
-.ui-divider--with-text .ui-divider__after {
-  position: relative;
-  flex: 1;
-  height: 1px;
-  background-color: var(--ui-divider-color, rgb(229, 231, 235));
+.ui-divider__text--left + ::after {
+  flex: 20;
 }
 
-/* 文本位置 */
-.ui-divider--text-left .ui-divider__before {
-  width: 5%;
+.ui-divider--horizontal:has(.ui-divider__text--right)::before {
+  flex: 20;
 }
 
-.ui-divider--text-left .ui-divider__after {
-  width: 95%;
-}
-
-.ui-divider--text-right .ui-divider__before {
-  width: 95%;
-}
-
-.ui-divider--text-right .ui-divider__after {
-  width: 5%;
-}
-
-/* 暗黑模式 */
-:root.dark .ui-divider--horizontal:not(.ui-divider--with-text),
-:root.dark .ui-divider--vertical {
-  border-color: var(--ui-divider-color, rgb(75, 85, 99));
-}
-
-:root.dark .ui-divider__before,
-:root.dark .ui-divider__after {
-  background-color: var(--ui-divider-color, rgb(75, 85, 99));
-}
-
-:root.dark .ui-divider__text {
-  color: var(--ui-text-color-dark, rgb(209, 213, 219));
+.ui-divider--horizontal:has(.ui-divider__text--left)::after {
+  flex: 20;
 }
 </style>

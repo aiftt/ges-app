@@ -1,4 +1,5 @@
 <script setup lang="ts" name="DemoDivider">
+import type { Alignment, BorderType } from '~/types/ui'
 /**
  * 分割线组件演示
  * 创建日期: 2023-11-30
@@ -6,14 +7,11 @@
  * 更新日期: 2024-12-08 - 使用ui-demo组件重构演示页面
  */
 
-// 分割线方向
-const _directions = ['horizontal', 'vertical']
-
 // 分割线文本位置
-const textPositions = ['left', 'center', 'right']
+const textPositions = ['left', 'center', 'right'] as Alignment[]
 
 // 分割线类型
-const dividerTypes = ['solid', 'dashed', 'dotted']
+const dividerTypes = ['solid', 'dashed', 'dotted'] as BorderType[]
 
 // 分割线颜色
 const dividerColors = [
@@ -152,7 +150,7 @@ const customDividerCode = `<!-- 粗线分割 -->
 
         <div>
           <p>{{ paragraphText }}</p>
-          <ui-divider text-position="left">
+          <ui-divider position="left">
             左对齐文本
           </ui-divider>
           <p>{{ paragraphText }}</p>
@@ -160,7 +158,7 @@ const customDividerCode = `<!-- 粗线分割 -->
 
         <div>
           <p>{{ paragraphText }}</p>
-          <ui-divider text-position="right">
+          <ui-divider position="right">
             右对齐文本
           </ui-divider>
           <p>{{ paragraphText }}</p>
@@ -178,7 +176,7 @@ const customDividerCode = `<!-- 粗线分割 -->
         <div v-for="position in textPositions" :key="position" class="flex items-center">
           <span class="w-20 text-gray-600 dark:text-gray-400">{{ position }}</span>
           <div class="flex-1">
-            <ui-divider :text-position="position" with-text>
+            <ui-divider :position="position" with-text>
               {{ position }}
             </ui-divider>
           </div>

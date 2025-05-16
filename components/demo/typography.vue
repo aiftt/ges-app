@@ -3,8 +3,8 @@
  * 排版组件示例
  * 创建日期: 2023-11-14
  * 作者: aiftt
+ * 更新日期: 2024-12-15 - 使用ui-demo组件重构演示页面
  */
-import { ref } from 'vue'
 
 // 示例代码
 const titleCode = `<ui-typography-title>默认标题</ui-typography-title>
@@ -76,31 +76,24 @@ function example() {
   console.log('Hello, world!');
 }</code></pre>
 </ui-typography>`
-
-// 是否显示代码
-const showCode = ref({
-  title: false,
-  text: false,
-  paragraph: false,
-  typography: false,
-})
-
-// 切换代码显示
-function toggleCode(section: 'title' | 'text' | 'paragraph' | 'typography') {
-  showCode.value[section] = !showCode.value[section]
-}
 </script>
 
 <template>
-  <div class="demo-component">
-    <div class="demo-section">
-      <h3 class="demo-section-title">
-        标题 Title
-      </h3>
-      <p class="demo-section-desc">
-        用于展示不同级别的标题
-      </p>
-      <div class="demo-section-content demo-typography-content">
+  <div class="mx-auto max-w-6xl">
+    <h2 class="mb-6 text-2xl font-bold dark:text-white">
+      Typography 排版
+    </h2>
+    <p class="mb-6 text-gray-500 dark:text-gray-400">
+      Typography 排版组件提供了一套完整的文本排版解决方案，用于展示标题、段落、文本等内容。
+    </p>
+
+    <!-- 标题 Title -->
+    <ui-demo
+      title="标题 Title"
+      description="用于展示不同级别的标题"
+      :code="titleCode"
+    >
+      <div class="demo-typography-content">
         <ui-typography-title>默认标题</ui-typography-title>
         <ui-typography-title :level="2">
           二级标题
@@ -118,25 +111,16 @@ function toggleCode(section: 'title' | 'text' | 'paragraph' | 'typography') {
           六级危险标题
         </ui-typography-title>
       </div>
-      <div class="demo-code-control">
-        <button class="demo-code-button" @click="toggleCode('title')">
-          {{ showCode.title ? '隐藏代码' : '显示代码' }}
-        </button>
-      </div>
-      <div v-if="showCode.title">
-        <ui-code :code="titleCode" lang="vue" :line-numbers="true" theme="auto" />
-      </div>
-    </div>
+    </ui-demo>
 
-    <div class="demo-section">
-      <h3 class="demo-section-title">
-        文本 Text
-      </h3>
-      <p class="demo-section-desc">
-        用于展示不同样式的文本
-      </p>
-      <div class="demo-section-content demo-typography-content">
-        <div class="demo-text-row">
+    <!-- 文本 Text -->
+    <ui-demo
+      title="文本 Text"
+      description="用于展示不同样式的文本"
+      :code="textCode"
+    >
+      <div class="demo-typography-content">
+        <div class="mb-4 flex flex-wrap gap-4">
           <ui-typography-text>默认文本</ui-typography-text>
           <ui-typography-text type="primary">
             主色文本
@@ -154,7 +138,7 @@ function toggleCode(section: 'title' | 'text' | 'paragraph' | 'typography') {
             次要文本
           </ui-typography-text>
         </div>
-        <div class="demo-text-row">
+        <div class="flex flex-wrap gap-4">
           <ui-typography-text bold>
             加粗文本
           </ui-typography-text>
@@ -175,24 +159,15 @@ function toggleCode(section: 'title' | 'text' | 'paragraph' | 'typography') {
           </ui-typography-text>
         </div>
       </div>
-      <div class="demo-code-control">
-        <button class="demo-code-button" @click="toggleCode('text')">
-          {{ showCode.text ? '隐藏代码' : '显示代码' }}
-        </button>
-      </div>
-      <div v-if="showCode.text">
-        <ui-code :code="textCode" lang="vue" :line-numbers="true" theme="auto" />
-      </div>
-    </div>
+    </ui-demo>
 
-    <div class="demo-section">
-      <h3 class="demo-section-title">
-        段落 Paragraph
-      </h3>
-      <p class="demo-section-desc">
-        用于展示文本段落
-      </p>
-      <div class="demo-section-content demo-typography-content">
+    <!-- 段落 Paragraph -->
+    <ui-demo
+      title="段落 Paragraph"
+      description="用于展示文本段落"
+      :code="paragraphCode"
+    >
+      <div class="demo-typography-content">
         <ui-typography-paragraph>
           这是一个默认段落，用于展示基本段落样式。段落可以包含多行文本，并且具有合适的行高和间距。
         </ui-typography-paragraph>
@@ -205,24 +180,15 @@ function toggleCode(section: 'title' | 'text' | 'paragraph' | 'typography') {
           这是更多的文本内容，用于演示省略效果。这是更多的文本内容，用于演示省略效果。
         </ui-typography-paragraph>
       </div>
-      <div class="demo-code-control">
-        <button class="demo-code-button" @click="toggleCode('paragraph')">
-          {{ showCode.paragraph ? '隐藏代码' : '显示代码' }}
-        </button>
-      </div>
-      <div v-if="showCode.paragraph">
-        <ui-code :code="paragraphCode" lang="vue" :line-numbers="true" theme="auto" />
-      </div>
-    </div>
+    </ui-demo>
 
-    <div class="demo-section">
-      <h3 class="demo-section-title">
-        排版 Typography
-      </h3>
-      <p class="demo-section-desc">
-        排版组件提供了文档级别的排版样式
-      </p>
-      <div class="demo-section-content">
+    <!-- 排版 Typography -->
+    <ui-demo
+      title="排版 Typography"
+      description="排版组件提供了文档级别的排版样式"
+      :code="typographyCode"
+    >
+      <div class="demo-typography-content">
         <ui-typography>
           <h1>This is H1 Title</h1>
           <h2>This is H2 Title</h2>
@@ -257,277 +223,486 @@ function example() {
 }</code></pre>
         </ui-typography>
       </div>
-      <div class="demo-code-control">
-        <button class="demo-code-button" @click="toggleCode('typography')">
-          {{ showCode.typography ? '隐藏代码' : '显示代码' }}
-        </button>
-      </div>
-      <div v-if="showCode.typography">
-        <ui-code :code="typographyCode" lang="vue" :line-numbers="true" theme="auto" />
-      </div>
-    </div>
+    </ui-demo>
 
-    <div class="demo-section">
-      <h3 class="demo-section-title">
-        API 参考
-      </h3>
-
-      <h4 class="demo-api-subtitle">
+    <!-- API 参考 -->
+    <ui-demo
+      title="API 参考"
+      description="Typography 组件的属性和事件。"
+      :show-code="false"
+    >
+      <h4 class="mb-2 font-medium dark:text-white">
         Typography Title
       </h4>
-      <table class="demo-api-table">
-        <thead>
-          <tr>
-            <th>属性</th>
-            <th>说明</th>
-            <th>类型</th>
-            <th>默认值</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>level</td>
-            <td>标题级别</td>
-            <td>1 | 2 | 3 | 4 | 5 | 6</td>
-            <td>1</td>
-          </tr>
-          <tr>
-            <td>type</td>
-            <td>标题类型</td>
-            <td>'default' | 'primary' | 'success' | 'warning' | 'danger'</td>
-            <td>'default'</td>
-          </tr>
-          <tr>
-            <td>weight</td>
-            <td>字体粗细</td>
-            <td>'light' | 'normal' | 'medium' | 'semibold' | 'bold'</td>
-            <td>'bold'</td>
-          </tr>
-          <tr>
-            <td>withMargin</td>
-            <td>是否添加下边距</td>
-            <td>boolean</td>
-            <td>true</td>
-          </tr>
-          <tr>
-            <td>align</td>
-            <td>文本对齐方式</td>
-            <td>'left' | 'center' | 'right'</td>
-            <td>'left'</td>
-          </tr>
-          <tr>
-            <td>copyable</td>
-            <td>是否可复制</td>
-            <td>boolean</td>
-            <td>false</td>
-          </tr>
-          <tr>
-            <td>ellipsis</td>
-            <td>是否显示省略号</td>
-            <td>boolean</td>
-            <td>false</td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="overflow-auto">
+        <table class="min-w-full border-collapse">
+          <thead>
+            <tr class="border-b dark:border-gray-700">
+              <th class="px-4 py-2 text-left dark:text-white">
+                属性
+              </th>
+              <th class="px-4 py-2 text-left dark:text-white">
+                说明
+              </th>
+              <th class="px-4 py-2 text-left dark:text-white">
+                类型
+              </th>
+              <th class="px-4 py-2 text-left dark:text-white">
+                默认值
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="border-b dark:border-gray-700">
+              <td class="px-4 py-2 dark:text-gray-300">
+                level
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                标题级别
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                1 | 2 | 3 | 4 | 5 | 6
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                1
+              </td>
+            </tr>
+            <tr class="border-b dark:border-gray-700">
+              <td class="px-4 py-2 dark:text-gray-300">
+                type
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                标题类型
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                'default' | 'primary' | 'success' | 'warning' | 'danger'
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                'default'
+              </td>
+            </tr>
+            <tr class="border-b dark:border-gray-700">
+              <td class="px-4 py-2 dark:text-gray-300">
+                weight
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                字体粗细
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                'light' | 'normal' | 'medium' | 'semibold' | 'bold'
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                'bold'
+              </td>
+            </tr>
+            <tr class="border-b dark:border-gray-700">
+              <td class="px-4 py-2 dark:text-gray-300">
+                withMargin
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                是否添加下边距
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                boolean
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                true
+              </td>
+            </tr>
+            <tr class="border-b dark:border-gray-700">
+              <td class="px-4 py-2 dark:text-gray-300">
+                align
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                文本对齐方式
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                'left' | 'center' | 'right'
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                'left'
+              </td>
+            </tr>
+            <tr class="border-b dark:border-gray-700">
+              <td class="px-4 py-2 dark:text-gray-300">
+                copyable
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                是否可复制
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                boolean
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                false
+              </td>
+            </tr>
+            <tr class="border-b dark:border-gray-700">
+              <td class="px-4 py-2 dark:text-gray-300">
+                ellipsis
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                是否显示省略号
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                boolean
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                false
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
-      <h4 class="demo-api-subtitle">
+      <h4 class="mb-2 mt-6 font-medium dark:text-white">
         Typography Text
       </h4>
-      <table class="demo-api-table">
-        <thead>
-          <tr>
-            <th>属性</th>
-            <th>说明</th>
-            <th>类型</th>
-            <th>默认值</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>type</td>
-            <td>文本类型</td>
-            <td>'default' | 'primary' | 'success' | 'warning' | 'danger' | 'secondary'</td>
-            <td>'default'</td>
-          </tr>
-          <tr>
-            <td>size</td>
-            <td>文本大小</td>
-            <td>'small' | 'default' | 'large'</td>
-            <td>'default'</td>
-          </tr>
-          <tr>
-            <td>bold</td>
-            <td>是否加粗</td>
-            <td>boolean</td>
-            <td>false</td>
-          </tr>
-          <tr>
-            <td>italic</td>
-            <td>是否斜体</td>
-            <td>boolean</td>
-            <td>false</td>
-          </tr>
-          <tr>
-            <td>underline</td>
-            <td>是否添加下划线</td>
-            <td>boolean</td>
-            <td>false</td>
-          </tr>
-          <tr>
-            <td>delete</td>
-            <td>是否添加删除线</td>
-            <td>boolean</td>
-            <td>false</td>
-          </tr>
-          <tr>
-            <td>mark</td>
-            <td>是否标记文本</td>
-            <td>boolean</td>
-            <td>false</td>
-          </tr>
-          <tr>
-            <td>code</td>
-            <td>是否为代码样式</td>
-            <td>boolean</td>
-            <td>false</td>
-          </tr>
-          <tr>
-            <td>copyable</td>
-            <td>是否可复制</td>
-            <td>boolean</td>
-            <td>false</td>
-          </tr>
-          <tr>
-            <td>ellipsis</td>
-            <td>是否显示省略号</td>
-            <td>boolean</td>
-            <td>false</td>
-          </tr>
-          <tr>
-            <td>lines</td>
-            <td>省略显示的行数</td>
-            <td>number</td>
-            <td>1</td>
-          </tr>
-          <tr>
-            <td>color</td>
-            <td>文本颜色</td>
-            <td>string</td>
-            <td>-</td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="overflow-auto">
+        <table class="min-w-full border-collapse">
+          <thead>
+            <tr class="border-b dark:border-gray-700">
+              <th class="px-4 py-2 text-left dark:text-white">
+                属性
+              </th>
+              <th class="px-4 py-2 text-left dark:text-white">
+                说明
+              </th>
+              <th class="px-4 py-2 text-left dark:text-white">
+                类型
+              </th>
+              <th class="px-4 py-2 text-left dark:text-white">
+                默认值
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="border-b dark:border-gray-700">
+              <td class="px-4 py-2 dark:text-gray-300">
+                type
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                文本类型
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                'default' | 'primary' | 'success' | 'warning' | 'danger' | 'secondary'
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                'default'
+              </td>
+            </tr>
+            <tr class="border-b dark:border-gray-700">
+              <td class="px-4 py-2 dark:text-gray-300">
+                size
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                文本大小
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                'small' | 'default' | 'large'
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                'default'
+              </td>
+            </tr>
+            <tr class="border-b dark:border-gray-700">
+              <td class="px-4 py-2 dark:text-gray-300">
+                bold
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                是否加粗
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                boolean
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                false
+              </td>
+            </tr>
+            <tr class="border-b dark:border-gray-700">
+              <td class="px-4 py-2 dark:text-gray-300">
+                italic
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                是否斜体
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                boolean
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                false
+              </td>
+            </tr>
+            <tr class="border-b dark:border-gray-700">
+              <td class="px-4 py-2 dark:text-gray-300">
+                underline
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                是否添加下划线
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                boolean
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                false
+              </td>
+            </tr>
+            <tr class="border-b dark:border-gray-700">
+              <td class="px-4 py-2 dark:text-gray-300">
+                delete
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                是否添加删除线
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                boolean
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                false
+              </td>
+            </tr>
+            <tr class="border-b dark:border-gray-700">
+              <td class="px-4 py-2 dark:text-gray-300">
+                mark
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                是否标记文本
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                boolean
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                false
+              </td>
+            </tr>
+            <tr class="border-b dark:border-gray-700">
+              <td class="px-4 py-2 dark:text-gray-300">
+                code
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                是否为代码样式
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                boolean
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                false
+              </td>
+            </tr>
+            <tr class="border-b dark:border-gray-700">
+              <td class="px-4 py-2 dark:text-gray-300">
+                copyable
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                是否可复制
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                boolean
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                false
+              </td>
+            </tr>
+            <tr class="border-b dark:border-gray-700">
+              <td class="px-4 py-2 dark:text-gray-300">
+                ellipsis
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                是否显示省略号
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                boolean
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                false
+              </td>
+            </tr>
+            <tr class="border-b dark:border-gray-700">
+              <td class="px-4 py-2 dark:text-gray-300">
+                lines
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                省略显示的行数
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                number
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                1
+              </td>
+            </tr>
+            <tr class="border-b dark:border-gray-700">
+              <td class="px-4 py-2 dark:text-gray-300">
+                color
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                文本颜色
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                string
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                -
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
-      <h4 class="demo-api-subtitle">
+      <h4 class="mb-2 mt-6 font-medium dark:text-white">
         Typography Paragraph
       </h4>
-      <table class="demo-api-table">
-        <thead>
-          <tr>
-            <th>属性</th>
-            <th>说明</th>
-            <th>类型</th>
-            <th>默认值</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>type</td>
-            <td>段落类型</td>
-            <td>'default' | 'primary' | 'success' | 'warning' | 'danger' | 'secondary'</td>
-            <td>'default'</td>
-          </tr>
-          <tr>
-            <td>size</td>
-            <td>段落字体大小</td>
-            <td>'small' | 'default' | 'large'</td>
-            <td>'default'</td>
-          </tr>
-          <tr>
-            <td>align</td>
-            <td>文本对齐方式</td>
-            <td>'left' | 'center' | 'right' | 'justify'</td>
-            <td>'left'</td>
-          </tr>
-          <tr>
-            <td>ellipsis</td>
-            <td>是否显示省略号</td>
-            <td>boolean</td>
-            <td>false</td>
-          </tr>
-          <tr>
-            <td>lines</td>
-            <td>省略显示的行数</td>
-            <td>number</td>
-            <td>3</td>
-          </tr>
-          <tr>
-            <td>spacing</td>
-            <td>段落间距</td>
-            <td>'small' | 'default' | 'large'</td>
-            <td>'default'</td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="overflow-auto">
+        <table class="min-w-full border-collapse">
+          <thead>
+            <tr class="border-b dark:border-gray-700">
+              <th class="px-4 py-2 text-left dark:text-white">
+                属性
+              </th>
+              <th class="px-4 py-2 text-left dark:text-white">
+                说明
+              </th>
+              <th class="px-4 py-2 text-left dark:text-white">
+                类型
+              </th>
+              <th class="px-4 py-2 text-left dark:text-white">
+                默认值
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="border-b dark:border-gray-700">
+              <td class="px-4 py-2 dark:text-gray-300">
+                type
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                段落类型
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                'default' | 'primary' | 'success' | 'warning' | 'danger' | 'secondary'
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                'default'
+              </td>
+            </tr>
+            <tr class="border-b dark:border-gray-700">
+              <td class="px-4 py-2 dark:text-gray-300">
+                size
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                段落字体大小
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                'small' | 'default' | 'large'
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                'default'
+              </td>
+            </tr>
+            <tr class="border-b dark:border-gray-700">
+              <td class="px-4 py-2 dark:text-gray-300">
+                align
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                文本对齐方式
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                'left' | 'center' | 'right' | 'justify'
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                'left'
+              </td>
+            </tr>
+            <tr class="border-b dark:border-gray-700">
+              <td class="px-4 py-2 dark:text-gray-300">
+                ellipsis
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                是否显示省略号
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                boolean
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                false
+              </td>
+            </tr>
+            <tr class="border-b dark:border-gray-700">
+              <td class="px-4 py-2 dark:text-gray-300">
+                lines
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                省略显示的行数
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                number
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                3
+              </td>
+            </tr>
+            <tr class="border-b dark:border-gray-700">
+              <td class="px-4 py-2 dark:text-gray-300">
+                spacing
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                段落间距
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                'small' | 'default' | 'large'
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                'default'
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
-      <h4 class="demo-api-subtitle">
+      <h4 class="mb-2 mt-6 font-medium dark:text-white">
         Typography
       </h4>
-      <table class="demo-api-table">
-        <thead>
-          <tr>
-            <th>属性</th>
-            <th>说明</th>
-            <th>类型</th>
-            <th>默认值</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>component</td>
-            <td>组件类型</td>
-            <td>'article' | 'section' | 'div'</td>
-            <td>'div'</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+      <div class="overflow-auto">
+        <table class="min-w-full border-collapse">
+          <thead>
+            <tr class="border-b dark:border-gray-700">
+              <th class="px-4 py-2 text-left dark:text-white">
+                属性
+              </th>
+              <th class="px-4 py-2 text-left dark:text-white">
+                说明
+              </th>
+              <th class="px-4 py-2 text-left dark:text-white">
+                类型
+              </th>
+              <th class="px-4 py-2 text-left dark:text-white">
+                默认值
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="border-b dark:border-gray-700">
+              <td class="px-4 py-2 dark:text-gray-300">
+                component
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                组件类型
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                'article' | 'section' | 'div'
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                'div'
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </ui-demo>
   </div>
 </template>
 
 <style scoped>
-.demo-component {
-  width: 100%;
-}
-
-.demo-section {
-  margin-bottom: 2rem;
-  border-bottom: 1px solid var(--ui-border-color, #e5e7eb);
-  padding-bottom: 1.5rem;
-}
-
-.demo-section:last-child {
-  border-bottom: none;
-}
-
-.demo-section-title {
-  font-size: 1.125rem;
-  font-weight: 600;
-  margin-top: 0;
-  margin-bottom: 0.5rem;
-}
-
-.demo-section-desc {
-  color: var(--ui-text-color-secondary, #6b7280);
-  margin-top: 0;
-  margin-bottom: 1rem;
-  font-size: 0.875rem;
-}
-
-.demo-section-content {
-  margin-bottom: 1rem;
-}
-
 .demo-typography-content {
   background-color: var(--ui-card-bg, #ffffff);
   border: 1px solid var(--ui-border-color, #e5e7eb);
@@ -535,89 +710,8 @@ function example() {
   padding: 1.5rem;
 }
 
-.demo-text-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-  margin-bottom: 1rem;
-}
-
-.demo-code-control {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 0.5rem;
-}
-
-.demo-code-button {
-  background: none;
-  border: none;
-  color: var(--ui-color-primary, #3b82f6);
-  cursor: pointer;
-  font-size: 0.875rem;
-  padding: 0.25rem 0.5rem;
-}
-
-.demo-code-button:hover {
-  text-decoration: underline;
-}
-
-.demo-code {
-  background-color: var(--ui-code-bg, #f3f4f6);
-  border-radius: 0.25rem;
-  padding: 1rem;
-  margin-bottom: 1rem;
-  overflow-x: auto;
-}
-
-.demo-code pre {
-  margin: 0;
-  white-space: pre-wrap;
-  word-wrap: break-word;
-  font-family: monospace;
-  font-size: 0.875rem;
-  color: var(--ui-code-color, #1f2937);
-}
-
-.demo-api-subtitle {
-  font-size: 1rem;
-  font-weight: 600;
-  margin-top: 1.5rem;
-  margin-bottom: 0.75rem;
-}
-
-.demo-api-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.875rem;
-  margin-bottom: 1.5rem;
-}
-
-.demo-api-table th,
-.demo-api-table td {
-  border: 1px solid var(--ui-border-color, #e5e7eb);
-  padding: 0.75rem 1rem;
-  text-align: left;
-}
-
-.demo-api-table th {
-  background-color: var(--ui-table-header-bg, #f9fafb);
-  font-weight: 600;
-}
-
-.demo-api-table tr:nth-child(even) {
-  background-color: var(--ui-table-stripe-bg, #f3f4f6);
-}
-
-.dark .demo-code {
-  --ui-code-bg: #1f2937;
-  --ui-code-color: #e5e7eb;
-}
-
-.dark .demo-api-table th {
-  --ui-table-header-bg: #111827;
-}
-
-.dark .demo-api-table tr:nth-child(even) {
-  --ui-table-stripe-bg: #1f2937;
+.dark .demo-typography-content {
+  background-color: var(--ui-card-bg-dark, #1f2937);
+  border-color: var(--ui-border-color-dark, #374151);
 }
 </style>
