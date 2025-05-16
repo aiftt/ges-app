@@ -173,21 +173,17 @@ const customContentCode = `<ui-popover title="自定义内容" trigger="click" w
   </div>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .demo-section {
-  margin-bottom: 2rem;
+  @apply mb-8;
 }
 
 .demo-title {
-  font-size: 1.5rem;
-  font-weight: 600;
-  margin-bottom: 1rem;
+  @apply text-2xl font-semibold mb-4;
 }
 
 .demo-card {
-  border: 1px solid var(--ui-border-color, #e5e7eb);
-  border-radius: 0.5rem;
-  padding: 1.5rem;
-  background-color: var(--ui-card-bg, white);
+  @apply border border-solid rounded-lg p-6 bg-white dark:bg-gray-800;
+  border-color: var(--ui-border-color, #e5e7eb);
 }
 </style>

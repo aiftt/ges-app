@@ -83,9 +83,9 @@ const sampleCode = `<!-- 使用 CSS 变量定制样式 -->
 </style>`
 
 // 示例代码 - UnoCSS 使用
-const unocssCode = `<!-- 使用 UnoCSS 与 CSS 变量结合 -->
-<div class="bg-[var(--ui-color-bg)] text-[var(--ui-color-text)] border border-[var(--ui-color-border)] rounded-[var(--ui-border-radius)] p-[var(--ui-spacing)] shadow-[var(--ui-shadow)]">
-  使用 UnoCSS 与 CSS 变量结合
+const unocssCode = `<!-- 使用 Tailwind CSS 与 CSS 变量结合 -->
+<div class="bg-theme-bg text-theme-text border border-theme-border rounded-theme p-theme shadow-theme">
+  使用 Tailwind CSS 与 CSS 变量结合
 </div>
 
 <!-- 使用主题辅助类 -->
@@ -263,8 +263,8 @@ function toggleDarkMode() {
           </div>
         </div>
         <div>
-          <div class="mb-4 border border-[var(--ui-color-border)] rounded-[var(--ui-border-radius)] bg-[var(--ui-color-bg)] p-[var(--ui-spacing)] text-[var(--ui-color-text)] shadow-[var(--ui-shadow)]">
-            使用 UnoCSS 与 CSS 变量结合
+          <div class="rounded-theme shadow-theme bg-theme-bg p-theme border-theme-border text-theme-text mb-4 border">
+            使用 Tailwind CSS 与 CSS 变量结合
           </div>
           <div class="mb-4 rounded bg-primary p-4 text-white">
             使用预定义的主题辅助类

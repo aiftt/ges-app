@@ -21,8 +21,12 @@
   "typescript.enablePromptUseWorkspaceTsdk": true,
   "files.autoSave": "afterDelay",
   "files.autoSaveDelay": 1000,
+  "files.associations": {
+    "*.{css|scss|vue}": "tailwindcss"
+  },
   // SCSS 设置
   "scss.lint.unknownAtRules": "ignore",
+  "css.lint.unknownAtRules": "ignore",
   "svn.ignoreMissingSvnWarning": true,
   "commentTranslate.browse.mode": "contrast",
   // 格式化设置
@@ -68,5 +72,8 @@
     "scss",
     "pcss",
     "postcss"
-  ]
+  ],
+
+  "scss.validate": false,
+  "css.validate": false
 }
