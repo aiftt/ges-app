@@ -4,7 +4,7 @@ import { onClickOutside } from '@vueuse/core'
  * 级联选择器组件
  * 创建日期: 2024-07-09
  * 作者: aiftt
- * 更新日期: 2024-07-10 - 修复子节点选择、滚动条、节点回显问题
+ * 更新日期: 2024-07-11 - 修复单击选中、多选回显、搜索路径显示问题
  */
 import { computed, nextTick, onMounted, ref, watch } from 'vue'
 
@@ -129,6 +129,9 @@ const _hoverNode = ref<CascaderOption | null>(null)
 const expandedNodes = ref<CascaderOption[]>([])
 const _isMouseEnter = ref(false)
 
+// 路径映射用于存储节点的父节点路径，便于搜索结果显示完整路径
+const nodePathMap = ref<Map<string | number, CascaderOption[]>>(new Map())
+
 // 添加CSS变量用于最大高度
 const maxHeight = computed(() => typeof props.maxHeight === 'number' ? `${props.maxHeight}px` : props.maxHeight)
 
@@ -189,11 +192,23 @@ const activePanels = computed(() => {
 
 // 获取选项的路径标签
 function getOptionPath(option: CascaderOption, separator = props.separator): string {
-  if (!activeNode.value)
+  if (!option._path && !activeNode.value)
     return option.label
 
-  const path = activeNode.value.map((node: CascaderOption) => node.label)
-  return path.join(separator)
+  // 优先使用搜索时记录的完整路径，用于搜索结果中显示
+  if (option._path && Array.isArray(option._path)) {
+    return option._path.map(node => node.label).join(separator)
+  }
+
+  // 获取从 nodePathMap 中存储的路径
+  const path = nodePathMap.value.get(option.value)
+  if (path) {
+    return path.map(node => node.label).join(separator)
+  }
+
+  // 回退到当前活动路径
+  const activePath = activeNode.value.map((node: CascaderOption) => node.label)
+  return activePath.join(separator)
 }
 
 // 处理选项点击
@@ -201,7 +216,7 @@ function handleOptionClick(option: CascaderOption, level: number) {
   if (option.disabled)
     return
 
-  // 选择选项
+  // 直接选择选项，改为单击选中
   selectOption(option, level)
 }
 
@@ -234,6 +249,10 @@ function selectOption(option: CascaderOption, level: number) {
     activeNode.value = [option]
   }
 
+  // 更新节点的路径到映射中
+  const nodePath = activeNode.value.slice(0, level + 1)
+  nodePathMap.value.set(option.value, nodePath)
+
   // 只有选中叶子节点或允许选择任意节点时才更新选中状态
   if (!option.children || !option.children.length || props.checkStrictly) {
     if (props.multiple) {
@@ -245,21 +264,27 @@ function selectOption(option: CascaderOption, level: number) {
       }
       else {
         // 未选择，则添加
-        selectedNodes.value.push(option)
+        selectedNodes.value.push({
+          ...option,
+          _path: activeNode.value.slice(0, level + 1), // 保存完整路径用于展示
+        })
       }
 
       // 更新值
       setModelValue(selectedNodes.value.map(node => node.value))
 
-      // 多选模式下不关闭下拉框
+      // 多选模式下不关闭下拉框 - 修复多选问题
     }
     else {
       // 单选模式
-      selectedNodes.value = [option]
+      selectedNodes.value = [{
+        ...option,
+        _path: activeNode.value.slice(0, level + 1), // 保存完整路径用于展示
+      }]
       setModelValue(option.value)
 
-      // 关闭下拉框（仅在单选非叶子节点时）
-      if (!option.children || !option.children.length) {
+      // 关闭下拉框（单选模式下，选中叶子节点或在checkStrictly模式下选中任意节点都应关闭）
+      if (!option.children || !option.children.length || props.checkStrictly) {
         hideDropdown()
       }
     }
@@ -343,11 +368,36 @@ onClickOutside(containerRef, () => {
   }
 })
 
+// 构建选项路径映射
+function buildNodePathMap(options: CascaderOption[], parentPath: CascaderOption[] = []) {
+  options.forEach((option) => {
+    const currentPath = [...parentPath, option]
+    nodePathMap.value.set(option.value, currentPath)
+
+    if (option.children && option.children.length) {
+      buildNodePathMap(option.children, currentPath)
+    }
+  })
+}
+
 // 监听模型变化
 watch(
   () => props.modelValue,
   (_val) => {
     // 初始化选中项
+    initSelected()
+  },
+  { immediate: true },
+)
+
+// 监听选项变化，更新路径映射
+watch(
+  () => props.options,
+  (newOptions) => {
+    // 构建节点路径映射，用于显示完整路径
+    nodePathMap.value.clear()
+    buildNodePathMap(newOptions)
+    // 重新初始化选中项
     initSelected()
   },
   { immediate: true },
@@ -366,15 +416,35 @@ defineExpose({
 // 监听滚动，正确定位下拉框
 onMounted(() => {
   if (props.expandAll) {
-    // TODO: 展开所有节点
+    // 展开所有节点
+    expandAllNodes(props.options)
   }
 })
 
+// 展开所有节点
+function expandAllNodes(options: CascaderOption[], parentPath: CascaderOption[] = []) {
+  // 遍历所有节点，找到有子节点的节点并展开
+  for (const option of options) {
+    const currentPath = [...parentPath, option]
+
+    // 如果有子节点，展开该节点
+    if (option.children && option.children.length) {
+      // 更新expandedNodes存储所有展开的节点
+      expandedNodes.value.push(option)
+
+      // 触发展开事件
+      const values = currentPath.map(node => node.value)
+      emit('expandChange', values)
+
+      // 递归展开子节点
+      expandAllNodes(option.children, currentPath)
+    }
+  }
+}
+
 // 处理展开状态改变
 function handleExpandChange(nodes: (string | number)[]) {
-  // 将值列表存储为展开节点
-  expandedNodes.value = [] // 这里需要根据实际情况处理值到对象的转换
-  // 修改为驼峰式
+  // 触发展开事件
   emit('expandChange', nodes)
 }
 
@@ -386,27 +456,60 @@ function _showDropdown() {
   emit('visibleChange', true)
 }
 
+// 查找节点，并返回完整路径
+function findNodeByValue(
+  options: CascaderOption[],
+  value: string | number | (string | number)[],
+  path: CascaderOption[] = [],
+): { node: CascaderOption | null, path: CascaderOption[] } {
+  // 如果是数组，取第一个值（多选情况下的处理）
+  const targetValue = Array.isArray(value) ? value[0] : value
+
+  for (const option of options) {
+    const currentPath = [...path, option]
+
+    if (option.value === targetValue) {
+      return { node: option, path: currentPath }
+    }
+
+    if (option.children && option.children.length > 0) {
+      const result = findNodeByValue(option.children, targetValue, currentPath)
+      if (result.node) {
+        return result
+      }
+    }
+  }
+
+  return { node: null, path: [] }
+}
+
 // 初始化选中项
 function initSelected() {
   // 根据当前的modelValue初始化选中项
-  // 具体实现取决于数据结构，这里提供一个简单的框架
   selectedNodes.value = []
 
   // 单选模式
   if (!props.multiple && props.modelValue !== undefined) {
-    // TODO: 根据值查找对应的节点并更新selectedNodes
+    const { node, path } = findNodeByValue(props.options, props.modelValue)
+    if (node) {
+      selectedNodes.value = [{
+        ...node,
+        _path: path, // 保存完整路径用于展示
+      }]
+    }
   }
   // 多选模式
   else if (props.multiple && Array.isArray(props.modelValue)) {
-    // TODO: 根据值数组查找对应的节点并更新selectedNodes
+    for (const value of props.modelValue) {
+      const { node, path } = findNodeByValue(props.options, value)
+      if (node) {
+        selectedNodes.value.push({
+          ...node,
+          _path: path, // 保存完整路径用于展示
+        })
+      }
+    }
   }
-}
-
-// 初始化树结构
-function _initTree() {
-  // 初始化树结构的逻辑
-  // 这个函数的具体实现取决于您的数据结构
-  // 可能包括数据转换、预处理等操作
 }
 
 // 判断节点是否选中
@@ -424,23 +527,36 @@ function handleSubNodeClick(node: CascaderOption, level: number) {
   handleOptionClick(node, level)
 }
 
-// 过滤选项根据关键字
+// 过滤选项根据关键字，并保留节点路径信息
 function filterOptionsByKeyword(options: CascaderOption[], keyword: string): CascaderOption[] {
   if (!keyword)
     return options
 
-  return options.filter((option) => {
-    // 如果选项标签包含关键字，则返回true
-    if (option.label.toLowerCase().includes(keyword.toLowerCase())) {
-      return true
+  const result: CascaderOption[] = []
+
+  function addMatchedOptionWithPath(option: CascaderOption, path: CascaderOption[]) {
+    const clone = { ...option, _path: path }
+    result.push(clone)
+  }
+
+  function searchNodes(nodes: CascaderOption[], path: CascaderOption[] = [], matched = false) {
+    for (const node of nodes) {
+      const currentPath = [...path, node]
+      const isMatch = node.label.toLowerCase().includes(keyword.toLowerCase())
+
+      if (isMatch) {
+        addMatchedOptionWithPath(node, currentPath)
+      }
+
+      if (node.children && node.children.length) {
+        // 如果当前节点匹配或祖先节点匹配，则所有子节点也展示
+        searchNodes(node.children, currentPath, isMatch || matched)
+      }
     }
-    // 如果有子选项，递归过滤
-    if (option.children && option.children.length) {
-      option.children = filterOptionsByKeyword(option.children, keyword)
-      return option.children.length > 0
-    }
-    return false
-  })
+  }
+
+  searchNodes(options)
+  return result
 }
 
 // 设置模型值
@@ -528,12 +644,12 @@ function hideDropdown() {
     >
       <!-- 级联面板 -->
       <div class="ui-cascader-panels">
-        <!-- 第一级 -->
-        <div class="ui-cascader-panel">
+        <!-- 搜索模式下展示搜索结果 -->
+        <div v-if="filterable && searchValue" class="ui-cascader-panel w-full">
           <ul class="ui-cascader-menu">
             <li
               v-for="(option, optionIndex) in visibleNodes"
-              :key="`${0}-${optionIndex}`"
+              :key="`search-${optionIndex}`"
               class="ui-cascader-node"
               :class="[
                 {
@@ -543,48 +659,72 @@ function hideDropdown() {
                 },
               ]"
               @click="handleNodeClick(option)"
-              @mouseenter="handleOptionHover(option, 0)"
             >
-              <span class="ui-cascader-node-label">{{ option.label }}</span>
-              <ui-icon
-                v-if="option.children && option.children.length"
-                icon="carbon:chevron-right"
-                class="ui-cascader-node-icon"
-              />
+              <!-- 搜索结果显示完整路径 -->
+              <span class="ui-cascader-node-label">{{ getOptionPath(option) }}</span>
             </li>
           </ul>
         </div>
+        <!-- 常规模式下展示级联面板 -->
+        <template v-else>
+          <!-- 第一级 -->
+          <div class="ui-cascader-panel">
+            <ul class="ui-cascader-menu">
+              <li
+                v-for="(option, optionIndex) in visibleNodes"
+                :key="`${0}-${optionIndex}`"
+                class="ui-cascader-node"
+                :class="[
+                  {
+                    'ui-cascader-node--active': isNodeSelected(option),
+                    'ui-cascader-node--disabled': option.disabled,
+                    'ui-cascader-node--selected': isNodeSelected(option),
+                  },
+                ]"
+                @click="handleNodeClick(option)"
+                @mouseenter="handleOptionHover(option, 0)"
+              >
+                <span class="ui-cascader-node-label">{{ option.label }}</span>
+                <ui-icon
+                  v-if="option.children && option.children.length"
+                  icon="carbon:chevron-right"
+                  class="ui-cascader-node-icon"
+                />
+              </li>
+            </ul>
+          </div>
 
-        <!-- 子级面板 -->
-        <div
-          v-for="(nodes, index) in activePanels"
-          :key="index"
-          class="ui-cascader-panel"
-        >
-          <ul class="ui-cascader-menu">
-            <li
-              v-for="(option, optionIndex) in nodes"
-              :key="`${index + 1}-${optionIndex}`"
-              class="ui-cascader-node"
-              :class="[
-                {
-                  'ui-cascader-node--active': isNodeSelected(option),
-                  'ui-cascader-node--disabled': option.disabled,
-                  'ui-cascader-node--selected': isNodeSelected(option),
-                },
-              ]"
-              @click="handleSubNodeClick(option, index + 1)"
-              @mouseenter="handleOptionHover(option, index + 1)"
-            >
-              <span class="ui-cascader-node-label">{{ option.label }}</span>
-              <ui-icon
-                v-if="option.children && option.children.length"
-                icon="carbon:chevron-right"
-                class="ui-cascader-node-icon"
-              />
-            </li>
-          </ul>
-        </div>
+          <!-- 子级面板 -->
+          <div
+            v-for="(nodes, index) in activePanels"
+            :key="index"
+            class="ui-cascader-panel"
+          >
+            <ul class="ui-cascader-menu">
+              <li
+                v-for="(option, optionIndex) in nodes"
+                :key="`${index + 1}-${optionIndex}`"
+                class="ui-cascader-node"
+                :class="[
+                  {
+                    'ui-cascader-node--active': isNodeSelected(option),
+                    'ui-cascader-node--disabled': option.disabled,
+                    'ui-cascader-node--selected': isNodeSelected(option),
+                  },
+                ]"
+                @click="handleSubNodeClick(option, index + 1)"
+                @mouseenter="handleOptionHover(option, index + 1)"
+              >
+                <span class="ui-cascader-node-label">{{ option.label }}</span>
+                <ui-icon
+                  v-if="option.children && option.children.length"
+                  icon="carbon:chevron-right"
+                  class="ui-cascader-node-icon"
+                />
+              </li>
+            </ul>
+          </div>
+        </template>
       </div>
     </div>
   </div>

@@ -7,6 +7,8 @@
  * 更新日期: 2023-12-05 - 修复内联样式问题，改用CSS变量方式实现
  * 更新日期: 2024-08-19 - 修复服务端渲染水合问题
  * 更新日期: 2024-09-11 - 使用集中管理的类型定义
+ * 更新日期: 2024-12-13 - 修复动画效果无法生效的问题，使用项目现有动画库
+ * 更新日期: 2024-12-13 - 增强动画支持，允许直接传递动画类名
  */
 
 import type { IconColor, IconSize } from '~/types/ui'
@@ -26,9 +28,13 @@ const props = withDefaults(defineProps<{
    */
   color?: IconColor
   /**
-   * 是否旋转图标
+   * 动画效果
+   * - 预设: spin(旋转)、pulse(跳动)、shake(摇晃)、blink(闪烁)
+   * - 魔法动画: magic-anim-{name}，如 magic-anim-tada、magic-anim-bounce 等
+   * - CSS摇晃: css-shake-{name}，如 css-shake-little、css-shake-crazy 等
+   * - 其它任意有效的 CSS 动画类名
    */
-  spin?: boolean
+  animation?: string
   /**
    * 自定义样式类名
    */
@@ -36,7 +42,6 @@ const props = withDefaults(defineProps<{
 }>(), {
   size: 'default',
   color: '',
-  spin: false,
   class: '',
 })
 
@@ -86,9 +91,26 @@ const iconClass = computed(() => {
     }
   }
 
-  // 旋转动画
-  if (props.spin) {
-    classes.push('ui-icon--spin')
+  // 动画效果
+  if (props.animation) {
+    // 处理预设动画类型
+    switch (props.animation) {
+      case 'spin':
+        classes.push('animate-spin')
+        break
+      case 'pulse':
+        classes.push('magic-anim-pulse')
+        break
+      case 'shake':
+        classes.push('css-shake-base')
+        break
+      case 'blink':
+        classes.push('magic-anim-flash')
+        break
+      default:
+        // 允许直接传递动画类名
+        classes.push(props.animation)
+    }
   }
 
   // 添加自定义类名
@@ -167,19 +189,5 @@ const iconClass = computed(() => {
 /* 自定义颜色 */
 .ui-icon--color-custom {
   color: var(--ui-icon-custom-color);
-}
-
-/* 旋转动画 */
-.ui-icon--spin {
-  animation: ui-icon-spin 1s linear infinite;
-}
-
-@keyframes ui-icon-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
 }
 </style>

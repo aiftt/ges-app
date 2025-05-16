@@ -1,9 +1,10 @@
-<script setup lang="ts">
+<script setup lang="ts" name="DemoTableWithPagination">
 /**
  * 集成分页的表格组件演示
  * 创建日期: 2024-07-16
  * 作者: aiftt
  * 更新日期: 2024-07-16 - 初始实现
+ * 更新日期: 2024-12-14 - 使用ui-demo组件重构演示页面
  */
 import { computed, ref } from 'vue'
 
@@ -93,6 +94,74 @@ function handleSortChange(info: any) {
 
 // 自定义布局演示
 const customLayout = ref(['prev', 'pager', 'next', 'sizes', 'jumper'])
+
+// 示例代码
+const basicPaginationCode = `<ui-table
+  :data="tableData"
+  :columns="columns"
+  :total="total"
+  :current-page="currentPage"
+  :page-size="pageSize"
+  stripe pagination border
+  @page-change="handlePageChange"
+  @sort-change="handleSortChange"
+>
+  <template #status="{ row }">
+    <span
+      class="inline-block rounded-full px-2 py-1 text-sm"
+      :class="{
+        'bg-green-100 text-green-800': row.status === 'success',
+        'bg-yellow-100 text-yellow-800': row.status === 'warning',
+        'bg-red-100 text-red-800': row.status === 'danger',
+        'bg-blue-100 text-blue-800': row.status === 'info',
+      }"
+    >
+      {{ row.status }}
+    </span>
+  </template>
+</ui-table>`
+
+const smallPaginationCode = `<ui-table
+  :data="tableData"
+  :columns="columns.slice(0, 4)"
+  size="small"
+  :total="total"
+  :current-page="currentPage"
+  :page-size="pageSize"
+  pagination small-pagination border
+  @page-change="handlePageChange"
+/>`
+
+const customLayoutCode = `<ui-table
+  :data="tableData"
+  :columns="columns.slice(0, 4)"
+  :total="total"
+  :current-page="currentPage"
+  :page-size="pageSize"
+  pagination border
+  :pagination-layout="customLayout"
+  @page-change="handlePageChange"
+/>`
+
+const selectionPaginationCode = `<ui-table
+  :data="tableData"
+  :columns="columns.slice(0, 4)"
+  :total="total"
+  :current-page="currentPage"
+  :page-size="pageSize"
+  pagination show-selection show-index border
+  @page-change="handlePageChange"
+/>`
+
+const jumperPaginationCode = `<ui-table
+  :data="tableData"
+  :columns="columns.slice(0, 4)"
+  :total="total"
+  :current-page="currentPage"
+  :page-size="pageSize"
+  pagination show-jumper border
+  @page-change="handlePageChange"
+/>`
 </script>
 
 <template>
@@ -100,15 +169,19 @@ const customLayout = ref(['prev', 'pager', 'next', 'sizes', 'jumper'])
     <h1 class="mb-6 text-2xl font-bold">
       集成分页的表格组件演示
     </h1>
+    <p class="mb-4 text-gray-500 dark:text-gray-400">
+      本示例展示了表格组件与分页功能的集成使用，包括基础分页、小尺寸分页、自定义布局等功能。
+    </p>
 
-    <section class="mb-8">
-      <h2 class="mb-4 text-xl font-bold">
-        基础表格分页
-      </h2>
+    <!-- 基础表格分页 -->
+    <ui-demo
+      title="基础表格分页"
+      description="集成基础分页功能的表格，支持翻页、排序和状态显示。"
+      :code="basicPaginationCode"
+    >
       <ui-table
         :data="tableData"
         :columns="columns"
-
         :total="total"
         :current-page="currentPage"
         :page-size="pageSize"
@@ -130,30 +203,32 @@ const customLayout = ref(['prev', 'pager', 'next', 'sizes', 'jumper'])
           </span>
         </template>
       </ui-table>
-    </section>
+    </ui-demo>
 
-    <section class="mb-8">
-      <h2 class="mb-4 text-xl font-bold">
-        小尺寸分页
-      </h2>
+    <!-- 小尺寸分页 -->
+    <ui-demo
+      title="小尺寸分页"
+      description="使用 small-pagination 属性启用小尺寸分页控件，适合空间有限的情况。"
+      :code="smallPaginationCode"
+    >
       <ui-table
         :data="tableData"
         :columns="columns.slice(0, 4)"
-
         size="small"
         :total="total"
         :current-page="currentPage"
         :page-size="pageSize"
-
         pagination small-pagination border
         @page-change="handlePageChange"
       />
-    </section>
+    </ui-demo>
 
-    <section class="mb-8">
-      <h2 class="mb-4 text-xl font-bold">
-        自定义布局
-      </h2>
+    <!-- 自定义布局 -->
+    <ui-demo
+      title="自定义布局"
+      description="通过 pagination-layout 属性自定义分页控件的布局，可以选择显示或隐藏特定元素。"
+      :code="customLayoutCode"
+    >
       <div class="mb-4 flex flex-wrap gap-2">
         <button
           v-for="item in ['total', 'sizes', 'prev', 'pager', 'next', 'jumper']"
@@ -173,7 +248,6 @@ const customLayout = ref(['prev', 'pager', 'next', 'sizes', 'jumper'])
       <ui-table
         :data="tableData"
         :columns="columns.slice(0, 4)"
-
         :total="total"
         :current-page="currentPage"
         :page-size="pageSize"
@@ -181,40 +255,40 @@ const customLayout = ref(['prev', 'pager', 'next', 'sizes', 'jumper'])
         :pagination-layout="customLayout"
         @page-change="handlePageChange"
       />
-    </section>
+    </ui-demo>
 
-    <section class="mb-8">
-      <h2 class="mb-4 text-xl font-bold">
-        带选择和索引列的分页表格
-      </h2>
+    <!-- 带选择和索引列的分页表格 -->
+    <ui-demo
+      title="带选择和索引列的分页表格"
+      description="分页表格同样支持行选择和行序号功能，通过 show-selection 和 show-index 属性启用。"
+      :code="selectionPaginationCode"
+    >
       <ui-table
         :data="tableData"
         :columns="columns.slice(0, 4)"
-
         :total="total"
         :current-page="currentPage"
         :page-size="pageSize"
-
         pagination show-selection show-index border
         @page-change="handlePageChange"
       />
-    </section>
+    </ui-demo>
 
-    <section class="mb-8">
-      <h2 class="mb-4 text-xl font-bold">
-        跳转页面控件
-      </h2>
+    <!-- 跳转页面控件 -->
+    <ui-demo
+      title="跳转页面控件"
+      description="使用 show-jumper 属性显示页码快速跳转输入框，方便用户快速跳转到指定页。"
+      :code="jumperPaginationCode"
+    >
       <ui-table
         :data="tableData"
         :columns="columns.slice(0, 4)"
-
         :total="total"
         :current-page="currentPage"
         :page-size="pageSize"
-
         pagination show-jumper border
         @page-change="handlePageChange"
       />
-    </section>
+    </ui-demo>
   </div>
 </template>

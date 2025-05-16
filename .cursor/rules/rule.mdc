@@ -36,6 +36,8 @@ alwaysApply: true
 - 总是使用 `ui/` 下面的组件来替代原生组件，除非 `ui/` 下面没有对应的组件，比如：`input` 应该使用 `ui-input`
 - 总是在进行数据操作之前检查是不是已经存在了该数据（模型）而不是一开始就直接新建(冗余操作)
 - 总是在需要用到 css 动画的时候，到 `@assets/scss/animations` 下面去找，如果没有才考虑自己实现
+- 总是在 ui/ 组件发生变更(增删改，BUG修复等变动)的时候将变更点，变更原因记录到 @docs/ui.md 对应组件章节中去
+- 总是使用 @ui/demo/index.vue 组件来实现 @components/demo/ 组件演示代码
 
 ### 绝对禁止的行为
 
@@ -82,7 +84,7 @@ Nuxt项目标准目录结构：
 - **变量/函数**: camelCase（小驼峰）
 - **类/接口**: PascalCase（大驼峰）
 - **常量**: UPPER_SNAKE_CASE（大写下划线）
-- **文件**: kebab-case（短横线），禁止出现 `parent/sub-parent` 文件或目录命名，正确示范：`parent/sub` 即可 
+- **文件**: kebab-case（短横线），禁止出现 `parent/sub-parent` 文件或目录命名，正确示范：`parent/sub` 即可
 - **布尔变量**: 使用 `is`/`has`/`should` 前缀
 - **组件文件**: 子目录形式，如 `button/index.vue`、`date/picker.vue`
 - **事件名**：camelCase（小驼峰）
@@ -114,7 +116,7 @@ Nuxt项目标准目录结构：
   <template><div class="text-sm text-center"></div></template>
   ```
 
-  
+
 
 ### 基本结构
 

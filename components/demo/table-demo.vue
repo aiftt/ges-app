@@ -1,9 +1,10 @@
-<script setup lang="ts">
+<script setup lang="ts" name="DemoTableDemo">
 /**
  * 表格组件演示
  * 创建日期: 2024-07-16
  * 作者: aiftt
  * 更新日期: 2024-07-16 - 初始实现
+ * 更新日期: 2024-12-14 - 使用ui-demo组件重构演示页面
  */
 import { ref } from 'vue'
 
@@ -135,13 +136,78 @@ function handleSortChange(info: any) {
 function handleSelectionChange(selection: TableItem[]) {
   console.warn('选中行:', selection)
 }
+
+// 代码示例
+const basicTableCode = `<ui-table
+  :data="tableData"
+  :columns="columns"
+  :loading="loading"
+  stripe border
+  max-height="350px"
+  @sort-change="handleSortChange"
+>
+  <template #status="{ row }">
+    <span
+      class="inline-block rounded-full px-2 py-1 text-sm"
+      :class="{
+        'bg-green-100 text-green-800': row.status === 'success',
+        'bg-yellow-100 text-yellow-800': row.status === 'warning',
+        'bg-red-100 text-red-800': row.status === 'danger',
+        'bg-blue-100 text-blue-800': row.status === 'info',
+      }"
+    >
+      {{ row.status }}
+    </span>
+  </template>
+</ui-table>`
+
+const selectionTableCode = `<ui-table
+  :data="tableData"
+  :columns="columns"
+  show-selection border
+  @selection-change="handleSelectionChange"
+/>`
+
+const indexTableCode = `<ui-table
+  :data="tableData"
+  :columns="columns.slice(0, 3)"
+  show-index border
+  index-label="#"
+/>`
+
+const sizeTableCode = `<!-- 大尺寸 -->
+<ui-table
+  :data="tableData.slice(0, 2)"
+  :columns="columns.slice(0, 3)"
+  border
+  size="large"
+/>
+
+<!-- 默认尺寸 -->
+<ui-table
+  :data="tableData.slice(0, 2)"
+  :columns="columns.slice(0, 3)"
+  border
+  size="default"
+/>
+
+<!-- 小尺寸 -->
+<ui-table
+  :data="tableData.slice(0, 2)"
+  :columns="columns.slice(0, 3)"
+  border
+  size="small"
+/>`
 </script>
 
 <template>
-  <div>
-    <h2 class="mb-6 text-xl font-bold">
+  <div class="p-4">
+    <h2 class="mb-6 text-2xl font-bold">
       表格组件 Table
     </h2>
+    <p class="mb-4 text-gray-500 dark:text-gray-400">
+      表格组件用于展示和管理结构化数据，支持排序、筛选、分页、固定表头和列、自定义单元格渲染等功能。
+    </p>
 
     <!-- 操作按钮 -->
     <div class="mb-4 flex gap-4">
@@ -154,15 +220,15 @@ function handleSelectionChange(selection: TableItem[]) {
     </div>
 
     <!-- 基础表格 -->
-    <section class="mb-8">
-      <h3 class="mb-4 text-lg font-medium">
-        基础表格
-      </h3>
+    <ui-demo
+      title="基础表格"
+      description="基础的表格展示，支持斑马纹、边框、最大高度、排序和状态显示等功能。"
+      :code="basicTableCode"
+    >
       <ui-table
         :data="tableData"
         :columns="columns"
         :loading="loading"
-
         stripe border
         max-height="350px"
         @sort-change="handleSortChange"
@@ -181,42 +247,45 @@ function handleSelectionChange(selection: TableItem[]) {
           </span>
         </template>
       </ui-table>
-    </section>
+    </ui-demo>
 
     <!-- 带选择功能 -->
-    <section class="mb-8">
-      <h3 class="mb-4 text-lg font-medium">
-        带选择功能
-      </h3>
+    <ui-demo
+      title="带选择功能"
+      description="通过 show-selection 属性启用行选择功能，支持多选。"
+      :code="selectionTableCode"
+    >
       <ui-table
         :data="tableData"
         :columns="columns"
         show-selection border
         @selection-change="handleSelectionChange"
       />
-    </section>
+    </ui-demo>
 
     <!-- 带序号 -->
-    <section class="mb-8">
-      <h3 class="mb-4 text-lg font-medium">
-        带序号
-      </h3>
+    <ui-demo
+      title="带序号"
+      description="通过 show-index 属性显示行序号，index-label 属性自定义序号列标题。"
+      :code="indexTableCode"
+    >
       <ui-table
         :data="tableData"
         :columns="columns.slice(0, 3)"
         show-index border
         index-label="#"
       />
-    </section>
+    </ui-demo>
 
     <!-- 不同尺寸 -->
-    <section class="mb-8">
-      <h3 class="mb-4 text-lg font-medium">
-        不同尺寸
-      </h3>
+    <ui-demo
+      title="不同尺寸"
+      description="表格支持三种尺寸：large、default、small，通过 size 属性设置。"
+      :code="sizeTableCode"
+    >
       <div class="space-y-6">
         <div>
-          <h4 class="mb-2">
+          <h4 class="mb-2 text-lg">
             大尺寸
           </h4>
           <ui-table
@@ -227,7 +296,7 @@ function handleSelectionChange(selection: TableItem[]) {
           />
         </div>
         <div>
-          <h4 class="mb-2">
+          <h4 class="mb-2 text-lg">
             默认尺寸
           </h4>
           <ui-table
@@ -238,7 +307,7 @@ function handleSelectionChange(selection: TableItem[]) {
           />
         </div>
         <div>
-          <h4 class="mb-2">
+          <h4 class="mb-2 text-lg">
             小尺寸
           </h4>
           <ui-table
@@ -249,6 +318,6 @@ function handleSelectionChange(selection: TableItem[]) {
           />
         </div>
       </div>
-    </section>
+    </ui-demo>
   </div>
 </template>

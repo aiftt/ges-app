@@ -1,9 +1,10 @@
-<script setup lang="ts">
+<script setup lang="ts" name="DemoTablePaginationDemo">
 /**
  * 表格与分页组件集成演示
  * 创建日期: 2024-07-16
  * 作者: aiftt
  * 更新日期: 2024-07-16 - 初始实现
+ * 更新日期: 2024-12-14 - 使用ui-demo组件重构演示页面
  */
 import { computed, ref } from 'vue'
 
@@ -125,22 +126,90 @@ function handleServerPageChange(page: number, size: number) {
   serverPageSize.value = size
   fetchServerData(page, size)
 }
+
+// 代码示例
+const inlinePaginationCode = `<ui-table
+  :data="tableData"
+  :columns="columns"
+  :total="total"
+  :current-page="currentPage"
+  :page-size="pageSize"
+  stripe pagination border
+  @page-change="handlePageChange"
+>
+  <template #status="{ row }">
+    <span
+      class="inline-block rounded-full px-2 py-1 text-sm"
+      :class="{
+        'bg-green-100 text-green-800': row.status === 'success',
+        'bg-yellow-100 text-yellow-800': row.status === 'warning',
+        'bg-red-100 text-red-800': row.status === 'danger',
+        'bg-blue-100 text-blue-800': row.status === 'info',
+      }"
+    >
+      {{ row.status }}
+    </span>
+  </template>
+</ui-table>`
+
+const serverPaginationCode = `<ui-table
+  :data="serverData"
+  :columns="columns"
+  :total="serverTotal"
+  :current-page="serverCurrentPage"
+  :page-size="serverPageSize"
+  :loading="serverLoading"
+  pagination border
+  @page-change="handleServerPageChange"
+>
+  <template #status="{ row }">
+    <!-- 状态单元格内容 -->
+  </template>
+</ui-table>
+
+// 在 JavaScript 中
+function fetchServerData(page, size) {
+  serverLoading.value = true
+  // 模拟 API 请求
+  setTimeout(() => {
+    // 获取数据逻辑
+    serverLoading.value = false
+  }, 800)
+}
+
+function handleServerPageChange(page, size) {
+  serverCurrentPage.value = page
+  serverPageSize.value = size
+  fetchServerData(page, size)
+}`
+
+const customPaginationCode = `<ui-table
+  :data="tableData"
+  :columns="columns.slice(0, 4)"
+  :total="total"
+  :current-page="currentPage"
+  :page-size="pageSize"
+  :pagination-layout="['prev', 'pager', 'next', 'jumper']"
+  pagination show-jumper small-pagination border
+  @page-change="handlePageChange"
+/>`
 </script>
 
 <template>
-  <div>
-    <h2 class="mb-6 text-xl font-bold">
+  <div class="p-4">
+    <h2 class="mb-6 text-2xl font-bold">
       表格与分页组件集成
     </h2>
+    <p class="mb-4 text-gray-500 dark:text-gray-400">
+      本示例展示了表格组件与分页功能的不同集成方式，包括前端分页、服务端分页和自定义分页配置。
+    </p>
 
     <!-- 内置分页 -->
-    <section class="mb-12">
-      <h3 class="mb-4 text-lg font-medium">
-        内置分页
-      </h3>
-      <p class="mb-4 text-gray-600">
-        表格组件内置分页功能，通过 pagination 属性启用
-      </p>
+    <ui-demo
+      title="内置分页"
+      description="表格组件内置分页功能，通过 pagination 属性启用。前端分页适合数据量不大的场景，所有数据一次性加载。"
+      :code="inlinePaginationCode"
+    >
       <ui-table
         :data="tableData"
         :columns="columns"
@@ -169,16 +238,14 @@ function handleServerPageChange(page: number, size: number) {
           <strong>当前状态：</strong> 第 {{ currentPage }} 页，每页 {{ pageSize }} 条，共 {{ total }} 条
         </p>
       </div>
-    </section>
+    </ui-demo>
 
     <!-- 服务端分页 -->
-    <section class="mb-12">
-      <h3 class="mb-4 text-lg font-medium">
-        服务端分页
-      </h3>
-      <p class="mb-4 text-gray-600">
-        模拟向服务端请求数据的场景，点击分页器会触发新的请求并展示加载状态
-      </p>
+    <ui-demo
+      title="服务端分页"
+      description="模拟向服务端请求数据的场景，点击分页器会触发新的请求并展示加载状态，适合大数据量场景。"
+      :code="serverPaginationCode"
+    >
       <ui-table
         :data="serverData"
         :columns="columns"
@@ -208,25 +275,21 @@ function handleServerPageChange(page: number, size: number) {
           <strong>提示：</strong> 点击分页器会触发新的请求并展示加载状态，模拟真实的服务端分页场景
         </p>
       </div>
-    </section>
+    </ui-demo>
 
     <!-- 自定义分页配置 -->
-    <section class="mb-12">
-      <h3 class="mb-4 text-lg font-medium">
-        自定义分页配置
-      </h3>
-      <p class="mb-4 text-gray-600">
-        可以通过各种属性自定义分页组件的配置
-      </p>
+    <ui-demo
+      title="自定义分页配置"
+      description="可以通过各种属性自定义分页组件的配置，满足不同的UI需求。"
+      :code="customPaginationCode"
+    >
       <ui-table
         :data="tableData"
         :columns="columns.slice(0, 4)"
         :total="total"
         :current-page="currentPage"
         :page-size="pageSize"
-
         :pagination-layout="['prev', 'pager', 'next', 'jumper']"
-
         pagination show-jumper small-pagination border
         @page-change="handlePageChange"
       />
@@ -235,6 +298,6 @@ function handleServerPageChange(page: number, size: number) {
           <strong>配置说明：</strong> 小尺寸分页(small-pagination)、自定义布局(pagination-layout)、显示跳转(show-jumper)
         </p>
       </div>
-    </section>
+    </ui-demo>
   </div>
 </template>
