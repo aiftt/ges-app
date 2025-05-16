@@ -66,6 +66,11 @@ export type SimplePosition = 'top' | 'bottom'
 export type Alignment = 'left' | 'center' | 'right' | 'justify'
 
 /**
+ * 水平对齐方式
+ */
+export type JustifyContent = 'start' | 'end' | 'center' | 'between' | 'around' | 'evenly'
+
+/**
  * 元素位置
  */
 export type ElementPosition = 'top' | 'right' | 'bottom' | 'left'

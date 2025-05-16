@@ -7,11 +7,12 @@
  * 更新日期: 2024-03-01 - 优化为v-bind+CSS变量实现动态样式
  * 更新日期: 2024-09-11 - 使用集中管理的类型定义
  * 更新日期: 2024-09-13 - 使用统一管理的方向和对齐方式类型
+ * 更新日期: 2024-12-19 - 优化使用unocss代替自定义类名
  *
  * 用于控制元素间距的布局组件
  */
 
-import type { Align, Direction, SpaceGap } from '~/types/ui'
+import type { Align, Direction, JustifyContent, SpaceGap } from '~/types/ui'
 import { Comment, Text, useSlots } from 'vue'
 
 // 定义props
@@ -31,7 +32,7 @@ const props = withDefaults(defineProps<{
   /**
    * 主轴对齐方式
    */
-  justify?: 'start' | 'end' | 'center' | 'space-around' | 'space-between'
+  justify?: JustifyContent
   /**
    * 是否自动换行，仅在水平方向有效
    */
@@ -56,6 +57,7 @@ const props = withDefaults(defineProps<{
 
 // 获取slots
 const slots = useSlots()
+const hasDefaultSlot = computed(() => !!slots.default)
 
 // 计算间距值
 const gapVar = computed(() => {
@@ -73,150 +75,102 @@ const gapVar = computed(() => {
   return gapMap[props.gap as 'small' | 'default' | 'large'] || gapMap.default
 })
 
-// 计算容器类名
-const spaceClass = computed(() => {
-  const classes = ['ui-space']
+// 分割线样式
+const splitLineStyle = computed(() => ({
+  margin: props.direction === 'horizontal' ? `0 ${gapVar.value}` : `${gapVar.value} 0`,
+  height: props.direction === 'horizontal' ? '1rem' : '1px',
+  width: props.direction === 'horizontal' ? '1px' : '100%',
+}))
+
+// 空间容器样式
+const spaceItemStyle = computed(() => {
+  if (props.direction === 'horizontal') {
+    return {
+      marginRight: props.split ? '0' : gapVar.value,
+    }
+  }
+  else {
+    return {
+      marginBottom: props.split ? '0' : gapVar.value,
+    }
+  }
+})
+
+// 合并所有类名到一个计算属性
+const containerClasses = computed(() => {
+  const classes = ['ui-space', 'flex']
 
   // 方向类
-  classes.push(`ui-space-${props.direction}`)
+  classes.push(props.direction === 'horizontal' ? 'flex-row' : 'flex-col')
 
   // 对齐方式类
-  if (props.align !== 'center') {
-    classes.push(`ui-space-align-${props.align}`)
+  switch (props.align) {
+    case 'start':
+      classes.push('items-start')
+      break
+    case 'end':
+      classes.push('items-end')
+      break
+    case 'stretch':
+      classes.push('items-stretch')
+      break
+    case 'baseline':
+      classes.push('items-baseline')
+      break
+    default:
+      classes.push('items-center')
   }
 
-  // 主轴对齐方式
-  if (props.justify !== 'start') {
-    classes.push(`ui-space-justify-${props.justify}`)
+  // 主轴对齐方式类
+  switch (props.justify) {
+    case 'end':
+      classes.push('justify-end')
+      break
+    case 'center':
+      classes.push('justify-center')
+      break
+    case 'around':
+      classes.push('justify-around')
+      break
+    case 'between':
+      classes.push('justify-between')
+      break
+    default:
+      classes.push('justify-start')
   }
 
-  // 是否换行
-  if (props.wrap) {
-    classes.push('ui-space-wrap')
-  }
+  // 换行类
+  classes.push(props.wrap ? 'flex-wrap' : 'flex-nowrap')
 
-  // 自定义类名
-  if (props.class) {
+  // 自定义类
+  if (props.class)
     classes.push(props.class)
-  }
 
   return classes.join(' ')
 })
-
-// 根据是否有默认槽位来决定是否渲染
-const hasDefaultSlot = computed(() => !!slots.default)
 </script>
 
 <template>
-  <div v-if="hasDefaultSlot" class="ui-space" :class="[spaceClass]">
+  <div
+    v-if="hasDefaultSlot"
+    :class="containerClasses"
+  >
     <template v-for="(child, index) in slots.default?.()">
-      <div
-        v-if="child.type !== Comment && child.type !== Text && !props.split"
-        :key="index"
-        class="ui-space-item"
-      >
-        <component :is="child" />
-      </div>
-      <template v-else-if="child.type !== Comment && child.type !== Text && props.split">
+      <template v-if="child.type !== Comment && child.type !== Text">
         <div
           :key="`${index}-item`"
-          class="ui-space-item"
+          class="flex-none"
+          :style="index < (slots.default?.().length || 0) - 1 && !split ? spaceItemStyle : {}"
         >
           <component :is="child" />
         </div>
         <div
-          v-if="index < (slots.default?.().length || 0) - 1"
+          v-if="split && index < (slots.default?.().length || 0) - 1"
           :key="`${index}-split`"
-          class="ui-space-split-line"
+          class="bg-gray-200 dark:bg-gray-700"
+          :style="splitLineStyle"
         />
       </template>
     </template>
   </div>
 </template>
-
-<style scoped>
-.ui-space {
-  --ui-space-gap: v-bind(gapVar);
-
-  display: flex;
-}
-
-.ui-space-item {
-  flex: none;
-}
-
-/* 方向 */
-.ui-space-horizontal {
-  flex-direction: row;
-}
-
-.ui-space-horizontal > .ui-space-item:not(:last-child) {
-  margin-right: var(--ui-space-gap);
-}
-
-.ui-space-vertical {
-  flex-direction: column;
-}
-
-.ui-space-vertical > .ui-space-item:not(:last-child) {
-  margin-bottom: var(--ui-space-gap);
-}
-
-/* 对齐方式 */
-.ui-space-align-start {
-  align-items: flex-start;
-}
-
-.ui-space-align-end {
-  align-items: flex-end;
-}
-
-.ui-space-align-center {
-  align-items: center;
-}
-
-.ui-space-align-baseline {
-  align-items: baseline;
-}
-
-.ui-space-align-stretch {
-  align-items: stretch;
-}
-
-/* 主轴对齐方式 */
-.ui-space-justify-start {
-  justify-content: flex-start;
-}
-
-.ui-space-justify-end {
-  justify-content: flex-end;
-}
-
-.ui-space-justify-center {
-  justify-content: center;
-}
-
-.ui-space-justify-space-around {
-  justify-content: space-around;
-}
-
-.ui-space-justify-space-between {
-  justify-content: space-between;
-}
-
-/* 是否换行 */
-.ui-space-wrap {
-  flex-wrap: wrap;
-}
-
-/* 分割线 */
-.ui-space-split-line {
-  margin-left: 0.5rem;
-  margin-right: 0.5rem;
-  height: 1rem;
-  width: 1px;
-  background-color: var(--ui-color-split, #e5e7eb);
-}
-
-/* CSS变量已移至主题文件中 */
-</style>
