@@ -490,22 +490,22 @@
 47. ✅ `components/demo/code.vue` - 已完成
 48. ✅ `components/demo/loader.vue` - 已完成
 49. ✅ `components/demo/resizebox.vue` - 已完成
-50. [ ] `components/demo/split.vue` - 待重构
-51. [ ] `components/demo/segmented.vue` - 待重构
+50. ✅ `components/demo/split.vue` - 已完成
+51. ✅ `components/demo/segmented.vue` - 已完成
 52. ✅ `components/demo/watermark.vue` - 已完成
-53. [ ] `components/demo/virtual-table.vue` - 待重构
-54. [ ] `components/demo/image.vue` - 待重构
-55. [ ] `components/demo/badge.vue` - 待重构
-56. [ ] `components/demo/collapse.vue` - 待重构
-57. [ ] `components/demo/overflow-list.vue` - 待重构
-58. [ ] `components/demo/carousel.vue` - 待重构
-59. [ ] `components/demo/empty.vue` - 待重构
-60. [ ] `components/demo/comment.vue` - 待重构
-61. [ ] `components/demo/descriptions.vue` - 待重构
-62. [ ] `components/demo/list.vue` - 待重构
-63. [ ] `components/demo/calendar.vue` - 待重构
-64. [ ] `components/demo/tour.vue` - 待重构
-65. [ ] `components/demo/textarea.vue` - 待重构
+53. ✅ `components/demo/virtual-table.vue` - 已完成
+54. ✅ `components/demo/image.vue` - 已完成
+55. ✅ `components/demo/badge.vue` - 已完成
+56. ✅ `components/demo/collapse.vue` - 已完成
+57. ✅ `components/demo/overflowlist-demo.vue` - 已完成
+58. ✅ `components/demo/carousel.vue` - 已完成
+59. ✅ `components/demo/empty.vue` - 已完成
+60. ✅ `components/demo/comment.vue` - 已完成
+61. ✅ `components/demo/descriptions.vue` - 已完成
+62. ✅ `components/demo/list.vue` - 已完成
+63. ✅ `components/demo/calendar.vue` - 已完成
+64. ✅ `components/demo/tour.vue` - 已完成
+65. ✅ `components/demo/textarea.vue` - 已完成
 66. [ ] `components/demo/input-number.vue` - 待重构
 67. [ ] `components/demo/autocomplete.vue` - 待重构
 68. [ ] `components/demo/verification-code.vue` - 待重构
