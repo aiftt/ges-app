@@ -7,6 +7,7 @@ import type { IOverflowItem } from '~/types/common'
  * 更新日期: 2024-07-19 - 初始实现
  * 更新日期: 2024-07-22 - 添加垂直方向折叠按钮在顶部的示例
  * 更新日期: 2024-06-17 - 使用ui-demo组件重构演示页面
+ * 更新日期: 2024-12-15 - 修复类型错误
  */
 import { ref } from 'vue'
 
@@ -29,7 +30,7 @@ const tags = ref<IOverflowItem[]>([
   { text: 'Go' },
 ])
 
-const users = ref([
+const users = ref<IOverflowItem[]>([
   { id: 1, name: '张三', avatar: '👨‍💼' },
   { id: 2, name: '李四', avatar: '👩‍💼' },
   { id: 3, name: '王五', avatar: '👨‍💻' },
@@ -41,7 +42,7 @@ const users = ref([
 ])
 
 // 添加复杂列表项的数据
-const articles = ref([
+const articles = ref<IOverflowItem[]>([
   {
     id: 1,
     title: '如何高效使用Vue3组合式API',
@@ -87,14 +88,14 @@ const articles = ref([
 ])
 
 // 处理"更多"点击
-function handleOverflowClick(hiddenItems: any[]) {
+function handleOverflowClick(hiddenItems: IOverflowItem[]) {
   if (Array.isArray(hiddenItems)) {
     console.warn(`隐藏了 ${hiddenItems.length} 个项目`)
   }
 }
 
 // 可见性变化处理
-function handleVisibilityChange(visibleItems: any[], hiddenItems: any[]) {
+function handleVisibilityChange(visibleItems: IOverflowItem[], hiddenItems: IOverflowItem[]) {
   console.warn('可见项:', visibleItems.length, '隐藏项:', hiddenItems.length)
 }
 
@@ -762,7 +763,7 @@ const verticalTopCode = `<ui-overflowlist
             overflow-click
           </td>
           <td class="px-4 py-2">
-            (hiddenItems: any[]) => void
+            (hiddenItems: IOverflowItem[]) => void
           </td>
           <td class="px-4 py-2">
             点击折叠按钮时触发，参数为隐藏的项目数组
@@ -773,7 +774,7 @@ const verticalTopCode = `<ui-overflowlist
             visibility-change
           </td>
           <td class="px-4 py-2">
-            (visibleItems: any[], hiddenItems: any[]) => void
+            (visibleItems: IOverflowItem[], hiddenItems: IOverflowItem[]) => void
           </td>
           <td class="px-4 py-2">
             可见性变化时触发，包含可见项目和隐藏项目数组

@@ -4,8 +4,13 @@
  * 创建日期: 2024-07-09
  * 作者: aiftt
  * 更新日期: 2024-07-09 - 初始实现
+ * 更新日期: 2024-12-15 - 使用ui-demo组件重构演示页面
  */
 import { ref } from 'vue'
+import { useLogger } from '~/composables/useLogger'
+
+// 初始化logger
+const logger = useLogger('DemoRate')
 
 // 基本评分值
 const basicRate = ref(3)
@@ -39,314 +44,569 @@ const gradientColors = [
 
 // 描述文本数组
 const rateTexts = ['极差', '失望', '一般', '满意', '惊喜']
-</script>
 
-<template>
-  <div>
-    <ui-typography>
-      <ui-typography-title :level="3">
-        Rate 评分组件
-      </ui-typography-title>
-      <ui-typography-paragraph>评分组件允许用户通过点击星星来给项目评分，可用于评价、打分等场景。</ui-typography-paragraph>
-    </ui-typography>
+// 处理评分变更事件
+function handleChange(value: number) {
+  logger.info('评分变更:', value)
+}
 
-    <!-- 基础用法 -->
-    <div class="demo-section">
-      <ui-typography-title :level="4">
-        基础用法
-      </ui-typography-title>
-      <ui-typography-paragraph>最简单的评分组件用法。</ui-typography-paragraph>
-      <div class="demo-component">
-        <ui-rate v-model="basicRate" />
-      </div>
-      <div class="demo-code">
-        <pre><code>{{ `<ui-rate v-model="basicRate" />` }}</code></pre>
-      </div>
-    </div>
+// 处理鼠标悬停事件
+function handleHoverChange(value: number) {
+  logger.info('鼠标悬停:', value)
+}
 
-    <!-- 半星 -->
-    <div class="demo-section">
-      <ui-typography-title :level="4">
-        半星
-      </ui-typography-title>
-      <ui-typography-paragraph>通过 allow-half 属性可以支持选择半星。</ui-typography-paragraph>
-      <div class="demo-component">
-        <ui-rate v-model="halfRate" allow-half />
-      </div>
-      <div class="demo-code">
-        <pre><code>{{ `<ui-rate v-model="halfRate" allow-half />` }}</code></pre>
-      </div>
-    </div>
+// 示例代码字符串
+const basicCode = `<template>
+  <ui-rate v-model="value" @change="handleChange" />
+</template>
 
-    <!-- 自定义颜色 -->
-    <div class="demo-section">
-      <ui-typography-title :level="4">
-        自定义颜色
-      </ui-typography-title>
-      <ui-typography-paragraph>可以通过 color 和 void-color 属性自定义颜色。</ui-typography-paragraph>
-      <div class="demo-component">
-        <ui-rate v-model="colorRate" color="#409EFF" void-color="#EBEEF5" />
-      </div>
-      <div class="demo-code">
-        <pre><code>{{ `<ui-rate v-model="colorRate" color="#409EFF" void-color="#EBEEF5" />` }}</code></pre>
-      </div>
-    </div>
+<script setup>
+import { ref } from 'vue'
 
-    <!-- 自定义图标 -->
-    <div class="demo-section">
-      <ui-typography-title :level="4">
-        自定义图标
-      </ui-typography-title>
-      <ui-typography-paragraph>可以通过 icon 和 void-icon 属性自定义图标。</ui-typography-paragraph>
-      <div class="demo-component">
-        <ui-rate v-model="iconRate" icon="mdi:heart" void-icon="mdi:heart-outline" color="#F56C6C" />
-      </div>
-      <div class="demo-code">
-        <pre><code>{{ `<ui-rate v-model="iconRate" icon="mdi:heart" void-icon="mdi:heart-outline" color="#F56C6C" />` }}</code></pre>
-      </div>
-    </div>
+const value = ref(3)
 
-    <!-- 只读 -->
-    <div class="demo-section">
-      <ui-typography-title :level="4">
-        只读状态
-      </ui-typography-title>
-      <ui-typography-paragraph>readonly 属性将评分设置为只读状态，通常用于展示评分。</ui-typography-paragraph>
-      <div class="demo-component">
-        <ui-rate v-model="readonlyRate" allow-half readonly />
-      </div>
-      <div class="demo-code">
-        <pre><code>{{ `<ui-rate v-model="readonlyRate" readonly allow-half />` }}</code></pre>
-      </div>
-    </div>
+function handleChange(value) {
+  console.log('评分变更:', value)
+}
+<\/script>`
 
-    <!-- 辅助文字 -->
-    <div class="demo-section">
-      <ui-typography-title :level="4">
-        辅助文字
-      </ui-typography-title>
-      <ui-typography-paragraph>通过 show-text 和 texts 属性显示辅助文字。</ui-typography-paragraph>
-      <div class="demo-component">
-        <ui-rate v-model="textRate" show-text :texts="rateTexts" />
-      </div>
-      <div class="demo-code">
-        <pre><code>{{ `<ui-rate v-model="textRate" show-text :texts="rateTexts" />
+const halfCode = `<template>
+  <ui-rate v-model="value" allow-half />
+</template>
 
-// 描述文本数组
-const rateTexts = ['极差', '失望', '一般', '满意', '惊喜']` }}</code></pre>
-      </div>
-    </div>
+<script setup>
+import { ref } from 'vue'
 
-    <!-- 其他功能 -->
-    <div class="demo-section">
-      <ui-typography-title :level="4">
-        渐变颜色
-      </ui-typography-title>
-      <ui-typography-paragraph>通过 colors 属性设置渐变颜色。</ui-typography-paragraph>
-      <div class="demo-component">
-        <ui-rate v-model="gradientRate" :colors="gradientColors" />
-      </div>
-      <div class="demo-code">
-        <pre><code>{{ `<ui-rate v-model="gradientRate" :colors="gradientColors" />
+const value = ref(2.5)
+<\/script>`
 
+const colorCode = `<template>
+  <ui-rate v-model="value" color="#409EFF" void-color="#EBEEF5" />
+</template>
+
+<script setup>
+import { ref } from 'vue'
+
+const value = ref(4)
+<\/script>`
+
+const iconCode = `<template>
+  <ui-rate
+    v-model="value"
+    icon="mdi:heart"
+    void-icon="mdi:heart-outline"
+    color="#F56C6C"
+  />
+</template>
+
+<script setup>
+import { ref } from 'vue'
+
+const value = ref(3)
+<\/script>`
+
+const readonlyCode = `<template>
+  <ui-rate v-model="value" allow-half readonly />
+</template>
+
+<script setup>
+import { ref } from 'vue'
+
+const value = ref(3.5)
+<\/script>`
+
+const textCode = `<template>
+  <ui-rate v-model="value" show-text :texts="texts" />
+</template>
+
+<script setup>
+import { ref } from 'vue'
+
+const value = ref(4)
+const texts = ['极差', '失望', '一般', '满意', '惊喜']
+<\/script>`
+
+const gradientCode = `<template>
+  <ui-rate v-model="value" :colors="colors" />
+</template>
+
+<script setup>
+import { ref } from 'vue'
+
+const value = ref(3)
 // 渐变色数组
-const gradientColors = [
+const colors = [
   '#F56C6C', // 低分颜色，红色
   '#E6A23C', // 中低分颜色，橙色
   '#FFCC00', // 中等分颜色，黄色
   '#67C23A', // 中高分颜色，绿色
   '#409EFF'  // 高分颜色，蓝色
-]` }}</code></pre>
-      </div>
-    </div>
+]
+<\/script>`
 
-    <!-- 尺寸 -->
-    <div class="demo-section">
-      <ui-typography-title :level="4">
-        不同尺寸
-      </ui-typography-title>
-      <ui-typography-paragraph>评分组件提供三种不同的尺寸。</ui-typography-paragraph>
-      <div class="demo-component">
-        <div class="demo-sizes">
-          <div>
-            <span class="size-label">小:</span>
-            <ui-rate v-model="basicRate" size="small" />
-          </div>
-          <div>
-            <span class="size-label">默认:</span>
-            <ui-rate v-model="basicRate" />
-          </div>
-          <div>
-            <span class="size-label">大:</span>
-            <ui-rate v-model="basicRate" size="large" />
-          </div>
-          <div>
-            <span class="size-label">自定义:</span>
-            <ui-rate v-model="basicRate" :size="32" />
-          </div>
+const sizeCode = `<template>
+  <div class="space-y-4">
+    <div>
+      <span class="inline-block w-16 text-sm">小:</span>
+      <ui-rate v-model="value" size="small" />
+    </div>
+    <div>
+      <span class="inline-block w-16 text-sm">默认:</span>
+      <ui-rate v-model="value" />
+    </div>
+    <div>
+      <span class="inline-block w-16 text-sm">大:</span>
+      <ui-rate v-model="value" size="large" />
+    </div>
+    <div>
+      <span class="inline-block w-16 text-sm">自定义:</span>
+      <ui-rate v-model="value" :size="32" />
+    </div>
+  </div>
+</template>
+
+<script setup>
+import { ref } from 'vue'
+
+const value = ref(3)
+<\/script>`
+</script>
+
+<template>
+  <div class="mx-auto max-w-6xl">
+    <h2 class="mb-6 text-2xl font-bold dark:text-white">
+      Rate 评分
+    </h2>
+    <p class="mb-6 text-gray-500 dark:text-gray-400">
+      评分组件允许用户通过点击星星来给项目评分，可用于评价、打分等场景。
+    </p>
+
+    <!-- 基础用法 -->
+    <ui-demo
+      title="基础用法"
+      description="最简单的评分组件用法。"
+      :code="basicCode"
+    >
+      <div class="space-y-4">
+        <ui-rate v-model="basicRate" @change="handleChange" @hover-change="handleHoverChange" />
+        <div class="text-sm text-gray-600 dark:text-gray-400">
+          当前评分: {{ basicRate }}
         </div>
       </div>
-      <div class="demo-code">
-        <pre><code>{{ `<ui-rate v-model="basicRate" size="small" />
-<ui-rate v-model="basicRate" />
-<ui-rate v-model="basicRate" size="large" />
-<ui-rate v-model="basicRate" :size="32" />` }}</code></pre>
+    </ui-demo>
+
+    <!-- 半星 -->
+    <ui-demo
+      title="半星"
+      description="通过allow-half属性可以支持选择半星。"
+      :code="halfCode"
+    >
+      <div class="space-y-4">
+        <ui-rate v-model="halfRate" allow-half />
+        <div class="text-sm text-gray-600 dark:text-gray-400">
+          当前评分: {{ halfRate }}
+        </div>
       </div>
-    </div>
+    </ui-demo>
 
-    <!-- 属性表格 -->
-    <div class="demo-section">
-      <ui-typography-title :level="4">
+    <!-- 自定义颜色 -->
+    <ui-demo
+      title="自定义颜色"
+      description="可以通过color和void-color属性自定义评分组件的颜色。"
+      :code="colorCode"
+    >
+      <ui-rate v-model="colorRate" color="#409EFF" void-color="#EBEEF5" />
+    </ui-demo>
+
+    <!-- 自定义图标 -->
+    <ui-demo
+      title="自定义图标"
+      description="可以通过icon和void-icon属性自定义评分组件的图标。"
+      :code="iconCode"
+    >
+      <ui-rate v-model="iconRate" icon="mdi:heart" void-icon="mdi:heart-outline" color="#F56C6C" />
+    </ui-demo>
+
+    <!-- 只读状态 -->
+    <ui-demo
+      title="只读状态"
+      description="readonly属性将评分设置为只读状态，通常用于展示评分。"
+      :code="readonlyCode"
+    >
+      <ui-rate v-model="readonlyRate" allow-half readonly />
+    </ui-demo>
+
+    <!-- 辅助文字 -->
+    <ui-demo
+      title="辅助文字"
+      description="通过show-text和texts属性显示辅助文字。"
+      :code="textCode"
+    >
+      <ui-rate v-model="textRate" show-text :texts="rateTexts" />
+    </ui-demo>
+
+    <!-- 渐变颜色 -->
+    <ui-demo
+      title="渐变颜色"
+      description="通过colors属性设置不同分值对应的颜色。"
+      :code="gradientCode"
+    >
+      <ui-rate v-model="gradientRate" :colors="gradientColors" />
+    </ui-demo>
+
+    <!-- 不同尺寸 -->
+    <ui-demo
+      title="不同尺寸"
+      description="评分组件提供三种不同的尺寸，以及支持自定义尺寸。"
+      :code="sizeCode"
+    >
+      <div class="space-y-4">
+        <div>
+          <span class="inline-block w-16 text-sm dark:text-gray-400">小:</span>
+          <ui-rate v-model="basicRate" size="small" />
+        </div>
+        <div>
+          <span class="inline-block w-16 text-sm dark:text-gray-400">默认:</span>
+          <ui-rate v-model="basicRate" />
+        </div>
+        <div>
+          <span class="inline-block w-16 text-sm dark:text-gray-400">大:</span>
+          <ui-rate v-model="basicRate" size="large" />
+        </div>
+        <div>
+          <span class="inline-block w-16 text-sm dark:text-gray-400">自定义:</span>
+          <ui-rate v-model="basicRate" :size="32" />
+        </div>
+      </div>
+    </ui-demo>
+
+    <!-- API参考 -->
+    <ui-demo
+      title="API参考"
+      description="Rate组件的属性、事件和方法。"
+      :show-code="false"
+      code=""
+    >
+      <h4 class="mb-2 font-medium dark:text-white">
         属性
-      </ui-typography-title>
-      <table class="demo-table">
-        <thead>
-          <tr>
-            <th>属性</th>
-            <th>说明</th>
-            <th>类型</th>
-            <th>默认值</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>modelValue / v-model</td>
-            <td>评分值</td>
-            <td>number</td>
-            <td>0</td>
-          </tr>
-          <tr>
-            <td>max</td>
-            <td>最大分值</td>
-            <td>number</td>
-            <td>5</td>
-          </tr>
-          <tr>
-            <td>disabled</td>
-            <td>是否禁用</td>
-            <td>boolean</td>
-            <td>false</td>
-          </tr>
-          <tr>
-            <td>readonly</td>
-            <td>是否只读</td>
-            <td>boolean</td>
-            <td>false</td>
-          </tr>
-          <tr>
-            <td>allow-half</td>
-            <td>是否允许半选</td>
-            <td>boolean</td>
-            <td>false</td>
-          </tr>
-          <tr>
-            <td>clearable</td>
-            <td>是否可清空</td>
-            <td>boolean</td>
-            <td>false</td>
-          </tr>
-          <tr>
-            <td>icon</td>
-            <td>评分图标</td>
-            <td>string</td>
-            <td>carbon:star-filled</td>
-          </tr>
-          <tr>
-            <td>void-icon</td>
-            <td>未选中图标</td>
-            <td>string</td>
-            <td>carbon:star</td>
-          </tr>
-          <tr>
-            <td>color</td>
-            <td>评分颜色</td>
-            <td>string</td>
-            <td>#FFCC00</td>
-          </tr>
-          <tr>
-            <td>void-color</td>
-            <td>未选中颜色</td>
-            <td>string</td>
-            <td>#C6D1DE</td>
-          </tr>
-          <tr>
-            <td>colors</td>
-            <td>不同分值对应的颜色</td>
-            <td>string[]</td>
-            <td>[]</td>
-          </tr>
-          <tr>
-            <td>size</td>
-            <td>图标大小</td>
-            <td>'small' | 'default' | 'large' | number</td>
-            <td>default</td>
-          </tr>
-          <tr>
-            <td>show-text</td>
-            <td>是否显示辅助文字</td>
-            <td>boolean</td>
-            <td>false</td>
-          </tr>
-          <tr>
-            <td>texts</td>
-            <td>辅助文字字典</td>
-            <td>string[]</td>
-            <td>[]</td>
-          </tr>
-          <tr>
-            <td>text-position</td>
-            <td>辅助文字位置</td>
-            <td>'left' | 'right'</td>
-            <td>right</td>
-          </tr>
-          <tr>
-            <td>show-score</td>
-            <td>是否显示分数</td>
-            <td>boolean</td>
-            <td>false</td>
-          </tr>
-          <tr>
-            <td>text-template</td>
-            <td>文字模板</td>
-            <td>string</td>
-            <td>{value}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+      </h4>
+      <div class="overflow-auto">
+        <table class="min-w-full border-collapse">
+          <thead>
+            <tr class="border-b dark:border-gray-700">
+              <th class="px-4 py-2 text-left dark:text-white">
+                名称
+              </th>
+              <th class="px-4 py-2 text-left dark:text-white">
+                说明
+              </th>
+              <th class="px-4 py-2 text-left dark:text-white">
+                类型
+              </th>
+              <th class="px-4 py-2 text-left dark:text-white">
+                默认值
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="border-b dark:border-gray-700">
+              <td class="px-4 py-2 dark:text-gray-300">
+                modelValue / v-model
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                评分值
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                number
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                0
+              </td>
+            </tr>
+            <tr class="border-b dark:border-gray-700">
+              <td class="px-4 py-2 dark:text-gray-300">
+                max
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                最大分值
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                number
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                5
+              </td>
+            </tr>
+            <tr class="border-b dark:border-gray-700">
+              <td class="px-4 py-2 dark:text-gray-300">
+                disabled
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                是否禁用
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                boolean
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                false
+              </td>
+            </tr>
+            <tr class="border-b dark:border-gray-700">
+              <td class="px-4 py-2 dark:text-gray-300">
+                readonly
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                是否只读
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                boolean
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                false
+              </td>
+            </tr>
+            <tr class="border-b dark:border-gray-700">
+              <td class="px-4 py-2 dark:text-gray-300">
+                allow-half
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                是否允许半选
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                boolean
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                false
+              </td>
+            </tr>
+            <tr class="border-b dark:border-gray-700">
+              <td class="px-4 py-2 dark:text-gray-300">
+                clearable
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                是否可清空
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                boolean
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                false
+              </td>
+            </tr>
+            <tr class="border-b dark:border-gray-700">
+              <td class="px-4 py-2 dark:text-gray-300">
+                icon
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                评分图标
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                string
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                carbon:star-filled
+              </td>
+            </tr>
+            <tr class="border-b dark:border-gray-700">
+              <td class="px-4 py-2 dark:text-gray-300">
+                void-icon
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                未选中图标
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                string
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                carbon:star
+              </td>
+            </tr>
+            <tr class="border-b dark:border-gray-700">
+              <td class="px-4 py-2 dark:text-gray-300">
+                color
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                评分颜色
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                string
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                #FFCC00
+              </td>
+            </tr>
+            <tr class="border-b dark:border-gray-700">
+              <td class="px-4 py-2 dark:text-gray-300">
+                void-color
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                未选中颜色
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                string
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                #C6D1DE
+              </td>
+            </tr>
+            <tr class="border-b dark:border-gray-700">
+              <td class="px-4 py-2 dark:text-gray-300">
+                colors
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                不同分值对应的颜色
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                string[]
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                []
+              </td>
+            </tr>
+            <tr class="border-b dark:border-gray-700">
+              <td class="px-4 py-2 dark:text-gray-300">
+                size
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                图标大小
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                'small' | 'default' | 'large' | number
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                default
+              </td>
+            </tr>
+            <tr class="border-b dark:border-gray-700">
+              <td class="px-4 py-2 dark:text-gray-300">
+                show-text
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                是否显示辅助文字
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                boolean
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                false
+              </td>
+            </tr>
+            <tr class="border-b dark:border-gray-700">
+              <td class="px-4 py-2 dark:text-gray-300">
+                texts
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                辅助文字字典
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                string[]
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                []
+              </td>
+            </tr>
+            <tr class="border-b dark:border-gray-700">
+              <td class="px-4 py-2 dark:text-gray-300">
+                text-position
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                辅助文字位置
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                'left' | 'right'
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                right
+              </td>
+            </tr>
+            <tr class="border-b dark:border-gray-700">
+              <td class="px-4 py-2 dark:text-gray-300">
+                show-score
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                是否显示分数
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                boolean
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                false
+              </td>
+            </tr>
+            <tr class="border-b dark:border-gray-700">
+              <td class="px-4 py-2 dark:text-gray-300">
+                text-template
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                文字模板
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                string
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                {value}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
-    <!-- 事件表格 -->
-    <div class="demo-section">
-      <ui-typography-title :level="4">
+      <h4 class="mb-2 mt-4 font-medium dark:text-white">
         事件
-      </ui-typography-title>
-      <table class="demo-table">
-        <thead>
-          <tr>
-            <th>事件名</th>
-            <th>说明</th>
-            <th>参数</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>update:modelValue</td>
-            <td>评分值变更时触发</td>
-            <td>新评分值（number）</td>
-          </tr>
-          <tr>
-            <td>change</td>
-            <td>评分值变更时触发</td>
-            <td>新评分值（number）</td>
-          </tr>
-          <tr>
-            <td>hover-change</td>
-            <td>鼠标悬停在不同值时触发</td>
-            <td>当前悬停的值（number）</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+      </h4>
+      <div class="overflow-auto">
+        <table class="min-w-full border-collapse">
+          <thead>
+            <tr class="border-b dark:border-gray-700">
+              <th class="px-4 py-2 text-left dark:text-white">
+                事件名
+              </th>
+              <th class="px-4 py-2 text-left dark:text-white">
+                说明
+              </th>
+              <th class="px-4 py-2 text-left dark:text-white">
+                参数
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="border-b dark:border-gray-700">
+              <td class="px-4 py-2 dark:text-gray-300">
+                update:modelValue
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                评分值变更时触发
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                新评分值（number）
+              </td>
+            </tr>
+            <tr class="border-b dark:border-gray-700">
+              <td class="px-4 py-2 dark:text-gray-300">
+                change
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                评分值变更时触发
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                新评分值（number）
+              </td>
+            </tr>
+            <tr class="border-b dark:border-gray-700">
+              <td class="px-4 py-2 dark:text-gray-300">
+                hover-change
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                鼠标悬停在不同值时触发
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                当前悬停的值（number）
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </ui-demo>
   </div>
 </template>
 

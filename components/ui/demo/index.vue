@@ -28,7 +28,7 @@ const props = withDefaults(defineProps<{
   /**
    * 代码内容
    */
-  code: string
+  code?: string
   /**
    * 代码语言
    */

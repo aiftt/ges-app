@@ -4,8 +4,13 @@
  * 创建日期: 2024-06-12
  * 作者: aiftt
  * 更新日期: 2024-06-12 - 初始实现
+ * 更新日期: 2024-12-15 - 使用ui-demo组件重构演示页面
  */
 import { ref } from 'vue'
+import { useLogger } from '~/composables/useLogger'
+
+// 初始化logger
+const logger = useLogger('DemoSlider')
 
 // 基础滑块
 const basicValue = ref(30)
@@ -51,349 +56,626 @@ const verticalReversedRangeValue = ref([40, 80])
 // 自定义颜色
 const customColorValue = ref(70)
 
-// 主题模式
-const isDarkMode = ref(false)
-
-// 切换主题模式
-function toggleDarkMode() {
-  isDarkMode.value = !isDarkMode.value
-  const html = document.documentElement
-
-  if (isDarkMode.value) {
-    html.classList.add('dark')
-  }
-  else {
-    html.classList.remove('dark')
-  }
+// 处理值改变事件
+function handleChange(value: number | number[]) {
+  logger.info('值改变:', value)
 }
+
+// 处理拖动结束事件
+function handleDragEnd(value: number | number[]) {
+  logger.info('拖动结束:', value)
+}
+
+// 示例代码字符串
+const basicCode = `<template>
+  <ui-slider v-model="value" @change="handleChange" />
+</template>
+
+<script setup>
+import { ref } from 'vue'
+
+const value = ref(30)
+
+function handleChange(value) {
+  console.log('值改变:', value)
+}
+<\/script>`
+
+const disabledCode = `<template>
+  <ui-slider v-model="value" disabled />
+</template>
+
+<script setup>
+import { ref } from 'vue'
+
+const value = ref(40)
+<\/script>`
+
+const stepCode = `<template>
+  <ui-slider v-model="value" :step="10" :show-stops="true" />
+</template>
+
+<script setup>
+import { ref } from 'vue'
+
+const value = ref(0)
+<\/script>`
+
+const inputCode = `<template>
+  <ui-slider v-model="value" :show-input="true" />
+</template>
+
+<script setup>
+import { ref } from 'vue'
+
+const value = ref(50)
+<\/script>`
+
+const rangeCode = `<template>
+  <ui-slider v-model="value" range />
+</template>
+
+<script setup>
+import { ref } from 'vue'
+
+const value = ref([20, 80])
+<\/script>`
+
+const stopsCode = `<template>
+  <ui-slider v-model="value" :step="10" :show-stops="true" />
+</template>
+
+<script setup>
+import { ref } from 'vue'
+
+const value = ref(60)
+<\/script>`
+
+const marksCode = `<template>
+  <ui-slider v-model="value" :marks="marks" />
+</template>
+
+<script setup>
+import { ref } from 'vue'
+
+const value = ref(40)
+const marks = {
+  0: '0°C',
+  25: '25°C',
+  50: '50°C',
+  75: '75°C',
+  100: {
+    label: '100°C',
+    style: {
+      color: '#f00',
+    },
+  },
+}
+<\/script>`
+
+const verticalCode = `<template>
+  <div class="flex items-start gap-12 h-[300px]">
+    <div class="flex flex-col items-center">
+      <ui-slider v-model="value" vertical />
+      <div class="mt-4 text-sm w-24">值: {{ value }}</div>
+    </div>
+    <div class="flex flex-col items-center">
+      <ui-slider v-model="rangeValue" vertical range :height="250" />
+      <div class="mt-4 text-sm w-24">值: {{ rangeValue }}</div>
+    </div>
+  </div>
+</template>
+
+<script setup>
+import { ref } from 'vue'
+
+const value = ref(30)
+const rangeValue = ref([20, 50])
+<\/script>`
+
+const verticalReversedCode = `<template>
+  <div class="flex items-start gap-12 h-[300px]">
+    <div class="flex flex-col items-center">
+      <ui-slider v-model="value" vertical reverse :height="250" />
+      <div class="mt-4 text-sm w-24">值: {{ value }}</div>
+    </div>
+    <div class="flex flex-col items-center">
+      <ui-slider v-model="rangeValue" vertical range reverse :height="250" />
+      <div class="mt-4 text-sm w-24">值: {{ rangeValue }}</div>
+    </div>
+  </div>
+</template>
+
+<script setup>
+import { ref } from 'vue'
+
+const value = ref(70)
+const rangeValue = ref([40, 80])
+<\/script>`
+
+const colorCode = `<template>
+  <ui-slider
+    v-model="value"
+    color="#8B5CF6"
+    inactive-color="#F3E8FF"
+  />
+</template>
+
+<script setup>
+import { ref } from 'vue'
+
+const value = ref(70)
+<\/script>`
 </script>
 
 <template>
-  <div class="demo-slider">
-    <div class="demo-section">
-      <h2 class="demo-title">
-        基础滑块
-      </h2>
-      <div class="demo-row">
-        <ui-slider v-model="basicValue" />
-        <div class="demo-value">
+  <div class="mx-auto max-w-6xl">
+    <h2 class="mb-6 text-2xl font-bold dark:text-white">
+      Slider 滑块
+    </h2>
+    <p class="mb-6 text-gray-500 dark:text-gray-400">
+      滑块组件用于在一个固定区间内进行值的选择，支持单值选择和范围选择，适用于需要精确调节数值的场景。
+    </p>
+
+    <!-- 基础用法 -->
+    <ui-demo
+      title="基础用法"
+      description="基础的滑块组件，使用v-model绑定一个数值。"
+      :code="basicCode"
+    >
+      <div class="space-y-4">
+        <ui-slider v-model="basicValue" @change="handleChange" @drag-end="handleDragEnd" />
+        <div class="text-sm text-gray-600 dark:text-gray-400">
           值: {{ basicValue }}
         </div>
       </div>
-    </div>
+    </ui-demo>
 
-    <div class="demo-section">
-      <h2 class="demo-title">
-        禁用状态
-      </h2>
-      <div class="demo-row">
-        <ui-slider v-model="disabledValue" disabled />
-      </div>
-    </div>
+    <!-- 禁用状态 -->
+    <ui-demo
+      title="禁用状态"
+      description="通过disabled属性设置滑块为禁用状态。"
+      :code="disabledCode"
+    >
+      <ui-slider v-model="disabledValue" disabled />
+    </ui-demo>
 
-    <div class="demo-section">
-      <h2 class="demo-title">
-        自定义步长
-      </h2>
-      <div class="demo-row">
+    <!-- 自定义步长 -->
+    <ui-demo
+      title="自定义步长"
+      description="通过step属性设置滑块的步长，配合show-stops显示间断点。"
+      :code="stepCode"
+    >
+      <div class="space-y-4">
         <ui-slider v-model="stepValue" :step="10" :show-stops="true" />
-        <div class="demo-value">
+        <div class="text-sm text-gray-600 dark:text-gray-400">
           值: {{ stepValue }} (步长: 10)
         </div>
       </div>
-    </div>
+    </ui-demo>
 
-    <div class="demo-section">
-      <h2 class="demo-title">
-        显示输入框
-      </h2>
-      <div class="demo-row">
-        <ui-slider v-model="inputValue" :show-input="true" />
-      </div>
-    </div>
+    <!-- 显示输入框 -->
+    <ui-demo
+      title="显示输入框"
+      description="通过show-input属性显示输入框，可直接输入或调整数值。"
+      :code="inputCode"
+    >
+      <ui-slider v-model="inputValue" :show-input="true" />
+    </ui-demo>
 
-    <div class="demo-section">
-      <h2 class="demo-title">
-        范围选择
-      </h2>
-      <div class="demo-row">
+    <!-- 范围选择 -->
+    <ui-demo
+      title="范围选择"
+      description="设置range属性开启范围选择，此时v-model绑定值为数组。"
+      :code="rangeCode"
+    >
+      <div class="space-y-4">
         <ui-slider v-model="rangeValue" range />
-        <div class="demo-value">
+        <div class="text-sm text-gray-600 dark:text-gray-400">
           值: {{ rangeValue }}
         </div>
       </div>
-    </div>
+    </ui-demo>
 
-    <div class="demo-section">
-      <h2 class="demo-title">
-        显示刻度点
-      </h2>
-      <div class="demo-row">
-        <ui-slider v-model="stopsValue" :step="10" :show-stops="true" />
-      </div>
-    </div>
+    <!-- 带刻度点 -->
+    <ui-demo
+      title="显示刻度点"
+      description="设置show-stops属性显示间断点，配合step使用效果更佳。"
+      :code="stopsCode"
+    >
+      <ui-slider v-model="stopsValue" :step="10" :show-stops="true" />
+    </ui-demo>
 
-    <div class="demo-section">
-      <h2 class="demo-title">
-        带标记点
-      </h2>
-      <div class="demo-row">
-        <ui-slider v-model="marksValue" :marks="marks" />
-      </div>
-    </div>
+    <!-- 带标记点 -->
+    <ui-demo
+      title="带标记点"
+      description="通过marks属性设置标记点，可以为特定值添加自定义标签。"
+      :code="marksCode"
+    >
+      <ui-slider v-model="marksValue" :marks="marks" />
+    </ui-demo>
 
-    <div class="demo-section">
-      <h2 class="demo-title">
-        垂直模式
-      </h2>
-      <div class="demo-vertical-container">
-        <div class="demo-vertical-item">
+    <!-- 垂直模式 -->
+    <ui-demo
+      title="垂直模式"
+      description="设置vertical属性启用垂直模式，还可以通过height属性设置高度。"
+      :code="verticalCode"
+    >
+      <div class="h-[300px] flex items-start gap-12">
+        <div class="flex flex-col items-center">
           <ui-slider v-model="verticalValue" vertical />
-          <div class="demo-value w-24">
+          <div class="mt-4 w-24 text-sm text-gray-600 dark:text-gray-400">
             值: {{ verticalValue }}
           </div>
         </div>
-        <div class="demo-vertical-item">
+        <div class="flex flex-col items-center">
           <ui-slider v-model="verticalRangeValue" vertical range :height="250" />
-          <div class="demo-value w-24">
+          <div class="mt-4 w-24 text-sm text-gray-600 dark:text-gray-400">
             值: {{ verticalRangeValue }}
           </div>
         </div>
       </div>
-    </div>
+    </ui-demo>
 
-    <div class="demo-section">
-      <h2 class="demo-title">
-        垂直模式（反转）
-      </h2>
-      <p class="demo-description">
-        reverse属性可以控制垂直模式下值的方向，设置为true时，值0在顶部，最大值在底部。
-      </p>
-      <div class="demo-vertical-container">
-        <div class="demo-vertical-item">
+    <!-- 垂直模式（反转） -->
+    <ui-demo
+      title="垂直模式（反转）"
+      description="使用reverse属性控制垂直模式的值方向，设为true时值0在顶部，最大值在底部。"
+      :code="verticalReversedCode"
+    >
+      <div class="h-[300px] flex items-start gap-12">
+        <div class="flex flex-col items-center">
           <ui-slider v-model="verticalReversedValue" vertical reverse :height="250" />
-          <div class="demo-value w-24">
+          <div class="mt-4 w-24 text-sm text-gray-600 dark:text-gray-400">
             值: {{ verticalReversedValue }}
           </div>
         </div>
-        <div class="demo-vertical-item">
+        <div class="flex flex-col items-center">
           <ui-slider v-model="verticalReversedRangeValue" vertical range reverse :height="250" />
-          <div class="demo-value w-24">
+          <div class="mt-4 w-24 text-sm text-gray-600 dark:text-gray-400">
             值: {{ verticalReversedRangeValue }}
           </div>
         </div>
       </div>
-    </div>
+    </ui-demo>
 
-    <div class="demo-section">
-      <h2 class="demo-title">
-        自定义颜色
-      </h2>
-      <div class="demo-row">
-        <ui-slider
-          v-model="customColorValue"
-          color="#8B5CF6"
-          inactive-color="#F3E8FF"
-        />
-      </div>
-    </div>
-
-    <div class="demo-section">
-      <h2 class="demo-title">
-        主题适配
-      </h2>
-      <button class="demo-button" @click="toggleDarkMode">
-        切换{{ isDarkMode ? '亮色' : '暗色' }}主题
-      </button>
-
-      <div class="demo-row">
-        <ui-slider v-model="basicValue" />
-        <div class="demo-value">
-          值: {{ basicValue }}
-        </div>
-      </div>
-    </div>
-
-    <div class="demo-section">
-      <h2 class="demo-title">
-        代码示例
-      </h2>
-      <h3 class="demo-subtitle">
-        基础用法
-      </h3>
-      <ui-code
-        code="<ui-slider v-model='value' />"
-        language="html"
+    <!-- 自定义颜色 -->
+    <ui-demo
+      title="自定义颜色"
+      description="通过color和inactive-color属性自定义滑块的颜色。"
+      :code="colorCode"
+    >
+      <ui-slider
+        v-model="customColorValue"
+        color="#8B5CF6"
+        inactive-color="#F3E8FF"
       />
+    </ui-demo>
 
-      <h3 class="demo-subtitle">
-        范围选择
-      </h3>
-      <ui-code
-        code="<ui-slider v-model='value' range />"
-        language="html"
-      />
-
-      <h3 class="demo-subtitle">
-        带标记点
-      </h3>
-      <ui-code
-        code="<ui-slider v-model='value' :marks='marks' />"
-        language="html"
-      />
-    </div>
-
-    <div class="demo-section">
-      <h2 class="demo-title">
-        API 参考
-      </h2>
-
-      <h3 class="demo-subtitle">
-        Slider 属性
-      </h3>
-      <div class="demo-table">
-        <table>
+    <!-- API参考 -->
+    <ui-demo
+      title="API参考"
+      description="Slider组件的属性、事件和方法。"
+      :show-code="false"
+      code=""
+    >
+      <h4 class="mb-2 font-medium dark:text-white">
+        属性
+      </h4>
+      <div class="overflow-auto">
+        <table class="min-w-full border-collapse">
           <thead>
-            <tr>
-              <th>属性名</th>
-              <th>说明</th>
-              <th>类型</th>
-              <th>默认值</th>
+            <tr class="border-b dark:border-gray-700">
+              <th class="px-4 py-2 text-left dark:text-white">
+                名称
+              </th>
+              <th class="px-4 py-2 text-left dark:text-white">
+                说明
+              </th>
+              <th class="px-4 py-2 text-left dark:text-white">
+                类型
+              </th>
+              <th class="px-4 py-2 text-left dark:text-white">
+                默认值
+              </th>
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>modelValue / v-model</td>
-              <td>绑定值</td>
-              <td>number / number[]</td>
-              <td>0</td>
+            <tr class="border-b dark:border-gray-700">
+              <td class="px-4 py-2 dark:text-gray-300">
+                modelValue / v-model
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                绑定值
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                number / number[]
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                0
+              </td>
             </tr>
-            <tr>
-              <td>min</td>
-              <td>最小值</td>
-              <td>number</td>
-              <td>0</td>
+            <tr class="border-b dark:border-gray-700">
+              <td class="px-4 py-2 dark:text-gray-300">
+                min
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                最小值
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                number
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                0
+              </td>
             </tr>
-            <tr>
-              <td>max</td>
-              <td>最大值</td>
-              <td>number</td>
-              <td>100</td>
+            <tr class="border-b dark:border-gray-700">
+              <td class="px-4 py-2 dark:text-gray-300">
+                max
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                最大值
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                number
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                100
+              </td>
             </tr>
-            <tr>
-              <td>step</td>
-              <td>步长</td>
-              <td>number</td>
-              <td>1</td>
+            <tr class="border-b dark:border-gray-700">
+              <td class="px-4 py-2 dark:text-gray-300">
+                step
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                步长
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                number
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                1
+              </td>
             </tr>
-            <tr>
-              <td>disabled</td>
-              <td>是否禁用</td>
-              <td>boolean</td>
-              <td>false</td>
+            <tr class="border-b dark:border-gray-700">
+              <td class="px-4 py-2 dark:text-gray-300">
+                disabled
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                是否禁用
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                boolean
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                false
+              </td>
             </tr>
-            <tr>
-              <td>showStops</td>
-              <td>是否显示间断点</td>
-              <td>boolean</td>
-              <td>false</td>
+            <tr class="border-b dark:border-gray-700">
+              <td class="px-4 py-2 dark:text-gray-300">
+                showStops
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                是否显示间断点
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                boolean
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                false
+              </td>
             </tr>
-            <tr>
-              <td>showTooltip</td>
-              <td>是否显示提示气泡</td>
-              <td>boolean</td>
-              <td>true</td>
+            <tr class="border-b dark:border-gray-700">
+              <td class="px-4 py-2 dark:text-gray-300">
+                showTooltip
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                是否显示提示气泡
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                boolean
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                true
+              </td>
             </tr>
-            <tr>
-              <td>showInput</td>
-              <td>是否显示输入框</td>
-              <td>boolean</td>
-              <td>false</td>
+            <tr class="border-b dark:border-gray-700">
+              <td class="px-4 py-2 dark:text-gray-300">
+                showInput
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                是否显示输入框
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                boolean
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                false
+              </td>
             </tr>
-            <tr>
-              <td>vertical</td>
-              <td>是否垂直模式</td>
-              <td>boolean</td>
-              <td>false</td>
+            <tr class="border-b dark:border-gray-700">
+              <td class="px-4 py-2 dark:text-gray-300">
+                vertical
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                是否垂直模式
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                boolean
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                false
+              </td>
             </tr>
-            <tr>
-              <td>height</td>
-              <td>滑块高度，垂直模式时使用</td>
-              <td>number / string</td>
-              <td>200</td>
+            <tr class="border-b dark:border-gray-700">
+              <td class="px-4 py-2 dark:text-gray-300">
+                height
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                滑块高度，垂直模式时使用
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                number / string
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                200
+              </td>
             </tr>
-            <tr>
-              <td>range</td>
-              <td>是否为范围选择</td>
-              <td>boolean</td>
-              <td>false</td>
+            <tr class="border-b dark:border-gray-700">
+              <td class="px-4 py-2 dark:text-gray-300">
+                range
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                是否为范围选择
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                boolean
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                false
+              </td>
             </tr>
-            <tr>
-              <td>marks</td>
-              <td>标记点</td>
-              <td>Record&lt;number, string | { label: string; style?: object }&gt;</td>
-              <td>{}</td>
+            <tr class="border-b dark:border-gray-700">
+              <td class="px-4 py-2 dark:text-gray-300">
+                marks
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                标记点
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                Record&lt;number, string | { label: string; style?: object }&gt;
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                {}
+              </td>
             </tr>
-            <tr>
-              <td>color</td>
-              <td>滑块颜色</td>
-              <td>string</td>
-              <td>-</td>
+            <tr class="border-b dark:border-gray-700">
+              <td class="px-4 py-2 dark:text-gray-300">
+                color
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                滑块颜色
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                string
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                -
+              </td>
             </tr>
-            <tr>
-              <td>inactiveColor</td>
-              <td>未选中部分的颜色</td>
-              <td>string</td>
-              <td>-</td>
+            <tr class="border-b dark:border-gray-700">
+              <td class="px-4 py-2 dark:text-gray-300">
+                inactiveColor
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                未选中部分的颜色
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                string
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                -
+              </td>
             </tr>
-            <tr>
-              <td>markColor</td>
-              <td>标记点颜色</td>
-              <td>string</td>
-              <td>-</td>
+            <tr class="border-b dark:border-gray-700">
+              <td class="px-4 py-2 dark:text-gray-300">
+                markColor
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                标记点颜色
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                string
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                -
+              </td>
             </tr>
-            <tr>
-              <td>reverse</td>
-              <td>是否反转值的方向（垂直模式下有效，true时值0在顶部）</td>
-              <td>boolean</td>
-              <td>false</td>
+            <tr class="border-b dark:border-gray-700">
+              <td class="px-4 py-2 dark:text-gray-300">
+                reverse
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                是否反转值的方向（垂直模式下有效，true时值0在顶部）
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                boolean
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                false
+              </td>
             </tr>
           </tbody>
         </table>
       </div>
 
-      <h3 class="demo-subtitle">
-        Slider 事件
-      </h3>
-      <div class="demo-table">
-        <table>
+      <h4 class="mb-2 mt-4 font-medium dark:text-white">
+        事件
+      </h4>
+      <div class="overflow-auto">
+        <table class="min-w-full border-collapse">
           <thead>
-            <tr>
-              <th>事件名</th>
-              <th>说明</th>
-              <th>回调参数</th>
+            <tr class="border-b dark:border-gray-700">
+              <th class="px-4 py-2 text-left dark:text-white">
+                事件名
+              </th>
+              <th class="px-4 py-2 text-left dark:text-white">
+                说明
+              </th>
+              <th class="px-4 py-2 text-left dark:text-white">
+                参数
+              </th>
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>update:modelValue</td>
-              <td>值改变时触发</td>
-              <td>(value: number | number[])</td>
+            <tr class="border-b dark:border-gray-700">
+              <td class="px-4 py-2 dark:text-gray-300">
+                update:modelValue
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                值改变时触发
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                (value: number | number[])
+              </td>
             </tr>
-            <tr>
-              <td>change</td>
-              <td>值改变且结束拖动时触发</td>
-              <td>(value: number | number[])</td>
+            <tr class="border-b dark:border-gray-700">
+              <td class="px-4 py-2 dark:text-gray-300">
+                change
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                值改变且结束拖动时触发
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                (value: number | number[])
+              </td>
             </tr>
-            <tr>
-              <td>input</td>
-              <td>值改变时触发</td>
-              <td>(value: number | number[])</td>
+            <tr class="border-b dark:border-gray-700">
+              <td class="px-4 py-2 dark:text-gray-300">
+                input
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                值改变时触发
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                (value: number | number[])
+              </td>
+            </tr>
+            <tr class="border-b dark:border-gray-700">
+              <td class="px-4 py-2 dark:text-gray-300">
+                drag-end
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                拖动结束时触发
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                (value: number | number[])
+              </td>
             </tr>
           </tbody>
         </table>
       </div>
-    </div>
+    </ui-demo>
   </div>
 </template>
 

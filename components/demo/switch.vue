@@ -4,6 +4,7 @@
  * 创建日期: 2024-06-12
  * 作者: aiftt
  * 更新日期: 2024-06-12 - 初始实现
+ * 更新日期: 2024-12-15 - 使用ui-demo组件重构演示页面
  */
 import { ref } from 'vue'
 
@@ -30,272 +31,414 @@ const withTextSwitch = ref(false)
 // 方形开关
 const squareSwitch = ref(true)
 
-// 主题模式
-const isDarkMode = ref(false)
+// 示例代码字符串
+const basicCode = `<template>
+  <ui-switch v-model="checked" />
+</template>
 
-// 切换主题模式
-function toggleDarkMode() {
-  isDarkMode.value = !isDarkMode.value
-  const html = document.documentElement
+<script setup>
+import { ref } from 'vue'
 
-  if (isDarkMode.value) {
-    html.classList.add('dark')
-  }
-  else {
-    html.classList.remove('dark')
-  }
-}
+const checked = ref(false)
+<\/script>`
+
+const disabledCode = `<template>
+  <div class="space-x-4">
+    <ui-switch disabled />
+    <ui-switch disabled :model-value="true" />
+  </div>
+</template>`
+
+const loadingCode = `<template>
+  <div class="space-x-4">
+    <ui-switch loading />
+    <ui-switch loading :model-value="true" />
+  </div>
+</template>`
+
+const sizeCode = `<template>
+  <div class="space-x-4">
+    <ui-switch v-model="small" size="small" />
+    <ui-switch v-model="medium" />
+    <ui-switch v-model="large" size="large" />
+  </div>
+</template>
+
+<script setup>
+import { ref } from 'vue'
+
+const small = ref(false)
+const medium = ref(true)
+const large = ref(false)
+<\/script>`
+
+const colorCode = `<template>
+  <ui-switch v-model="checked" active-color="#8B5CF6" inactive-color="#F3E8FF" />
+</template>
+
+<script setup>
+import { ref } from 'vue'
+
+const checked = ref(true)
+<\/script>`
+
+const textCode = `<template>
+  <ui-switch
+    v-model="checked"
+    active-text="开启"
+    inactive-text="关闭"
+  />
+</template>
+
+<script setup>
+import { ref } from 'vue'
+
+const checked = ref(false)
+<\/script>`
+
+const squareCode = `<template>
+  <ui-switch v-model="checked" square />
+</template>
+
+<script setup>
+import { ref } from 'vue'
+
+const checked = ref(true)
+<\/script>`
 </script>
 
 <template>
-  <div class="demo-switch">
-    <div class="demo-section">
-      <h2 class="demo-title">
-        基础开关
-      </h2>
-      <div class="demo-row">
+  <div class="mx-auto max-w-6xl">
+    <h2 class="mb-6 text-2xl font-bold dark:text-white">
+      Switch 开关
+    </h2>
+    <p class="mb-6 text-gray-500 dark:text-gray-400">
+      开关组件用于表示两种互斥状态的切换，如开/关、显示/隐藏。
+    </p>
+
+    <!-- 基础用法 -->
+    <ui-demo
+      title="基础用法"
+      description="基础的开关组件，绑定v-model到一个Boolean值。"
+      :code="basicCode"
+    >
+      <div class="space-y-4">
         <ui-switch v-model="basicSwitch" />
-        <div class="demo-value">
+        <div class="text-sm text-gray-600 dark:text-gray-400">
           值: {{ basicSwitch }}
         </div>
       </div>
-    </div>
+    </ui-demo>
 
-    <div class="demo-section">
-      <h2 class="demo-title">
-        禁用状态
-      </h2>
-      <div class="demo-row">
+    <!-- 禁用状态 -->
+    <ui-demo
+      title="禁用状态"
+      description="通过disabled属性设置开关为禁用状态。"
+      :code="disabledCode"
+    >
+      <div class="flex space-x-4">
         <ui-switch disabled />
         <ui-switch disabled :model-value="disabledSwitch" />
       </div>
-    </div>
+    </ui-demo>
 
-    <div class="demo-section">
-      <h2 class="demo-title">
-        加载状态
-      </h2>
-      <div class="demo-row">
+    <!-- 加载状态 -->
+    <ui-demo
+      title="加载状态"
+      description="通过loading属性设置开关为加载状态。"
+      :code="loadingCode"
+    >
+      <div class="flex space-x-4">
         <ui-switch loading />
         <ui-switch loading :model-value="loadingSwitch" />
       </div>
-    </div>
+    </ui-demo>
 
-    <div class="demo-section">
-      <h2 class="demo-title">
-        尺寸变体
-      </h2>
-      <div class="demo-row">
-        <ui-switch v-model="smallSwitch" size="small" />
-        <ui-switch v-model="defaultSwitch" />
-        <ui-switch v-model="largeSwitch" size="large" />
+    <!-- 尺寸变体 -->
+    <ui-demo
+      title="尺寸变体"
+      description="提供三种不同的尺寸：small、default、large。"
+      :code="sizeCode"
+    >
+      <div class="flex flex-wrap items-center gap-4">
+        <div class="flex flex-col items-center">
+          <span class="mb-2 text-sm dark:text-gray-300">small</span>
+          <ui-switch v-model="smallSwitch" size="small" />
+        </div>
+        <div class="flex flex-col items-center">
+          <span class="mb-2 text-sm dark:text-gray-300">default</span>
+          <ui-switch v-model="defaultSwitch" />
+        </div>
+        <div class="flex flex-col items-center">
+          <span class="mb-2 text-sm dark:text-gray-300">large</span>
+          <ui-switch v-model="largeSwitch" size="large" />
+        </div>
       </div>
-    </div>
+    </ui-demo>
 
-    <div class="demo-section">
-      <h2 class="demo-title">
-        自定义颜色
-      </h2>
-      <div class="demo-row">
-        <ui-switch v-model="customColorSwitch" active-color="#8B5CF6" inactive-color="#F3E8FF" />
-      </div>
-    </div>
+    <!-- 自定义颜色 -->
+    <ui-demo
+      title="自定义颜色"
+      description="可以通过activeColor和inactiveColor属性自定义开关的颜色。"
+      :code="colorCode"
+    >
+      <ui-switch v-model="customColorSwitch" active-color="#8B5CF6" inactive-color="#F3E8FF" />
+    </ui-demo>
 
-    <div class="demo-section">
-      <h2 class="demo-title">
-        带有文本描述
-      </h2>
-      <div class="demo-row">
-        <ui-switch
-          v-model="withTextSwitch"
-          active-text="开启"
-          inactive-text="关闭"
-        />
-      </div>
-    </div>
-
-    <div class="demo-section">
-      <h2 class="demo-title">
-        方形按钮
-      </h2>
-      <div class="demo-row">
-        <ui-switch v-model="squareSwitch" square />
-      </div>
-    </div>
-
-    <div class="demo-section">
-      <h2 class="demo-title">
-        主题适配
-      </h2>
-      <button class="demo-button" @click="toggleDarkMode">
-        切换{{ isDarkMode ? '亮色' : '暗色' }}主题
-      </button>
-
-      <div class="demo-row">
-        <ui-switch />
-        <ui-switch model-value />
-      </div>
-    </div>
-
-    <div class="demo-section">
-      <h2 class="demo-title">
-        代码示例
-      </h2>
-      <h3 class="demo-subtitle">
-        基础用法
-      </h3>
-      <ui-code
-        code="<ui-switch v-model='checked' />"
-        language="html"
+    <!-- 带有文本描述 -->
+    <ui-demo
+      title="带有文本描述"
+      description="可以通过activeText和inactiveText属性设置开关的文本描述。"
+      :code="textCode"
+    >
+      <ui-switch
+        v-model="withTextSwitch"
+        active-text="开启"
+        inactive-text="关闭"
       />
+    </ui-demo>
 
-      <h3 class="demo-subtitle">
-        禁用状态
-      </h3>
-      <ui-code
-        code="<ui-switch v-model='checked' disabled />"
-        language="html"
-      />
+    <!-- 方形按钮 -->
+    <ui-demo
+      title="方形按钮"
+      description="通过square属性可以设置为方形按钮样式。"
+      :code="squareCode"
+    >
+      <ui-switch v-model="squareSwitch" square />
+    </ui-demo>
 
-      <h3 class="demo-subtitle">
-        自定义颜色
-      </h3>
-      <ui-code
-        code="<ui-switch v-model='checked' active-color='#8B5CF6' inactive-color='#F3E8FF' />"
-        language="html"
-      />
-
-      <h3 class="demo-subtitle">
-        带有文本描述
-      </h3>
-      <ui-code
-        code="<ui-switch v-model='checked' active-text='开启' inactive-text='关闭' />"
-        language="html"
-      />
-    </div>
-
-    <div class="demo-section">
-      <h2 class="demo-title">
-        API 参考
-      </h2>
-
-      <h3 class="demo-subtitle">
-        Switch 属性
-      </h3>
-      <div class="demo-table">
-        <table>
+    <!-- API参考 -->
+    <ui-demo
+      title="API参考"
+      description="Switch组件的属性、事件和方法。"
+      :show-code="false"
+      code=""
+    >
+      <h4 class="mb-2 font-medium dark:text-white">
+        属性
+      </h4>
+      <div class="overflow-auto">
+        <table class="min-w-full border-collapse">
           <thead>
-            <tr>
-              <th>属性名</th>
-              <th>说明</th>
-              <th>类型</th>
-              <th>默认值</th>
+            <tr class="border-b dark:border-gray-700">
+              <th class="px-4 py-2 text-left dark:text-white">
+                名称
+              </th>
+              <th class="px-4 py-2 text-left dark:text-white">
+                说明
+              </th>
+              <th class="px-4 py-2 text-left dark:text-white">
+                类型
+              </th>
+              <th class="px-4 py-2 text-left dark:text-white">
+                默认值
+              </th>
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>modelValue / v-model</td>
-              <td>绑定值</td>
-              <td>boolean</td>
-              <td>false</td>
+            <tr class="border-b dark:border-gray-700">
+              <td class="px-4 py-2 dark:text-gray-300">
+                modelValue / v-model
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                绑定值
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                boolean
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                false
+              </td>
             </tr>
-            <tr>
-              <td>disabled</td>
-              <td>是否禁用</td>
-              <td>boolean</td>
-              <td>false</td>
+            <tr class="border-b dark:border-gray-700">
+              <td class="px-4 py-2 dark:text-gray-300">
+                disabled
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                是否禁用
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                boolean
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                false
+              </td>
             </tr>
-            <tr>
-              <td>loading</td>
-              <td>是否为加载状态</td>
-              <td>boolean</td>
-              <td>false</td>
+            <tr class="border-b dark:border-gray-700">
+              <td class="px-4 py-2 dark:text-gray-300">
+                loading
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                是否为加载状态
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                boolean
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                false
+              </td>
             </tr>
-            <tr>
-              <td>size</td>
-              <td>开关尺寸</td>
-              <td>'small' / 'default' / 'large'</td>
-              <td>'default'</td>
+            <tr class="border-b dark:border-gray-700">
+              <td class="px-4 py-2 dark:text-gray-300">
+                size
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                开关尺寸
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                'small' / 'default' / 'large'
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                'default'
+              </td>
             </tr>
-            <tr>
-              <td>activeText</td>
-              <td>开启状态的文本</td>
-              <td>string</td>
-              <td>-</td>
+            <tr class="border-b dark:border-gray-700">
+              <td class="px-4 py-2 dark:text-gray-300">
+                activeText
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                开启状态的文本
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                string
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                -
+              </td>
             </tr>
-            <tr>
-              <td>inactiveText</td>
-              <td>关闭状态的文本</td>
-              <td>string</td>
-              <td>-</td>
+            <tr class="border-b dark:border-gray-700">
+              <td class="px-4 py-2 dark:text-gray-300">
+                inactiveText
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                关闭状态的文本
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                string
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                -
+              </td>
             </tr>
-            <tr>
-              <td>activeValue</td>
-              <td>开启状态的值</td>
-              <td>string / number / boolean</td>
-              <td>true</td>
+            <tr class="border-b dark:border-gray-700">
+              <td class="px-4 py-2 dark:text-gray-300">
+                activeValue
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                开启状态的值
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                string / number / boolean
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                true
+              </td>
             </tr>
-            <tr>
-              <td>inactiveValue</td>
-              <td>关闭状态的值</td>
-              <td>string / number / boolean</td>
-              <td>false</td>
+            <tr class="border-b dark:border-gray-700">
+              <td class="px-4 py-2 dark:text-gray-300">
+                inactiveValue
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                关闭状态的值
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                string / number / boolean
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                false
+              </td>
             </tr>
-            <tr>
-              <td>activeColor</td>
-              <td>开启状态的颜色</td>
-              <td>string</td>
-              <td>-</td>
+            <tr class="border-b dark:border-gray-700">
+              <td class="px-4 py-2 dark:text-gray-300">
+                activeColor
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                开启状态的颜色
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                string
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                -
+              </td>
             </tr>
-            <tr>
-              <td>inactiveColor</td>
-              <td>关闭状态的颜色</td>
-              <td>string</td>
-              <td>-</td>
+            <tr class="border-b dark:border-gray-700">
+              <td class="px-4 py-2 dark:text-gray-300">
+                inactiveColor
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                关闭状态的颜色
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                string
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                -
+              </td>
             </tr>
-            <tr>
-              <td>name</td>
-              <td>原生name属性</td>
-              <td>string</td>
-              <td>-</td>
-            </tr>
-            <tr>
-              <td>square</td>
-              <td>是否为方形按钮</td>
-              <td>boolean</td>
-              <td>false</td>
+            <tr class="border-b dark:border-gray-700">
+              <td class="px-4 py-2 dark:text-gray-300">
+                square
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                是否为方形按钮
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                boolean
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                false
+              </td>
             </tr>
           </tbody>
         </table>
       </div>
 
-      <h3 class="demo-subtitle">
-        Switch 事件
-      </h3>
-      <div class="demo-table">
-        <table>
+      <h4 class="mb-2 mt-4 font-medium dark:text-white">
+        事件
+      </h4>
+      <div class="overflow-auto">
+        <table class="min-w-full border-collapse">
           <thead>
-            <tr>
-              <th>事件名</th>
-              <th>说明</th>
-              <th>回调参数</th>
+            <tr class="border-b dark:border-gray-700">
+              <th class="px-4 py-2 text-left dark:text-white">
+                事件名
+              </th>
+              <th class="px-4 py-2 text-left dark:text-white">
+                说明
+              </th>
+              <th class="px-4 py-2 text-left dark:text-white">
+                参数
+              </th>
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>update:modelValue</td>
-              <td>开关状态变化时触发</td>
-              <td>(value: boolean)</td>
+            <tr class="border-b dark:border-gray-700">
+              <td class="px-4 py-2 dark:text-gray-300">
+                change
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                状态变化时触发
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                新状态的值
+              </td>
             </tr>
-            <tr>
-              <td>change</td>
-              <td>开关状态变化时触发</td>
-              <td>(value: boolean)</td>
+            <tr class="border-b dark:border-gray-700">
+              <td class="px-4 py-2 dark:text-gray-300">
+                input
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                状态变化时触发
+              </td>
+              <td class="px-4 py-2 dark:text-gray-300">
+                新状态的值
+              </td>
             </tr>
           </tbody>
         </table>
       </div>
-    </div>
+    </ui-demo>
   </div>
 </template>
 

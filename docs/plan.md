@@ -506,24 +506,24 @@
 63. ✅ `components/demo/calendar.vue` - 已完成
 64. ✅ `components/demo/tour.vue` - 已完成
 65. ✅ `components/demo/textarea.vue` - 已完成
-66. [ ] `components/demo/input-number.vue` - 待重构
-67. [ ] `components/demo/autocomplete.vue` - 待重构
-68. [ ] `components/demo/verification-code.vue` - 待重构
-69. [ ] `components/demo/cascader.vue` - 待重构
-70. [ ] `components/demo/time-picker.vue` - 待重构
-71. [ ] `components/demo/time-select.vue` - 待重构
-72. [ ] `components/demo/switch.vue` - 待重构
-73. [ ] `components/demo/slider.vue` - 待重构
-74. [ ] `components/demo/rate.vue` - 待重构
-75. [ ] `components/demo/dialog.vue` - 待重构
-76. [ ] `components/demo/drawer.vue` - 待重构
-77. [ ] `components/demo/notification.vue` - 待重构
-78. [ ] `components/demo/back-top.vue` - 待重构
-79. [ ] `components/demo/page-header.vue` - 待重构
-80. [ ] `components/demo/menu.vue` - 已完成但需要再次确认
-81. [ ] `components/demo/virtual-select.vue` - 待重构
-82. [ ] `components/demo/infinite-scroll.vue` - 待重构
-83. [ ] `components/demo/mention.vue` - 待重构
+66. ✅ `components/demo/input-number.vue` - 已完成
+67. ✅ `components/demo/autocomplete.vue` - 已完成
+68. ✅ `components/demo/verification-code.vue` - 已完成
+69. ✅ `components/demo/cascader.vue` - 已完成
+70. ✅ `components/demo/time-picker.vue` - 已完成
+71. ✅ `components/demo/timeselect.vue` - 已完成
+72. ✅ `components/demo/switch.vue` - 已完成
+73. ✅ `components/demo/slider.vue` - 已完成
+74. ✅ `components/demo/rate.vue` - 已完成
+75. ✅ `components/demo/dialog.vue` - 已完成
+76. ✅ `components/demo/drawer.vue` - 已完成
+77. ✅ `components/demo/notification.vue` - 已完成
+78. ✅ `components/demo/back-top.vue` - 已完成
+79. ✅ `components/demo/page-header.vue` - 已完成
+80. ✅ `components/demo/menu.vue` - 已完成
+81. ✅ `components/demo/virtual-select.vue` - 已完成
+82. ✅ `components/demo/infinite-scroll.vue` - 已完成
+83. ✅ `components/demo/mention.vue` - 已完成
 
 ## 重构规范
 
